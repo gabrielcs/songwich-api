@@ -1,4 +1,9 @@
-radio-engine
-============
+RdioJsApi-SimplePlayer-Play2-ThinWrapper
+========================================
 
-A radio player that uses (1) The Echo Nest to generate a dynamic DMCA-compliant song-catalog playlist with zero adventurousness; and (2) Rdio and Deezer to stream the songs.
+A Play2/Java wrapper for the "Simple Player" example of the new Rdio JS API.
+
+Register your app at http://www.rdio.com/developers/create/ and replace 
+RDIO_CLIENT_ID in app/controllers/Application.java with yours.
+
+See original at https://github.com/rdio/jsapi-examples
