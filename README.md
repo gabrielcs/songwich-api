@@ -76,16 +76,17 @@ In the shower
 
 Enjoying the sun
    - Musician A.1: http://open.spotify.com/user/tunigo/playlist/2jNBnxCamU0hZa124wYCec
-   - Musician A.2: http://open.spotify.com/user/tunigo/playlist/2jNBnxCamU0hZa124wYCec
-   - Musician A.3: http://open.spotify.com/user/myplay.com/playlist/3Irogru6vgG5fRaegdGhcj
+   - Musician A.2: http://open.spotify.com/user/myplay.com/playlist/3Irogru6vgG5fRaegdGhcj
+   - Musician A.3: http://open.spotify.com/user/tunigo1/playlist/0F0oZ2HJjdI1oJLpJHqAGa
    - Musician B: http://open.spotify.com/user/lizyeomans/playlist/4m2hgFlI5hQk85rwD3Pfvf
 
 Doing housework
    - Musician B: http://open.spotify.com/user/tunigo1/playlist/5UQmoXqjSppAqLvsLqI9pU
 
 Cooking
-   - Musician A.1: http://open.spotify.com/user/1250644986/playlist/2aKAAIChgQcz4ezu0G00Om
-   - Musician A.2: http://open.spotify.com/user/121784168/playlist/1T7QiVjW6bsWaqhcHcNfoV
+   - Musician A.1: http://open.spotify.com/user/tunigo1/playlist/6YZF0QgmC4qawHFWP9YwmQ
+   - Musician A.2: http://open.spotify.com/user/1250644986/playlist/2aKAAIChgQcz4ezu0G00Om
+   - Musician A.3: http://open.spotify.com/user/121784168/playlist/1T7QiVjW6bsWaqhcHcNfoV
    - Musician B: http://open.spotify.com/user/tunigo1/playlist/6YZF0QgmC4qawHFWP9YwmQ
 
 Eating dinner
