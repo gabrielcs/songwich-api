@@ -2,16 +2,16 @@ Radio-Engine
 ========================================
 
 A radio player that uses:
-(1) The Echo Nest to generate a dynamic seed-song catalog playlist that is DMCA-compliant;
-(2) Rdio and Deezer to stream the songs;
-(3) A few ready-made playlists to simulate the (situational) Taste Profile of 2 different artists consisting of solo artist and a 3-member band.
+- The Echo Nest to generate a dynamic seed-song catalog playlist that is DMCA-compliant;
+- Rdio and Deezer to stream the songs;
+- A few ready-made playlists to simulate the (situational) Taste Profile of 2 different artists consisting of solo artist and a 3-member band.
 
-The user should be able to 
-(1) Switch between Rdio and Deezer for the source for their music;
-(2) Equalize the Taste Profiles using an integer from 0 to 5 (1 is the default and 0 means it doesn't take it into account to generate the radio);
-(3) Optionally choose a situation;
-(4) Allow for studio and/or live songs;
-(5) Skip songs, favorite artists and songs, ban artists and songs, and rate songs from 0 to 10.
+The user should be able to:
+- Switch between Rdio and Deezer for the source for their music;
+- Equalize the Taste Profiles using an integer from 0 to 5 (1 is the default and 0 means it doesn't take it into account to generate the radio);
+- Optionally choose a situation;
+- Allow for studio and/or live songs;
+- Skip songs, favorite artists and songs, ban artists and songs, and rate songs from 0 to 10.
 
 
 Taste Profiles
