@@ -2,7 +2,7 @@ Radio-Engine
 ========================================
 
 A radio player that uses:
-- The Echo Nest to generate a dynamic seed-song catalog playlist that is DMCA-compliant;
+- The Echo Nest to generate a dynamic seed-song catalog playlist that is DMCA-compliant and has adventurouness = 0;
 - Rdio and Deezer to stream the songs;
 - A few ready-made playlists to simulate the (situational) Taste Profile of 2 different artists consisting of solo artist and a 3-member band.
 
