@@ -21,11 +21,11 @@ public class Scrobbler extends Controller {
 			result.put("status", "1");
 			result.put("message", "Missing parameter [user_id]");
 			return badRequest(result);
-		} else if (scrobble.track_title == null) {
+		} if (scrobble.track_title == null) {
 			result.put("status", "1");
 			result.put("message", "Missing parameter [track_title]");
 			return badRequest(result);
-		}  else if (scrobble.artist_name == null) {
+		} if (scrobble.artist_name == null) {
 			result.put("status", "1");
 			result.put("message", "Missing parameter [artist_name]");
 			return badRequest(result);
@@ -33,7 +33,7 @@ public class Scrobbler extends Controller {
 		
 		result.put("status", "0");
 		result.put("message", "Success");
-		//result.putPOJO("scrobble", scrobble);
+		result.put("scrobble", Json.toJson(scrobble));
 		return ok(result);
 	}
 }
