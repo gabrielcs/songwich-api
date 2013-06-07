@@ -4,7 +4,7 @@ import play.Project._
 
 object ApplicationBuild extends Build {
 
-  val appName         = "SimplePlayerRdioPlay"
+  val appName         = "songwich-api"
   val appVersion      = "1.1-SNAPSHOT"
 
   val appDependencies = Seq(
