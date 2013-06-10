@@ -3,7 +3,8 @@
 # ~~~~
 
 # Scrobbler
-GET     /v0.1/scrobble     controllers.api.Scrobbler.scrobble(user_id ?= null, track_title ?= null, artist_name ?= null, service ?= null)
+GET     /v0.1/scrobble          controllers.api.Scrobbler.scrobble(user_id: Long, track_title, artist_name, service ?= null, timestamp: Long ?= System.currentTimeMillis)
+GET     /v0.1/scrobbleError     controllers.api.Scrobbler.scrobbleError(user_id: Long, track_title, artist_name, service ?= null, timestamp: Long ?= System.currentTimeMillis)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file      controllers.Assets.at(path="/public", file)

@@ -1,39 +1,38 @@
 package controllers.api;
 
-import org.codehaus.jackson.node.ObjectNode;
-
-import play.libs.Json;
+import static controllers.api.util.Status.SUCCESS;
 import play.mvc.Controller;
 import play.mvc.Result;
-import api.ScrobbleProxy;
+import play.mvc.Results;
+import controllers.api.proxies.ScrobbleProxy;
+import controllers.api.util.Response;
+import controllers.api.util.SongwichAPIException;
 
 public class Scrobbler extends Controller {
 
-	public static Result scrobble(String user_id,
-			String track_title, String artist_name,
-			String service) {
+	public static Result scrobble(Long user_id, String track_title,
+			String artist_name, String service, Long timestamp) {
 
-		ScrobbleProxy scrobble = new ScrobbleProxy(user_id, track_title,
-				artist_name, service);
+		ScrobbleProxy scrobble;
+		Response response;
 
-		ObjectNode result = Json.newObject();
-		if (scrobble.user_id == null) {
-			result.put("status", "1");
-			result.put("message", "Missing parameter [user_id]");
-			return badRequest(result);
-		} if (scrobble.track_title == null) {
-			result.put("status", "1");
-			result.put("message", "Missing parameter [track_title]");
-			return badRequest(result);
-		} if (scrobble.artist_name == null) {
-			result.put("status", "1");
-			result.put("message", "Missing parameter [artist_name]");
-			return badRequest(result);
-		} 
-		
-		result.put("status", "0");
-		result.put("message", "Success");
-		result.put("scrobble", Json.toJson(scrobble));
-		return ok(result);
+		try {
+			scrobble = new ScrobbleProxy(user_id, track_title, artist_name, service,
+					timestamp);
+		} catch (SongwichAPIException e) {
+			response = new Response(e.getStatus(), e.getMessage());
+			return Results.badRequest(response.toJson());
+		}
+
+		response = new Response(SUCCESS, "Success");
+		response.put("scrobble", scrobble.toJson());
+		return ok(response.toJson());
 	}
+
+	public static Result scrobbleError(Long user_id, String track_title,
+			String artist_name, String service, Long timestamp) {
+
+		throw new RuntimeException("Testing the error page");
+	}
+
 }
