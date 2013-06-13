@@ -1,19 +1,27 @@
 package controllers.api.util;
 
 public enum Status {
-	UNKNOWN_ERROR(-1),
-	SUCCESS(0), 
-	BAD_REQUEST(1), 
-	METHOD_NOT_FOUND(2),
-	INVALID_TIMESTAMP(3);
+	UNKNOWN_ERROR("-1", "Unknown error"),
+	SUCCESS("0", "Success"), 
+	BAD_REQUEST("1", "Bad request"),
+	METHOD_NOT_FOUND("2", "Method not found"),
+	INVALID_TIMESTAMP("3", "Invalid timestamp"),
+	INVALID_USER_ID("4", "Invalid user_id");
 
-	private int code;
+	private String code;
+	private String string;
 
-	private Status(int code) {
+	private Status(String code, String string) {
 		this.code = code;
+		this.string = string;
 	}
 	
-	public int getCode() {
+	public String getCode() {
 		return code;
+	}
+	
+	@Override
+	public String toString() {
+		return string;
 	}
 }

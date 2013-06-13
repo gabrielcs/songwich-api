@@ -4,11 +4,12 @@ import java.util.GregorianCalendar;
 
 import org.codehaus.jackson.JsonNode;
 
+import play.Logger;
 import play.libs.Json;
 import controllers.api.util.SongwichAPIException;
 import controllers.api.util.Status;
 
-public class ScrobbleProxy {
+public class ScrobbleProxyV0_1 {
 	
 	private Long user_id;
 	private String track_title;
@@ -16,7 +17,7 @@ public class ScrobbleProxy {
 	private String service;
 	private Long timestamp;
 
-	public ScrobbleProxy(Long user_id, String track_title, String artist_name,
+	public ScrobbleProxyV0_1(Long user_id, String track_title, String artist_name,
 			String service, Long timestamp) throws SongwichAPIException {
 
 		setUser_id(user_id);
@@ -59,7 +60,13 @@ public class ScrobbleProxy {
 	}
 
 	public void setService(String service) {
-		this.service = service;
+		if (service != null) {
+			Logger.debug("service is not null");
+			this.service = service;
+		} else {
+			Logger.debug("service is null");
+			this.service = "";
+		}
 	}
 
 	/**
