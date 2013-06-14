@@ -3,11 +3,12 @@
 # ~~~~
 
 # Scrobbler
-GET    /v0.1/scrobble    controllers.api.Scrobbler.scrobbleV0_1(user_id: Long, track_title, artist_name, service ?= null, timestamp: Long ?= System.currentTimeMillis)
-GET    /v0.2/scrobble    controllers.api.Scrobbler.scrobbleV0_2(user_id, track_title, artist_name, service ?= null, timestamp ?= System.currentTimeMillis.toString)
-#POST   /v0.3/scrobble    controllers.api.Scrobbler.scrobbleV0_3()
+GET    /v0.1/scrobble      controllers.api.Scrobbler.scrobbleV0_1(user_id: Long, track_title, artist_name, service ?= null, timestamp: Long ?= System.currentTimeMillis)
+GET    /v0.2/scrobble      controllers.api.Scrobbler.scrobbleV0_2(user_id, track_title, artist_name, service ?= null, timestamp ?= System.currentTimeMillis.toString)
+POST   /v0.3/scrobble      controllers.api.Scrobbler.scrobbleV0_3()
 
-GET    /scrobbleError    controllers.api.Scrobbler.scrobbleError()
+GET    /scrobbleErrorGet   controllers.api.Scrobbler.scrobbleErrorGet()
+POST   /scrobbleErrorPost  controllers.api.Scrobbler.scrobbleErrorPost()
 
 # Map static resources from the /public folder to the /assets URL path
-GET    /assets/*file     controllers.Assets.at(path="/public", file)
+GET    /assets/*file       controllers.Assets.at(path="/public", file)
