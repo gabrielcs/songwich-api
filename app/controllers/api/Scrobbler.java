@@ -68,7 +68,7 @@ public class Scrobbler extends Controller {
 				fieldNames.add(field.getName());
 			}
 
-			// reference the data to be extracted
+			// reference the form url data to be extracted
 			Map<String, String[]> formUrlData = multipartFormData
 					.asFormUrlEncoded();
 
@@ -84,7 +84,7 @@ public class Scrobbler extends Controller {
 				}
 			}
 
-			// extract data
+			// extract the data
 			String[] dataArray;
 			for (String fieldName : fieldNames) {
 				dataArray = formUrlData.get(fieldName);
