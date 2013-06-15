@@ -27,7 +27,8 @@ public class Scrobbler extends Controller {
 		APIResponse response;
 		try {
 			// get POST data
-			Map<String, String> data = PostDataReader.readData(false);
+			Map<String, String> data = PostDataReader.readData(
+					ScrobbleProxyV0_3.class, false);
 			// try to create a scrobble
 			scrobble = new ScrobbleProxyV0_3(data.get("user_id"),
 					data.get("track_title"), data.get("artist_name"),
@@ -48,8 +49,8 @@ public class Scrobbler extends Controller {
 
 	private static class PostDataReader {
 
-		private static Map<String, String> readData(boolean ignoreUnexpectedData)
-				throws SongwichAPIException {
+		private static Map<String, String> readData(Class<?> proxyClass,
+				boolean ignoreUnexpectedData) throws SongwichAPIException {
 
 			Map<String, String> data = new HashMap<String, String>();
 
@@ -61,8 +62,7 @@ public class Scrobbler extends Controller {
 			}
 
 			// discover what data has to be extracted
-			List<Field> fields = Arrays.asList(ScrobbleProxyV0_3.class
-					.getDeclaredFields());
+			List<Field> fields = Arrays.asList(proxyClass.getDeclaredFields());
 			List<String> fieldNames = new ArrayList<String>(fields.size());
 			for (Field field : fields) {
 				fieldNames.add(field.getName());
