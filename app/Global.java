@@ -12,7 +12,7 @@ public class Global extends GlobalSettings {
 	@Override
 	public Result onBadRequest(RequestHeader request, String error) {
 		// TODO: re-write logger for POST requests
-		Logger.warn(String.format("Bad request [%s]: %s", error, request));
+		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
 		APIResponse response = new APIResponse(Status.BAD_REQUEST, error);
 		return Results.badRequest(response.toJson());
 	}
