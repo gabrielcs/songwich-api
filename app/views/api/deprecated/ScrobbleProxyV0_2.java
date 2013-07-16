@@ -1,4 +1,4 @@
-package controllers.api.proxies;
+package views.api.deprecated;
 
 import java.util.GregorianCalendar;
 
@@ -6,8 +6,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
+import views.api.util.Status;
 import controllers.api.util.SongwichAPIException;
-import controllers.api.util.Status;
 
 public class ScrobbleProxyV0_2 {
 

@@ -1,17 +1,16 @@
 import play.GlobalSettings;
 import play.Logger;
-import play.mvc.Http.Context;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.api.util.APIResponse;
-import controllers.api.util.Status;
+import views.api.util.APIResponse;
+import views.api.util.Status;
 
 public class Global extends GlobalSettings {
 
 	@Override
 	public Result onBadRequest(RequestHeader request, String error) {
-		// TODO: re-write logger for POST requests
+		// it's currently not showing POST requests parameters
 		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
 		APIResponse response = new APIResponse(Status.BAD_REQUEST, error);
 		return Results.badRequest(response.toJson());
@@ -40,7 +39,7 @@ public class Global extends GlobalSettings {
 			message = String.format("%s: %s", message, t.getCause()
 					.getMessage());
 		}
-		// TODO: re-write logger for showing POST data
+		// it's currently not showing POST requests parameters
 		Logger.error(String.format("Error while processing: %s [%s]", request,
 				message));
 

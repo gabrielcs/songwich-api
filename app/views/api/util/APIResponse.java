@@ -1,4 +1,4 @@
-package controllers.api.util;
+package views.api.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

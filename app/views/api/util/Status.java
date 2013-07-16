@@ -1,4 +1,4 @@
-package controllers.api.util;
+package views.api.util;
 
 public enum Status {
 	UNKNOWN_ERROR("-1", "Unknown error"),

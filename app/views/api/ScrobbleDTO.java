@@ -1,26 +1,47 @@
-package controllers.api.proxies;
+package views.api;
 
 import java.util.GregorianCalendar;
 
+import models.Scrobble;
+
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.node.ObjectNode;
 
+import play.data.validation.Constraints.Max;
+import play.data.validation.Constraints.Min;
+import play.data.validation.Constraints.Required;
 import play.libs.Json;
+import views.api.util.DataTransferObject;
+import views.api.util.Status;
 import controllers.api.util.SongwichAPIException;
-import controllers.api.util.Status;
 
-public class ScrobbleProxyV0_3 {
-
-	private String user_id;
+public class ScrobbleDTO extends DataTransferObject<Scrobble> {
+	
+	@JsonIgnore
+	@Required
+	private String auth_token;
+	
+	@Required
 	private String track_title;
+	
+	@Required
 	private String artist_name;
+	
+	private String chosenByUser;
+	
 	private String service;
+	
+	@Min(222222)
+	@Max(2222222)
 	private String timestamp;
+	
+	private String userEmail;
 
-	public ScrobbleProxyV0_3(String user_id, String track_title,
+	public ScrobbleDTO(String user_id, String track_title,
 			String artist_name, String service, String timestamp)
 			throws SongwichAPIException {
-
+		
 		setUser_id(user_id);
 		setTrack_title(track_title);
 		setArtist_name(artist_name);
@@ -43,17 +64,17 @@ public class ScrobbleProxyV0_3 {
 	}
 
 	public String getUser_id() {
-		return user_id;
+		return auth_token;
 	}
 
 	public void setUser_id(String user_id) throws SongwichAPIException {
 		if (user_id == null || user_id.isEmpty()) {
-			throw new SongwichAPIException("Missing parameter: user_id",
+			throw new SongwichAPIException("Missing parameter: user_auth_token",
 					Status.BAD_REQUEST);
 		}
 
 		validateUserId(user_id);
-		this.user_id = user_id;
+		this.auth_token = user_id;
 	}
 
 	// check if it's a string and delegates further validation
@@ -62,7 +83,7 @@ public class ScrobbleProxyV0_3 {
 			Long userIdLong = Long.parseLong(user_id);
 			validateUserId(userIdLong);
 		} catch (NumberFormatException e) {
-			throw new SongwichAPIException("Invalid user_id",
+			throw new SongwichAPIException("Invalid user_auth_token",
 					Status.INVALID_USER_ID);
 		}
 	}

@@ -1,5 +1,7 @@
 package controllers.api.util;
 
+import views.api.util.Status;
+
 public class SongwichAPIException extends Exception {
 	private Status status;
 	

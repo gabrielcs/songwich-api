@@ -11,8 +11,9 @@ import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
 
+import views.api.util.Status;
+
 import play.Logger;
-import play.mvc.BodyParser;
 import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
 
@@ -54,7 +55,7 @@ public class PostRequestBodyParser {
 				if (!proxyFieldNames.contains(fieldName)) {
 					throw new SongwichAPIException("Unexpected data: "
 							+ fieldName,
-							controllers.api.util.Status.BAD_REQUEST);
+							views.api.util.Status.BAD_REQUEST);
 				}
 			}
 		}
@@ -98,7 +99,7 @@ public class PostRequestBodyParser {
 			for (String key : formUrlDataKeySet) {
 				if (!fieldNames.contains(key)) {
 					throw new SongwichAPIException("Unexpected data: " + key,
-							controllers.api.util.Status.BAD_REQUEST);
+							views.api.util.Status.BAD_REQUEST);
 
 				}
 			}
@@ -112,7 +113,7 @@ public class PostRequestBodyParser {
 				data.put(fieldName, null);
 			} else if (dataArray.length != 1) {
 				throw new SongwichAPIException("Unexpected multiple data: "
-						+ fieldName, controllers.api.util.Status.BAD_REQUEST);
+						+ fieldName, views.api.util.Status.BAD_REQUEST);
 			} else {
 				data.put(fieldName, dataArray[0]);
 			}

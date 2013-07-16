@@ -7,14 +7,19 @@ import play.mvc.Controller;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.api.proxies.ScrobbleProxyV0_1;
-import controllers.api.proxies.ScrobbleProxyV0_2;
-import controllers.api.proxies.ScrobbleProxyV0_3;
-import controllers.api.util.APIResponse;
+import views.api.deprecated.ScrobbleProxyV0_1;
+import views.api.deprecated.ScrobbleProxyV0_2;
+import views.api.deprecated.ScrobbleProxyV0_3;
+import views.api.util.APIResponse;
+import views.api.util.Status;
 import controllers.api.util.PostRequestBodyParser;
 import controllers.api.util.SongwichAPIException;
 
 public class Scrobbler extends Controller {
+	
+	public static Result scrobbleV0_4() {
+		return TODO;
+	}
 
 	public static Result scrobbleV0_3() {
 		ScrobbleProxyV0_3 scrobble;
@@ -35,7 +40,7 @@ public class Scrobbler extends Controller {
 		}
 
 		// scrobble successful
-		response = new APIResponse(controllers.api.util.Status.SUCCESS,
+		response = new APIResponse(views.api.util.Status.SUCCESS,
 				"Success");
 		response.put("scrobble", scrobble.toJson());
 		return ok(response.toJson());
@@ -56,7 +61,7 @@ public class Scrobbler extends Controller {
 			return Results.badRequest(response.toJson());
 		}
 
-		response = new APIResponse(controllers.api.util.Status.SUCCESS,
+		response = new APIResponse(views.api.util.Status.SUCCESS,
 				"Success");
 		response.put("scrobble", scrobble.toJson());
 		return ok(response.toJson());
@@ -75,7 +80,7 @@ public class Scrobbler extends Controller {
 			return Results.badRequest(response.toJson());
 		}
 
-		response = new APIResponse(controllers.api.util.Status.SUCCESS,
+		response = new APIResponse(views.api.util.Status.SUCCESS,
 				"Success");
 		response.put("scrobble", scrobble.toJson());
 		return ok(response.toJson());
