@@ -3,9 +3,12 @@ package daos.api;
 import java.util.UUID;
 
 import models.MusicService;
-import daos.api.util.DomainAccessObject;
 
-public interface MusicServiceDAO extends DomainAccessObject<MusicService> {
+import com.google.code.morphia.dao.DAO;
+
+public interface MusicServiceDAO<I> extends DAO<MusicService, I> {
+	
+	public MusicService findById(I id);
 
 	public MusicService findByAppAuthToken(UUID appAuthToken);
 

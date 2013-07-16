@@ -3,12 +3,12 @@ package daos.api;
 import java.util.List;
 
 import models.Scrobble;
-import daos.api.util.DatabaseId;
-import daos.api.util.DomainAccessObject;
 
-public interface ScrobbleDAO extends DomainAccessObject<Scrobble> {
+import com.google.code.morphia.dao.DAO;
 
-	public void save(Scrobble scrobble);
+public interface ScrobbleDAO<I> extends DAO<Scrobble, I> {
 	
-	public List<Scrobble> findByUserId(DatabaseId userId);
+	public Scrobble findById(I id);
+	
+	public List<Scrobble> findByUserId(I userId);
 }

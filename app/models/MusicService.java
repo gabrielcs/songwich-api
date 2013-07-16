@@ -2,7 +2,7 @@ package models;
 
 import java.util.UUID;
 
-import daos.api.util.MongoDatabaseId;
+import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -14,7 +14,7 @@ public class MusicService {
 	private static final long serialVersionUID = 2127059848446848577L;
 	
 	@Id
-	private MongoDatabaseId id;
+	private ObjectId id;
 
 	private String name;
 	

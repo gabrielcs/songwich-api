@@ -6,45 +6,28 @@ import models.MusicService;
 
 import org.bson.types.ObjectId;
 
-import daos.api.util.DAOMongo;
+import com.google.code.morphia.Datastore;
+import com.google.code.morphia.dao.BasicDAO;
 
-//import leodagdag.play2morphia.Model.Finder;
+public class MusicServiceDAOMongo extends BasicDAO<MusicService, ObjectId> implements
+		MusicServiceDAO<ObjectId> {
 
-public class MusicServiceDAOMongo 
-		//extends DAOMongo<MusicService> 
-		//implements MusicServiceDAO 
-		{
-/*
-	@Override
-	public void save(MusicService musicService) {
-		// TODO
-	}
-
-	@Override
-	public void update(MusicService musicService) {
-		// TODO
-	}
-
-	@Override
-	public void delete(MusicService t) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public MusicService findById(DatabaseId id) {
-		//return getFinder().where().eq("id", id).findUnique();
-		// TODO
+	public MusicServiceDAOMongo(Datastore ds) {
+		super(ds);
 	}
 
 	@Override
 	public MusicService findByAppAuthToken(UUID appAuthToken) {
-		//return getFinder().where().eq("appAuthToken", appAuthToken).findUnique();
-		// TODO
+		return ds.find(MusicService.class).filter("appAuthToken", appAuthToken).get();
 	}
 
 	@Override
 	public MusicService findByName(String name) {
-		// TODO
+		return ds.find(MusicService.class).filter("name", name).get();
 	}
-	*/
+
+	@Override
+	public MusicService findById(ObjectId id) {
+		return ds.find(MusicService.class).filter("id", id).get();
+	}
 }

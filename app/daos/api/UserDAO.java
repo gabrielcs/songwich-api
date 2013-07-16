@@ -3,18 +3,14 @@ package daos.api;
 import java.util.UUID;
 
 import models.User;
-import daos.api.util.DatabaseId;
-import daos.api.util.DomainAccessObject;
 
-public interface UserDAO extends DomainAccessObject<User> {
+import com.google.code.morphia.dao.DAO;
 
-	public void save(User user);
+public interface UserDAO<I> extends DAO<User, I> {
 	
-	public void update(User user);
-	
-	public User findById(DatabaseId id);
-	
+	public User findById(I id);
+
 	public User findByUserAuthToken(UUID userAuthToken);
-	
+
 	public User findByEmailAddress(String emailAddress);
 }

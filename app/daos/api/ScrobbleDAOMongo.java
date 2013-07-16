@@ -4,21 +4,25 @@ import java.util.List;
 
 import models.Scrobble;
 
-import daos.api.util.DAOMongo;
+import org.bson.types.ObjectId;
 
-public class ScrobbleDAOMongo 
-	//extends DAOMongo<Scrobble> 
-	//implements ScrobbleDAO 
-{
-/*
-	public static void save(Scrobble scrobble) {
-		scrobble.insert();
+import com.google.code.morphia.Datastore;
+import com.google.code.morphia.dao.BasicDAO;
+
+public class ScrobbleDAOMongo extends BasicDAO<Scrobble, ObjectId> implements
+		ScrobbleDAO<ObjectId> {
+
+	public ScrobbleDAOMongo(Datastore ds) {
+		super(ds);
 	}
-	
-	public static List<Scrobble> findByUserId(DatabaseId userId) {
-		return find.where().eq("user", userId).findList();
+
+	@Override
+	public List<Scrobble> findByUserId(ObjectId userId) {
+		return ds.find(Scrobble.class).filter("user.id", userId).asList();
 	}
-	
-*/
+
+	@Override
+	public Scrobble findById(ObjectId id) {
+		return ds.find(Scrobble.class).filter("id", id).get();
+	}
 }
-

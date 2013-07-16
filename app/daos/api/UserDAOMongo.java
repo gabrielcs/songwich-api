@@ -4,36 +4,34 @@ import java.util.UUID;
 
 import models.User;
 
-import daos.api.util.DAOMongo;
+import org.bson.types.ObjectId;
 
-public class UserDAOMongo 
-	//extends DAOMongo<User> 
-	// implements UserDAO 
-{
-/*
-	public static void save(User user) {
-		user.insert();
+import com.google.code.morphia.Datastore;
+import com.google.code.morphia.dao.BasicDAO;
+
+public class UserDAOMongo extends BasicDAO<User, ObjectId> implements UserDAO<ObjectId> {
+
+	public UserDAOMongo(Datastore ds) {
+		super(ds);
 	}
-	
-	public static void update(User user)  {
-		user.update();
+
+	@Override
+	public User findByUserAuthToken(UUID userAuthToken) {
+		return ds.find(User.class).filter("userAuthToken", userAuthToken).get();
 	}
-	
-	public static User findById(DatabaseId id) {
-		return find.where().eq("id", id).findUnique();
-	}
-	
-	public static User findByUserAuthToken(UUID userAuthToken) {
-		return find.where().eq("musicServiceUsers.userAuthToken", userAuthToken).findUnique();
-	}
-	
-	public static User findByEmailAddress(String emailAddress) {
-		User user = find.where().eq("emailAddress", emailAddress).findUnique();
+
+	@Override
+	public User findByEmailAddress(String emailAddress) {
+		User user = ds.find(User.class).filter("emailAddress", emailAddress).get();
 		if (user != null) {
 			return user;
 		}
 		// it might be an alternative email address
-		return find.where().eq("musicServiceUsers.emailAddress", emailAddress).findUnique();
+		return ds.find(User.class).filter("musicServiceUsers.emailAddress", emailAddress).get();
 	}
-*/
+
+	@Override
+	public User findById(ObjectId id) {
+		return ds.find(User.class).filter("id", id).get();
+	}
 }

@@ -3,7 +3,7 @@ package models;
 import java.util.Date;
 import java.util.List;
 
-import daos.api.util.MongoDatabaseId;
+import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -18,7 +18,7 @@ public class Scrobble {
 	private static final long serialVersionUID = -6808566713582972768L;
 	
 	@Id
-	public MongoDatabaseId id;
+	public ObjectId id;
 	
 	@Indexed
 	@Reference

@@ -42,7 +42,7 @@ public class ScrobbleProxyV0_3DAOTest extends FakeWebAppWithTestData {
 	@Test
 	public void saveScrobble() {
 		String scrobble = getScrobbleNotInTestData();
-		ScrobbleDAO.save(new ScrobbleProxyV0_3(scrobble));
+		ScrobbleDAO.insert(new ScrobbleProxyV0_3(scrobble));
 
 		ScrobbleProxyV0_3 artist = ScrobbleDAO.findByUserId(user_id);
 		assertNotNull(artist);

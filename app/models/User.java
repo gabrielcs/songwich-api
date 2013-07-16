@@ -2,7 +2,7 @@ package models;
 
 import java.util.Set;
 
-import daos.api.util.MongoDatabaseId;
+import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
@@ -14,7 +14,7 @@ public class User {
 	private static final long serialVersionUID = 5854422586239724109L;
 	
 	@Id
-	private MongoDatabaseId id;
+	private ObjectId id;
 	
 	private String emailAddress;
 	
