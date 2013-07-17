@@ -15,7 +15,8 @@ public class MusicServiceDAOMongo extends BasicDAO<MusicService, ObjectId> imple
 	public MusicServiceDAOMongo(Datastore ds) {
 		super(ds);
 	}
-
+	
+	// TODO: test
 	@Override
 	public MusicService findByAppAuthToken(UUID appAuthToken) {
 		return ds.find(MusicService.class).filter("appAuthToken", appAuthToken).get();

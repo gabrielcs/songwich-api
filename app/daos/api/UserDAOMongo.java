@@ -15,6 +15,7 @@ public class UserDAOMongo extends BasicDAO<User, ObjectId> implements UserDAO<Ob
 		super(ds);
 	}
 
+	// TODO: test
 	@Override
 	public User findByUserAuthToken(UUID userAuthToken) {
 		return ds.find(User.class).filter("userAuthToken", userAuthToken).get();
@@ -26,6 +27,8 @@ public class UserDAOMongo extends BasicDAO<User, ObjectId> implements UserDAO<Ob
 		if (user != null) {
 			return user;
 		}
+		
+		// TODO: fix
 		// it might be an alternative email address
 		return ds.find(User.class).filter("musicServiceUsers.emailAddress", emailAddress).get();
 	}

@@ -1,3 +1,5 @@
+import java.net.UnknownHostException;
+
 import play.GlobalSettings;
 import play.Logger;
 import play.mvc.Http.RequestHeader;
@@ -6,7 +8,36 @@ import play.mvc.Results;
 import views.api.util.APIResponse;
 import views.api.util.Status;
 
+import com.google.code.morphia.Morphia;
+import com.mongodb.MongoClient;
+
 public class Global extends GlobalSettings {
+
+	@Override
+	public void beforeStart(play.Application app) {
+		String dbName;
+		if (app.isDev()) {
+			dbName = app.configuration().getString("morphia.db.dev.name");
+		} else if (app.isTest()) {
+			dbName = app.configuration().getString("morphia.db.test.name");
+		} else if (app.isProd()) {
+			dbName = app.configuration().getString("morphia.db.prod.name");
+		} else {
+			RuntimeException e = new RuntimeException(
+					"App is not set to Dev, Test or Prod");
+			Logger.error(e.getMessage());
+			throw e;
+		}
+
+		try {
+			controllers.api.Application.setDatastore(new Morphia()
+					.createDatastore(new MongoClient(), dbName));
+			Logger.info("Connected to database " + dbName);
+		} catch (UnknownHostException e) {
+			Logger.error("Couldn't connect to the database: " + e.getMessage());
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public Result onBadRequest(RequestHeader request, String error) {
