@@ -7,9 +7,14 @@ import models.Scrobble;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.Datastore;
-import com.google.code.morphia.dao.BasicDAO;
 
-public class ScrobbleDAOMongo extends BasicDAO<Scrobble, ObjectId> implements
+import daos.api.util.BasicDAOMongo;
+
+/*
+ * ScrobbleDAOMongo is not a CascadeSaveDAO.
+ * It requires saving its references beforehand. 
+ */
+public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		ScrobbleDAO<ObjectId> {
 
 	public ScrobbleDAOMongo(Datastore ds) {

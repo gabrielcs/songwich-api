@@ -5,7 +5,6 @@ import models.MusicService;
 import models.MusicServiceUser;
 import models.User;
 
-import org.bson.types.ObjectId;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +37,9 @@ public class UserDAOMongoTest {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		
-		UserDAO<ObjectId> userDao = new UserDAOMongo(ds);
-		userDao.save(user1);
-		userDao.save(user2);
+		UserDAOMongo userDao = new UserDAOMongo(ds);
+		userDao.cascadeSave(user1);
+		userDao.cascadeSave(user2);
 		
 		assertTrue(userDao.count() == 2);
 		
@@ -55,9 +54,9 @@ public class UserDAOMongoTest {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		
-		UserDAO<ObjectId> userDao = new UserDAOMongo(ds);
-		userDao.save(user1);
-		userDao.save(user2);
+		UserDAOMongo userDao = new UserDAOMongo(ds);
+		userDao.cascadeSave(user1);
+		userDao.cascadeSave(user2);
 		
 		assertTrue(userDao.findById(user1.getId()).equals(user1));
 		assertTrue(userDao.findById(user2.getId()).equals(user2));
@@ -68,9 +67,9 @@ public class UserDAOMongoTest {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		
-		UserDAO<ObjectId> userDao = new UserDAOMongo(ds);
-		userDao.save(user1);
-		userDao.save(user2);
+		UserDAOMongo userDao = new UserDAOMongo(ds);
+		userDao.cascadeSave(user1);
+		userDao.cascadeSave(user2);
 		
 		assertTrue(userDao.findByEmailAddress("gabriel@example.com").equals(user1));
 		assertTrue(userDao.findByEmailAddress("daniel@example.com").equals(user2));
@@ -81,10 +80,6 @@ public class UserDAOMongoTest {
 		MusicService service1 = new MusicService("Spotify");
 		MusicService service2 = new MusicService("Rdio");
 		
-		MusicServiceDAO<ObjectId> musicServiceDAO = new MusicServiceDAOMongo(ds);
-		musicServiceDAO.save(service1);
-		musicServiceDAO.save(service2);
-		
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		MusicServiceUser service1User1 = new MusicServiceUser(service1, "gabriel@spam.com");
 		user1.addMusicServiceUser(service1User1);
@@ -93,9 +88,9 @@ public class UserDAOMongoTest {
 		MusicServiceUser service2User2 = new MusicServiceUser(service2, "daniel@spam.com");
 		user2.addMusicServiceUser(service2User2);
 		
-		UserDAO<ObjectId> userDao = new UserDAOMongo(ds);
-		userDao.save(user1);
-		userDao.save(user2);
+		UserDAOMongo userDao = new UserDAOMongo(ds);
+		userDao.cascadeSave(user1);
+		userDao.cascadeSave(user2);
 		
 		assertTrue(userDao.findByEmailAddress("gabriel@spam.com").equals(user1));
 		assertTrue(userDao.findByEmailAddress("daniel@spam.com").equals(user2));
