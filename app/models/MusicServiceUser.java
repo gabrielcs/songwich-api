@@ -18,8 +18,7 @@ public class MusicServiceUser extends Model {
 	@Indexed
 	private UUID userAuthToken;
 	
-	@SuppressWarnings("unused")
-	private MusicServiceUser() {
+	protected MusicServiceUser() {
 		super();
 	}
 	

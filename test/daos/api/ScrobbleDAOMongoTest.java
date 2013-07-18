@@ -62,8 +62,8 @@ public class ScrobbleDAOMongoTest {
 		Date date1 = new Date(System.currentTimeMillis());
 		Date date2 = new Date(System.currentTimeMillis());
 		
-		Scrobble scrobble1 = new Scrobble(user1, "Take a Walk", artists1, date1, false, musicService1);
-		Scrobble scrobble2 = new Scrobble(user2, "Get Lucky", artists2, date2, true, musicService2);
+		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk", artists1, date1, false, musicService1);
+		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2, date2, true, musicService2);
 		
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo(ds);
 		scrobbleDao.save(scrobble1);
@@ -101,8 +101,8 @@ public class ScrobbleDAOMongoTest {
 		Date date1 = new Date(System.currentTimeMillis());
 		Date date2 = new Date(System.currentTimeMillis());
 		
-		Scrobble scrobble1 = new Scrobble(user1, "Take a Walk", artists1, date1, false, musicService1);
-		Scrobble scrobble2 = new Scrobble(user2, "Get Lucky", artists2, date2, true, musicService2);
+		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk", artists1, date1, false, musicService1);
+		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2, date2, true, musicService2);
 		
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo(ds);
 		scrobbleDao.save(scrobble1);
@@ -133,8 +133,8 @@ public class ScrobbleDAOMongoTest {
 		Date date1 = new Date(System.currentTimeMillis());
 		Date date2 = new Date(System.currentTimeMillis());
 		
-		Scrobble scrobble1 = new Scrobble(user1, "Take a Walk", "Passion Pit", date1, false, musicService1);
-		Scrobble scrobble2 = new Scrobble(user2, "Get Lucky", artists2, date2, true, musicService2);
+		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk", "Passion Pit", date1, false, musicService1);
+		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2, date2, true, musicService2);
 		
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo(ds);
 		scrobbleDao.save(scrobble1);

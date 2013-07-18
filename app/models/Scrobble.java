@@ -20,8 +20,7 @@ public class Scrobble extends Model {
 	private ObjectId id;
 	
 	@Indexed
-	@Reference
-    private User user;
+    private ObjectId userId;
 
 	private String songTitle;
 	
@@ -36,15 +35,14 @@ public class Scrobble extends Model {
 	@Reference
     private MusicService service;
 	
-	@SuppressWarnings("unused")
-	private Scrobble() {
+	protected Scrobble() {
 		super();
 	}
 	
-	public Scrobble(User user, String songTitle, String artistName,
+	public Scrobble(ObjectId ObjectId, String songTitle, String artistName,
 			Date date, boolean choosenByUser, MusicService service) {
 		super();
-		this.user = user;
+		this.userId = ObjectId;
 		this.songTitle = songTitle;
 		artistsNames = new ArrayList<String>();
 		artistsNames.add(artistName);
@@ -53,10 +51,10 @@ public class Scrobble extends Model {
 		this.service = service;
 	}
 
-	public Scrobble(User user, String songTitle, List<String> artistsNames,
+	public Scrobble(ObjectId userId, String songTitle, List<String> artistsNames,
 			Date date, boolean choosenByUser, MusicService service) {
 		super();
-		this.user = user;
+		this.userId = userId;
 		this.songTitle = songTitle;
 		this.artistsNames = artistsNames;
 		this.date = date;
@@ -67,15 +65,15 @@ public class Scrobble extends Model {
 	/**
 	 * @return the user
 	 */
-	public User getUser() {
-		return user;
+	public ObjectId getUserId() {
+		return userId;
 	}
 
 	/**
 	 * @param user the user to set
 	 */
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(ObjectId userId) {
+		this.userId = userId;
 	}
 
 	/**
@@ -173,7 +171,7 @@ public class Scrobble extends Model {
 		result = prime * result + ((service == null) ? 0 : service.hashCode());
 		result = prime * result
 				+ ((songTitle == null) ? 0 : songTitle.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -211,11 +209,12 @@ public class Scrobble extends Model {
 				return false;
 		} else if (!songTitle.equals(other.songTitle))
 			return false;
-		if (user == null) {
-			if (other.user != null)
+		if (userId == null) {
+			if (other.userId != null)
 				return false;
-		} else if (!user.equals(other.user))
+		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
 	}
+
 }

@@ -21,16 +21,17 @@ public class User extends Model {
 	private String name;
 
 	@Embedded
-	private Set<MusicServiceUser> musicServiceUsers = new HashSet<MusicServiceUser>();
+	private Set<MusicServiceUser> musicServiceUsers;
 	
-	@SuppressWarnings("unused")
-	private User() {
+	protected User() {
 		super();
+		this.musicServiceUsers = new HashSet<MusicServiceUser>();
 	}
 
 	public User(String emailAddress, String name) {
 		this.emailAddress = emailAddress;
 		this.name = name;
+		this.musicServiceUsers = new HashSet<MusicServiceUser>();
 	}
 
 	/**

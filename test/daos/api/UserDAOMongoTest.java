@@ -81,22 +81,24 @@ public class UserDAOMongoTest {
 		MusicService service1 = new MusicService("Spotify");
 		MusicService service2 = new MusicService("Rdio");
 		
+		MusicServiceDAO<ObjectId> musicServiceDAO = new MusicServiceDAOMongo(ds);
+		musicServiceDAO.save(service1);
+		musicServiceDAO.save(service2);
+		
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		MusicServiceUser service1User1 = new MusicServiceUser(service1, "gabriel@spam.com");
 		user1.addMusicServiceUser(service1User1);
 		
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		MusicServiceUser service2User2 = new MusicServiceUser(service2, "daniel@spam.com");
-		user1.addMusicServiceUser(service2User2);
+		user2.addMusicServiceUser(service2User2);
 		
 		UserDAO<ObjectId> userDao = new UserDAOMongo(ds);
 		userDao.save(user1);
 		userDao.save(user2);
 		
-		System.out.println(userDao.find().asList());
-		
-		//assertTrue(userDao.findByEmailAddress("gabriel@spam.com").equals(user1));
-		//assertTrue(userDao.findByEmailAddress("daniel@spam.com").equals(user2));
+		assertTrue(userDao.findByEmailAddress("gabriel@spam.com").equals(user1));
+		assertTrue(userDao.findByEmailAddress("daniel@spam.com").equals(user2));
 	}
 
 }

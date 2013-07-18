@@ -21,10 +21,8 @@ public class ScrobbleDAOMongo extends BasicDAO<Scrobble, ObjectId> implements
 		return ds.find(Scrobble.class).filter("id", id).get();
 	}
 
-	// TODO: fix
 	@Override
 	public List<Scrobble> findByUserId(ObjectId userId) {
-		return ds.find(Scrobble.class).filter("user.id", userId).order("-date")
-				.asList();
+		return ds.find(Scrobble.class).filter("userId", userId).asList();
 	}
 }
