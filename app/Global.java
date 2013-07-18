@@ -15,20 +15,7 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void beforeStart(play.Application app) {
-		String dbName;
-		if (app.isDev()) {
-			dbName = app.configuration().getString("morphia.db.dev.name");
-		} else if (app.isTest()) {
-			dbName = app.configuration().getString("morphia.db.test.name");
-		} else if (app.isProd()) {
-			dbName = app.configuration().getString("morphia.db.prod.name");
-		} else {
-			RuntimeException e = new RuntimeException(
-					"App is not set to Dev, Test or Prod");
-			Logger.error(e.getMessage());
-			throw e;
-		}
-
+		String dbName = app.configuration().getString("morphia.db.name");
 		try {
 			controllers.api.Application.setDatastore(new Morphia()
 					.createDatastore(new MongoClient(), dbName));
