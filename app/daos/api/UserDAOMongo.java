@@ -28,7 +28,6 @@ public class UserDAOMongo extends BasicDAO<User, ObjectId> implements UserDAO<Ob
 			return user;
 		}
 		
-		// TODO: fix
 		// it might be an alternative email address
 		return ds.find(User.class).filter("musicServiceUsers.emailAddress", emailAddress).get();
 	}

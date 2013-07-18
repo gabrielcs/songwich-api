@@ -11,7 +11,6 @@ import views.api.deprecated.ScrobbleProxyV0_1;
 import views.api.deprecated.ScrobbleProxyV0_2;
 import views.api.deprecated.ScrobbleProxyV0_3;
 import views.api.util.APIResponse;
-import views.api.util.Status;
 import controllers.api.util.PostRequestBodyParser;
 import controllers.api.util.SongwichAPIException;
 
