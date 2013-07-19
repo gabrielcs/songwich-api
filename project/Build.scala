@@ -8,17 +8,19 @@ object ApplicationBuild extends Build {
   val appVersion      = "0.4"
 
   val appDependencies = Seq(
-    javaCore, 
-    javaJdbc, javaEbean,
+    javaCore,
     
     // Add your project dependencies here,
-    //"postgresql" % "postgresql" % "8.4-702.jdbc4"
-    //"leodagdag" %% "play2-morphia-plugin" % "0.0.14"
-    "com.google.code.morphia" % "morphia" % "0.99.1-SNAPSHOT"
+    "org.mongodb" % "mongo-java-driver" % "2.11.2",
+    "com.google.code.morphia" % "morphia" % "0.101.0",
+    
+    "com.fasterxml.jackson.core" % "jackson-core" % "2.2.2",
+    "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.2",
+    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.2"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    //resolvers += "LeoDagDag repository" at "http://leodagdag.github.com/repository/",
+    resolvers += "MongoDB repo" at "https://github.com/mongodb/mongo-java-driver/",
     resolvers += "Morphia repo" at "http://morphia.googlecode.com/svn/mavenrepo/",
     checksums := Nil
   )

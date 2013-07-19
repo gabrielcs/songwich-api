@@ -8,13 +8,13 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
 
-public class APIResponse {
+public class APIResponseV0_1 {
 	
 	private Status status;
 	private String message;
 	private Map<String,JsonNode> content;
 	
-	public APIResponse(Status status, String message) {
+	public APIResponseV0_1(Status status, String message) {
 		content = new LinkedHashMap<String,JsonNode>();
 		setStatus(status);
 		setMessage(message);
@@ -47,4 +47,6 @@ public class APIResponse {
 	public String getMessage() {
 		return message;
 	}
+	
+	
 }

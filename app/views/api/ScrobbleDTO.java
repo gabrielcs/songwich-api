@@ -3,78 +3,69 @@ package views.api;
 import java.util.GregorianCalendar;
 
 import models.Scrobble;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.node.ObjectNode;
-
-import play.data.validation.Constraints.Max;
+import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Min;
 import play.data.validation.Constraints.Required;
-import play.libs.Json;
 import views.api.util.DataTransferObject;
 import views.api.util.Status;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import controllers.api.util.SongwichAPIException;
 
+@JsonInclude(Include.NON_EMPTY)
+@JsonTypeName("scrobble")
 public class ScrobbleDTO extends DataTransferObject<Scrobble> {
-	
-	@JsonIgnore
-	@Required
-	private String auth_token;
-	
-	@Required
-	private String track_title;
-	
-	@Required
-	private String artist_name;
-	
-	private String chosenByUser;
-	
-	private String service;
-	
-	@Min(222222)
-	@Max(2222222)
-	private String timestamp;
-	
+	@JsonProperty("user")
+	@Email
 	private String userEmail;
 
-	public ScrobbleDTO(String user_id, String track_title,
-			String artist_name, String service, String timestamp)
+	@JsonIgnore
+	@Required
+	private String authToken;
+
+	@Required
+	private String trackTitle;
+
+	@Required
+	private String artistName;
+
+	private String chosenByUser;
+
+	private String service;
+
+	// 01-Jan-2002
+	@Min(1012528800000L)
+	private String timestamp;
+
+	public ScrobbleDTO(String userEmail, String trackTitle, String artistName,
+			String chosenByUser, String service, String timestamp)
 			throws SongwichAPIException {
-		
-		setUser_id(user_id);
-		setTrack_title(track_title);
-		setArtist_name(artist_name);
+
+		setUserEmail(userEmail);
+		setTrackTitle(trackTitle);
+		setArtistName(artistName);
+		setChosenByUser(chosenByUser);
 		setService(service);
 		setTimestamp(timestamp);
 	}
 
-	public JsonNode toJson() {
-		JsonNode json =  Json.toJson(this);
-		removeNullOptionalParameters((ObjectNode) json);
-		return json;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
-	private void removeNullOptionalParameters(ObjectNode json) {
-		if (service == null) {
-			json.remove("service");
-		} else if (service.isEmpty()) {
-			json.remove("service");
-		}
-	}
-
-	public String getUser_id() {
-		return auth_token;
-	}
-
-	public void setUser_id(String user_id) throws SongwichAPIException {
+	public void setUserEmail(String user_id) throws SongwichAPIException {
 		if (user_id == null || user_id.isEmpty()) {
-			throw new SongwichAPIException("Missing parameter: user_auth_token",
-					Status.BAD_REQUEST);
+			throw new SongwichAPIException(
+					"Missing parameter: user_auth_token", Status.BAD_REQUEST);
 		}
 
-		validateUserId(user_id);
-		this.auth_token = user_id;
+		// validateUserId(user_id);
+		this.userEmail = user_id;
 	}
 
 	// check if it's a string and delegates further validation
@@ -89,33 +80,33 @@ public class ScrobbleDTO extends DataTransferObject<Scrobble> {
 	}
 
 	private void validateUserId(Long user_id) throws SongwichAPIException {
-		// TODO: authenticate user
+		// TODO: authenticate authToken
 	}
 
-	public String getTrack_title() {
-		return track_title;
+	public String getTrackTitle() {
+		return trackTitle;
 	}
 
-	public void setTrack_title(String track_title) throws SongwichAPIException {
+	public void setTrackTitle(String track_title) throws SongwichAPIException {
 		if (track_title == null || track_title.isEmpty()) {
-			throw new SongwichAPIException("Missing parameter: track_title",
+			throw new SongwichAPIException("Missing parameter: trackTitle",
 					Status.BAD_REQUEST);
 		}
 
-		this.track_title = track_title;
+		this.trackTitle = track_title;
 	}
 
-	public String getArtist_name() {
-		return artist_name;
+	public String getArtistName() {
+		return artistName;
 	}
 
-	public void setArtist_name(String artist_name) throws SongwichAPIException {
+	public void setArtistName(String artist_name) throws SongwichAPIException {
 		if (artist_name == null || artist_name.isEmpty()) {
-			throw new SongwichAPIException("Missing parameter: artist_name",
+			throw new SongwichAPIException("Missing parameter: artistName",
 					Status.BAD_REQUEST);
 		}
 
-		this.artist_name = artist_name;
+		this.artistName = artist_name;
 	}
 
 	public String getService() {
@@ -177,5 +168,35 @@ public class ScrobbleDTO extends DataTransferObject<Scrobble> {
 			throw new SongwichAPIException("Timestamp is too old",
 					Status.INVALID_TIMESTAMP);
 		}
+	}
+
+	/**
+	 * @return the chosenByUser
+	 */
+	public String getChosenByUser() {
+		return chosenByUser;
+	}
+
+	/**
+	 * @param chosenByUser
+	 *            the chosenByUser to set
+	 */
+	public void setChosenByUser(String chosenByUser) {
+		this.chosenByUser = chosenByUser;
+	}
+
+	/**
+	 * @return the authToken
+	 */
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	/**
+	 * @param authToken
+	 *            the authToken to set
+	 */
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
 	}
 }

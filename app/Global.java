@@ -5,7 +5,7 @@ import play.Logger;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
-import views.api.util.APIResponse;
+import views.api.util.APIResponseV0_1;
 import views.api.util.Status;
 
 import com.google.code.morphia.Morphia;
@@ -30,7 +30,7 @@ public class Global extends GlobalSettings {
 	public Result onBadRequest(RequestHeader request, String error) {
 		// it's currently not showing POST requests parameters
 		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
-		APIResponse response = new APIResponse(Status.BAD_REQUEST, error);
+		APIResponseV0_1 response = new APIResponseV0_1(Status.BAD_REQUEST, error);
 		return Results.badRequest(response.toJson());
 	}
 
@@ -42,7 +42,7 @@ public class Global extends GlobalSettings {
 		}
 
 		Logger.warn("Handler not found: " + request);
-		APIResponse response = new APIResponse(Status.METHOD_NOT_FOUND,
+		APIResponseV0_1 response = new APIResponseV0_1(Status.METHOD_NOT_FOUND,
 				String.format("API method not found: %s %s", request.method(),
 						request.path()));
 		return Results.badRequest(response.toJson());
@@ -61,7 +61,7 @@ public class Global extends GlobalSettings {
 		Logger.error(String.format("Error while processing: %s [%s]", request,
 				message));
 
-		APIResponse response = new APIResponse(Status.UNKNOWN_ERROR, message);
+		APIResponseV0_1 response = new APIResponseV0_1(Status.UNKNOWN_ERROR, message);
 		return Results.badRequest(response.toJson());
 	}
 }
