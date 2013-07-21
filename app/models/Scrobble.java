@@ -39,27 +39,27 @@ public class Scrobble extends Model {
 		super();
 	}
 	
-	public Scrobble(ObjectId ObjectId, String songTitle, String artistName,
+	public Scrobble(ObjectId userId, String songTitle, String artistName,
 			Date timestamp, boolean choosenByUser, MusicService service) {
 		super();
-		this.userId = ObjectId;
-		this.songTitle = songTitle;
+		setUserId(userId);
+		setSongTitle(songTitle);
 		artistsNames = new ArrayList<String>();
-		artistsNames.add(artistName);
-		this.timestamp = timestamp;
-		this.choosenByUser = choosenByUser;
-		this.service = service;
+		addArtistsName(artistName);
+		setTimestamp(timestamp);
+		setChoosenByUser(choosenByUser);
+		setService(service);
 	}
 
 	public Scrobble(ObjectId userId, String songTitle, List<String> artistsNames,
 			Date timestamp, boolean choosenByUser, MusicService service) {
 		super();
-		this.userId = userId;
-		this.songTitle = songTitle;
-		this.artistsNames = artistsNames;
-		this.timestamp = timestamp;
-		this.choosenByUser = choosenByUser;
-		this.service = service;
+		setUserId(userId);
+		setSongTitle(songTitle);
+		setArtistsNames(artistsNames);
+		setTimestamp(timestamp);
+		setChoosenByUser(choosenByUser);
+		setService(service);
 	}
 	
 	/**

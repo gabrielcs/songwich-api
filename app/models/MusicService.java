@@ -26,13 +26,13 @@ public class MusicService extends Model {
 
 	public MusicService(String name) {
 		super();
-		this.name = name;
+		setName(name);
 	}
 
 	public MusicService(String name, UUID appAuthToken) {
 		super();
-		this.name = name;
-		this.appAuthToken = appAuthToken;
+		setName(name);
+		setAppAuthToken(appAuthToken);
 	}
 	
 	/**

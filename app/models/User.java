@@ -25,13 +25,13 @@ public class User extends Model {
 	
 	protected User() {
 		super();
-		this.musicServiceUsers = new HashSet<MusicServiceUser>();
+		musicServiceUsers = new HashSet<MusicServiceUser>();
 	}
 
 	public User(String emailAddress, String name) {
-		this.emailAddress = emailAddress;
-		this.name = name;
-		this.musicServiceUsers = new HashSet<MusicServiceUser>();
+		setEmailAddress(emailAddress);
+		setName(name);
+		musicServiceUsers = new HashSet<MusicServiceUser>();
 	}
 
 	/**

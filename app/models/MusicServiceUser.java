@@ -24,16 +24,16 @@ public class MusicServiceUser extends Model {
 	
 	public MusicServiceUser(MusicService streamingService, String emailAddress) {
 		super();
-		this.streamingService = streamingService;
-		this.emailAddress = emailAddress;
+		setStreamingService(streamingService);
+		setEmailAddress(emailAddress);
 	}
 
 	public MusicServiceUser(MusicService streamingService, String emailAddress,
 			UUID userAuthToken) {
 		super();
-		this.streamingService = streamingService;
-		this.emailAddress = emailAddress;
-		this.userAuthToken = userAuthToken;
+		setStreamingService(streamingService);
+		setEmailAddress(emailAddress);
+		setUserAuthToken(userAuthToken);
 	}
 
 	/**
