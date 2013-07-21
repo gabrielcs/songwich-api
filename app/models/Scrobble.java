@@ -156,6 +156,17 @@ public class Scrobble extends Model {
 	public ObjectId getId() {
 		return id;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Scrobble [userId=" + userId + ", songTitle=" + songTitle
+				+ ", artistsNames=" + artistsNames + ", date=" + date
+				+ ", choosenByUser=" + choosenByUser + ", service=" + service
+				+ "]";
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

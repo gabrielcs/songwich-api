@@ -69,6 +69,15 @@ public class MusicService extends Model {
 	public ObjectId getId() {
 		return id;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "MusicService [name=" + name + ", appAuthToken=" + appAuthToken
+				+ "]";
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

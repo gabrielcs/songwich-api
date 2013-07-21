@@ -81,6 +81,15 @@ public class User extends Model {
 	public ObjectId getId() {
 		return id;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "User [emailAddress=" + emailAddress + ", name=" + name
+				+ ", musicServiceUsers=" + musicServiceUsers + "]";
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

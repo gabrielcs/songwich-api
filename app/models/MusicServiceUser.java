@@ -77,6 +77,16 @@ public class MusicServiceUser extends Model {
 	public void setUserAuthToken(UUID userAuthToken) {
 		this.userAuthToken = userAuthToken;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "MusicServiceUser [streamingService=" + streamingService
+				+ ", emailAddress=" + emailAddress + ", userAuthToken="
+				+ userAuthToken + "]";
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
