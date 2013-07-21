@@ -1,6 +1,6 @@
 package daos.api;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import models.MusicService;
 import models.MusicServiceUser;
 import models.User;

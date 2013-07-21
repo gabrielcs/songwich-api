@@ -1,6 +1,6 @@
 package daos.api;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import models.MusicService;
 
 import org.bson.types.ObjectId;
@@ -9,8 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.code.morphia.Datastore;
+import com.google.code.morphia.Key;
 import com.google.code.morphia.Morphia;
 import com.mongodb.MongoClient;
+import com.mongodb.WriteResult;
 
 public class MusicServiceDAOMongoTest {
 	
@@ -37,13 +39,29 @@ public class MusicServiceDAOMongoTest {
 		MusicService service2 = new MusicService("Deezer");
 		
 		MusicServiceDAO<ObjectId> musicServiceDao = new MusicServiceDAOMongo(ds);
-		musicServiceDao.save(service1);
+		Key<MusicService> keySave = musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
+		
+		// updates a document using save() 
+		service1.setName("Rdio");
+		Key<MusicService> keySaveAgain = musicServiceDao.save(service1);
+		// checks that it doesn't save twice
+		assertEquals(keySave.getId(), keySaveAgain.getId());
 		
 		assertTrue(musicServiceDao.count() == 2);
 		
+		// assert that it updates the object
+		MusicService spotifyFromDatabase = musicServiceDao.findByName("Spotify");
+		MusicService rdioFromDatabase = musicServiceDao.findByName("Rdio");
+		assertNull(spotifyFromDatabase);
+		assertNotNull(rdioFromDatabase);
+		
+		// assert deletion is working properly
 		musicServiceDao.delete(service1);
 		musicServiceDao.delete(service2);
+		// try to delete a document twice
+		WriteResult writeResultDeleteTwice = musicServiceDao.delete(service2);
+		assertNull(writeResultDeleteTwice.getError());
 		
 		assertTrue(musicServiceDao.count() == 0);
 	}

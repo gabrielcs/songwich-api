@@ -1,22 +1,15 @@
 package views.api.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import models.MusicService;
-
-import org.bson.types.ObjectId;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import controllers.api.util.SongwichAPIException;
-
 import views.api.ScrobbleDTO;
+import controllers.api.util.SongwichAPIException;
 
 public class APIResponseTest {
 
@@ -41,8 +34,8 @@ public class APIResponseTest {
 		APIResponseV0_5 apiResponse = new APIResponseV0_5(
 				views.api.util.Status.SUCCESS, "Success");
 
-		assertTrue(apiResponse.toJson().toString()
-				.equals("{\"status\":\"0\",\"message\":\"Success\"}"));
+		assertEquals(apiResponse.toJson().toString(),
+				"{\"status\":\"0\",\"message\":\"Success\"}");
 	}
 
 	@Test
@@ -52,10 +45,9 @@ public class APIResponseTest {
 						"gabriel@example.com", "Title", "Name", "false",
 						"Spotify", "1012528800000"));
 
-		assertTrue(scrobbleResponse.toJson().toString()
-				.equals(
-						"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistName\":\"Name\",\"chosenByUser\":\"false\",\"service\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}"
-						));
+		assertEquals(
+				scrobbleResponse.toJson().toString(),
+				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistName\":\"Name\",\"chosenByUser\":\"false\",\"service\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
 	}
 
 }
