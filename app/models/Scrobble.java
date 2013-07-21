@@ -27,7 +27,7 @@ public class Scrobble extends Model {
 	private List<String> artistsNames;
 	
 	@Indexed(IndexDirection.DESC)
-    private Date date;
+    private Date timestamp;
 	
 	@Indexed
 	private boolean choosenByUser;
@@ -40,24 +40,24 @@ public class Scrobble extends Model {
 	}
 	
 	public Scrobble(ObjectId ObjectId, String songTitle, String artistName,
-			Date date, boolean choosenByUser, MusicService service) {
+			Date timestamp, boolean choosenByUser, MusicService service) {
 		super();
 		this.userId = ObjectId;
 		this.songTitle = songTitle;
 		artistsNames = new ArrayList<String>();
 		artistsNames.add(artistName);
-		this.date = date;
+		this.timestamp = timestamp;
 		this.choosenByUser = choosenByUser;
 		this.service = service;
 	}
 
 	public Scrobble(ObjectId userId, String songTitle, List<String> artistsNames,
-			Date date, boolean choosenByUser, MusicService service) {
+			Date timestamp, boolean choosenByUser, MusicService service) {
 		super();
 		this.userId = userId;
 		this.songTitle = songTitle;
 		this.artistsNames = artistsNames;
-		this.date = date;
+		this.timestamp = timestamp;
 		this.choosenByUser = choosenByUser;
 		this.service = service;
 	}
@@ -109,17 +109,17 @@ public class Scrobble extends Model {
 	}
 
 	/**
-	 * @return the date
+	 * @return the timestamp
 	 */
-	public Date getDate() {
-		return date;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param timestamp the timestamp to set
 	 */
-	public void setDate(Date date) {
-		this.date = date;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class Scrobble extends Model {
 	@Override
 	public String toString() {
 		return "Scrobble [userId=" + userId + ", songTitle=" + songTitle
-				+ ", artistsNames=" + artistsNames + ", date=" + date
+				+ ", artistsNames=" + artistsNames + ", timestamp=" + timestamp
 				+ ", choosenByUser=" + choosenByUser + ", service=" + service
 				+ "]";
 	}
@@ -178,7 +178,7 @@ public class Scrobble extends Model {
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result + (choosenByUser ? 1231 : 1237);
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
 		result = prime * result + ((service == null) ? 0 : service.hashCode());
 		result = prime * result
 				+ ((songTitle == null) ? 0 : songTitle.hashCode());
@@ -205,10 +205,10 @@ public class Scrobble extends Model {
 			return false;
 		if (choosenByUser != other.choosenByUser)
 			return false;
-		if (date == null) {
-			if (other.date != null)
+		if (timestamp == null) {
+			if (other.timestamp != null)
 				return false;
-		} else if (!date.equals(other.date))
+		} else if (!timestamp.equals(other.timestamp))
 			return false;
 		if (service == null) {
 			if (other.service != null)
