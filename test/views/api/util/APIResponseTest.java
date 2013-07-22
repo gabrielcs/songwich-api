@@ -40,14 +40,19 @@ public class APIResponseTest {
 
 	@Test
 	public void scrobbleResponseToJson() throws SongwichAPIException {
+		ScrobbleDTO_V0_4 scrobbleDTO = new ScrobbleDTO_V0_4();
+		scrobbleDTO.setUserEmail("gabriel@example.com");
+		scrobbleDTO.setTrackTitle("Title");
+		scrobbleDTO.setArtistName("Name");
+		scrobbleDTO.setChosenByUser("false");
+		scrobbleDTO.setService("Spotify");
+		scrobbleDTO.setTimestamp("1012528800000");
+
 		ScrobbleResponse_V0_4 scrobbleResponse = new ScrobbleResponse_V0_4(
-				views.api.util.Status.SUCCESS, "Success", new ScrobbleDTO_V0_4(
-						"gabriel@example.com", "Title", "Name", "false",
-						"Spotify", "1012528800000"));
+				views.api.util.Status.SUCCESS, "Success", scrobbleDTO);
 
 		assertEquals(
 				scrobbleResponse.toJson().toString(),
 				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistName\":\"Name\",\"chosenByUser\":\"false\",\"service\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
 	}
-
 }
