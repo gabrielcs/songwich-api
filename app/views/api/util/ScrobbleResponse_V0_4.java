@@ -1,14 +1,15 @@
 package views.api.util;
 
-import views.api.ScrobbleDTO_V0_4;
+import org.codehaus.jackson.JsonNode;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import views.api.ScrobbleDTO_V0_4;
 
 public class ScrobbleResponse_V0_4 extends APIResponse_V0_4 {
 
 	private ScrobbleDTO_V0_4 scrobble;
 
-	public ScrobbleResponse_V0_4(Status status, String message, ScrobbleDTO_V0_4 scrobble) {
+	public ScrobbleResponse_V0_4(Status status, String message,
+			ScrobbleDTO_V0_4 scrobble) {
 		super(status, message);
 		this.scrobble = scrobble;
 	}

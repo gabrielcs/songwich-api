@@ -3,20 +3,20 @@ package views.api;
 import java.util.GregorianCalendar;
 
 import models.Scrobble;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import views.api.util.DataTransferObject;
 import views.api.util.Status;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import controllers.api.util.SongwichAPIException;
 
-@JsonInclude(Include.NON_EMPTY)
+// @JsonInclude(Include.NON_EMPTY)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
 public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@JsonProperty("user")
@@ -25,7 +25,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	@JsonIgnore
 	@Required
-	private String authToken;
+	private String userAuthToken;
 
 	@Required
 	private String trackTitle;
@@ -84,7 +84,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	private void validateUserId(Long user_id) throws SongwichAPIException {
-		// TODO: authenticate authToken
+		// TODO: authenticate userAuthToken
 	}
 
 	public String getTrackTitle() {
@@ -190,17 +190,17 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	/**
-	 * @return the authToken
+	 * @return the userAuthToken
 	 */
-	public String getAuthToken() {
-		return authToken;
+	public String getUserAuthToken() {
+		return userAuthToken;
 	}
 
 	/**
-	 * @param authToken
-	 *            the authToken to set
+	 * @param userAuthToken
+	 *            the userAuthToken to set
 	 */
-	public void setAuthToken(String authToken) {
-		this.authToken = authToken;
+	public void setUserAuthToken(String authToken) {
+		this.userAuthToken = authToken;
 	}
 }

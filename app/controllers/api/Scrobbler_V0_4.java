@@ -16,7 +16,7 @@ public class Scrobbler_V0_4 extends Controller {
 			ScrobbleDTO_V0_4 scrobbleDTO = form.get();
 			ScrobbleResponse_V0_4 response = new ScrobbleResponse_V0_4(views.api.util.Status.SUCCESS,
 				"Success", scrobbleDTO);
-			return ok(response.toJson().toString());
+			return ok(response.toJson());
 		}
 	}
 }

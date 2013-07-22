@@ -12,11 +12,11 @@ object ApplicationBuild extends Build {
     
     // Add your project dependencies here,
     "org.mongodb" % "mongo-java-driver" % "2.11.2",
-    "com.google.code.morphia" % "morphia" % "0.101.0",
+    "com.google.code.morphia" % "morphia" % "0.101.0"
     
-    "com.fasterxml.jackson.core" % "jackson-core" % "2.2.2",
-    "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.2",
-    "com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.2"
+    //"com.fasterxml.jackson.core" % "jackson-core" % "2.2.2",
+    //"com.fasterxml.jackson.core" % "jackson-databind" % "2.2.2",
+    //"com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.2"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
