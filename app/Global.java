@@ -17,7 +17,7 @@ public class Global extends GlobalSettings {
 	public void beforeStart(play.Application app) {
 		String dbName = app.configuration().getString("morphia.db.name");
 		try {
-			controllers.api.Application.setDatastore(new Morphia()
+			controllers.api.DatabaseController.setDatastore(new Morphia()
 					.createDatastore(new MongoClient(), dbName));
 			Logger.info("Connected to database " + dbName);
 		} catch (UnknownHostException e) {

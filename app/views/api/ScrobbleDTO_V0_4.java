@@ -46,6 +46,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 		timestamp = Long.toString(System.currentTimeMillis());
 	}
 
+	/*
 	public ScrobbleDTO_V0_4(String userEmail, String trackTitle, String artistName,
 			String chosenByUser, String service, String timestamp)
 			throws SongwichAPIException {
@@ -57,6 +58,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 		setService(service);
 		setTimestamp(timestamp);
 	}
+	*/
 
 	public String getUserEmail() {
 		return userEmail;

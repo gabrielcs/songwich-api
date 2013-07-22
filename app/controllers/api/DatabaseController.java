@@ -2,7 +2,7 @@ package controllers.api;
 
 import com.google.code.morphia.Datastore;
 
-public class Application {
+public class DatabaseController {
 	
 	private static Datastore datastore;
 	

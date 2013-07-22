@@ -3,9 +3,11 @@ package controllers.api;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import views.api.ScrobbleDTO_V0_4;
 import views.api.util.ScrobbleResponse_V0_4;
 
+@With(AuthenticationController.class)
 public class Scrobbler_V0_4 extends Controller {
 
 	public static Result scrobble() {
