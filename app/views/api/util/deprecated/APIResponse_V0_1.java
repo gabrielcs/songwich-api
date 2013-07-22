@@ -1,4 +1,4 @@
-package views.api.util;
+package views.api.util.deprecated;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,14 +7,15 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
+import views.api.util.Status;
 
-public class APIResponseV0_1 {
+public class APIResponse_V0_1 {
 	
 	private Status status;
 	private String message;
 	private Map<String,JsonNode> content;
 	
-	public APIResponseV0_1(Status status, String message) {
+	public APIResponse_V0_1(Status status, String message) {
 		content = new LinkedHashMap<String,JsonNode>();
 		setStatus(status);
 		setMessage(message);

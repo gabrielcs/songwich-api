@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class APIResponseV0_5 {
+public class APIResponse_V0_4 {
 	@JsonIgnore
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
 	private String status;
 	private String message;
 	
-	public APIResponseV0_5(Status status, String message) {
+	public APIResponse_V0_4(Status status, String message) {
 		setStatus(status);
 		setMessage(message);
 	}
@@ -51,7 +51,7 @@ public class APIResponseV0_5 {
 	 * @param objectMapper the objectMapper to set
 	 */
 	protected static void setObjectMapper(ObjectMapper objectMapper) {
-		APIResponseV0_5.objectMapper = objectMapper;
+		APIResponse_V0_4.objectMapper = objectMapper;
 	}
 }
 ;

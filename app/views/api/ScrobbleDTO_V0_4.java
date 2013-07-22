@@ -4,7 +4,6 @@ import java.util.GregorianCalendar;
 
 import models.Scrobble;
 import play.data.validation.Constraints.Email;
-import play.data.validation.Constraints.Min;
 import play.data.validation.Constraints.Required;
 import views.api.util.DataTransferObject;
 import views.api.util.Status;
@@ -19,7 +18,7 @@ import controllers.api.util.SongwichAPIException;
 
 @JsonInclude(Include.NON_EMPTY)
 @JsonTypeName("scrobble")
-public class ScrobbleDTO extends DataTransferObject<Scrobble> {
+public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@JsonProperty("user")
 	@Email
 	private String userEmail;
@@ -39,10 +38,15 @@ public class ScrobbleDTO extends DataTransferObject<Scrobble> {
 	private String service;
 
 	// 01-Jan-2002
-	@Min(1012528800000L)
+	//@Min(1012528800000L)
 	private String timestamp;
+	
+	public ScrobbleDTO_V0_4() {
+		// sets default value for timestamp
+		timestamp = Long.toString(System.currentTimeMillis());
+	}
 
-	public ScrobbleDTO(String userEmail, String trackTitle, String artistName,
+	public ScrobbleDTO_V0_4(String userEmail, String trackTitle, String artistName,
 			String chosenByUser, String service, String timestamp)
 			throws SongwichAPIException {
 
@@ -135,7 +139,7 @@ public class ScrobbleDTO extends DataTransferObject<Scrobble> {
 	 *            the timestamp to set
 	 */
 	public void setTimestamp(String timestamp) throws SongwichAPIException {
-		if (timestamp == null) {
+		if (timestamp == null || timestamp.isEmpty()) {
 			this.timestamp = Long.toString(System.currentTimeMillis());
 		} else {
 			validateTimestamp(timestamp);

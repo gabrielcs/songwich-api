@@ -9,7 +9,7 @@ import play.libs.Json;
 import views.api.util.Status;
 import controllers.api.util.SongwichAPIException;
 
-public class ScrobbleProxyV0_2 {
+public class ScrobbleProxy_V0_2 {
 
 	private String user_id;
 	private String track_title;
@@ -17,7 +17,7 @@ public class ScrobbleProxyV0_2 {
 	private String service;
 	private String timestamp;
 
-	public ScrobbleProxyV0_2(String user_id, String track_title,
+	public ScrobbleProxy_V0_2(String user_id, String track_title,
 			String artist_name, String service, String timestamp)
 			throws SongwichAPIException {
 

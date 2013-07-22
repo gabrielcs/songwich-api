@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import views.api.ScrobbleDTO;
+import views.api.ScrobbleDTO_V0_4;
 import controllers.api.util.SongwichAPIException;
 
 public class APIResponseTest {
@@ -31,7 +31,7 @@ public class APIResponseTest {
 
 	@Test
 	public void apiResponseV0_5ToJson() throws SongwichAPIException {
-		APIResponseV0_5 apiResponse = new APIResponseV0_5(
+		APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 				views.api.util.Status.SUCCESS, "Success");
 
 		assertEquals(apiResponse.toJson().toString(),
@@ -40,8 +40,8 @@ public class APIResponseTest {
 
 	@Test
 	public void scrobbleResponseToJson() throws SongwichAPIException {
-		ScrobbleResponse scrobbleResponse = new ScrobbleResponse(
-				views.api.util.Status.SUCCESS, "Success", new ScrobbleDTO(
+		ScrobbleResponse_V0_4 scrobbleResponse = new ScrobbleResponse_V0_4(
+				views.api.util.Status.SUCCESS, "Success", new ScrobbleDTO_V0_4(
 						"gabriel@example.com", "Title", "Name", "false",
 						"Spotify", "1012528800000"));
 

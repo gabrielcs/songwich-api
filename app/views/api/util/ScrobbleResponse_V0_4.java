@@ -1,14 +1,14 @@
 package views.api.util;
 
-import views.api.ScrobbleDTO;
+import views.api.ScrobbleDTO_V0_4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class ScrobbleResponse extends APIResponseV0_5 {
+public class ScrobbleResponse_V0_4 extends APIResponse_V0_4 {
 
-	private ScrobbleDTO scrobble;
+	private ScrobbleDTO_V0_4 scrobble;
 
-	public ScrobbleResponse(Status status, String message, ScrobbleDTO scrobble) {
+	public ScrobbleResponse_V0_4(Status status, String message, ScrobbleDTO_V0_4 scrobble) {
 		super(status, message);
 		this.scrobble = scrobble;
 	}
@@ -20,7 +20,7 @@ public class ScrobbleResponse extends APIResponseV0_5 {
 	/**
 	 * @return the scrobble
 	 */
-	public ScrobbleDTO getScrobble() {
+	public ScrobbleDTO_V0_4 getScrobble() {
 		return scrobble;
 	}
 
@@ -28,7 +28,7 @@ public class ScrobbleResponse extends APIResponseV0_5 {
 	 * @param scrobble
 	 *            the scrobble to set
 	 */
-	public void setScrobble(ScrobbleDTO scrobble) {
+	public void setScrobble(ScrobbleDTO_V0_4 scrobble) {
 		this.scrobble = scrobble;
 	}
 }
