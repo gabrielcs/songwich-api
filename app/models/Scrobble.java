@@ -33,15 +33,15 @@ public class Scrobble extends Model {
 	private boolean choosenByUser;
 	
 	@Reference
-    private MusicService service;
+    private App service;
 	
 	protected Scrobble() {
 		super();
 	}
 	
 	public Scrobble(ObjectId userId, String songTitle, String artistName,
-			Date timestamp, boolean choosenByUser, MusicService service) {
-		super();
+			Date timestamp, boolean choosenByUser, App service, String createdBy) {
+		super(createdBy);
 		setUserId(userId);
 		setSongTitle(songTitle);
 		artistsNames = new ArrayList<String>();
@@ -52,8 +52,8 @@ public class Scrobble extends Model {
 	}
 
 	public Scrobble(ObjectId userId, String songTitle, List<String> artistsNames,
-			Date timestamp, boolean choosenByUser, MusicService service) {
-		super();
+			Date timestamp, boolean choosenByUser, App service, String createdBy) {
+		super(createdBy);
 		setUserId(userId);
 		setSongTitle(songTitle);
 		setArtistsNames(artistsNames);
@@ -139,14 +139,14 @@ public class Scrobble extends Model {
 	/**
 	 * @return the service
 	 */
-	public MusicService getService() {
+	public App getService() {
 		return service;
 	}
 
 	/**
 	 * @param service the service to set
 	 */
-	public void setService(MusicService service) {
+	public void setService(App service) {
 		this.service = service;
 	}
 

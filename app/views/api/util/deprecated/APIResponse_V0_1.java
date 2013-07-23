@@ -7,15 +7,15 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
-import views.api.util.Status;
+import views.api.util.APIStatus;
 
 public class APIResponse_V0_1 {
 	
-	private Status status;
+	private APIStatus status;
 	private String message;
 	private Map<String,JsonNode> content;
 	
-	public APIResponse_V0_1(Status status, String message) {
+	public APIResponse_V0_1(APIStatus status, String message) {
 		content = new LinkedHashMap<String,JsonNode>();
 		setStatus(status);
 		setMessage(message);
@@ -33,11 +33,11 @@ public class APIResponse_V0_1 {
 		content.put(fieldName, value);
 	}
 	
-	public void setStatus(Status status) {
+	public void setStatus(APIStatus status) {
 		this.status = status;
 	}
 	
-	public Status getStatus() {
+	public APIStatus getStatus() {
 		return status;
 	}
 	

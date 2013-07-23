@@ -11,12 +11,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
+import views.api.util.APIStatus_V0_4;
 import views.api.util.DataTransferObject;
-import views.api.util.Status;
 import controllers.api.util.SongwichAPIException;
 
 // @JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
 public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@JsonProperty("user")
@@ -38,27 +38,23 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String service;
 
 	// 01-Jan-2002
-	//@Min(1012528800000L)
+	// @Min(1012528800000L)
 	private String timestamp;
-	
+
 	public ScrobbleDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
 	}
 
 	/*
-	public ScrobbleDTO_V0_4(String userEmail, String trackTitle, String artistName,
-			String chosenByUser, String service, String timestamp)
-			throws SongwichAPIException {
-
-		setUserEmail(userEmail);
-		setTrackTitle(trackTitle);
-		setArtistName(artistName);
-		setChosenByUser(chosenByUser);
-		setService(service);
-		setTimestamp(timestamp);
-	}
-	*/
+	 * public ScrobbleDTO_V0_4(String userEmail, String trackTitle, String
+	 * artistName, String chosenByUser, String service, String timestamp) throws
+	 * SongwichAPIException {
+	 * 
+	 * setUserEmail(userEmail); setTrackTitle(trackTitle);
+	 * setArtistName(artistName); setChosenByUser(chosenByUser);
+	 * setService(service); setTimestamp(timestamp); }
+	 */
 
 	public String getUserEmail() {
 		return userEmail;
@@ -67,7 +63,8 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setUserEmail(String user_id) throws SongwichAPIException {
 		if (user_id == null || user_id.isEmpty()) {
 			throw new SongwichAPIException(
-					"Missing parameter: user_auth_token", Status.BAD_REQUEST);
+					"Missing parameter: user_auth_token",
+					APIStatus_V0_4.BAD_REQUEST);
 		}
 
 		// validateUserId(user_id);
@@ -81,7 +78,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 			validateUserId(userIdLong);
 		} catch (NumberFormatException e) {
 			throw new SongwichAPIException("Invalid user_auth_token",
-					Status.INVALID_USER_ID);
+					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 		}
 	}
 
@@ -96,7 +93,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setTrackTitle(String track_title) throws SongwichAPIException {
 		if (track_title == null || track_title.isEmpty()) {
 			throw new SongwichAPIException("Missing parameter: trackTitle",
-					Status.BAD_REQUEST);
+					APIStatus_V0_4.BAD_REQUEST);
 		}
 
 		this.trackTitle = track_title;
@@ -109,7 +106,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setArtistName(String artist_name) throws SongwichAPIException {
 		if (artist_name == null || artist_name.isEmpty()) {
 			throw new SongwichAPIException("Missing parameter: artistName",
-					Status.BAD_REQUEST);
+					APIStatus_V0_4.BAD_REQUEST);
 		}
 
 		this.artistName = artist_name;
@@ -158,7 +155,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 		} catch (NumberFormatException e) {
 			throw new SongwichAPIException(
 					"Timestamp is not an integer number",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_4.INVALID_TIMESTAMP);
 		}
 	}
 
@@ -167,12 +164,12 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 			throws SongwichAPIException {
 		if (timestampNumber > System.currentTimeMillis()) {
 			throw new SongwichAPIException("Timestamp cannot be in the future",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_4.INVALID_TIMESTAMP);
 		} else if (timestampNumber < new GregorianCalendar(2002, 1, 1)
 				.getTimeInMillis()) {
 			// it's older than scrobbling itself (2002)
 			throw new SongwichAPIException("Timestamp is too old",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_4.INVALID_TIMESTAMP);
 		}
 	}
 

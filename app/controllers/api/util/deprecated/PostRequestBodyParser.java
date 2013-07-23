@@ -1,4 +1,4 @@
-package controllers.api.util;
+package controllers.api.util.deprecated;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -11,9 +11,12 @@ import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
 
+import controllers.api.util.SongwichAPIException;
+
 import play.Logger;
 import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
+import views.api.util.deprecated.APIStatus_V0_1;
 
 
 
@@ -55,7 +58,7 @@ public class PostRequestBodyParser {
 				if (!proxyFieldNames.contains(fieldName)) {
 					throw new SongwichAPIException("Unexpected data: "
 							+ fieldName,
-							views.api.util.Status.BAD_REQUEST);
+							APIStatus_V0_1.BAD_REQUEST);
 				}
 			}
 		}
@@ -99,7 +102,7 @@ public class PostRequestBodyParser {
 			for (String key : formUrlDataKeySet) {
 				if (!fieldNames.contains(key)) {
 					throw new SongwichAPIException("Unexpected data: " + key,
-							views.api.util.Status.BAD_REQUEST);
+							APIStatus_V0_1.BAD_REQUEST);
 
 				}
 			}
@@ -113,7 +116,7 @@ public class PostRequestBodyParser {
 				data.put(fieldName, null);
 			} else if (dataArray.length != 1) {
 				throw new SongwichAPIException("Unexpected multiple data: "
-						+ fieldName, views.api.util.Status.BAD_REQUEST);
+						+ fieldName, APIStatus_V0_1.BAD_REQUEST);
 			} else {
 				data.put(fieldName, dataArray[0]);
 			}

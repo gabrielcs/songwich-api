@@ -1,7 +1,7 @@
 package daos.api;
 
 import static org.junit.Assert.*;
-import models.MusicService;
+import models.App;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -35,24 +35,24 @@ public class MusicServiceDAOMongoTest {
 	
 	@Test
 	public void testSaveAndDelete() {
-		MusicService service1 = new MusicService("Spotify");
-		MusicService service2 = new MusicService("Deezer");
+		App service1 = new App("Spotify");
+		App service2 = new App("Deezer");
 		
-		MusicServiceDAO<ObjectId> musicServiceDao = new MusicServiceDAOMongo(ds);
-		Key<MusicService> keySave = musicServiceDao.save(service1);
+		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
+		Key<App> keySave = musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
 		
 		// updates a document using save() 
 		service1.setName("Rdio");
-		Key<MusicService> keySaveAgain = musicServiceDao.save(service1);
+		Key<App> keySaveAgain = musicServiceDao.save(service1);
 		// checks that it doesn't save twice
 		assertEquals(keySave.getId(), keySaveAgain.getId());
 		
 		assertTrue(musicServiceDao.count() == 2);
 		
 		// assert that it updates the object
-		MusicService spotifyFromDatabase = musicServiceDao.findByName("Spotify");
-		MusicService rdioFromDatabase = musicServiceDao.findByName("Rdio");
+		App spotifyFromDatabase = musicServiceDao.findByName("Spotify");
+		App rdioFromDatabase = musicServiceDao.findByName("Rdio");
 		assertNull(spotifyFromDatabase);
 		assertNotNull(rdioFromDatabase);
 		
@@ -68,10 +68,10 @@ public class MusicServiceDAOMongoTest {
 	
 	@Test
 	public void testFindById() {
-		MusicService service1 = new MusicService("Spotify");
-		MusicService service2 = new MusicService("Deezer");
+		App service1 = new App("Spotify");
+		App service2 = new App("Deezer");
 		
-		MusicServiceDAO<ObjectId> musicServiceDao = new MusicServiceDAOMongo(ds);
+		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
 		musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
 		
@@ -81,10 +81,10 @@ public class MusicServiceDAOMongoTest {
 
 	@Test
 	public void testFindByName() {
-		MusicService service1 = new MusicService("Spotify");
-		MusicService service2 = new MusicService("Deezer");
+		App service1 = new App("Spotify");
+		App service2 = new App("Deezer");
 		
-		MusicServiceDAO<ObjectId> musicServiceDao = new MusicServiceDAOMongo(ds);
+		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
 		musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
 		

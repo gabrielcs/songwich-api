@@ -1,21 +1,15 @@
 package views.api.util;
 
-import org.codehaus.jackson.JsonNode;
-
 import views.api.ScrobbleDTO_V0_4;
 
 public class ScrobbleResponse_V0_4 extends APIResponse_V0_4 {
 
 	private ScrobbleDTO_V0_4 scrobble;
 
-	public ScrobbleResponse_V0_4(Status status, String message,
+	public ScrobbleResponse_V0_4(APIStatus status, String message,
 			ScrobbleDTO_V0_4 scrobble) {
 		super(status, message);
 		this.scrobble = scrobble;
-	}
-
-	public JsonNode toJson() {
-		return getObjectMapper().valueToTree(this);
 	}
 
 	/**

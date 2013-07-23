@@ -9,59 +9,60 @@ import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Reference;
 
 @Embedded
-public class MusicServiceUser extends Model {
+public class AppUser extends Model {
 	@Reference
-	private MusicService streamingService;
+	private App app;
 	
-	private String emailAddress;
+	@Indexed
+	private String userEmailAddress;
 	
 	@Indexed
 	private UUID userAuthToken;
 	
-	protected MusicServiceUser() {
+	protected AppUser() {
 		super();
 	}
 	
-	public MusicServiceUser(MusicService streamingService, String emailAddress) {
-		super();
-		setStreamingService(streamingService);
+	public AppUser(App streamingService, String emailAddress, String createdBy) {
+		super(createdBy);
+		setApp(streamingService);
 		setEmailAddress(emailAddress);
 	}
 
-	public MusicServiceUser(MusicService streamingService, String emailAddress,
-			UUID userAuthToken) {
-		super();
-		setStreamingService(streamingService);
+	public AppUser(App streamingService, String emailAddress,
+			UUID userAuthToken, String createdBy) {
+		super(createdBy);
+		setApp(streamingService);
 		setEmailAddress(emailAddress);
 		setUserAuthToken(userAuthToken);
 	}
 
 	/**
-	 * @return the streamingService
+	 * @return the app
 	 */
-	public MusicService getStreamingService() {
-		return streamingService;
+	public App getApp() {
+		return app;
 	}
 
 	/**
-	 * @param streamingService the streamingService to set
+	 * @param app the app to set
 	 */
-	public void setStreamingService(MusicService streamingService) {
-		this.streamingService = streamingService;
+	public void setApp(App app) {
+		this.app = app;
 	}
 
 	/**
-	 * @return the emailAddress
+	 * @return the userEmailAddress
 	 */
 	public String getEmailAddress() {
-		return emailAddress;
+		return userEmailAddress;
 	}
 
 	/**
-	 * @param emailAddress the emailAddress to set
+	 * @param userEmailAddress the userEmailAddress to set
 	 */
 	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
+		this.userEmailAddress = emailAddress;
 	}
 
 	/**
@@ -83,8 +84,8 @@ public class MusicServiceUser extends Model {
 	 */
 	@Override
 	public String toString() {
-		return "MusicServiceUser [streamingService=" + streamingService
-				+ ", emailAddress=" + emailAddress + ", userAuthToken="
+		return "AppUser [app=" + app
+				+ ", userEmailAddress=" + userEmailAddress + ", userAuthToken="
 				+ userAuthToken + "]";
 	}
 
@@ -96,10 +97,10 @@ public class MusicServiceUser extends Model {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
+				+ ((userEmailAddress == null) ? 0 : userEmailAddress.hashCode());
 		result = prime
 				* result
-				+ ((streamingService == null) ? 0 : streamingService.hashCode());
+				+ ((app == null) ? 0 : app.hashCode());
 		result = prime * result
 				+ ((userAuthToken == null) ? 0 : userAuthToken.hashCode());
 		return result;
@@ -116,16 +117,16 @@ public class MusicServiceUser extends Model {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MusicServiceUser other = (MusicServiceUser) obj;
-		if (emailAddress == null) {
-			if (other.emailAddress != null)
+		AppUser other = (AppUser) obj;
+		if (userEmailAddress == null) {
+			if (other.userEmailAddress != null)
 				return false;
-		} else if (!emailAddress.equals(other.emailAddress))
+		} else if (!userEmailAddress.equals(other.userEmailAddress))
 			return false;
-		if (streamingService == null) {
-			if (other.streamingService != null)
+		if (app == null) {
+			if (other.app != null)
 				return false;
-		} else if (!streamingService.equals(other.streamingService))
+		} else if (!app.equals(other.app))
 			return false;
 		if (userAuthToken == null) {
 			if (other.userAuthToken != null)

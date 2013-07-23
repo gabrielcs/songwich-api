@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonNode;
 
 import play.Logger;
 import play.libs.Json;
-import views.api.util.Status;
+import views.api.util.deprecated.APIStatus_V0_1;
 import controllers.api.util.SongwichAPIException;
 
 public class ScrobbleProxy_V0_1 {
@@ -89,11 +89,11 @@ public class ScrobbleProxy_V0_1 {
 	public void setTimestamp(Long timestamp) throws SongwichAPIException {
 		if (timestamp > System.currentTimeMillis()) {
 			throw new SongwichAPIException("Timestamp cannot be in the future",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_1.INVALID_TIMESTAMP);
 		} else if (timestamp < new GregorianCalendar(2002,1,1).getTimeInMillis()) {
 			// it's older than scrobbling itself (2002)
 			throw new SongwichAPIException("Timestamp too old",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_1.INVALID_TIMESTAMP);
 		}
 		
 		this.timestamp = timestamp;

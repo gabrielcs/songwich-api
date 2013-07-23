@@ -1,6 +1,8 @@
-package views.api.util;
+package views.api.util.deprecated;
 
-public enum Status {
+import views.api.util.APIStatus;
+
+public enum APIStatus_V0_1 implements APIStatus {
 
 	UNKNOWN_ERROR("-1", "Unknown error"), 
 	SUCCESS("0", "Success"), 
@@ -12,11 +14,12 @@ public enum Status {
 	private String code;
 	private String string;
 
-	private Status(String code, String string) {
+	private APIStatus_V0_1(String code, String string) {
 		this.code = code;
 		this.string = string;
 	}
 
+	@Override
 	public String getCode() {
 		return code;
 	}

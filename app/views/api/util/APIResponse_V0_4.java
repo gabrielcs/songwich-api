@@ -1,26 +1,16 @@
 package views.api.util;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.ObjectMapper;
-
 public class APIResponse_V0_4 {
-	@JsonIgnore
-	private static ObjectMapper objectMapper = new ObjectMapper();
 
 	private String status;
 	private String message;
 
-	public APIResponse_V0_4(Status status, String message) {
+	public APIResponse_V0_4(APIStatus status, String message) {
 		setStatus(status);
 		setMessage(message);
 	}
 
-	public JsonNode toJson() {
-		return objectMapper.valueToTree(this);
-	}
-
-	public void setStatus(Status status) {
+	public void setStatus(APIStatus status) {
 		this.status = status.getCode();
 	}
 
@@ -38,20 +28,5 @@ public class APIResponse_V0_4 {
 
 	public String getMessage() {
 		return message;
-	}
-
-	/**
-	 * @return the objectMapper
-	 */
-	protected static ObjectMapper getObjectMapper() {
-		return objectMapper;
-	}
-
-	/**
-	 * @param objectMapper
-	 *            the objectMapper to set
-	 */
-	protected static void setObjectMapper(ObjectMapper objectMapper) {
-		APIResponse_V0_4.objectMapper = objectMapper;
 	}
 };

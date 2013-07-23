@@ -10,28 +10,37 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Indexed;
 
 @Entity
 public class User extends Model {
 	@Id
 	private ObjectId id;
 
+	@Indexed
 	private String emailAddress;
 
 	private String name;
 
 	@Embedded
-	private Set<MusicServiceUser> musicServiceUsers;
+	private Set<AppUser> appUsers;
 	
 	protected User() {
 		super();
-		musicServiceUsers = new HashSet<MusicServiceUser>();
+		appUsers = new HashSet<AppUser>();
+	}
+	
+	public User(String emailAddress, String createdBy) {
+		super(createdBy);
+		setEmailAddress(emailAddress);
+		appUsers = new HashSet<AppUser>();
 	}
 
-	public User(String emailAddress, String name) {
+	public User(String emailAddress, String name, String createdBy) {
+		super(createdBy);
 		setEmailAddress(emailAddress);
 		setName(name);
-		musicServiceUsers = new HashSet<MusicServiceUser>();
+		appUsers = new HashSet<AppUser>();
 	}
 
 	/**
@@ -65,14 +74,14 @@ public class User extends Model {
 	}
 
 	/**
-	 * @return the musicServiceUsers
+	 * @return the appUsers
 	 */
-	public Set<MusicServiceUser> getMusicServiceUsers() {
-		return musicServiceUsers;
+	public Set<AppUser> getAppUsers() {
+		return appUsers;
 	}
 
-	public boolean addMusicServiceUser(MusicServiceUser musicServiceUser) {
-		return musicServiceUsers.add(musicServiceUser);
+	public boolean addAppUser(AppUser appUser) {
+		return appUsers.add(appUser);
 	}
 	
 	/**
@@ -88,7 +97,7 @@ public class User extends Model {
 	@Override
 	public String toString() {
 		return "User [emailAddress=" + emailAddress + ", name=" + name
-				+ ", musicServiceUsers=" + musicServiceUsers + "]";
+				+ ", appUsers=" + appUsers + "]";
 	}
 
 	/* (non-Javadoc)
@@ -102,7 +111,7 @@ public class User extends Model {
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
 		result = prime
 				* result
-				+ ((musicServiceUsers == null) ? 0 : musicServiceUsers
+				+ ((appUsers == null) ? 0 : appUsers
 						.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -125,10 +134,10 @@ public class User extends Model {
 				return false;
 		} else if (!emailAddress.equals(other.emailAddress))
 			return false;
-		if (musicServiceUsers == null) {
-			if (other.musicServiceUsers != null)
+		if (appUsers == null) {
+			if (other.appUsers != null)
 				return false;
-		} else if (!musicServiceUsers.equals(other.musicServiceUsers))
+		} else if (!appUsers.equals(other.appUsers))
 			return false;
 		if (name == null) {
 			if (other.name != null)

@@ -2,6 +2,7 @@ package daos.api;
 
 import java.util.UUID;
 
+import models.AppUser;
 import models.User;
 
 import com.google.code.morphia.dao.DAO;
@@ -13,4 +14,6 @@ public interface UserDAO<I> extends DAO<User, I> {
 	public User findByUserAuthToken(UUID userAuthToken);
 
 	public User findByEmailAddress(String emailAddress);
+	
+	public AppUser findAppUserByAuthToken(UUID userAuthToken);
 }

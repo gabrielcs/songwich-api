@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
-import views.api.util.Status;
+import views.api.util.deprecated.APIStatus_V0_1;
 import controllers.api.util.SongwichAPIException;
 
 public class ScrobbleProxy_V0_2 {
@@ -49,7 +49,7 @@ public class ScrobbleProxy_V0_2 {
 	public void setUser_id(String user_id) throws SongwichAPIException {
 		if (user_id.isEmpty()) {
 			throw new SongwichAPIException("Missing parameter: user_id",
-					Status.BAD_REQUEST);
+					APIStatus_V0_1.BAD_REQUEST);
 		}
 
 		validateUserId(user_id);
@@ -63,7 +63,7 @@ public class ScrobbleProxy_V0_2 {
 			validateUserId(userIdLong);
 		} catch (NumberFormatException e) {
 			throw new SongwichAPIException("Invalid user_id",
-					Status.INVALID_USER_ID);
+					APIStatus_V0_1.INVALID_USER_ID);
 		}
 	}
 
@@ -78,7 +78,7 @@ public class ScrobbleProxy_V0_2 {
 	public void setTrack_title(String track_title) throws SongwichAPIException {
 		if (track_title.isEmpty()) {
 			throw new SongwichAPIException("Missing parameter: track_title",
-					Status.BAD_REQUEST);
+					APIStatus_V0_1.BAD_REQUEST);
 		}
 
 		this.track_title = track_title;
@@ -91,7 +91,7 @@ public class ScrobbleProxy_V0_2 {
 	public void setArtist_name(String artist_name) throws SongwichAPIException {
 		if (artist_name.isEmpty()) {
 			throw new SongwichAPIException("Missing parameter: artist_name",
-					Status.BAD_REQUEST);
+					APIStatus_V0_1.BAD_REQUEST);
 		}
 
 		this.artist_name = artist_name;
@@ -136,7 +136,7 @@ public class ScrobbleProxy_V0_2 {
 		} catch (NumberFormatException e) {
 			throw new SongwichAPIException(
 					"Timestamp is not an integer number",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_1.INVALID_TIMESTAMP);
 		}
 	}
 
@@ -145,12 +145,12 @@ public class ScrobbleProxy_V0_2 {
 			throws SongwichAPIException {
 		if (timestampNumber > System.currentTimeMillis()) {
 			throw new SongwichAPIException("Timestamp cannot be in the future",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_1.INVALID_TIMESTAMP);
 		} else if (timestampNumber < new GregorianCalendar(2002, 1, 1)
 				.getTimeInMillis()) {
 			// it's older than scrobbling itself (2002)
 			throw new SongwichAPIException("Timestamp is too old",
-					Status.INVALID_TIMESTAMP);
+					APIStatus_V0_1.INVALID_TIMESTAMP);
 		}
 	}
 }

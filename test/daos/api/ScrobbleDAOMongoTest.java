@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import models.MusicService;
+import models.App;
 import models.Scrobble;
 import models.User;
 
@@ -48,9 +48,9 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		MusicService musicService1 = new MusicService("Spotify");
-		MusicService musicService2 = new MusicService("Deezer");
-		CascadeSaveDAO<MusicService, ObjectId> musicServiceDao = new MusicServiceDAOMongo(
+		App musicService1 = new App("Spotify");
+		App musicService2 = new App("Deezer");
+		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
 				ds);
 		musicServiceDao.cascadeSave(musicService1);
 		musicServiceDao.cascadeSave(musicService2);
@@ -92,9 +92,9 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		MusicService musicService1 = new MusicService("Spotify");
-		MusicService musicService2 = new MusicService("Deezer");
-		CascadeSaveDAO<MusicService, ObjectId> musicServiceDao = new MusicServiceDAOMongo(
+		App musicService1 = new App("Spotify");
+		App musicService2 = new App("Deezer");
+		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
 				ds);
 		musicServiceDao.cascadeSave(musicService1);
 		musicServiceDao.cascadeSave(musicService2);
@@ -132,9 +132,9 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		MusicService musicService1 = new MusicService("Spotify");
-		MusicService musicService2 = new MusicService("Deezer");
-		CascadeSaveDAO<MusicService, ObjectId> musicServiceDao = new MusicServiceDAOMongo(
+		App musicService1 = new App("Spotify");
+		App musicService2 = new App("Deezer");
+		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
 				ds);
 		musicServiceDao.cascadeSave(musicService1);
 		musicServiceDao.cascadeSave(musicService2);

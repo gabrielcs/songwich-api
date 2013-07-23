@@ -2,11 +2,12 @@ import java.net.UnknownHostException;
 
 import play.GlobalSettings;
 import play.Logger;
+import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
-import views.api.util.Status;
-import views.api.util.deprecated.APIResponse_V0_1;
+import views.api.util.APIResponse_V0_4;
+import views.api.util.APIStatus_V0_4;
 
 import com.google.code.morphia.Morphia;
 import com.mongodb.MongoClient;
@@ -30,8 +31,8 @@ public class Global extends GlobalSettings {
 	public Result onBadRequest(RequestHeader request, String error) {
 		// it's currently not showing POST requests parameters
 		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
-		APIResponse_V0_1 response = new APIResponse_V0_1(Status.BAD_REQUEST, error);
-		return Results.badRequest(response.toJson());
+		APIResponse_V0_4 response = new APIResponse_V0_4(APIStatus_V0_4.BAD_REQUEST, error);
+		return Results.badRequest(Json.toJson(response));
 	}
 
 	@Override
@@ -42,10 +43,10 @@ public class Global extends GlobalSettings {
 		}
 
 		Logger.warn("Handler not found: " + request);
-		APIResponse_V0_1 response = new APIResponse_V0_1(Status.METHOD_NOT_FOUND,
+		APIResponse_V0_4 response = new APIResponse_V0_4(APIStatus_V0_4.METHOD_NOT_FOUND,
 				String.format("API method not found: %s %s", request.method(),
 						request.path()));
-		return Results.badRequest(response.toJson());
+		return Results.badRequest(Json.toJson(response));
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class Global extends GlobalSettings {
 		Logger.error(String.format("Error while processing: %s [%s]", request,
 				message));
 
-		APIResponse_V0_1 response = new APIResponse_V0_1(Status.UNKNOWN_ERROR, message);
-		return Results.badRequest(response.toJson());
+		APIResponse_V0_4 response = new APIResponse_V0_4(APIStatus_V0_4.UNKNOWN_ERROR, message);
+		return Results.badRequest(Json.toJson(response));
 	}
 }

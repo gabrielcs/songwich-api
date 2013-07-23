@@ -3,8 +3,8 @@ package daos.api;
 import java.util.Set;
 import java.util.UUID;
 
-import models.MusicService;
-import models.MusicServiceUser;
+import models.App;
+import models.AppUser;
 import models.User;
 
 import org.bson.types.ObjectId;
@@ -22,24 +22,29 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	}
 
 	@Override
+	public User findById(ObjectId id) {
+		return ds.find(User.class).filter("id", id).get();
+	}
+
+	@Override
 	public void cascadeSave(User t) {
 		cascadeSaveMusicServices(t);
 		save(t);
 	}
 
 	private void cascadeSaveMusicServices(User t) {
-		if (t.getMusicServiceUsers().isEmpty()) {
+		if (t.getAppUsers().isEmpty()) {
 			// there's nothing to save
 			return;
 		}
 
-		// check if there are MusicService's to save
-		CascadeSaveDAO<MusicService, ObjectId> musicServiceDAO = new MusicServiceDAOMongo(ds);
-		MusicService musicService;
+		// check if there are App's to save
+		CascadeSaveDAO<App, ObjectId> musicServiceDAO = new AppDAOMongo(ds);
+		App musicService;
 
-		Set<MusicServiceUser> musicServiceUsers = t.getMusicServiceUsers();
-		for (MusicServiceUser musicServiceUser : musicServiceUsers) {
-			musicService = musicServiceUser.getStreamingService();
+		Set<AppUser> musicServiceUsers = t.getAppUsers();
+		for (AppUser musicServiceUser : musicServiceUsers) {
+			musicService = musicServiceUser.getApp();
 			if (musicService.getId() == null) {
 				musicServiceDAO.save(musicService);
 			}
@@ -47,11 +52,6 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	}
 
 	// TODO: test
-	@Override
-	public User findByUserAuthToken(UUID userAuthToken) {
-		return ds.find(User.class).filter("userAuthToken", userAuthToken).get();
-	}
-
 	@Override
 	public User findByEmailAddress(String emailAddress) {
 		User user = ds.find(User.class).filter("emailAddress", emailAddress)
@@ -62,11 +62,32 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 		// it might be an alternative email address
 		return ds.find(User.class)
-				.filter("musicServiceUsers.emailAddress", emailAddress).get();
+				.filter("appUsers.userEmailAddress", emailAddress).get();
 	}
 
+	// TODO: test
 	@Override
-	public User findById(ObjectId id) {
-		return ds.find(User.class).filter("id", id).get();
+	public User findByUserAuthToken(UUID userAuthToken) {
+		return ds.find(User.class)
+				.filter("appUsers.userAuthToken", userAuthToken).get();
+	}
+
+	/*
+	 * This might be a bit inefficient since it finds in the database and later 
+	 * in memory.
+	 * 
+	 * TODO: test
+	 */
+	@Override
+	public AppUser findAppUserByAuthToken(UUID userAuthToken) {
+		User user = findByUserAuthToken(userAuthToken);
+
+		for (AppUser appUser : user.getAppUsers()) {
+			if (appUser.getUserAuthToken().equals(userAuthToken)) {
+				return appUser;
+			}
+		}
+		// shouldn't reach this point
+		return null;
 	}
 }

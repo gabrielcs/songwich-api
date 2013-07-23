@@ -1,8 +1,8 @@
 package daos.api;
 
 import static org.junit.Assert.*;
-import models.MusicService;
-import models.MusicServiceUser;
+import models.App;
+import models.AppUser;
 import models.User;
 
 import org.junit.After;
@@ -77,16 +77,16 @@ public class UserDAOMongoTest {
 	
 	@Test
 	public void testFindByEmailAddressWithMusicServiceUser() {
-		MusicService service1 = new MusicService("Spotify");
-		MusicService service2 = new MusicService("Rdio");
+		App service1 = new App("Spotify");
+		App service2 = new App("Rdio");
 		
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
-		MusicServiceUser service1User1 = new MusicServiceUser(service1, "gabriel@spam.com");
-		user1.addMusicServiceUser(service1User1);
+		AppUser service1User1 = new AppUser(service1, "gabriel@spam.com");
+		user1.addAppUser(service1User1);
 		
 		User user2 = new User("daniel@example.com", "Daniel Example");
-		MusicServiceUser service2User2 = new MusicServiceUser(service2, "daniel@spam.com");
-		user2.addMusicServiceUser(service2User2);
+		AppUser service2User2 = new AppUser(service2, "daniel@spam.com");
+		user2.addAppUser(service2User2);
 		
 		UserDAOMongo userDao = new UserDAOMongo(ds);
 		userDao.cascadeSave(user1);
