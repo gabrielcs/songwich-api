@@ -1,5 +1,3 @@
-import java.net.UnknownHostException;
-
 import play.GlobalSettings;
 import play.Logger;
 import play.libs.Json;
@@ -8,22 +6,16 @@ import play.mvc.Result;
 import play.mvc.Results;
 import views.api.util.APIResponse_V0_4;
 import views.api.util.APIStatus_V0_4;
-
-import com.google.code.morphia.Morphia;
-import com.mongodb.MongoClient;
+import controllers.api.DatabaseController;
 
 public class Global extends GlobalSettings {
-
 	@Override
 	public void beforeStart(play.Application app) {
 		String dbName = app.configuration().getString("morphia.db.name");
-		try {
-			controllers.api.DatabaseController.setDatastore(new Morphia()
-					.createDatastore(new MongoClient(), dbName));
-			Logger.info("Connected to database " + dbName);
-		} catch (UnknownHostException e) {
-			Logger.error("Couldn't connect to the database: " + e.getMessage());
-			throw new RuntimeException(e);
+		DatabaseController.createDatastore(dbName);
+		if (app.isDev()) {
+			// start with a clean database if in development mode
+			DatabaseController.dropDatabase();
 		}
 	}
 
@@ -31,7 +23,8 @@ public class Global extends GlobalSettings {
 	public Result onBadRequest(RequestHeader request, String error) {
 		// it's currently not showing POST requests parameters
 		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
-		APIResponse_V0_4 response = new APIResponse_V0_4(APIStatus_V0_4.BAD_REQUEST, error);
+		APIResponse_V0_4 response = new APIResponse_V0_4(
+				APIStatus_V0_4.BAD_REQUEST, error);
 		return Results.badRequest(Json.toJson(response));
 	}
 
@@ -43,8 +36,9 @@ public class Global extends GlobalSettings {
 		}
 
 		Logger.warn("Handler not found: " + request);
-		APIResponse_V0_4 response = new APIResponse_V0_4(APIStatus_V0_4.METHOD_NOT_FOUND,
-				String.format("API method not found: %s %s", request.method(),
+		APIResponse_V0_4 response = new APIResponse_V0_4(
+				APIStatus_V0_4.METHOD_NOT_FOUND, String.format(
+						"API method not found: %s %s", request.method(),
 						request.path()));
 		return Results.badRequest(Json.toJson(response));
 	}
@@ -62,7 +56,8 @@ public class Global extends GlobalSettings {
 		Logger.error(String.format("Error while processing: %s [%s]", request,
 				message));
 
-		APIResponse_V0_4 response = new APIResponse_V0_4(APIStatus_V0_4.UNKNOWN_ERROR, message);
+		APIResponse_V0_4 response = new APIResponse_V0_4(
+				APIStatus_V0_4.UNKNOWN_ERROR, message);
 		return Results.badRequest(Json.toJson(response));
 	}
 }
