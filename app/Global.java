@@ -6,14 +6,14 @@ import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
+import usecases.api.util.DatabaseContext;
 
 import com.google.code.morphia.logging.MorphiaLoggerFactory;
 import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
 
 import controllers.api.AppDeveloperAuthenticationController;
-import controllers.api.DatabaseController;
+import dtos.api.util.APIResponse_V0_4;
+import dtos.api.util.APIStatus_V0_4;
 
 public class Global extends GlobalSettings {
 
@@ -31,11 +31,11 @@ public class Global extends GlobalSettings {
 	@Override
 	public void beforeStart(play.Application app) {
 		String dbName = app.configuration().getString("morphia.db.name");
-		DatabaseController.createDatastore(dbName);
+		DatabaseContext.createDatastore(dbName);
 		
 		if (app.isDev()) {
 			// start with a clean database if in development mode
-			DatabaseController.dropDatabase();
+			DatabaseContext.dropDatabase();
 			// and creates a test developer
 			UUID devAuthToken = AppDeveloperAuthenticationController
 					.createTestAppWithDeveloper(UUID.fromString("3bde6fba-1ae5-4d7f-8000-f2aba160b71a"));

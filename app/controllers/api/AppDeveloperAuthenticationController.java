@@ -13,13 +13,14 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
+import usecases.api.util.DatabaseContext;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.SongwichAPIException;
 import daos.api.AppDAO;
 import daos.api.AppDAOMongo;
 import daos.api.util.CascadeSaveDAO;
+import dtos.api.util.APIResponse_V0_4;
+import dtos.api.util.APIStatus_V0_4;
 
 public class AppDeveloperAuthenticationController extends
 		Action<AppDeveloperAuthenticated> {
@@ -93,7 +94,7 @@ public class AppDeveloperAuthenticationController extends
 	private AppDeveloper setAppAndFindAppDeveloper(Http.Context ctx,
 			UUID devAuthToken) {
 		AppDAO<ObjectId> appDAO = new AppDAOMongo(
-				DatabaseController.getDatastore());
+				DatabaseContext.getDatastore());
 		App app = appDAO.findByDevAuthToken(devAuthToken);
 		if (app != null) {
 			ctx.args.put(APP, app);
@@ -130,7 +131,7 @@ public class AppDeveloperAuthenticationController extends
 		// creates a test App
 		App songwich = new App("Songwich", appDeveloper, "dev@songwich.com");
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo(
-				DatabaseController.getDatastore());
+				DatabaseContext.getDatastore());
 		appDao.save(songwich);
 		return devAuthToken;
 	}

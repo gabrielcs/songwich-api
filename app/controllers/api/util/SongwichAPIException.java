@@ -1,6 +1,6 @@
 package controllers.api.util;
 
-import views.api.util.APIStatus;
+import dtos.api.util.APIStatus;
 
 public class SongwichAPIException extends Exception {
 	private static final long serialVersionUID = 4906235508758543083L;

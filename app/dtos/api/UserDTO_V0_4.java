@@ -1,13 +1,14 @@
-package views.api;
+package dtos.api;
 
 import models.Scrobble;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import dtos.api.util.DataTransferObject;
+
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
-import views.api.util.DataTransferObject;
 
 // @JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)

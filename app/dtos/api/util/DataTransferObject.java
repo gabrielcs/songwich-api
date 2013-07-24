@@ -1,4 +1,4 @@
-package views.api.util;
+package dtos.api.util;
 
 /*
  * http://martinfowler.com/eaaCatalog/dataTransferObject.html

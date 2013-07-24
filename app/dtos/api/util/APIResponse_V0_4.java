@@ -1,4 +1,4 @@
-package views.api.util;
+package dtos.api.util;
 
 public class APIResponse_V0_4 {
 

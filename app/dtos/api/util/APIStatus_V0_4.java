@@ -1,4 +1,4 @@
-package views.api.util;
+package dtos.api.util;
 
 public enum APIStatus_V0_4 implements APIStatus {
 

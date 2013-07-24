@@ -1,4 +1,4 @@
-package views.api;
+package dtos.api;
 
 import java.util.GregorianCalendar;
 
@@ -10,9 +10,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
-import views.api.util.APIStatus_V0_4;
-import views.api.util.DataTransferObject;
 import controllers.api.util.SongwichAPIException;
+import dtos.api.util.APIStatus_V0_4;
+import dtos.api.util.DataTransferObject;
 
 // @JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)

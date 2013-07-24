@@ -1,8 +1,9 @@
-package views.api.util;
+package dtos.api.util;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import views.api.UserDTO_V0_4;
+import dtos.api.UserDTO_V0_4;
+
 
 public class UsersResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("user")

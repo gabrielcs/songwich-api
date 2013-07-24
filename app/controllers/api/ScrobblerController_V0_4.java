@@ -4,11 +4,13 @@ import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.api.ScrobbleDTO_V0_4;
-import views.api.util.APIStatus_V0_4;
-import views.api.util.ScrobblesResponse_V0_4;
+import usecases.api.ScrobbleUseCase;
+import usecases.api.util.RequestContext;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
+import dtos.api.ScrobbleDTO_V0_4;
+import dtos.api.util.APIStatus_V0_4;
+import dtos.api.util.ScrobblesResponse_V0_4;
 
 public class ScrobblerController_V0_4 extends Controller {
 
@@ -21,7 +23,16 @@ public class ScrobblerController_V0_4 extends Controller {
 			return badRequest(form.errorsAsJson());
 		} else {
 			ScrobbleDTO_V0_4 scrobbleDTO = form.get();
-			// TODO: process the request
+
+			// process the request
+			RequestContext ctx = new RequestContext(
+					AppDeveloperAuthenticationController.getApp(),
+					AppDeveloperAuthenticationController.getAppDeveloper(),
+					UserAuthenticationController.getUser());
+			ScrobbleUseCase scrobbleUseCase = new ScrobbleUseCase(ctx);
+			scrobbleUseCase.scrobble(scrobbleDTO);
+			
+			// return the response
 			ScrobblesResponse_V0_4 response = new ScrobblesResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 			return ok(Json.toJson(response));

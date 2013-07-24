@@ -1,8 +1,9 @@
-package views.api.util;
+package dtos.api.util;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import views.api.ScrobbleDTO_V0_4;
+import dtos.api.ScrobbleDTO_V0_4;
+
 
 public class ScrobblesResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("scrobble")

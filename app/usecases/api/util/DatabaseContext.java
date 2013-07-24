@@ -1,6 +1,11 @@
-package controllers.api;
+package usecases.api.util;
 
 import java.net.UnknownHostException;
+import java.util.UUID;
+
+import models.User;
+
+import org.bson.types.ObjectId;
 
 import play.Logger;
 
@@ -8,7 +13,10 @@ import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.mongodb.MongoClient;
 
-public class DatabaseController {
+import daos.api.UserDAO;
+import daos.api.UserDAOMongo;
+
+public class DatabaseContext {
 	// it currently only supports 1 Datastore
 	private static Datastore datastore;
 
@@ -36,5 +44,18 @@ public class DatabaseController {
 
 	public static Datastore getDatastore() {
 		return datastore;
+	}
+	
+	public static UUID createUserAuthToken() {
+		UUID userAuthToken = UUID.randomUUID();
+		// assert that the random UUID is unique (might be expensive)
+		UserDAO<ObjectId> userDAO = new UserDAOMongo(
+				DatabaseContext.getDatastore());
+		User user = userDAO.findByUserAuthToken(userAuthToken);
+		if (user == null) {
+			return userAuthToken;
+		} else {
+			return createUserAuthToken();
+		}
 	}
 }

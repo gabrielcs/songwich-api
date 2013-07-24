@@ -1,6 +1,6 @@
-package views.api.util.deprecated;
+package dtos.api.util.deprecated;
 
-import views.api.util.APIStatus;
+import dtos.api.util.APIStatus;
 
 @Deprecated
 public enum APIStatus_V0_1 implements APIStatus {

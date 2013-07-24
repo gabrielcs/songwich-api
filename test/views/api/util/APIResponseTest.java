@@ -10,8 +10,11 @@ import org.junit.Test;
 
 import play.libs.Json;
 
-import views.api.ScrobbleDTO_V0_4;
 import controllers.api.util.SongwichAPIException;
+import dtos.api.ScrobbleDTO_V0_4;
+import dtos.api.util.APIResponse_V0_4;
+import dtos.api.util.APIStatus_V0_4;
+import dtos.api.util.ScrobblesResponse_V0_4;
 
 public class APIResponseTest {
 

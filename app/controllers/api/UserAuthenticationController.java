@@ -12,12 +12,13 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
+import usecases.api.util.DatabaseContext;
 import controllers.api.annotation.UserAuthenticated;
 import controllers.api.util.SongwichAPIException;
 import daos.api.UserDAO;
 import daos.api.UserDAOMongo;
+import dtos.api.util.APIResponse_V0_4;
+import dtos.api.util.APIStatus_V0_4;
 
 public class UserAuthenticationController extends Action<UserAuthenticated> {
 
@@ -49,7 +50,7 @@ public class UserAuthenticationController extends Action<UserAuthenticated> {
 			
 			// there's 1 and only 1 auth token
 			UserDAO<ObjectId> userDAO = new UserDAOMongo(
-					DatabaseController.getDatastore());
+					DatabaseContext.getDatastore());
 			User user;
 			try {
 				user = userDAO.findByUserAuthToken(UUID
@@ -87,18 +88,5 @@ public class UserAuthenticationController extends Action<UserAuthenticated> {
 
 	public static User getUser() {
 		return (User) Http.Context.current().args.get(USER);
-	}
-
-	public static UUID createUserAuthToken() {
-		UUID userAuthToken = UUID.randomUUID();
-		// assert that the random UUID is unique (might be expensive)
-		UserDAO<ObjectId> userDAO = new UserDAOMongo(
-				DatabaseController.getDatastore());
-		User user = userDAO.findByUserAuthToken(userAuthToken);
-		if (user == null) {
-			return userAuthToken;
-		} else {
-			return createUserAuthToken();
-		}
 	}
 }
