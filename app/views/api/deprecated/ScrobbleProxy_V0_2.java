@@ -9,6 +9,7 @@ import play.libs.Json;
 import views.api.util.deprecated.APIStatus_V0_1;
 import controllers.api.util.SongwichAPIException;
 
+@Deprecated
 public class ScrobbleProxy_V0_2 {
 
 	private String user_id;

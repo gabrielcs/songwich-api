@@ -18,8 +18,7 @@ import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
 import views.api.util.deprecated.APIStatus_V0_1;
 
-
-
+@Deprecated
 public class PostRequestBodyParser {
 
 	//@BodyParser.Of(BodyParser.Json.class)

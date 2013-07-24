@@ -9,16 +9,16 @@ import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.With;
 import views.api.UserDTO_V0_4;
 import views.api.util.APIStatus_V0_4;
 import views.api.util.UserResponse_V0_4;
+import controllers.api.annotation.AppDeveloperAuthenticated;
 import daos.api.UserDAO;
 import daos.api.UserDAOMongo;
 
 public class UserController_V0_4 extends Controller {
 
-	@With(AppDeveloperAuthenticationController.class)
+	@AppDeveloperAuthenticated
 	public static Result newUser() {
 		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
 				.bindFromRequest();

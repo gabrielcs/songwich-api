@@ -15,11 +15,12 @@ import play.mvc.Result;
 import play.mvc.Results;
 import views.api.util.APIResponse_V0_4;
 import views.api.util.APIStatus_V0_4;
+import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.SongwichAPIException;
 import daos.api.AppDAO;
 import daos.api.AppDAOMongo;
 
-public class AppDeveloperAuthenticationController extends Action.Simple {
+public class AppDeveloperAuthenticationController extends Action<AppDeveloperAuthenticated> {
 
 	public final static String DEV_AUTH_TOKEN_HEADER = "X-Songwich.devAuthToken";
 	public final static String DEV = "dev";
@@ -31,15 +32,16 @@ public class AppDeveloperAuthenticationController extends Action.Simple {
 		} catch (SongwichAPIException e) {
 			Logger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
 					e.getMessage(), ctx.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(), e.getMessage());
+			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
+					e.getMessage());
 			return Results.unauthorized(Json.toJson(response));
 		}
 
-		// app developer and user successfully authenticated 
+		// app developer and user successfully authenticated
 		return delegate.call(ctx);
 	}
 
-	private static void authenticateAppDeveloper(Http.Context ctx)
+	private void authenticateAppDeveloper(Http.Context ctx)
 			throws SongwichAPIException {
 
 		String[] devAuthTokenHeaderValues = ctx.request().headers()
@@ -47,14 +49,21 @@ public class AppDeveloperAuthenticationController extends Action.Simple {
 		if ((devAuthTokenHeaderValues != null)
 				&& (devAuthTokenHeaderValues.length == 1)
 				&& (devAuthTokenHeaderValues[0] != null)) {
-			AppDeveloper dev = setAppAndFindAppDeveloper(ctx,
-					UUID.fromString(devAuthTokenHeaderValues[0]));
-			if (dev != null) {
-				ctx.args.put(DEV, dev);
-			} else {
-				Logger.warn(String.format("%s: %s",
-						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
-						devAuthTokenHeaderValues[0]));
+			try {
+				AppDeveloper dev = setAppAndFindAppDeveloper(ctx,
+						UUID.fromString(devAuthTokenHeaderValues[0]));
+				if (dev != null) {
+					ctx.args.put(DEV, dev);
+				} else {
+					Logger.warn(String.format("%s: %s",
+							APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+							devAuthTokenHeaderValues[0]));
+					throw new SongwichAPIException(
+							APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+							APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
+				}
+			} catch (IllegalArgumentException e) {
+				// devAuthToken cannot be converted into a UUID
 				throw new SongwichAPIException(
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
@@ -69,7 +78,7 @@ public class AppDeveloperAuthenticationController extends Action.Simple {
 		}
 	}
 
-	private static AppDeveloper setAppAndFindAppDeveloper(Http.Context ctx,
+	private AppDeveloper setAppAndFindAppDeveloper(Http.Context ctx,
 			UUID devAuthToken) {
 		AppDAO<ObjectId> appDAO = new AppDAOMongo(
 				DatabaseController.getDatastore());

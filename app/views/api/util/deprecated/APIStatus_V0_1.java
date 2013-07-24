@@ -2,6 +2,7 @@ package views.api.util.deprecated;
 
 import views.api.util.APIStatus;
 
+@Deprecated
 public enum APIStatus_V0_1 implements APIStatus {
 
 	UNKNOWN_ERROR("-1", "Unknown error"), 

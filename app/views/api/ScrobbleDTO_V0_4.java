@@ -4,7 +4,6 @@ import java.util.GregorianCalendar;
 
 import models.Scrobble;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -22,10 +21,6 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@JsonProperty("user")
 	@Email
 	private String userEmail;
-
-	@JsonIgnore
-	@Required
-	private String userAuthToken;
 
 	@Required
 	private String trackTitle;
@@ -186,20 +181,5 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	 */
 	public void setChosenByUser(String chosenByUser) {
 		this.chosenByUser = chosenByUser;
-	}
-
-	/**
-	 * @return the userAuthToken
-	 */
-	public String getUserAuthToken() {
-		return userAuthToken;
-	}
-
-	/**
-	 * @param userAuthToken
-	 *            the userAuthToken to set
-	 */
-	public void setUserAuthToken(String authToken) {
-		this.userAuthToken = authToken;
 	}
 }

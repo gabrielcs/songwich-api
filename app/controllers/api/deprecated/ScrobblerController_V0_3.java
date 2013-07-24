@@ -13,6 +13,7 @@ import views.api.util.deprecated.APIStatus_V0_1;
 import controllers.api.util.SongwichAPIException;
 import controllers.api.util.deprecated.PostRequestBodyParser;
 
+@Deprecated
 public class ScrobblerController_V0_3 extends Controller {
 
 	public static Result scrobble() {

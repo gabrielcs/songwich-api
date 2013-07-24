@@ -4,15 +4,16 @@ import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.With;
 import views.api.ScrobbleDTO_V0_4;
 import views.api.util.APIStatus_V0_4;
 import views.api.util.ScrobbleResponse_V0_4;
+import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblerController_V0_4 extends Controller {
 
-	//@With(UserAuthenticationController.class)
-	@With(AppDeveloperAuthenticationController.class)
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
 	public static Result scrobble() {
 		Form<ScrobbleDTO_V0_4> form = Form.form(ScrobbleDTO_V0_4.class)
 				.bindFromRequest();

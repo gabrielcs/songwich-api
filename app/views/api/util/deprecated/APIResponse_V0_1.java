@@ -9,6 +9,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import play.libs.Json;
 import views.api.util.APIStatus;
 
+@Deprecated
 public class APIResponse_V0_1 {
 	
 	private APIStatus status;

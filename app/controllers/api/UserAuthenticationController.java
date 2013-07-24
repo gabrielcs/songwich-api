@@ -14,11 +14,12 @@ import play.mvc.Result;
 import play.mvc.Results;
 import views.api.util.APIResponse_V0_4;
 import views.api.util.APIStatus_V0_4;
+import controllers.api.annotation.UserAuthenticated;
 import controllers.api.util.SongwichAPIException;
 import daos.api.UserDAO;
 import daos.api.UserDAOMongo;
 
-public class UserAuthenticationController extends Action.Simple {
+public class UserAuthenticationController extends Action<UserAuthenticated> {
 
 	public final static String USER_AUTH_TOKEN_HEADER = "X-Songwich.userAuthToken";
 	public final static String USER = "user";
@@ -29,32 +30,39 @@ public class UserAuthenticationController extends Action.Simple {
 		} catch (SongwichAPIException e) {
 			Logger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
 					e.getMessage(), ctx.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(), e.getMessage());
+			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
+					e.getMessage());
 			return Results.unauthorized(Json.toJson(response));
 		}
 
-		// user successfully authenticated 
+		// user successfully authenticated
 		return delegate.call(ctx);
 	}
 
-	private static void authenticateUser(Http.Context ctx)
-			throws SongwichAPIException {
+	private void authenticateUser(Http.Context ctx) throws SongwichAPIException {
 
 		String[] userAuthTokenHeaderValues = ctx.request().headers()
 				.get(USER_AUTH_TOKEN_HEADER);
 		if ((userAuthTokenHeaderValues != null)
 				&& (userAuthTokenHeaderValues.length == 1)
 				&& (userAuthTokenHeaderValues[0] != null)) {
-			UserDAO<ObjectId> userDAO = new UserDAOMongo(
-					DatabaseController.getDatastore());
-			User user = userDAO.findByUserAuthToken(UUID
-					.fromString(userAuthTokenHeaderValues[0]));
-			if (user != null) {
-				ctx.args.put(USER, user);
-			} else {
-				Logger.warn(String.format("%s: %s",
-						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
-						userAuthTokenHeaderValues[0]));
+			try {
+				UserDAO<ObjectId> userDAO = new UserDAOMongo(
+						DatabaseController.getDatastore());
+				User user = userDAO.findByUserAuthToken(UUID
+						.fromString(userAuthTokenHeaderValues[0]));
+				if (user != null) {
+					ctx.args.put(USER, user);
+				} else {
+					Logger.warn(String.format("%s: %s",
+							APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
+							userAuthTokenHeaderValues[0]));
+					throw new SongwichAPIException(
+							APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
+							APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
+				}
+			} catch (IllegalArgumentException e) {
+				// userAuthToken cannot be converted into a UUID
 				throw new SongwichAPIException(
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);

@@ -10,6 +10,7 @@ import views.api.util.deprecated.APIResponse_V0_1;
 import views.api.util.deprecated.APIStatus_V0_1;
 import controllers.api.util.SongwichAPIException;
 
+@Deprecated
 public class ScrobblerController_V0_2 extends Controller {
 
 	public static Result scrobble(String user_id, String track_title,
