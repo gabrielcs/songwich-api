@@ -22,7 +22,8 @@ import com.mongodb.MongoClient;
 import daos.api.util.CascadeSaveDAO;
 
 public class ScrobbleDAOMongoTest {
-
+	
+	private static final String CREATED_BY = "gabriel@dev.com"; 
 	private Datastore ds;
 	private String dbName = "songwich-api-test";
 
@@ -48,8 +49,8 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		App musicService1 = new App("Spotify");
-		App musicService2 = new App("Deezer");
+		App musicService1 = new App("Spotify", CREATED_BY);
+		App musicService2 = new App("Deezer", CREATED_BY);
 		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
 				ds);
 		musicServiceDao.cascadeSave(musicService1);
@@ -66,9 +67,9 @@ public class ScrobbleDAOMongoTest {
 		Date date2 = new Date(System.currentTimeMillis());
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				artists1, date1, false, musicService1);
+				artists1, date1, false, musicService1, CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
-				date2, true, musicService2);
+				date2, true, musicService2, CREATED_BY);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -92,8 +93,8 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		App musicService1 = new App("Spotify");
-		App musicService2 = new App("Deezer");
+		App musicService1 = new App("Spotify", CREATED_BY);
+		App musicService2 = new App("Deezer", CREATED_BY);
 		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
 				ds);
 		musicServiceDao.cascadeSave(musicService1);
@@ -110,9 +111,9 @@ public class ScrobbleDAOMongoTest {
 		Date date2 = new Date(System.currentTimeMillis());
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				artists1, date1, false, musicService1);
+				artists1, date1, false, musicService1, CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
-				date2, true, musicService2);
+				date2, true, musicService2, CREATED_BY);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -132,8 +133,8 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		App musicService1 = new App("Spotify");
-		App musicService2 = new App("Deezer");
+		App musicService1 = new App("Spotify", CREATED_BY);
+		App musicService2 = new App("Deezer", CREATED_BY);
 		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
 				ds);
 		musicServiceDao.cascadeSave(musicService1);
@@ -147,9 +148,9 @@ public class ScrobbleDAOMongoTest {
 		Date date2 = new Date(System.currentTimeMillis());
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				"Passion Pit", date1, false, musicService1);
+				"Passion Pit", date1, false, musicService1, CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
-				date2, true, musicService2);
+				date2, true, musicService2, CREATED_BY);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand

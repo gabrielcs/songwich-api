@@ -1,12 +1,14 @@
 package views.api.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import play.libs.Json;
 
 import views.api.ScrobbleDTO_V0_4;
 import controllers.api.util.SongwichAPIException;
@@ -30,11 +32,11 @@ public class APIResponseTest {
 	}
 
 	@Test
-	public void apiResponseV0_5ToJson() throws SongwichAPIException {
+	public void apiResponseV0_4ToJson() throws SongwichAPIException {
 		APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
-				views.api.util.Status.SUCCESS, "Success");
+				APIStatus_V0_4.SUCCESS, "Success");
 
-		assertEquals(apiResponse.toJson().toString(),
+		assertEquals(Json.toJson(apiResponse).toString(),
 				"{\"status\":\"0\",\"message\":\"Success\"}");
 	}
 
@@ -49,10 +51,10 @@ public class APIResponseTest {
 		scrobbleDTO.setTimestamp("1012528800000");
 
 		ScrobbleResponse_V0_4 scrobbleResponse = new ScrobbleResponse_V0_4(
-				views.api.util.Status.SUCCESS, "Success", scrobbleDTO);
+				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 
 		assertEquals(
-				scrobbleResponse.toJson().toString(),
+				Json.toJson(scrobbleResponse).toString(),
 				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistName\":\"Name\",\"chosenByUser\":\"false\",\"service\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
 	}
 }

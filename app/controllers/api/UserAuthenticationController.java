@@ -24,6 +24,7 @@ public class UserAuthenticationController extends Action<UserAuthenticated> {
 	public final static String USER_AUTH_TOKEN_HEADER = "X-Songwich.userAuthToken";
 	public final static String USER = "user";
 
+	@Override
 	public Result call(Http.Context ctx) throws Throwable {
 		try {
 			authenticateUser(ctx);
@@ -40,34 +41,41 @@ public class UserAuthenticationController extends Action<UserAuthenticated> {
 	}
 
 	private void authenticateUser(Http.Context ctx) throws SongwichAPIException {
-
 		String[] userAuthTokenHeaderValues = ctx.request().headers()
 				.get(USER_AUTH_TOKEN_HEADER);
 		if ((userAuthTokenHeaderValues != null)
 				&& (userAuthTokenHeaderValues.length == 1)
 				&& (userAuthTokenHeaderValues[0] != null)) {
+			
+			// there's 1 and only 1 auth token
+			UserDAO<ObjectId> userDAO = new UserDAOMongo(
+					DatabaseController.getDatastore());
+			User user;
 			try {
-				UserDAO<ObjectId> userDAO = new UserDAOMongo(
-						DatabaseController.getDatastore());
-				User user = userDAO.findByUserAuthToken(UUID
+				user = userDAO.findByUserAuthToken(UUID
 						.fromString(userAuthTokenHeaderValues[0]));
-				if (user != null) {
-					ctx.args.put(USER, user);
-				} else {
-					Logger.warn(String.format("%s: %s",
-							APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
-							userAuthTokenHeaderValues[0]));
-					throw new SongwichAPIException(
-							APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
-							APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
-				}
 			} catch (IllegalArgumentException e) {
-				// userAuthToken cannot be converted into a UUID
+				// auth token cannot be converted into a UUID
 				throw new SongwichAPIException(
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 			}
+			
+			if (user != null) {
+				// authentication successful
+				ctx.args.put(USER, user);
+			} else {
+				// authentication failed
+				Logger.warn(String.format("%s: %s",
+						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
+						userAuthTokenHeaderValues[0]));
+				throw new SongwichAPIException(
+						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
+						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
+			}
+
 		} else {
+			// there's a number of userAuthTokens different than 1
 			Logger.warn(String.format("%s: %s",
 					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
 					userAuthTokenHeaderValues));

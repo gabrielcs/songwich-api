@@ -14,7 +14,8 @@ import com.google.code.morphia.Morphia;
 import com.mongodb.MongoClient;
 
 public class UserDAOMongoTest {
-	
+
+	private static final String CREATED_BY = "gabriel@dev.com";
 	private Datastore ds;
 	private String dbName = "songwich-api-test";
 
@@ -77,23 +78,23 @@ public class UserDAOMongoTest {
 	
 	@Test
 	public void testFindByEmailAddressWithMusicServiceUser() {
-		App service1 = new App("Spotify");
-		App service2 = new App("Rdio");
+		App service1 = new App("Spotify", CREATED_BY);
+		App service2 = new App("Rdio", CREATED_BY);
 		
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
-		AppUser service1User1 = new AppUser(service1, "gabriel@spam.com");
+		AppUser service1User1 = new AppUser(service1, "gabriel@user.com", CREATED_BY);
 		user1.addAppUser(service1User1);
 		
 		User user2 = new User("daniel@example.com", "Daniel Example");
-		AppUser service2User2 = new AppUser(service2, "daniel@spam.com");
+		AppUser service2User2 = new AppUser(service2, "daniel@user.com", CREATED_BY);
 		user2.addAppUser(service2User2);
 		
 		UserDAOMongo userDao = new UserDAOMongo(ds);
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 		
-		assertTrue(userDao.findByEmailAddress("gabriel@spam.com").equals(user1));
-		assertTrue(userDao.findByEmailAddress("daniel@spam.com").equals(user2));
+		assertTrue(userDao.findByEmailAddress("gabriel@user.com").equals(user1));
+		assertTrue(userDao.findByEmailAddress("daniel@user.com").equals(user2));
 	}
 
 }

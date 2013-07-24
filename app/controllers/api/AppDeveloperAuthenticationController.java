@@ -20,12 +20,14 @@ import controllers.api.util.SongwichAPIException;
 import daos.api.AppDAO;
 import daos.api.AppDAOMongo;
 
-public class AppDeveloperAuthenticationController extends Action<AppDeveloperAuthenticated> {
+public class AppDeveloperAuthenticationController extends
+		Action<AppDeveloperAuthenticated> {
 
 	public final static String DEV_AUTH_TOKEN_HEADER = "X-Songwich.devAuthToken";
 	public final static String DEV = "dev";
 	public final static String APP = "app";
 
+	@Override
 	public Result call(Http.Context ctx) throws Throwable {
 		try {
 			authenticateAppDeveloper(ctx);
@@ -37,7 +39,7 @@ public class AppDeveloperAuthenticationController extends Action<AppDeveloperAut
 			return Results.unauthorized(Json.toJson(response));
 		}
 
-		// app developer and user successfully authenticated
+		// app developer successfully authenticated
 		return delegate.call(ctx);
 	}
 
@@ -49,26 +51,34 @@ public class AppDeveloperAuthenticationController extends Action<AppDeveloperAut
 		if ((devAuthTokenHeaderValues != null)
 				&& (devAuthTokenHeaderValues.length == 1)
 				&& (devAuthTokenHeaderValues[0] != null)) {
+			
+			// there's 1 and only 1 auth token
+			AppDeveloper dev;
 			try {
-				AppDeveloper dev = setAppAndFindAppDeveloper(ctx,
+				dev = setAppAndFindAppDeveloper(ctx,
 						UUID.fromString(devAuthTokenHeaderValues[0]));
-				if (dev != null) {
-					ctx.args.put(DEV, dev);
-				} else {
-					Logger.warn(String.format("%s: %s",
-							APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
-							devAuthTokenHeaderValues[0]));
-					throw new SongwichAPIException(
-							APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
-							APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
-				}
 			} catch (IllegalArgumentException e) {
-				// devAuthToken cannot be converted into a UUID
+				// auth token cannot be converted into a UUID
+				throw new SongwichAPIException(
+						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
+			}
+
+			if (dev != null) {
+				// authentication successful
+				ctx.args.put(DEV, dev);
+			} else {
+				// authentication failed
+				// TODO: Caon should check with Apigee whether our data is up-do-date
+				Logger.warn(String.format("%s: %s",
+						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+						devAuthTokenHeaderValues[0]));
 				throw new SongwichAPIException(
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
 			}
 		} else {
+			// there's a number of userAuthTokens different than 1
 			Logger.warn(String.format("%s: %s",
 					APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
 					devAuthTokenHeaderValues));

@@ -16,6 +16,7 @@ import com.mongodb.WriteResult;
 
 public class MusicServiceDAOMongoTest {
 	
+	private static final String CREATED_BY = "gabriel@dev.com";
 	private Datastore ds;
 	private String dbName = "songwich-api-test";
 
@@ -35,8 +36,8 @@ public class MusicServiceDAOMongoTest {
 	
 	@Test
 	public void testSaveAndDelete() {
-		App service1 = new App("Spotify");
-		App service2 = new App("Deezer");
+		App service1 = new App("Spotify", CREATED_BY);
+		App service2 = new App("Deezer", CREATED_BY);
 		
 		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
 		Key<App> keySave = musicServiceDao.save(service1);
@@ -68,8 +69,8 @@ public class MusicServiceDAOMongoTest {
 	
 	@Test
 	public void testFindById() {
-		App service1 = new App("Spotify");
-		App service2 = new App("Deezer");
+		App service1 = new App("Spotify", CREATED_BY);
+		App service2 = new App("Deezer", CREATED_BY);
 		
 		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
 		musicServiceDao.save(service1);
@@ -81,8 +82,8 @@ public class MusicServiceDAOMongoTest {
 
 	@Test
 	public void testFindByName() {
-		App service1 = new App("Spotify");
-		App service2 = new App("Deezer");
+		App service1 = new App("Spotify", CREATED_BY);
+		App service2 = new App("Deezer", CREATED_BY);
 		
 		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
 		musicServiceDao.save(service1);

@@ -5,6 +5,7 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
+import play.Logger;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -18,7 +19,7 @@ import daos.api.UserDAOMongo;
 
 public class UserController_V0_4 extends Controller {
 
-	@AppDeveloperAuthenticated
+	//@AppDeveloperAuthenticated
 	public static Result newUser() {
 		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
 				.bindFromRequest();
@@ -26,7 +27,7 @@ public class UserController_V0_4 extends Controller {
 			return badRequest(form.errorsAsJson());
 		} else {
 			UserDTO_V0_4 userDTO = form.get();
-
+			
 			newUserUseCase(userDTO);
 
 			UserResponse_V0_4 response = new UserResponse_V0_4(
@@ -36,10 +37,12 @@ public class UserController_V0_4 extends Controller {
 	}
 
 	private static void newUserUseCase(UserDTO_V0_4 userDTO) {
+		Logger.debug("About to get the datastore");
 		UserDAO<ObjectId> userDAO = new UserDAOMongo(
 				DatabaseController.getDatastore());
+		Logger.debug("About to check for the user on the database");
 		User user = userDAO.findByEmailAddress(userDTO.getUserEmail());
-
+		Logger.debug("Have just checked for the user on the database");
 		if (user != null) {
 			for (AppUser appUser : user.getAppUsers()) {
 				if (appUser.getApp().equals(
