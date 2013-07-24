@@ -19,6 +19,7 @@ import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.SongwichAPIException;
 import daos.api.AppDAO;
 import daos.api.AppDAOMongo;
+import daos.api.util.CascadeSaveDAO;
 
 public class AppDeveloperAuthenticationController extends
 		Action<AppDeveloperAuthenticated> {
@@ -51,7 +52,7 @@ public class AppDeveloperAuthenticationController extends
 		if ((devAuthTokenHeaderValues != null)
 				&& (devAuthTokenHeaderValues.length == 1)
 				&& (devAuthTokenHeaderValues[0] != null)) {
-			
+
 			// there's 1 and only 1 auth token
 			AppDeveloper dev;
 			try {
@@ -69,7 +70,8 @@ public class AppDeveloperAuthenticationController extends
 				ctx.args.put(DEV, dev);
 			} else {
 				// authentication failed
-				// TODO: Caon should check with Apigee whether our data is up-do-date
+				// TODO: Caon should check with Apigee whether our data is
+				// up-do-date
 				Logger.warn(String.format("%s: %s",
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
 						devAuthTokenHeaderValues[0]));
@@ -111,5 +113,25 @@ public class AppDeveloperAuthenticationController extends
 
 	public static App getApp() {
 		return (App) Http.Context.current().args.get(APP);
+	}
+
+	/*
+	 * Creates an AppDeveloper associated to an App. If devAuthToken is null a
+	 * new one will be created.
+	 */
+	public static UUID createTestAppWithDeveloper(UUID devAuthToken) {
+		if (devAuthToken == null) {
+			devAuthToken = UUID.randomUUID();
+		}
+
+		// creates a test AppDeveloper
+		AppDeveloper appDeveloper = new AppDeveloper("dev@songwich.com",
+				devAuthToken, "dev@songwich.com");
+		// creates a test App
+		App songwich = new App("Songwich", appDeveloper, "dev@songwich.com");
+		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo(
+				DatabaseController.getDatastore());
+		appDao.save(songwich);
+		return devAuthToken;
 	}
 }

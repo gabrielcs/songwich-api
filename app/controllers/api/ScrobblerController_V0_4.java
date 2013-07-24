@@ -6,7 +6,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.api.ScrobbleDTO_V0_4;
 import views.api.util.APIStatus_V0_4;
-import views.api.util.ScrobbleResponse_V0_4;
+import views.api.util.ScrobblesResponse_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 
@@ -22,7 +22,7 @@ public class ScrobblerController_V0_4 extends Controller {
 		} else {
 			ScrobbleDTO_V0_4 scrobbleDTO = form.get();
 			// TODO: process the request
-			ScrobbleResponse_V0_4 response = new ScrobbleResponse_V0_4(
+			ScrobblesResponse_V0_4 response = new ScrobblesResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 			return ok(Json.toJson(response));
 		}

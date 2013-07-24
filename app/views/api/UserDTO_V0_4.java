@@ -2,7 +2,6 @@ package views.api;
 
 import models.Scrobble;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -14,7 +13,6 @@ import views.api.util.DataTransferObject;
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("user")
 public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
-	@JsonProperty("user")
 	@Email
 	@Required
 	private String userEmail;

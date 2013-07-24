@@ -50,7 +50,7 @@ public class APIResponseTest {
 		scrobbleDTO.setService("Spotify");
 		scrobbleDTO.setTimestamp("1012528800000");
 
-		ScrobbleResponse_V0_4 scrobbleResponse = new ScrobbleResponse_V0_4(
+		ScrobblesResponse_V0_4 scrobbleResponse = new ScrobblesResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 
 		assertEquals(

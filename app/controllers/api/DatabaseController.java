@@ -9,14 +9,13 @@ import com.google.code.morphia.Morphia;
 import com.mongodb.MongoClient;
 
 public class DatabaseController {
-
 	// it currently only supports 1 Datastore
 	private static Datastore datastore;
 
 	public static Datastore createDatastore(String dbName) {
 		try {
-			setDatastore(new Morphia().createDatastore(new MongoClient(),
-					dbName));
+			datastore = new Morphia().createDatastore(new MongoClient(),
+					dbName);
 			Logger.info("Connected to database " + dbName);
 			return getDatastore();
 		} catch (UnknownHostException e) {
@@ -37,9 +36,5 @@ public class DatabaseController {
 
 	public static Datastore getDatastore() {
 		return datastore;
-	}
-
-	public static void setDatastore(Datastore ds) {
-		datastore = ds;
 	}
 }
