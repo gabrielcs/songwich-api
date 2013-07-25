@@ -26,7 +26,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String trackTitle;
 
 	@Required
-	private String artistName;
+	private String artistsNames;
 
 	private String chosenByUser;
 
@@ -94,17 +94,17 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.trackTitle = track_title;
 	}
 
-	public String getArtistName() {
-		return artistName;
+	public String getArtistsNames() {
+		return artistsNames;
 	}
 
-	public void setArtistName(String artist_name) throws SongwichAPIException {
-		if (artist_name == null || artist_name.isEmpty()) {
+	public void setArtistsNames(String artistsNames) throws SongwichAPIException {
+		if (artistsNames == null || artistsNames.isEmpty()) {
 			throw new SongwichAPIException("Missing parameter: artistName",
 					APIStatus_V0_4.BAD_REQUEST);
 		}
 
-		this.artistName = artist_name;
+		this.artistsNames = artistsNames;
 	}
 
 	public String getService() {

@@ -8,8 +8,9 @@ public enum APIStatus_V0_4 implements APIStatus {
 	METHOD_NOT_FOUND("2", "Method not found"), 
 	INVALID_TIMESTAMP("3", "Invalid timestamp"), 
 	INVALID_USER_ID("4", "Invalid userId"),
-	INVALID_USER_AUTH_TOKEN("5", "Invalid X-Songwich.userAuthToken"),
-	INVALID_DEV_AUTH_TOKEN("6", "Invalid X-Songwich.devAuthToken");
+	UNAUTHORIZED("5", "Unauthorized"),
+	INVALID_USER_AUTH_TOKEN("6", "Invalid X-Songwich.userAuthToken"),
+	INVALID_DEV_AUTH_TOKEN("7", "Invalid X-Songwich.devAuthToken");
 
 	private String code;
 	private String string;

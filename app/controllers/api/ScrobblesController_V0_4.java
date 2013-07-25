@@ -7,9 +7,10 @@ import org.bson.types.ObjectId;
 import play.Logger;
 import play.data.Form;
 import play.libs.Json;
+import play.mvc.Http;
+import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
-import play.mvc.Http.Context;
 import usecases.api.ScrobblesUseCases;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
@@ -20,7 +21,6 @@ import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 import dtos.api.util.GetScrobblesResponse_V0_4;
 import dtos.api.util.PostScrobblesResponse_V0_4;
-import dtos.api.util.deprecated.APIResponse_V0_1;
 
 public class ScrobblesController_V0_4 extends SongwichController {
 
@@ -46,6 +46,8 @@ public class ScrobblesController_V0_4 extends SongwichController {
 		}
 	}
 
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
 	public static Result getScrobbles(String userId) {
 		ObjectId objectId;
 		try {
@@ -54,8 +56,9 @@ public class ScrobblesController_V0_4 extends SongwichController {
 			SongwichAPIException apiEx = new SongwichAPIException(
 					"Invalid user id: " + userId,
 					APIStatus_V0_4.INVALID_USER_ID);
-			Logger.warn(String.format("%s [%s]: %s", apiEx.getStatus().toString(),
-					apiEx.getMessage(), Context.current().request()));
+			Logger.warn(String.format("%s [%s]: %s", apiEx.getStatus()
+					.toString(), apiEx.getMessage(), Context.current()
+					.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(apiEx.getStatus(),
 					apiEx.getMessage());
 			return Results.badRequest(Json.toJson(response));
@@ -63,8 +66,18 @@ public class ScrobblesController_V0_4 extends SongwichController {
 
 		// process the request
 		ScrobblesUseCases scroblesUseCases = new ScrobblesUseCases(getContext());
-		List<ScrobblesDTO_V0_4> scrobbleDTOs = scroblesUseCases
-				.getScrobbles(objectId);
+		List<ScrobblesDTO_V0_4> scrobbleDTOs;
+		try {
+			scrobbleDTOs = scroblesUseCases.getScrobbles(objectId);
+		} catch (SongwichAPIException exception) {
+			// user unauthorized for getting scrobbles from another user
+			Logger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.unauthorized(Json.toJson(response));
+		}
 
 		// return the response
 		GetScrobblesResponse_V0_4 response = new GetScrobblesResponse_V0_4(

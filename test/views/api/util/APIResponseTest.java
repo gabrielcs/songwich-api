@@ -48,7 +48,7 @@ public class APIResponseTest {
 		ScrobblesDTO_V0_4 scrobbleDTO = new ScrobblesDTO_V0_4();
 		scrobbleDTO.setUserEmail("gabriel@example.com");
 		scrobbleDTO.setTrackTitle("Title");
-		scrobbleDTO.setArtistName("Name");
+		scrobbleDTO.setArtistsNames("Name");
 		scrobbleDTO.setChosenByUser("false");
 		scrobbleDTO.setService("Spotify");
 		scrobbleDTO.setTimestamp("1012528800000");
