@@ -40,6 +40,8 @@ public class DatabaseContext {
 	 * Creates a datastore at a given uri
 	 */
 	public static Datastore createDatastore(String uri, String dbName) {
+		Logger.debug("uri string: " + uri);
+		Logger.debug("uri object: " + new MongoClientURI(uri));
 		try {
 			MongoClient mongoClient = new MongoClient(new MongoClientURI(uri));
 			datastore = new Morphia().createDatastore(mongoClient, dbName);
