@@ -30,16 +30,26 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void beforeStart(play.Application app) {
-		String dbName = app.configuration().getString("morphia.db.name");
-		DatabaseContext.createDatastore(dbName);
-		
+		if (app.isProd()) {
+			// connects to our Mongo-as-a-Service database
+			String dbName = app.configuration().getString("morphia.db.name");
+			DatabaseContext
+					.createDatastore(
+							dbName,
+							"mongodb://heroku_app16143042:8p28vf6agqdud3k0qpjegp8at9@ds037688.mongolab.com:37688/heroku_app16143042");
+		}
+
 		if (app.isDev()) {
+			String dbName = app.configuration().getString("morphia.db.name");
+			DatabaseContext.createDatastore(dbName);
+
 			// start with a clean database if in development mode
 			DatabaseContext.dropDatabase();
 			// and creates a test developer
 			UUID devAuthToken = AppDeveloperAuthController
-					.createTestAppWithDeveloper(UUID.fromString("3bde6fba-1ae5-4d7f-8000-f2aba160b71a"));
-			//Logger.info("devAuthToken: " + devAuthToken.toString());
+					.createTestAppWithDeveloper(UUID
+							.fromString("3bde6fba-1ae5-4d7f-8000-f2aba160b71a"));
+			// Logger.info("devAuthToken: " + devAuthToken.toString());
 		}
 	}
 
