@@ -17,6 +17,8 @@ public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@Email
 	@Required
 	private String userEmail;
+	
+	private String userId;
 
 	private String userAuthToken;
 	
@@ -49,6 +51,14 @@ public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
 	 */
 	public void setUserAuthToken(String userAuthToken) {
 		this.userAuthToken = userAuthToken;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 }

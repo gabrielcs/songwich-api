@@ -11,7 +11,7 @@ import usecases.api.util.DatabaseContext;
 import com.google.code.morphia.logging.MorphiaLoggerFactory;
 import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
 
-import controllers.api.AppDeveloperAuthenticationController;
+import controllers.api.AppDeveloperAuthController;
 import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 
@@ -37,7 +37,7 @@ public class Global extends GlobalSettings {
 			// start with a clean database if in development mode
 			DatabaseContext.dropDatabase();
 			// and creates a test developer
-			UUID devAuthToken = AppDeveloperAuthenticationController
+			UUID devAuthToken = AppDeveloperAuthController
 					.createTestAppWithDeveloper(UUID.fromString("3bde6fba-1ae5-4d7f-8000-f2aba160b71a"));
 			//Logger.info("devAuthToken: " + devAuthToken.toString());
 		}

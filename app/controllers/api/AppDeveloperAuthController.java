@@ -13,7 +13,6 @@ import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import usecases.api.util.DatabaseContext;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.SongwichAPIException;
 import daos.api.AppDAO;
@@ -22,7 +21,7 @@ import daos.api.util.CascadeSaveDAO;
 import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 
-public class AppDeveloperAuthenticationController extends
+public class AppDeveloperAuthController extends
 		Action<AppDeveloperAuthenticated> {
 
 	public final static String DEV_AUTH_TOKEN_HEADER = "X-Songwich.devAuthToken";
@@ -45,10 +44,10 @@ public class AppDeveloperAuthenticationController extends
 		return delegate.call(ctx);
 	}
 
-	private void authenticateAppDeveloper(Http.Context ctx)
+	private void authenticateAppDeveloper(Http.Context context)
 			throws SongwichAPIException {
 
-		String[] devAuthTokenHeaderValues = ctx.request().headers()
+		String[] devAuthTokenHeaderValues = context.request().headers()
 				.get(DEV_AUTH_TOKEN_HEADER);
 		if ((devAuthTokenHeaderValues != null)
 				&& (devAuthTokenHeaderValues.length == 1)
@@ -57,8 +56,10 @@ public class AppDeveloperAuthenticationController extends
 			// there's 1 and only 1 auth token
 			AppDeveloper dev;
 			try {
-				dev = setAppAndFindAppDeveloper(ctx,
-						UUID.fromString(devAuthTokenHeaderValues[0]));
+				UUID devAuthToken = UUID
+						.fromString(devAuthTokenHeaderValues[0]);
+				App app = setApp(devAuthToken);
+				dev = findAppDeveloper(context, devAuthToken, app);
 			} catch (IllegalArgumentException e) {
 				// auth token cannot be converted into a UUID
 				throw new SongwichAPIException(
@@ -68,7 +69,7 @@ public class AppDeveloperAuthenticationController extends
 
 			if (dev != null) {
 				// authentication successful
-				ctx.args.put(DEV, dev);
+				context.args.put(DEV, dev);
 			} else {
 				// authentication failed
 				// TODO: Caon should check with Apigee whether our data is
@@ -91,11 +92,13 @@ public class AppDeveloperAuthenticationController extends
 		}
 	}
 
-	private AppDeveloper setAppAndFindAppDeveloper(Http.Context ctx,
-			UUID devAuthToken) {
-		AppDAO<ObjectId> appDAO = new AppDAOMongo(
-				DatabaseContext.getDatastore());
-		App app = appDAO.findByDevAuthToken(devAuthToken);
+	private App setApp(UUID devAuthToken) {
+		AppDAO<ObjectId> appDAO = new AppDAOMongo();
+		return appDAO.findByDevAuthToken(devAuthToken);
+	}
+
+	private AppDeveloper findAppDeveloper(Http.Context ctx, UUID devAuthToken,
+			App app) {
 		if (app != null) {
 			ctx.args.put(APP, app);
 			for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
@@ -106,14 +109,6 @@ public class AppDeveloperAuthenticationController extends
 			}
 		}
 		return null;
-	}
-
-	public static AppDeveloper getAppDeveloper() {
-		return (AppDeveloper) Http.Context.current().args.get(DEV);
-	}
-
-	public static App getApp() {
-		return (App) Http.Context.current().args.get(APP);
 	}
 
 	/*
@@ -130,9 +125,8 @@ public class AppDeveloperAuthenticationController extends
 				devAuthToken, "dev@songwich.com");
 		// creates a test App
 		App songwich = new App("Songwich", appDeveloper, "dev@songwich.com");
-		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo(
-				DatabaseContext.getDatastore());
-		appDao.save(songwich);
+		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
+		appDao.cascadeSave(songwich);
 		return devAuthToken;
 	}
 }

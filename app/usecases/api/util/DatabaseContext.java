@@ -49,8 +49,7 @@ public class DatabaseContext {
 	public static UUID createUserAuthToken() {
 		UUID userAuthToken = UUID.randomUUID();
 		// assert that the random UUID is unique (might be expensive)
-		UserDAO<ObjectId> userDAO = new UserDAOMongo(
-				DatabaseContext.getDatastore());
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findByUserAuthToken(userAuthToken);
 		if (user == null) {
 			return userAuthToken;

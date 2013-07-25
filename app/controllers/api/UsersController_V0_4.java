@@ -2,16 +2,15 @@ package controllers.api;
 
 import play.data.Form;
 import play.libs.Json;
-import play.mvc.Controller;
 import play.mvc.Result;
 import usecases.api.NewUserUseCase;
-import usecases.api.util.RequestContext;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.util.SongwichController;
 import dtos.api.UserDTO_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 import dtos.api.util.UsersResponse_V0_4;
 
-public class UserController_V0_4 extends Controller {
+public class UsersController_V0_4 extends SongwichController {
 
 	@AppDeveloperAuthenticated
 	public static Result newUser() {
@@ -21,13 +20,9 @@ public class UserController_V0_4 extends Controller {
 			return badRequest(form.errorsAsJson());
 		} else {
 			UserDTO_V0_4 userDTO = form.get();
-			
+
 			// process the request
-			RequestContext ctx = new RequestContext(
-					AppDeveloperAuthenticationController.getApp(),
-					AppDeveloperAuthenticationController.getAppDeveloper(),
-					UserAuthenticationController.getUser());
-			NewUserUseCase newUserUseCase = new NewUserUseCase(ctx);
+			NewUserUseCase newUserUseCase = new NewUserUseCase(getContext());
 			newUserUseCase.newUser(userDTO);
 
 			// return the response

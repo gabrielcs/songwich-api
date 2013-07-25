@@ -15,54 +15,55 @@ import daos.api.UserDAOMongo;
 import dtos.api.UserDTO_V0_4;
 
 public class NewUserUseCase extends UseCase {
-	
+
 	public NewUserUseCase(RequestContext context) {
 		super(context);
 	}
 
 	public void newUser(UserDTO_V0_4 userDTO) {
-		UserDAO<ObjectId> userDAO = new UserDAOMongo(
-				DatabaseContext.getDatastore());
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findByEmailAddress(userDTO.getUserEmail());
 		if (user != null) {
+
 			// user was already in the database
 			for (AppUser appUser : user.getAppUsers()) {
-				if (appUser.getApp().equals(
-						getContext().getApp())) {
+				if (appUser.getApp().equals(getContext().getApp())) {
 					// AppUser was also already in the database
 					// TODO: decide what to do
 				} else {
 					// registers a new AppUser for that User
 					AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
-					userDTO.setUserAuthToken(newAppUser.getUserAuthToken()
-							.toString());
+					updateDTO(user, newAppUser, userDTO);
 				}
 			}
 		} else {
 			// creates a brand new User with an associated AppUser
-			String createdBy = getContext()
-					.getAppDeveloper().getEmailAddress();
+			String createdBy = getContext().getAppDeveloper().getEmailAddress();
 			user = new User(userDTO.getUserEmail(), createdBy);
 			AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
-			userDTO.setUserAuthToken(newAppUser.getUserAuthToken().toString());
+			updateDTO(user, newAppUser, userDTO);
 		}
 	}
 
 	/*
 	 * If the User is also a new one it will be saved to the database as well.
 	 */
-	private AppUser saveNewAppUser(User user, String userAppEmail) {
-		String createdBy = getContext()
-				.getAppDeveloper().getEmailAddress();
+	private AppUser saveNewAppUser(User user, String userEmail) {
+		String createdBy = getContext().getAppDeveloper().getEmailAddress();
 
 		UUID userAuthToken = DatabaseContext.createUserAuthToken();
-		AppUser newAppUser = new AppUser(getContext().getApp(), userAppEmail, userAuthToken,
-				createdBy);
+		AppUser newAppUser = new AppUser(getContext().getApp(), userEmail,
+				userAuthToken, createdBy);
 		user.addAppUser(newAppUser);
 
-		UserDAO<ObjectId> userDAO = new UserDAOMongo(
-				DatabaseContext.getDatastore());
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		userDAO.save(user);
+
 		return newAppUser;
+	}
+
+	private void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
+		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().toString());
+		userDTO.setUserId(user.getId().toString());
 	}
 }

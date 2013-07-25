@@ -7,16 +7,13 @@ import models.AppDeveloper;
 
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.Datastore;
-
 import daos.api.util.BasicDAOMongo;
 import daos.api.util.CascadeSaveDAO;
 
 public class AppDAOMongo extends BasicDAOMongo<App> implements
 		AppDAO<ObjectId>, CascadeSaveDAO<App, ObjectId> {
 
-	public AppDAOMongo(Datastore ds) {
-		super(ds);
+	public AppDAOMongo() {
 	}
 
 	@Override

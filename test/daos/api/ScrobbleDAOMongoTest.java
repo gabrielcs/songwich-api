@@ -15,44 +15,35 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.Morphia;
-import com.mongodb.MongoClient;
-
+import usecases.api.util.DatabaseContext;
 import daos.api.util.CascadeSaveDAO;
 
 public class ScrobbleDAOMongoTest {
 	
-	private static final String CREATED_BY = "gabriel@dev.com"; 
-	private Datastore ds;
+	private static final String CREATED_BY = "gabriel@dev.com";
 	private String dbName = "songwich-api-test";
 
 	@Before
 	public void setUp() throws Exception {
-		ds = new Morphia().createDatastore(new MongoClient(), dbName);
-		// Logger.info("Connected to database " + dbName);
-		System.out.println("Connected to database " + dbName);
+		DatabaseContext.createDatastore(dbName);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		ds.getDB().dropDatabase();
-		// Logger.info("Dropped database " + dbName);
-		System.out.println("Dropped database " + dbName);
+		DatabaseContext.dropDatabase();
 	}
 
 	@Test
 	public void testSaveAndDelete() {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
-		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo(ds);
+		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
 		App musicService1 = new App("Spotify", CREATED_BY);
 		App musicService2 = new App("Deezer", CREATED_BY);
-		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
-				ds);
+		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo();
 		musicServiceDao.cascadeSave(musicService1);
 		musicServiceDao.cascadeSave(musicService2);
 
@@ -73,7 +64,7 @@ public class ScrobbleDAOMongoTest {
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
-		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo(ds);
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		scrobbleDao.save(scrobble1);
 		scrobbleDao.save(scrobble2);
 
@@ -89,14 +80,13 @@ public class ScrobbleDAOMongoTest {
 	public void testFindById() {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
-		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo(ds);
+		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
 		App musicService1 = new App("Spotify", CREATED_BY);
 		App musicService2 = new App("Deezer", CREATED_BY);
-		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
-				ds);
+		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo();
 		musicServiceDao.cascadeSave(musicService1);
 		musicServiceDao.cascadeSave(musicService2);
 
@@ -117,7 +107,7 @@ public class ScrobbleDAOMongoTest {
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
-		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo(ds);
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		scrobbleDao.save(scrobble1);
 		scrobbleDao.save(scrobble2);
 
@@ -129,14 +119,13 @@ public class ScrobbleDAOMongoTest {
 	public void testFindByUserId() {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
-		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo(ds);
+		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
 		App musicService1 = new App("Spotify", CREATED_BY);
 		App musicService2 = new App("Deezer", CREATED_BY);
-		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo(
-				ds);
+		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo();
 		musicServiceDao.cascadeSave(musicService1);
 		musicServiceDao.cascadeSave(musicService2);
 
@@ -154,7 +143,7 @@ public class ScrobbleDAOMongoTest {
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
-		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo(ds);
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		scrobbleDao.save(scrobble1);
 		scrobbleDao.save(scrobble2);
 

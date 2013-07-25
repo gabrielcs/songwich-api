@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import play.mvc.With;
-import controllers.api.UserAuthenticationController;
+import controllers.api.UserAuthController;
 
-@With(UserAuthenticationController.class)
+@With(UserAuthController.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserAuthenticated {

@@ -17,8 +17,7 @@ import daos.api.util.CascadeSaveDAO;
 public class UserDAOMongo extends BasicDAOMongo<User> implements
 		UserDAO<ObjectId>, CascadeSaveDAO<User, ObjectId> {
 
-	public UserDAOMongo(Datastore ds) {
-		super(ds);
+	public UserDAOMongo() {
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 		}
 
 		// check if there are App's to save
-		CascadeSaveDAO<App, ObjectId> musicServiceDAO = new AppDAOMongo(ds);
+		CascadeSaveDAO<App, ObjectId> musicServiceDAO = new AppDAOMongo();
 		App musicService;
 
 		Set<AppUser> musicServiceUsers = t.getAppUsers();

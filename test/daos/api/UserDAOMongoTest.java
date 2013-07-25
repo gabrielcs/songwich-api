@@ -9,28 +9,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.Morphia;
-import com.mongodb.MongoClient;
+import usecases.api.util.DatabaseContext;
 
 public class UserDAOMongoTest {
 
 	private static final String CREATED_BY = "gabriel@dev.com";
-	private Datastore ds;
 	private String dbName = "songwich-api-test";
 
 	@Before
 	public void setUp() throws Exception {
-		ds = new Morphia().createDatastore(new MongoClient(), dbName);
-		//Logger.info("Connected to database " + dbName);
-		System.out.println("Connected to database " + dbName);
+		DatabaseContext.createDatastore(dbName);
 	}
 	
 	@After
 	public void tearDown() throws Exception {
-		ds.getDB().dropDatabase();
-		//Logger.info("Dropped database " + dbName);
-		System.out.println("Dropped database " + dbName);
+		DatabaseContext.dropDatabase();
 	}
 	
 	@Test
@@ -38,7 +31,7 @@ public class UserDAOMongoTest {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		
-		UserDAOMongo userDao = new UserDAOMongo(ds);
+		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 		
@@ -55,7 +48,7 @@ public class UserDAOMongoTest {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		
-		UserDAOMongo userDao = new UserDAOMongo(ds);
+		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 		
@@ -68,7 +61,7 @@ public class UserDAOMongoTest {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		
-		UserDAOMongo userDao = new UserDAOMongo(ds);
+		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 		
@@ -89,7 +82,7 @@ public class UserDAOMongoTest {
 		AppUser service2User2 = new AppUser(service2, "daniel@user.com", CREATED_BY);
 		user2.addAppUser(service2User2);
 		
-		UserDAOMongo userDao = new UserDAOMongo(ds);
+		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 		

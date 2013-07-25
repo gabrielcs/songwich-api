@@ -9,7 +9,7 @@ import dtos.api.util.deprecated.APIResponse_V0_1;
 import dtos.api.util.deprecated.APIStatus_V0_1;
 
 @Deprecated
-public class ScrobblerController_V0_1 extends Controller {
+public class ScrobblesController_V0_1 extends Controller {
 
 	public static Result scrobble(Long user_id, String track_title,
 			String artist_name, String service, Long timestamp) {

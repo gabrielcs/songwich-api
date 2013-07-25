@@ -8,30 +8,24 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.code.morphia.Datastore;
+import usecases.api.util.DatabaseContext;
+
 import com.google.code.morphia.Key;
-import com.google.code.morphia.Morphia;
-import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
 
 public class MusicServiceDAOMongoTest {
 	
 	private static final String CREATED_BY = "gabriel@dev.com";
-	private Datastore ds;
 	private String dbName = "songwich-api-test";
 
 	@Before
 	public void setUp() throws Exception {
-		ds = new Morphia().createDatastore(new MongoClient(), dbName);
-		//Logger.info("Connected to database " + dbName);
-		System.out.println("Connected to database " + dbName);
+		DatabaseContext.createDatastore(dbName);
 	}
 	
 	@After
 	public void tearDown() throws Exception {
-		ds.getDB().dropDatabase();
-		//Logger.info("Dropped database " + dbName);
-		System.out.println("Dropped database " + dbName);
+		DatabaseContext.dropDatabase();
 	}
 	
 	@Test
@@ -39,7 +33,7 @@ public class MusicServiceDAOMongoTest {
 		App service1 = new App("Spotify", CREATED_BY);
 		App service2 = new App("Deezer", CREATED_BY);
 		
-		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
+		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo();
 		Key<App> keySave = musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
 		
@@ -72,7 +66,7 @@ public class MusicServiceDAOMongoTest {
 		App service1 = new App("Spotify", CREATED_BY);
 		App service2 = new App("Deezer", CREATED_BY);
 		
-		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
+		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo();
 		musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
 		
@@ -85,7 +79,7 @@ public class MusicServiceDAOMongoTest {
 		App service1 = new App("Spotify", CREATED_BY);
 		App service2 = new App("Deezer", CREATED_BY);
 		
-		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo(ds);
+		AppDAO<ObjectId> musicServiceDao = new AppDAOMongo();
 		musicServiceDao.save(service1);
 		musicServiceDao.save(service2);
 		

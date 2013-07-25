@@ -6,7 +6,6 @@ import models.Scrobble;
 
 import org.bson.types.ObjectId;
 
-import usecases.api.util.DatabaseContext;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
 import daos.api.ScrobbleDAO;
@@ -30,8 +29,7 @@ public class ScrobbleUseCase extends UseCase {
 				getContext().getAppDeveloper().getEmailAddress()
 				);
 		
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo(
-				DatabaseContext.getDatastore());
+		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		scrobbleDAO.save(scrobble);
 	}
 }

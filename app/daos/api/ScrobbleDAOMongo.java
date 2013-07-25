@@ -6,8 +6,6 @@ import models.Scrobble;
 
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.Datastore;
-
 import daos.api.util.BasicDAOMongo;
 
 /*
@@ -17,8 +15,7 @@ import daos.api.util.BasicDAOMongo;
 public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		ScrobbleDAO<ObjectId> {
 
-	public ScrobbleDAOMongo(Datastore ds) {
-		super(ds);
+	public ScrobbleDAOMongo() {
 	}
 
 	@Override
