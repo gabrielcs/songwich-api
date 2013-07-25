@@ -40,8 +40,11 @@ public class Global extends GlobalSettings {
 
 		if (app.isDev()) {
 			// starts with a clean local database if in development mode
-			DatabaseContext.createDatastore(dbName);
-			DatabaseContext.dropDatabase();
+			//DatabaseContext.createDatastore(dbName);
+			//DatabaseContext.dropDatabase();
+			String uri = app.configuration().getString("mongolabs.uri");
+			DatabaseContext.createDatastore(uri, dbName);
+			
 			// and creates a test developer
 			UUID devAuthToken = AppDeveloperAuthController
 					.createTestAppWithDeveloper(UUID

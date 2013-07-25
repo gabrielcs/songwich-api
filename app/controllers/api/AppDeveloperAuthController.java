@@ -116,6 +116,8 @@ public class AppDeveloperAuthController extends
 	 * new one will be created.
 	 */
 	public static UUID createTestAppWithDeveloper(UUID devAuthToken) {
+		Logger.debug("About to create a test AppDeveloper");
+		
 		if (devAuthToken == null) {
 			devAuthToken = UUID.randomUUID();
 		}
@@ -127,6 +129,10 @@ public class AppDeveloperAuthController extends
 		App songwich = new App("Songwich", appDeveloper, "dev@songwich.com");
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(songwich);
+
+		Logger.info("Created 'dev@songwich.com' working at 'Songwich' with devAuthToken="
+				+ devAuthToken.toString());
+
 		return devAuthToken;
 	}
 }
