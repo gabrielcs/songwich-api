@@ -39,9 +39,8 @@ public class Global extends GlobalSettings {
 		}
 
 		if (app.isDev()) {
+			// starts with a clean local database if in development mode
 			DatabaseContext.createDatastore(dbName);
-
-			// start with a clean database if in development mode
 			DatabaseContext.dropDatabase();
 			// and creates a test developer
 			UUID devAuthToken = AppDeveloperAuthController
