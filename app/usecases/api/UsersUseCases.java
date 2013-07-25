@@ -12,15 +12,15 @@ import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
 import daos.api.UserDAO;
 import daos.api.UserDAOMongo;
-import dtos.api.UserDTO_V0_4;
+import dtos.api.PostUsersDTO_V0_4;
 
-public class NewUserUseCase extends UseCase {
+public class UsersUseCases extends UseCase {
 
-	public NewUserUseCase(RequestContext context) {
+	public UsersUseCases(RequestContext context) {
 		super(context);
 	}
 
-	public void newUser(UserDTO_V0_4 userDTO) {
+	public void postUsers(PostUsersDTO_V0_4 userDTO) {
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findByEmailAddress(userDTO.getUserEmail());
 		if (user != null) {
@@ -62,7 +62,7 @@ public class NewUserUseCase extends UseCase {
 		return newAppUser;
 	}
 
-	private void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
+	private void updateDTO(User user, AppUser newAppUser, PostUsersDTO_V0_4 userDTO) {
 		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().toString());
 		userDTO.setUserId(user.getId().toString());
 	}

@@ -16,7 +16,7 @@ import dtos.api.util.deprecated.APIStatus_V0_1;
 @Deprecated
 public class ScrobblesController_V0_3 extends Controller {
 
-	public static Result scrobble() {
+	public static Result postScrobble() {
 		ScrobbleProxy_V0_3 scrobble;
 		APIResponse_V0_1 response;
 		try {

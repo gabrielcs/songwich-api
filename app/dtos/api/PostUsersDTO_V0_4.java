@@ -13,7 +13,7 @@ import play.data.validation.Constraints.Required;
 // @JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("user")
-public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class PostUsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@Email
 	@Required
 	private String userEmail;
@@ -22,7 +22,7 @@ public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private String userAuthToken;
 	
-	public UserDTO_V0_4() {
+	public PostUsersDTO_V0_4() {
 	}
 	
 	/**

@@ -11,10 +11,10 @@ import org.junit.Test;
 import play.libs.Json;
 
 import controllers.api.util.SongwichAPIException;
-import dtos.api.ScrobbleDTO_V0_4;
+import dtos.api.ScrobblesDTO_V0_4;
 import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
-import dtos.api.util.ScrobblesResponse_V0_4;
+import dtos.api.util.PostScrobblesResponse_V0_4;
 
 public class APIResponseTest {
 
@@ -45,7 +45,7 @@ public class APIResponseTest {
 
 	@Test
 	public void scrobbleResponseToJson() throws SongwichAPIException {
-		ScrobbleDTO_V0_4 scrobbleDTO = new ScrobbleDTO_V0_4();
+		ScrobblesDTO_V0_4 scrobbleDTO = new ScrobblesDTO_V0_4();
 		scrobbleDTO.setUserEmail("gabriel@example.com");
 		scrobbleDTO.setTrackTitle("Title");
 		scrobbleDTO.setArtistName("Name");
@@ -53,7 +53,7 @@ public class APIResponseTest {
 		scrobbleDTO.setService("Spotify");
 		scrobbleDTO.setTimestamp("1012528800000");
 
-		ScrobblesResponse_V0_4 scrobbleResponse = new ScrobblesResponse_V0_4(
+		PostScrobblesResponse_V0_4 scrobbleResponse = new PostScrobblesResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 
 		assertEquals(

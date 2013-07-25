@@ -1,36 +1,74 @@
 package controllers.api;
 
+import java.util.List;
+
+import org.bson.types.ObjectId;
+
+import play.Logger;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Result;
-import usecases.api.ScrobbleUseCase;
+import play.mvc.Results;
+import play.mvc.Http.Context;
+import usecases.api.ScrobblesUseCases;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
+import controllers.api.util.SongwichAPIException;
 import controllers.api.util.SongwichController;
-import dtos.api.ScrobbleDTO_V0_4;
+import dtos.api.ScrobblesDTO_V0_4;
+import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
-import dtos.api.util.ScrobblesResponse_V0_4;
+import dtos.api.util.GetScrobblesResponse_V0_4;
+import dtos.api.util.PostScrobblesResponse_V0_4;
+import dtos.api.util.deprecated.APIResponse_V0_1;
 
 public class ScrobblesController_V0_4 extends SongwichController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result scrobble() {
-		Form<ScrobbleDTO_V0_4> form = Form.form(ScrobbleDTO_V0_4.class)
+	public static Result postScrobbles() {
+		Form<ScrobblesDTO_V0_4> form = Form.form(ScrobblesDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
 			return badRequest(form.errorsAsJson());
 		} else {
-			ScrobbleDTO_V0_4 scrobbleDTO = form.get();
+			ScrobblesDTO_V0_4 scrobbleDTO = form.get();
 
 			// process the request
-			ScrobbleUseCase scrobbleUseCase = new ScrobbleUseCase(getContext());
-			scrobbleUseCase.scrobble(scrobbleDTO);
+			ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
+					getContext());
+			scrobblesUseCases.postScrobbles(scrobbleDTO);
 
 			// return the response
-			ScrobblesResponse_V0_4 response = new ScrobblesResponse_V0_4(
+			PostScrobblesResponse_V0_4 response = new PostScrobblesResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 			return ok(Json.toJson(response));
 		}
+	}
+
+	public static Result getScrobbles(String userId) {
+		ObjectId objectId;
+		try {
+			objectId = new ObjectId(userId);
+		} catch (IllegalArgumentException illegalArgumentEx) {
+			SongwichAPIException apiEx = new SongwichAPIException(
+					"Invalid user id: " + userId,
+					APIStatus_V0_4.INVALID_USER_ID);
+			Logger.warn(String.format("%s [%s]: %s", apiEx.getStatus().toString(),
+					apiEx.getMessage(), Context.current().request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(apiEx.getStatus(),
+					apiEx.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
+
+		// process the request
+		ScrobblesUseCases scroblesUseCases = new ScrobblesUseCases(getContext());
+		List<ScrobblesDTO_V0_4> scrobbleDTOs = scroblesUseCases
+				.getScrobbles(objectId);
+
+		// return the response
+		GetScrobblesResponse_V0_4 response = new GetScrobblesResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTOs);
+		return ok(Json.toJson(response));
 	}
 }

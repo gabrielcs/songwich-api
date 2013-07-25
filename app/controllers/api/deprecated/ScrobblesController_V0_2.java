@@ -13,7 +13,7 @@ import dtos.api.util.deprecated.APIStatus_V0_1;
 @Deprecated
 public class ScrobblesController_V0_2 extends Controller {
 
-	public static Result scrobble(String user_id, String track_title,
+	public static Result getScrobble(String user_id, String track_title,
 			String artist_name, String service, String timestamp) {
 		ScrobbleProxy_V0_2 scrobble;
 		APIResponse_V0_1 response;

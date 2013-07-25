@@ -3,16 +3,16 @@
 # ~~~~
 
 # Scrobbler
-POST   /v0.4/scrobbles           controllers.api.ScrobblesController_V0_4.scrobble()
-#GET    /v0.4/scrobbles/:user     controllers.api.ScrobblesController_V0_4.getScrobbles(user)
+POST   /v0.4/scrobbles           controllers.api.ScrobblesController_V0_4.postScrobbles()
+GET    /v0.4/scrobbles/:user     controllers.api.ScrobblesController_V0_4.getScrobbles(user)
 
 # User
-POST   /v0.4/users               controllers.api.UsersController_V0_4.newUser()
+POST   /v0.4/users               controllers.api.UsersController_V0_4.postUsers()
 
 # Deprecated
-POST   /v0.3/scrobble            controllers.api.deprecated.ScrobblesController_V0_3.scrobble()
-GET    /v0.2/scrobble            controllers.api.deprecated.ScrobblesController_V0_2.scrobble(user_id, track_title, artist_name, service ?= null, timestamp ?= System.currentTimeMillis.toString)
-GET    /v0.1/scrobble            controllers.api.deprecated.ScrobblesController_V0_1.scrobble(user_id: Long, track_title, artist_name, service ?= null, timestamp: Long ?= System.currentTimeMillis)
+POST   /v0.3/scrobble            controllers.api.deprecated.ScrobblesController_V0_3.postScrobble()
+GET    /v0.2/scrobble            controllers.api.deprecated.ScrobblesController_V0_2.getScrobble(user_id, track_title, artist_name, service ?= null, timestamp ?= System.currentTimeMillis.toString)
+GET    /v0.1/scrobble            controllers.api.deprecated.ScrobblesController_V0_1.getScrobble(user_id: Long, track_title, artist_name, service ?= null, timestamp: Long ?= System.currentTimeMillis)
 
 # Fake Errors
 GET    /scrobbleErrorGet         controllers.api.util.ScrobblerFakeErrors.scrobbleErrorGet()

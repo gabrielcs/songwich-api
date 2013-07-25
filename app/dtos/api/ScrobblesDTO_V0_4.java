@@ -17,7 +17,7 @@ import dtos.api.util.DataTransferObject;
 // @JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
-public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@JsonProperty("user")
 	@Email
 	private String userEmail;
@@ -36,7 +36,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject<Scrobble> {
 	// @Min(1012528800000L)
 	private String timestamp;
 
-	public ScrobbleDTO_V0_4() {
+	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
 	}
