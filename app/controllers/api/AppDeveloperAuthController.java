@@ -62,8 +62,8 @@ public class AppDeveloperAuthController extends
 				dev = findAppDeveloper(context, devAuthToken, app);
 			} catch (IllegalArgumentException e) {
 				// auth token cannot be converted into a UUID
-				throw new SongwichAPIException(
-						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+				throw new SongwichAPIException("Invalid devAuthToken: "
+						+ devAuthTokenHeaderValues[0],
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
 			}
 
@@ -74,20 +74,14 @@ public class AppDeveloperAuthController extends
 				// authentication failed
 				// TODO: Caon should check with Apigee whether our data is
 				// up-do-date
-				Logger.warn(String.format("%s: %s",
-						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
-						devAuthTokenHeaderValues[0]));
-				throw new SongwichAPIException(
-						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+				throw new SongwichAPIException("Invalid devAuthToken: "
+						+ devAuthTokenHeaderValues[0],
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
 			}
 		} else {
 			// there's a number of userAuthTokens different than 1
-			Logger.warn(String.format("%s: %s",
-					APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
-					devAuthTokenHeaderValues));
 			throw new SongwichAPIException(
-					APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN.toString(),
+					"There's a number of devAuthTokens different than 1",
 					APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
 		}
 	}
@@ -117,7 +111,7 @@ public class AppDeveloperAuthController extends
 	 */
 	public static UUID createTestAppWithDeveloper(UUID devAuthToken) {
 		Logger.debug("About to create a test AppDeveloper");
-		
+
 		if (devAuthToken == null) {
 			devAuthToken = UUID.randomUUID();
 		}
