@@ -2,14 +2,17 @@ package views.api.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import play.Logger;
 import play.libs.Json;
-
 import controllers.api.util.SongwichAPIException;
 import dtos.api.ScrobblesDTO_V0_4;
 import dtos.api.util.APIResponse_V0_4;
@@ -47,7 +50,9 @@ public class APIResponseTest {
 	public void scrobbleResponseToJson() throws SongwichAPIException {
 		ScrobblesDTO_V0_4 scrobbleDTO = new ScrobblesDTO_V0_4();
 		scrobbleDTO.setTrackTitle("Title");
-		scrobbleDTO.setArtistsNames("Name");
+		List<String> artistsNames = new ArrayList<String>();
+		artistsNames.add("Name1"); artistsNames.add("Name2");
+		scrobbleDTO.setArtistsNames(artistsNames);
 		scrobbleDTO.setChosenByUser("false");
 		scrobbleDTO.setPlayer("Spotify");
 		scrobbleDTO.setTimestamp("1012528800000");
@@ -55,8 +60,9 @@ public class APIResponseTest {
 		PostScrobblesResponse_V0_4 scrobbleResponse = new PostScrobblesResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
 		
+		System.out.println(Json.toJson(scrobbleResponse).toString());
 		assertEquals(
 				Json.toJson(scrobbleResponse).toString(),
-				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistsNames\":\"Name\",\"chosenByUser\":\"false\",\"player\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
+				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistsNames\":[\"Name1\",\"Name2\"],\"chosenByUser\":\"false\",\"player\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
 	}
 }

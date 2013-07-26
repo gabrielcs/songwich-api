@@ -1,6 +1,8 @@
 package dtos.api;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import models.Scrobble;
 
@@ -20,7 +22,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String trackTitle;
 
 	@Required
-	private String[] artistsNames;
+	private List<String> artistsNames;
 
 	private String chosenByUser;
 
@@ -34,6 +36,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
+		artistsNames = new ArrayList<String>();
 	}
 
 	public String getUserId() {
@@ -53,11 +56,11 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.trackTitle = track_title;
 	}
 
-	public String[] getArtistsNames() {
+	public List<String> getArtistsNames() {
 		return artistsNames;
 	}
 
-	public void setArtistsNames(String[] artistsNames) {
+	public void setArtistsNames(List<String> artistsNames) {
 		// separate by comma here?
 		this.artistsNames = artistsNames;
 	}

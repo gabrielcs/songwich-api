@@ -28,7 +28,7 @@ public class ScrobblesUseCases extends UseCase {
 
 	public void postScrobbles(ScrobblesDTO_V0_4 scrobbleDTO) {
 		Scrobble scrobble = new Scrobble(getContext().getUser().getId(),
-				scrobbleDTO.getTrackTitle(), Arrays.asList(scrobbleDTO.getArtistsNames()),
+				scrobbleDTO.getTrackTitle(), scrobbleDTO.getArtistsNames(),
 				Long.parseLong(scrobbleDTO.getTimestamp()),
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
 				scrobbleDTO.getPlayer(), getContext().getAppDeveloper()
@@ -66,8 +66,7 @@ public class ScrobblesUseCases extends UseCase {
 			scrobbleDTO = new ScrobblesDTO_V0_4();
 			try {
 				scrobbleDTO.setTrackTitle(scrobble.getSongTitle());
-				String[] artistNames = (String[]) scrobble.getArtistsNames().toArray();
-				scrobbleDTO.setArtistsNames(artistNames);
+				scrobbleDTO.setArtistsNames(scrobble.getArtistsNames());
 				scrobbleDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
 			} catch (SongwichAPIException e) {
 				// shouldn't happen
