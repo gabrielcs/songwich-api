@@ -17,20 +17,22 @@ public class AppUser extends Model {
 	private String userEmailAddress;
 	
 	@Indexed
-	private UUID userAuthToken;
+	private String userAuthToken;
 	
 	protected AppUser() {
 		super();
 	}
-	
-	public AppUser(App streamingService, String emailAddress, String createdBy) {
-		super(createdBy);
-		setApp(streamingService);
-		setEmailAddress(emailAddress);
-	}
 
 	public AppUser(App streamingService, String emailAddress,
 			UUID userAuthToken, String createdBy) {
+		super(createdBy);
+		setApp(streamingService);
+		setEmailAddress(emailAddress);
+		setUserAuthToken(userAuthToken);
+	}
+	
+	public AppUser(App streamingService, String emailAddress,
+			String userAuthToken, String createdBy) {
 		super(createdBy);
 		setApp(streamingService);
 		setEmailAddress(emailAddress);
@@ -68,15 +70,19 @@ public class AppUser extends Model {
 	/**
 	 * @return the userAuthToken
 	 */
-	public UUID getUserAuthToken() {
+	public String getUserAuthToken() {
 		return userAuthToken;
 	}
 
 	/**
 	 * @param userAuthToken the userAuthToken to set
 	 */
-	public void setUserAuthToken(UUID userAuthToken) {
+	public void setUserAuthToken(String userAuthToken) {
 		this.userAuthToken = userAuthToken;
+	}
+	
+	public void setUserAuthToken(UUID userAuthToken) {
+		this.userAuthToken = userAuthToken.toString();
 	}
 	
 	/* (non-Javadoc)

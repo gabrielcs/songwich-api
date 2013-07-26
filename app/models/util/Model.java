@@ -1,28 +1,32 @@
 package models.util;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 public abstract class Model {
 
-	private Date createdAt;
+	private Long createdAt;
 	private String createdBy;
-	private Date lastModifiedAt;
+	private Long lastModifiedAt;
 	private String lastModifiedBy;
 	
 	protected Model() {
 	}
 	
 	public Model(String createdBy) {
-		setCreatedAt(new Date(System.currentTimeMillis()));
+		setCreatedAt(System.currentTimeMillis());
 		setCreatedBy(createdBy);
 	}
 
-	public Date getCreatedAt() {
+	public long getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public void setCreatedAt(GregorianCalendar createdAt) {
+		this.createdAt = createdAt.getTimeInMillis();
 	}
 
 	public String getCreatedBy() {
@@ -33,12 +37,16 @@ public abstract class Model {
 		this.createdBy = createdBy;
 	}
 
-	public Date getLastModifiedAt() {
+	public long getLastModifiedAt() {
 		return lastModifiedAt;
 	}
 
-	public void setLastModifiedAt(Date lastModifiedAt) {
+	public void setLastModifiedAt(long lastModifiedAt) {
 		this.lastModifiedAt = lastModifiedAt;
+	}
+	
+	public void setLastModifiedAt(GregorianCalendar lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt.getTimeInMillis();
 	}
 
 	public String getLastModifiedBy() {
@@ -102,5 +110,4 @@ public abstract class Model {
 			return false;
 		return true;
 	}
-
 }

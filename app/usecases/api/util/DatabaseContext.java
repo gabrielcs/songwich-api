@@ -31,7 +31,8 @@ public class DatabaseContext {
 			Logger.info("Connected to database " + dbName);
 			return getDatastore();
 		} catch (UnknownHostException e) {
-			Logger.error("Couldn't connect to the database: " + e.getMessage());
+			Logger.error(String.format("Couldn't connect to database %s: %s",
+					dbName, e.getMessage()));
 			throw new RuntimeException(e);
 		}
 	}
@@ -41,15 +42,16 @@ public class DatabaseContext {
 	 */
 	public static Datastore createDatastore(String uri, String dbName) {
 		try {
-			MongoClient mongoClient = new MongoClient(new MongoClientURI(uri));
+			// connect
+			MongoClientURI mongoClientURI = new MongoClientURI(uri);
+			MongoClient mongoClient = new MongoClient(mongoClientURI);
 			datastore = new Morphia().createDatastore(mongoClient, dbName);
 
-			Logger.info(String.format("%s '%s' at '%s'",
-					"Connected to database", dbName, uri));
+			Logger.info("Connected to database " + uri);
 			return getDatastore();
 		} catch (UnknownHostException e) {
-			Logger.error(String.format("%s '%s' at '%s': %s",
-					"Couldn't connected to database", dbName, uri,
+			Logger.error(String.format(
+					"Couldn't connect to database '%s' : %s", uri,
 					e.getMessage()));
 			throw new RuntimeException(e);
 		}
@@ -69,8 +71,8 @@ public class DatabaseContext {
 		return datastore;
 	}
 
-	public static UUID createUserAuthToken() {
-		UUID userAuthToken = UUID.randomUUID();
+	public static String createUserAuthToken() {
+		String userAuthToken = UUID.randomUUID().toString();
 		// assert that the random UUID is unique (might be expensive)
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findByUserAuthToken(userAuthToken);

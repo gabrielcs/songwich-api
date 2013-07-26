@@ -51,7 +51,7 @@ public class UsersUseCases extends UseCase {
 	private AppUser saveNewAppUser(User user, String userEmail) {
 		String createdBy = getContext().getAppDeveloper().getEmailAddress();
 
-		UUID userAuthToken = DatabaseContext.createUserAuthToken();
+		String userAuthToken = DatabaseContext.createUserAuthToken();
 		AppUser newAppUser = new AppUser(getContext().getApp(), userEmail,
 				userAuthToken, createdBy);
 		user.addAppUser(newAppUser);

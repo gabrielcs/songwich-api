@@ -1,15 +1,12 @@
 package daos.api;
 
 import java.util.Set;
-import java.util.UUID;
 
 import models.App;
 import models.AppUser;
 import models.User;
 
 import org.bson.types.ObjectId;
-
-import com.google.code.morphia.Datastore;
 
 import daos.api.util.BasicDAOMongo;
 import daos.api.util.CascadeSaveDAO;
@@ -66,7 +63,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	// TODO: test
 	@Override
-	public User findByUserAuthToken(UUID userAuthToken) {
+	public User findByUserAuthToken(String userAuthToken) {
 		return ds.find(User.class)
 				.filter("appUsers.userAuthToken", userAuthToken).get();
 	}
@@ -78,7 +75,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	 * TODO: test
 	 */
 	@Override
-	public AppUser findAppUserByAuthToken(UUID userAuthToken) {
+	public AppUser findAppUserByAuthToken(String userAuthToken) {
 		User user = findByUserAuthToken(userAuthToken);
 
 		for (AppUser appUser : user.getAppUsers()) {

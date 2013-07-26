@@ -56,8 +56,7 @@ public class AppDeveloperAuthController extends
 			// there's 1 and only 1 auth token
 			AppDeveloper dev;
 			try {
-				UUID devAuthToken = UUID
-						.fromString(devAuthTokenHeaderValues[0]);
+				String devAuthToken = devAuthTokenHeaderValues[0];
 				App app = setApp(devAuthToken);
 				dev = findAppDeveloper(context, devAuthToken, app);
 			} catch (IllegalArgumentException e) {
@@ -86,12 +85,12 @@ public class AppDeveloperAuthController extends
 		}
 	}
 
-	private App setApp(UUID devAuthToken) {
+	private App setApp(String devAuthToken) {
 		AppDAO<ObjectId> appDAO = new AppDAOMongo();
 		return appDAO.findByDevAuthToken(devAuthToken);
 	}
 
-	private AppDeveloper findAppDeveloper(Http.Context ctx, UUID devAuthToken,
+	private AppDeveloper findAppDeveloper(Http.Context ctx, String devAuthToken,
 			App app) {
 		if (app != null) {
 			ctx.args.put(APP, app);
@@ -109,23 +108,23 @@ public class AppDeveloperAuthController extends
 	 * Creates an AppDeveloper associated to an App. If devAuthToken is null a
 	 * new one will be created.
 	 */
-	public static UUID createTestAppWithDeveloper(UUID devAuthToken) {
+	public static String createTestAppWithDeveloper(String devAuthToken) {
 		Logger.debug("About to create a test AppDeveloper");
 
 		if (devAuthToken == null) {
-			devAuthToken = UUID.randomUUID();
+			devAuthToken = UUID.randomUUID().toString();
 		}
 
 		// creates a test AppDeveloper
-		AppDeveloper appDeveloper = new AppDeveloper("dev@songwich.com",
-				devAuthToken, "dev@songwich.com");
+		AppDeveloper appDeveloper = new AppDeveloper("developers@songwich.com",
+				devAuthToken, "developers@songwich.com");
 		// creates a test App
-		App songwich = new App("Songwich", appDeveloper, "dev@songwich.com");
+		App songwich = new App("Songwich", appDeveloper, "developers@songwich.com");
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(songwich);
 
-		Logger.info("Created 'dev@songwich.com' working at 'Songwich' with devAuthToken="
-				+ devAuthToken.toString());
+		Logger.info("Created 'developers@songwich.com' working at 'Songwich' with devAuthToken="
+				+ devAuthToken);
 
 		return devAuthToken;
 	}

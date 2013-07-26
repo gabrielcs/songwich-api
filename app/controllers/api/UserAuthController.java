@@ -51,8 +51,7 @@ public class UserAuthController extends Action<UserAuthenticated> {
 			UserDAO<ObjectId> userDAO = new UserDAOMongo();
 			User user;
 			try {
-				user = userDAO.findByUserAuthToken(UUID
-						.fromString(userAuthTokenHeaderValues[0]));
+				user = userDAO.findByUserAuthToken(userAuthTokenHeaderValues[0]);
 			} catch (IllegalArgumentException e) {
 				// auth token cannot be converted into a UUID
 				throw new SongwichAPIException(

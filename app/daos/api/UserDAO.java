@@ -1,7 +1,5 @@
 package daos.api;
 
-import java.util.UUID;
-
 import models.AppUser;
 import models.User;
 
@@ -11,9 +9,9 @@ public interface UserDAO<I> extends DAO<User, I> {
 	
 	public User findById(I id);
 
-	public User findByUserAuthToken(UUID userAuthToken);
+	public User findByUserAuthToken(String userAuthToken);
 
 	public User findByEmailAddress(String emailAddress);
 	
-	public AppUser findAppUserByAuthToken(UUID userAuthToken);
+	public AppUser findAppUserByAuthToken(String userAuthToken);
 }

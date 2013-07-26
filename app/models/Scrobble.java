@@ -1,7 +1,7 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import models.util.Model;
@@ -18,29 +18,29 @@ import com.google.code.morphia.utils.IndexDirection;
 public class Scrobble extends Model {
 	@Id
 	private ObjectId id;
-	
+
 	@Indexed
-    private ObjectId userId;
+	private ObjectId userId;
 
 	private String songTitle;
-	
+
 	private List<String> artistsNames;
-	
+
 	@Indexed(IndexDirection.DESC)
-    private Date timestamp;
-	
+	private long timestamp;
+
 	@Indexed
 	private boolean choosenByUser;
-	
+
 	@Reference
-    private App service;
-	
+	private App service;
+
 	protected Scrobble() {
 		super();
 	}
-	
+
 	public Scrobble(ObjectId userId, String songTitle, String artistName,
-			Date timestamp, boolean choosenByUser, App service, String createdBy) {
+			long timestamp, boolean choosenByUser, App service, String createdBy) {
 		super(createdBy);
 		setUserId(userId);
 		setSongTitle(songTitle);
@@ -51,8 +51,22 @@ public class Scrobble extends Model {
 		setService(service);
 	}
 
-	public Scrobble(ObjectId userId, String songTitle, List<String> artistsNames,
-			Date timestamp, boolean choosenByUser, App service, String createdBy) {
+	public Scrobble(ObjectId userId, String songTitle, String artistName,
+			GregorianCalendar timestamp, boolean choosenByUser, App service,
+			String createdBy) {
+		super(createdBy);
+		setUserId(userId);
+		setSongTitle(songTitle);
+		artistsNames = new ArrayList<String>();
+		addArtistsName(artistName);
+		setTimestamp(timestamp);
+		setChoosenByUser(choosenByUser);
+		setService(service);
+	}
+
+	public Scrobble(ObjectId userId, String songTitle,
+			List<String> artistsNames, long timestamp, boolean choosenByUser,
+			App service, String createdBy) {
 		super(createdBy);
 		setUserId(userId);
 		setSongTitle(songTitle);
@@ -61,7 +75,19 @@ public class Scrobble extends Model {
 		setChoosenByUser(choosenByUser);
 		setService(service);
 	}
-	
+
+	public Scrobble(ObjectId userId, String songTitle,
+			List<String> artistsNames, GregorianCalendar timestamp,
+			boolean choosenByUser, App service, String createdBy) {
+		super(createdBy);
+		setUserId(userId);
+		setSongTitle(songTitle);
+		setArtistsNames(artistsNames);
+		setTimestamp(timestamp);
+		setChoosenByUser(choosenByUser);
+		setService(service);
+	}
+
 	/**
 	 * @return the user
 	 */
@@ -70,7 +96,8 @@ public class Scrobble extends Model {
 	}
 
 	/**
-	 * @param user the user to set
+	 * @param user
+	 *            the user to set
 	 */
 	public void setUserId(ObjectId userId) {
 		this.userId = userId;
@@ -84,7 +111,8 @@ public class Scrobble extends Model {
 	}
 
 	/**
-	 * @param songTitle the songTitle to set
+	 * @param songTitle
+	 *            the songTitle to set
 	 */
 	public void setSongTitle(String songTitle) {
 		this.songTitle = songTitle;
@@ -98,12 +126,13 @@ public class Scrobble extends Model {
 	}
 
 	/**
-	 * @param artistsNames the artistsNames to set
+	 * @param artistsNames
+	 *            the artistsNames to set
 	 */
 	public void setArtistsNames(List<String> artistsNames) {
 		this.artistsNames = artistsNames;
 	}
-	
+
 	public void addArtistsName(String artistsName) {
 		artistsNames.add(artistsName);
 	}
@@ -111,15 +140,20 @@ public class Scrobble extends Model {
 	/**
 	 * @return the timestamp
 	 */
-	public Date getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 
 	/**
-	 * @param timestamp the timestamp to set
+	 * @param timestamp
+	 *            the timestamp to set
 	 */
-	public void setTimestamp(Date timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public void setTimestamp(GregorianCalendar timestamp) {
+		this.timestamp = timestamp.getTimeInMillis();
 	}
 
 	/**
@@ -130,7 +164,8 @@ public class Scrobble extends Model {
 	}
 
 	/**
-	 * @param choosenByUser the choosenByUser to set
+	 * @param choosenByUser
+	 *            the choosenByUser to set
 	 */
 	public void setChoosenByUser(boolean choosenByUser) {
 		this.choosenByUser = choosenByUser;
@@ -144,7 +179,8 @@ public class Scrobble extends Model {
 	}
 
 	/**
-	 * @param service the service to set
+	 * @param service
+	 *            the service to set
 	 */
 	public void setService(App service) {
 		this.service = service;
@@ -156,8 +192,10 @@ public class Scrobble extends Model {
 	public ObjectId getId() {
 		return id;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -168,32 +206,26 @@ public class Scrobble extends Model {
 				+ "]";
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result + (choosenByUser ? 1231 : 1237);
-		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
 		result = prime * result + ((service == null) ? 0 : service.hashCode());
 		result = prime * result
 				+ ((songTitle == null) ? 0 : songTitle.hashCode());
+		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
 		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -205,11 +237,6 @@ public class Scrobble extends Model {
 			return false;
 		if (choosenByUser != other.choosenByUser)
 			return false;
-		if (timestamp == null) {
-			if (other.timestamp != null)
-				return false;
-		} else if (!timestamp.equals(other.timestamp))
-			return false;
 		if (service == null) {
 			if (other.service != null)
 				return false;
@@ -220,6 +247,8 @@ public class Scrobble extends Model {
 				return false;
 		} else if (!songTitle.equals(other.songTitle))
 			return false;
+		if (timestamp != other.timestamp)
+			return false;
 		if (userId == null) {
 			if (other.userId != null)
 				return false;
@@ -227,5 +256,4 @@ public class Scrobble extends Model {
 			return false;
 		return true;
 	}
-
 }

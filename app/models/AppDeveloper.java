@@ -16,17 +16,23 @@ public class AppDeveloper extends Model {
 	
 	private String lastName;
 	
+	@Indexed
+	private String devAuthToken;
+	
 	protected AppDeveloper() {
 	}
 	
 	public AppDeveloper(String emailAddress, UUID devAuthToken, String createdBy) {
 		super(createdBy);
-		this.emailAddress = emailAddress;
-		this.devAuthToken = devAuthToken;
+		setEmailAddress(emailAddress);
+		setDevAuthToken(devAuthToken);
 	}
-
-	@Indexed
-	private UUID devAuthToken;
+	
+	public AppDeveloper(String emailAddress, String devAuthToken, String createdBy) {
+		super(createdBy);
+		setEmailAddress(emailAddress);
+		setDevAuthToken(devAuthToken);
+	}
 
 	public String getEmailAddress() {
 		return emailAddress;
@@ -52,12 +58,16 @@ public class AppDeveloper extends Model {
 		this.lastName = lastName;
 	}
 
-	public UUID getDevAuthToken() {
+	public String getDevAuthToken() {
 		return devAuthToken;
 	}
 
-	public void setDevAuthToken(UUID devAuthToken) {
+	public void setDevAuthToken(String devAuthToken) {
 		this.devAuthToken = devAuthToken;
+	}
+	
+	public void setDevAuthToken(UUID devAuthToken) {
+		this.devAuthToken = devAuthToken.toString();
 	}
 
 	@Override

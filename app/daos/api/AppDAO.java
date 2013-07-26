@@ -1,7 +1,5 @@
 package daos.api;
 
-import java.util.UUID;
-
 import models.App;
 import models.AppDeveloper;
 
@@ -13,9 +11,9 @@ public interface AppDAO<I> extends DAO<App, I> {
 
 	public App findByName(String name);
 	
-	public App findByDevAuthToken(UUID devAuthToken);
+	public App findByDevAuthToken(String devAuthToken);
 	
-	public AppDeveloper findAppDevByAuthToken(UUID devAuthToken);
+	public AppDeveloper findAppDevByAuthToken(String devAuthToken);
 
 	public App findByDevEmail(String devEmailAdress);
 	
