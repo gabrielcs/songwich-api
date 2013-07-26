@@ -2,15 +2,15 @@ package dtos.api.util;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import dtos.api.PostUsersDTO_V0_4;
+import dtos.api.UsersDTO_V0_4;
 
 
 public class PostUsersResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("user")
-	private PostUsersDTO_V0_4 userDTO;
+	private UsersDTO_V0_4 userDTO;
 
 	public PostUsersResponse_V0_4(APIStatus status, String message,
-			PostUsersDTO_V0_4 userDTO) {
+			UsersDTO_V0_4 userDTO) {
 		super(status, message);
 		this.userDTO = userDTO;
 	}
@@ -18,7 +18,7 @@ public class PostUsersResponse_V0_4 extends APIResponse_V0_4 {
 	/**
 	 * @return the userDTO
 	 */
-	public PostUsersDTO_V0_4 getUserDTO() {
+	public UsersDTO_V0_4 getUserDTO() {
 		return userDTO;
 	}
 
@@ -26,7 +26,7 @@ public class PostUsersResponse_V0_4 extends APIResponse_V0_4 {
 	 * @param userDTO
 	 *            the userDTO to set
 	 */
-	public void setUserDTO(PostUsersDTO_V0_4 userDTO) {
+	public void setUserDTO(UsersDTO_V0_4 userDTO) {
 		this.userDTO = userDTO;
 	}
 }

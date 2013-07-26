@@ -15,7 +15,7 @@ import com.mongodb.WriteResult;
 
 public class MusicServiceDAOMongoTest {
 	
-	private static final String CREATED_BY = "gabriel@dev.com";
+	private static final String CREATED_BY = "developers@songwich.com";
 	private String dbName = "songwich-api-test";
 
 	@Before

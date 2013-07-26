@@ -1,7 +1,7 @@
 package usecases.api;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 import models.Scrobble;
@@ -28,10 +28,10 @@ public class ScrobblesUseCases extends UseCase {
 
 	public void postScrobbles(ScrobblesDTO_V0_4 scrobbleDTO) {
 		Scrobble scrobble = new Scrobble(getContext().getUser().getId(),
-				scrobbleDTO.getTrackTitle(), scrobbleDTO.getArtistsNames(),
+				scrobbleDTO.getTrackTitle(), Arrays.asList(scrobbleDTO.getArtistsNames()),
 				Long.parseLong(scrobbleDTO.getTimestamp()),
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
-				getContext().getApp(), getContext().getAppDeveloper()
+				scrobbleDTO.getPlayer(), getContext().getAppDeveloper()
 						.getEmailAddress());
 
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
@@ -44,6 +44,13 @@ public class ScrobblesUseCases extends UseCase {
 		// authenticated one
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User databaseUser = userDAO.findById(userId);
+		
+		if (databaseUser == null) {
+			throw new SongwichAPIException(
+					"Invalid userId: " + userId.toString(),
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+		
 		if (!databaseUser.equals(getContext().getUser())) {
 			throw new SongwichAPIException(
 					APIStatus_V0_4.UNAUTHORIZED.toString(),
@@ -59,8 +66,8 @@ public class ScrobblesUseCases extends UseCase {
 			scrobbleDTO = new ScrobblesDTO_V0_4();
 			try {
 				scrobbleDTO.setTrackTitle(scrobble.getSongTitle());
-				scrobbleDTO
-						.setArtistsNames(scrobble.getArtistsNames().toString());
+				String[] artistNames = (String[]) scrobble.getArtistsNames().toArray();
+				scrobbleDTO.setArtistsNames(artistNames);
 				scrobbleDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
 			} catch (SongwichAPIException e) {
 				// shouldn't happen
@@ -68,7 +75,7 @@ public class ScrobblesUseCases extends UseCase {
 			}
 			scrobbleDTO.setChosenByUser(Boolean.toString(scrobble
 					.isChoosenByUser()));
-			scrobbleDTO.setService(scrobble.getService().getName());
+			scrobbleDTO.setPlayer(scrobble.getPlayer());
 
 			scrobbleDTOs.add(scrobbleDTO);
 		}

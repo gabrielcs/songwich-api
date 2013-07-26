@@ -3,9 +3,9 @@ package models.util;
 import java.util.GregorianCalendar;
 
 public abstract class Model {
-
 	private Long createdAt;
 	private String createdBy;
+	
 	private Long lastModifiedAt;
 	private String lastModifiedBy;
 	

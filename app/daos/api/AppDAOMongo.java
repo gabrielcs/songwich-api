@@ -1,7 +1,5 @@
 package daos.api;
 
-import java.util.UUID;
-
 import models.App;
 import models.AppDeveloper;
 

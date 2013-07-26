@@ -85,14 +85,11 @@ public class AppUser extends Model {
 		this.userAuthToken = userAuthToken.toString();
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "AppUser [app=" + app
-				+ ", userEmailAddress=" + userEmailAddress + ", userAuthToken="
-				+ userAuthToken + "]";
+		return "AppUser [app=" + app + ", userEmailAddress=" + userEmailAddress
+				+ ", userAuthToken=" + userAuthToken + ", super.toString()="
+				+ super.toString() + "]";
 	}
 
 	/* (non-Javadoc)

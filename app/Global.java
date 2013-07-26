@@ -14,20 +14,14 @@ import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 
 public class Global extends GlobalSettings {
-
-	/*
-	 * This is necessary, otherwise we get an IllegalArgumentException:
-	 * "can't parse argument number interface com.google.code.morphia.annotations.Id"
-	 * 
-	 * http://chepurnoy.org/blog/2013/03/play2-plus-morphia-how-to-avoid-cant-parse
-	 * -argument-number-interface-error/
-	 */
-	static {
+	
+	@Override
+	public void beforeStart(play.Application app) {
 		MorphiaLoggerFactory.registerLogger(SLF4JLogrImplFactory.class);
 	}
 
 	@Override
-	public void beforeStart(play.Application app) {
+	public void onStart(play.Application app) {
 		if (app.isProd()) {
 			// connects to our Mongo-as-a-Service database
 			String dbName = app.configuration().getString("mongo.name");
@@ -49,7 +43,6 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public Result onBadRequest(RequestHeader request, String error) {
-		// it's currently not showing POST requests parameters
 		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.BAD_REQUEST, error);
@@ -65,7 +58,7 @@ public class Global extends GlobalSettings {
 
 		Logger.warn("Handler not found: " + request);
 		APIResponse_V0_4 response = new APIResponse_V0_4(
-				APIStatus_V0_4.METHOD_NOT_FOUND, String.format(
+				APIStatus_V0_4.BAD_REQUEST, String.format(
 						"API method not found: %s %s", request.method(),
 						request.path()));
 		return Results.badRequest(Json.toJson(response));

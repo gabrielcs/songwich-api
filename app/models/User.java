@@ -91,13 +91,11 @@ public class User extends Model {
 		return id;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "User [emailAddress=" + emailAddress + ", name=" + name
-				+ ", appUsers=" + appUsers + "]";
+		return "User [id=" + id + ", emailAddress=" + emailAddress + ", name="
+				+ name + ", appUsers=" + appUsers + ", super.toString()="
+				+ super.toString() + "]";
 	}
 
 	/* (non-Javadoc)

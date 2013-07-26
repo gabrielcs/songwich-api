@@ -6,7 +6,7 @@ import play.mvc.Result;
 import usecases.api.UsersUseCases;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.SongwichController;
-import dtos.api.PostUsersDTO_V0_4;
+import dtos.api.UsersDTO_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 import dtos.api.util.PostUsersResponse_V0_4;
 
@@ -14,12 +14,12 @@ public class UsersController_V0_4 extends SongwichController {
 
 	@AppDeveloperAuthenticated
 	public static Result postUsers() {
-		Form<PostUsersDTO_V0_4> form = Form.form(PostUsersDTO_V0_4.class)
+		Form<UsersDTO_V0_4> form = Form.form(UsersDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
 			return badRequest(form.errorsAsJson());
 		} else {
-			PostUsersDTO_V0_4 userDTO = form.get();
+			UsersDTO_V0_4 userDTO = form.get();
 
 			// process the request
 			UsersUseCases usersUseCases = new UsersUseCases(getContext());

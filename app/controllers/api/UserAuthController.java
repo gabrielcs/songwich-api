@@ -1,7 +1,5 @@
 package controllers.api;
 
-import java.util.UUID;
-
 import models.User;
 
 import org.bson.types.ObjectId;

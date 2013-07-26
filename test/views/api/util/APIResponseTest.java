@@ -46,18 +46,17 @@ public class APIResponseTest {
 	@Test
 	public void scrobbleResponseToJson() throws SongwichAPIException {
 		ScrobblesDTO_V0_4 scrobbleDTO = new ScrobblesDTO_V0_4();
-		scrobbleDTO.setUserEmail("gabriel@example.com");
 		scrobbleDTO.setTrackTitle("Title");
 		scrobbleDTO.setArtistsNames("Name");
 		scrobbleDTO.setChosenByUser("false");
-		scrobbleDTO.setService("Spotify");
+		scrobbleDTO.setPlayer("Spotify");
 		scrobbleDTO.setTimestamp("1012528800000");
 
 		PostScrobblesResponse_V0_4 scrobbleResponse = new PostScrobblesResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
-
+		
 		assertEquals(
 				Json.toJson(scrobbleResponse).toString(),
-				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistName\":\"Name\",\"chosenByUser\":\"false\",\"service\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
+				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistsNames\":\"Name\",\"chosenByUser\":\"false\",\"player\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
 	}
 }

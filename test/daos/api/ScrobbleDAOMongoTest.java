@@ -1,12 +1,11 @@
 package daos.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import models.App;
 import models.Scrobble;
 import models.User;
 
@@ -19,8 +18,8 @@ import usecases.api.util.DatabaseContext;
 import daos.api.util.CascadeSaveDAO;
 
 public class ScrobbleDAOMongoTest {
-	
-	private static final String CREATED_BY = "gabriel@dev.com";
+
+	private static final String CREATED_BY = "developers@songwich.com";
 	private String dbName = "songwich-api-test";
 
 	@Before
@@ -41,12 +40,6 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		App musicService1 = new App("Spotify", CREATED_BY);
-		App musicService2 = new App("Deezer", CREATED_BY);
-		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo();
-		musicServiceDao.cascadeSave(musicService1);
-		musicServiceDao.cascadeSave(musicService2);
-
 		List<String> artists1 = new ArrayList<String>();
 		artists1.add("Passion Pit");
 
@@ -54,13 +47,11 @@ public class ScrobbleDAOMongoTest {
 		artists2.add("Daft Punk");
 		artists2.add("Pharrell Williams");
 
-		Date date1 = new Date(System.currentTimeMillis());
-		Date date2 = new Date(System.currentTimeMillis());
-
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				artists1, date1, false, musicService1, CREATED_BY);
+				artists1, System.currentTimeMillis(), false, "Spotify",
+				CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
-				date2, true, musicService2, CREATED_BY);
+				System.currentTimeMillis(), true, "Deezer", CREATED_BY);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -84,12 +75,6 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		App musicService1 = new App("Spotify", CREATED_BY);
-		App musicService2 = new App("Deezer", CREATED_BY);
-		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo();
-		musicServiceDao.cascadeSave(musicService1);
-		musicServiceDao.cascadeSave(musicService2);
-
 		List<String> artists1 = new ArrayList<String>();
 		artists1.add("Passion Pit");
 
@@ -97,13 +82,11 @@ public class ScrobbleDAOMongoTest {
 		artists2.add("Daft Punk");
 		artists2.add("Pharrell Williams");
 
-		Date date1 = new Date(System.currentTimeMillis());
-		Date date2 = new Date(System.currentTimeMillis());
-
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				artists1, date1, false, musicService1, CREATED_BY);
+				artists1, System.currentTimeMillis(), false, "Spotify",
+				CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
-				date2, true, musicService2, CREATED_BY);
+				System.currentTimeMillis(), true, "Deezer", CREATED_BY);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -123,23 +106,15 @@ public class ScrobbleDAOMongoTest {
 		userDao.cascadeSave(user1);
 		userDao.cascadeSave(user2);
 
-		App musicService1 = new App("Spotify", CREATED_BY);
-		App musicService2 = new App("Deezer", CREATED_BY);
-		CascadeSaveDAO<App, ObjectId> musicServiceDao = new AppDAOMongo();
-		musicServiceDao.cascadeSave(musicService1);
-		musicServiceDao.cascadeSave(musicService2);
-
 		List<String> artists2 = new ArrayList<String>();
 		artists2.add("Daft Punk");
 		artists2.add("Pharrell Williams");
 
-		Date date1 = new Date(System.currentTimeMillis());
-		Date date2 = new Date(System.currentTimeMillis());
-
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				"Passion Pit", date1, false, musicService1, CREATED_BY);
+				"Passion Pit", System.currentTimeMillis(), false,
+				"Spotify", CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
-				date2, true, musicService2, CREATED_BY);
+				System.currentTimeMillis(), true, "Deezer", CREATED_BY);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand

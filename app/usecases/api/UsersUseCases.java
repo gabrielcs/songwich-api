@@ -1,7 +1,5 @@
 package usecases.api;
 
-import java.util.UUID;
-
 import models.AppUser;
 import models.User;
 
@@ -12,7 +10,7 @@ import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
 import daos.api.UserDAO;
 import daos.api.UserDAOMongo;
-import dtos.api.PostUsersDTO_V0_4;
+import dtos.api.UsersDTO_V0_4;
 
 public class UsersUseCases extends UseCase {
 
@@ -20,7 +18,7 @@ public class UsersUseCases extends UseCase {
 		super(context);
 	}
 
-	public void postUsers(PostUsersDTO_V0_4 userDTO) {
+	public void postUsers(UsersDTO_V0_4 userDTO) {
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findByEmailAddress(userDTO.getUserEmail());
 		if (user != null) {
@@ -62,7 +60,7 @@ public class UsersUseCases extends UseCase {
 		return newAppUser;
 	}
 
-	private void updateDTO(User user, AppUser newAppUser, PostUsersDTO_V0_4 userDTO) {
+	private void updateDTO(User user, AppUser newAppUser, UsersDTO_V0_4 userDTO) {
 		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().toString());
 		userDTO.setUserId(user.getId().toString());
 	}

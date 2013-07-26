@@ -55,7 +55,7 @@ public class ScrobblesController_V0_4 extends SongwichController {
 		} catch (IllegalArgumentException illegalArgumentEx) {
 			SongwichAPIException apiEx = new SongwichAPIException(
 					"Invalid user id: " + userId,
-					APIStatus_V0_4.INVALID_USER_ID);
+					APIStatus_V0_4.INVALID_PARAMETER);
 			Logger.warn(String.format("%s [%s]: %s", apiEx.getStatus()
 					.toString(), apiEx.getMessage(), Context.current()
 					.request()));

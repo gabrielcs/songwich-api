@@ -4,11 +4,9 @@ import java.util.GregorianCalendar;
 
 import models.Scrobble;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import controllers.api.util.SongwichAPIException;
 import dtos.api.util.APIStatus_V0_4;
@@ -18,101 +16,58 @@ import dtos.api.util.DataTransferObject;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
 public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
-	@JsonProperty("user")
-	@Email
-	private String userEmail;
-
 	@Required
 	private String trackTitle;
 
 	@Required
-	private String artistsNames;
+	private String[] artistsNames;
 
 	private String chosenByUser;
 
-	private String service;
+	private String player;
 
-	// 01-Jan-2002
-	// @Min(1012528800000L)
 	private String timestamp;
+
+	// not used for input, only for output
+	private String userId;
 
 	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
 	}
 
-	/*
-	 * public ScrobbleDTO_V0_4(String userEmail, String trackTitle, String
-	 * artistName, String chosenByUser, String service, String timestamp) throws
-	 * SongwichAPIException {
-	 * 
-	 * setUserEmail(userEmail); setTrackTitle(trackTitle);
-	 * setArtistName(artistName); setChosenByUser(chosenByUser);
-	 * setService(service); setTimestamp(timestamp); }
-	 */
-
-	public String getUserEmail() {
-		return userEmail;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUserEmail(String user_id) throws SongwichAPIException {
-		if (user_id == null || user_id.isEmpty()) {
-			throw new SongwichAPIException(
-					"Missing parameter: user_auth_token",
-					APIStatus_V0_4.BAD_REQUEST);
-		}
-
-		// validateUserId(user_id);
-		this.userEmail = user_id;
-	}
-
-	// check if it's a string and delegates further validation
-	private void validateUserId(String user_id) throws SongwichAPIException {
-		try {
-			Long userIdLong = Long.parseLong(user_id);
-			validateUserId(userIdLong);
-		} catch (NumberFormatException e) {
-			throw new SongwichAPIException("Invalid user_auth_token",
-					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
-		}
-	}
-
-	private void validateUserId(Long user_id) throws SongwichAPIException {
-		// TODO: authenticate userAuthToken
+	public void setUserId(String userId) {
+		// no validation since it's only used for output
+		this.userId = userId;
 	}
 
 	public String getTrackTitle() {
 		return trackTitle;
 	}
 
-	public void setTrackTitle(String track_title) throws SongwichAPIException {
-		if (track_title == null || track_title.isEmpty()) {
-			throw new SongwichAPIException("Missing parameter: trackTitle",
-					APIStatus_V0_4.BAD_REQUEST);
-		}
-
+	public void setTrackTitle(String track_title) {
 		this.trackTitle = track_title;
 	}
 
-	public String getArtistsNames() {
+	public String[] getArtistsNames() {
 		return artistsNames;
 	}
 
-	public void setArtistsNames(String artistsNames) throws SongwichAPIException {
-		if (artistsNames == null || artistsNames.isEmpty()) {
-			throw new SongwichAPIException("Missing parameter: artistName",
-					APIStatus_V0_4.BAD_REQUEST);
-		}
-
+	public void setArtistsNames(String[] artistsNames) {
+		// separate by comma here?
 		this.artistsNames = artistsNames;
 	}
 
-	public String getService() {
-		return service;
+	public String getPlayer() {
+		return player;
 	}
 
-	public void setService(String service) {
-		this.service = service;
+	public void setPlayer(String player) {
+		this.player = player;
 	}
 
 	/**
@@ -150,7 +105,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 		} catch (NumberFormatException e) {
 			throw new SongwichAPIException(
 					"Timestamp is not an integer number",
-					APIStatus_V0_4.INVALID_TIMESTAMP);
+					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 	}
 
@@ -159,12 +114,12 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 			throws SongwichAPIException {
 		if (timestampNumber > System.currentTimeMillis()) {
 			throw new SongwichAPIException("Timestamp cannot be in the future",
-					APIStatus_V0_4.INVALID_TIMESTAMP);
+					APIStatus_V0_4.INVALID_PARAMETER);
 		} else if (timestampNumber < new GregorianCalendar(2002, 1, 1)
 				.getTimeInMillis()) {
 			// it's older than scrobbling itself (2002)
 			throw new SongwichAPIException("Timestamp is too old",
-					APIStatus_V0_4.INVALID_TIMESTAMP);
+					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 	}
 
@@ -179,7 +134,18 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	 * @param chosenByUser
 	 *            the chosenByUser to set
 	 */
-	public void setChosenByUser(String chosenByUser) {
+	public void setChosenByUser(String chosenByUser) throws SongwichAPIException {
+		validateChosenByUser(chosenByUser);
 		this.chosenByUser = chosenByUser;
+	}
+	
+	public void validateChosenByUser(String chosenByUser) throws SongwichAPIException {
+		try {
+			Boolean.parseBoolean(chosenByUser);
+		} catch (NumberFormatException e) {
+			throw new SongwichAPIException(
+					"chosenByUser should be either 'true' or 'false'",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
 	}
 }

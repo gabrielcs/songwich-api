@@ -74,7 +74,7 @@ public class AppDeveloper extends Model {
 	public String toString() {
 		return "AppDeveloper [emailAddress=" + emailAddress + ", firstName="
 				+ firstName + ", lastName=" + lastName + ", devAuthToken="
-				+ devAuthToken + "]";
+				+ devAuthToken + ", super.toString()=" + super.toString() + "]";
 	}
 
 	@Override
