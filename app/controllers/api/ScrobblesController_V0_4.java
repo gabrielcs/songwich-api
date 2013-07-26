@@ -19,6 +19,7 @@ import controllers.api.util.SongwichController;
 import dtos.api.ScrobblesDTO_V0_4;
 import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
+import dtos.api.util.DataTransferObject;
 import dtos.api.util.GetScrobblesResponse_V0_4;
 import dtos.api.util.PostScrobblesResponse_V0_4;
 
@@ -27,12 +28,15 @@ public class ScrobblesController_V0_4 extends SongwichController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result postScrobbles() {
-		Form<ScrobblesDTO_V0_4> form = Form.form(ScrobblesDTO_V0_4.class)
-				.bindFromRequest();
-		if (form.hasErrors()) {
-			return badRequest(form.errorsAsJson());
+		Form<ScrobblesDTO_V0_4> scrobblesForm = Form.form(
+				ScrobblesDTO_V0_4.class).bindFromRequest();
+		if (scrobblesForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(scrobblesForm.errors()));
+			return badRequest(Json.toJson(apiResponse));
 		} else {
-			ScrobblesDTO_V0_4 scrobbleDTO = form.get();
+			ScrobblesDTO_V0_4 scrobbleDTO = scrobblesForm.get();
 
 			// process the request
 			ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(

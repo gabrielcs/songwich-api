@@ -17,6 +17,7 @@ public class Global extends GlobalSettings {
 	
 	@Override
 	public void beforeStart(play.Application app) {
+		// this is causing problems with hot reloading
 		MorphiaLoggerFactory.registerLogger(SLF4JLogrImplFactory.class);
 	}
 

@@ -1,7 +1,6 @@
 package usecases.api;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import models.Scrobble;
@@ -9,7 +8,6 @@ import models.User;
 
 import org.bson.types.ObjectId;
 
-import play.Logger;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
 import controllers.api.util.SongwichAPIException;
@@ -44,13 +42,12 @@ public class ScrobblesUseCases extends UseCase {
 		// authenticated one
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User databaseUser = userDAO.findById(userId);
-		
+
 		if (databaseUser == null) {
-			throw new SongwichAPIException(
-					"Invalid userId: " + userId.toString(),
-					APIStatus_V0_4.INVALID_PARAMETER);
+			throw new SongwichAPIException("Invalid userId: "
+					+ userId.toString(), APIStatus_V0_4.INVALID_PARAMETER);
 		}
-		
+
 		if (!databaseUser.equals(getContext().getUser())) {
 			throw new SongwichAPIException(
 					APIStatus_V0_4.UNAUTHORIZED.toString(),
@@ -64,14 +61,9 @@ public class ScrobblesUseCases extends UseCase {
 		ScrobblesDTO_V0_4 scrobbleDTO;
 		for (Scrobble scrobble : scrobbles) {
 			scrobbleDTO = new ScrobblesDTO_V0_4();
-			try {
-				scrobbleDTO.setTrackTitle(scrobble.getSongTitle());
-				scrobbleDTO.setArtistsNames(scrobble.getArtistsNames());
-				scrobbleDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
-			} catch (SongwichAPIException e) {
-				// shouldn't happen
-				Logger.error(e.toString());
-			}
+			scrobbleDTO.setTrackTitle(scrobble.getSongTitle());
+			scrobbleDTO.setArtistsNames(scrobble.getArtistsNames());
+			scrobbleDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
 			scrobbleDTO.setChosenByUser(Boolean.toString(scrobble
 					.isChoosenByUser()));
 			scrobbleDTO.setPlayer(scrobble.getPlayer());
