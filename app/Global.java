@@ -1,5 +1,3 @@
-import java.util.UUID;
-
 import play.GlobalSettings;
 import play.Logger;
 import play.libs.Json;
@@ -39,13 +37,13 @@ public class Global extends GlobalSettings {
 
 		if (app.isDev()) {
 			// starts with a clean local database if in development mode
-			// String dbName = app.configuration().getString("mongo.dev.name");
-			// DatabaseContext.createDatastore(dbName);
-			// DatabaseContext.dropDatabase();
-			
-			String dbName = app.configuration().getString("mongo.name");
-			String uri = app.configuration().getString("mongo.uri");
-			DatabaseContext.createDatastore(uri, dbName);
+			String dbName = app.configuration().getString("mongo.dev.name");
+			DatabaseContext.createDatastore(dbName);
+			DatabaseContext.dropDatabase();
+
+			// and creates a test developer
+			AppDeveloperAuthController.createTestAppWithDeveloper(app
+					.configuration().getString("dev.auth.token"));
 		}
 	}
 
