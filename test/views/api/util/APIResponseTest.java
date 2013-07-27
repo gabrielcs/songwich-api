@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import play.Logger;
 import play.libs.Json;
 import controllers.api.util.SongwichAPIException;
 import dtos.api.ScrobblesDTO_V0_4;

@@ -49,6 +49,7 @@ public class AppDeveloperAuthController extends
 
 		String[] devAuthTokenHeaderValues = context.request().headers()
 				.get(DEV_AUTH_TOKEN_HEADER);
+		Logger.debug(devAuthTokenHeaderValues.toString());
 		if ((devAuthTokenHeaderValues != null)
 				&& (devAuthTokenHeaderValues.length == 1)
 				&& (devAuthTokenHeaderValues[0] != null)) {
