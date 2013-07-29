@@ -43,8 +43,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public List<ValidationError> validate() {
 		addValidation(validateTrackTitle(), validateArtistsNames(),
 				validateTimestamp(), validateChosenByUser());
-		// check for empty list and return null, otherwise Play throws an
-		// exception
+		// check for empty list and return null
 		return getValidationErrors().isEmpty() ? null : getValidationErrors();
 	}
 
@@ -84,7 +83,8 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private ValidationError validateArtistsNames() {
 		if (artistsNames.isEmpty()) {
-			return new ValidationError("artistsNames", "artistsNames is required");
+			return new ValidationError("artistsNames",
+					"artistsNames is required");
 		} else {
 			for (String artistName : artistsNames) {
 				if (!artistName.isEmpty()) {
@@ -93,7 +93,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 			}
 			// no artistName was non-empty
 			return new ValidationError("artistsNames",
-						"artistsNames is required");
+					"artistsNames is required");
 		}
 	}
 

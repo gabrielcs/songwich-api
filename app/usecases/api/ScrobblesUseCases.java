@@ -9,8 +9,8 @@ import models.User;
 import org.bson.types.ObjectId;
 
 import usecases.api.util.RequestContext;
+import usecases.api.util.SongwichAPIException;
 import usecases.api.util.UseCase;
-import controllers.api.util.SongwichAPIException;
 import daos.api.ScrobbleDAO;
 import daos.api.ScrobbleDAOMongo;
 import daos.api.UserDAO;

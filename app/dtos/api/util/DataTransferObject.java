@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -14,6 +15,9 @@ import play.data.validation.ValidationError;
  */
 public abstract class DataTransferObject<T> {
 
+	private final static Pattern EMAIL_REGEX = Pattern
+			.compile("\\b[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*\\b");
+	
 	// method called by Play!
 	public abstract List<ValidationError> validate();
 
@@ -37,10 +41,11 @@ public abstract class DataTransferObject<T> {
 			if (validationError != null) {
 				this.validationErrors.add(validationError);
 			}
-		}		
+		}
 	}
-	
-	public static String errorsAsString(Map<String, List<ValidationError>> errorsMap) {
+
+	public static String errorsAsString(
+			Map<String, List<ValidationError>> errorsMap) {
 		Set<String> keySet = errorsMap.keySet();
 		List<ValidationError> errors;
 		StringBuilder errorsString = new StringBuilder();
@@ -54,5 +59,14 @@ public abstract class DataTransferObject<T> {
 			}
 		}
 		return errorsString.toString();
+	}
+	
+	/*
+	 * Returns true if the email address is valid or false otherwise
+	 * 
+	 * Source: https://github.com/playframework/playframework/blob/master/framework/src/play-java/src/main/java/play/data/validation/Constraints.java
+	 */
+	public static boolean validateEmailAddress(String emailAddress) {
+		return EMAIL_REGEX.matcher(emailAddress).matches();
 	}
 }

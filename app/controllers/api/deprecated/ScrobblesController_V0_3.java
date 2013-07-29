@@ -7,7 +7,7 @@ import play.mvc.Controller;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.api.util.SongwichAPIException;
+import usecases.api.util.SongwichAPIException;
 import controllers.api.util.deprecated.PostRequestBodyParser;
 import dtos.api.deprecated.ScrobbleProxy_V0_3;
 import dtos.api.util.deprecated.APIResponse_V0_1;

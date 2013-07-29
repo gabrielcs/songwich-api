@@ -7,27 +7,45 @@ import models.Scrobble;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import play.data.validation.ValidationError;
 import dtos.api.util.DataTransferObject;
 
-import play.data.validation.Constraints.Email;
-import play.data.validation.Constraints.Required;
-import play.data.validation.ValidationError;
-
 // @JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("user")
 public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
-	@Email
-	@Required
-	private String userEmail;
 	
+	private String userEmail;
+
+	// not used for input, only for output
 	private String userId;
 
+	// not used for input, only for output
 	private String userAuthToken;
-	
+
 	public UsersDTO_V0_4() {
 	}
-	
+
+	@Override
+	public List<ValidationError> validate() {
+		addValidation(validateUserEmail());
+		// check for empty list and return null
+		return getValidationErrors().isEmpty() ? null : getValidationErrors();
+	}
+
+	private ValidationError validateUserEmail() {
+		if (userEmail == null || userEmail.isEmpty()) {
+			return new ValidationError("userEmail", "userEmail is required");
+		}
+		
+		if (!DataTransferObject.validateEmailAddress(userEmail)) {
+			return new ValidationError("userEmail", "Invalid userEmail");
+		}
+		
+		// validation sucessfull
+		return null;
+	}
+
 	/**
 	 * @return the userEmail
 	 */
@@ -36,7 +54,8 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	/**
-	 * @param userEmail the userEmail to set
+	 * @param userEmail
+	 *            the userEmail to set
 	 */
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
@@ -50,7 +69,8 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	/**
-	 * @param userAuthToken the userAuthToken to set
+	 * @param userAuthToken
+	 *            the userAuthToken to set
 	 */
 	public void setUserAuthToken(String userAuthToken) {
 		this.userAuthToken = userAuthToken;
@@ -63,11 +83,4 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
-	@Override
-	public List<ValidationError> validate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }

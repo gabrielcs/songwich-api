@@ -1,4 +1,4 @@
-package controllers.api.util;
+package usecases.api.util;
 
 import dtos.api.util.APIStatus;
 

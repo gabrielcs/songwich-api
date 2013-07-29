@@ -3,7 +3,7 @@ package controllers.api.deprecated;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.api.util.SongwichAPIException;
+import usecases.api.util.SongwichAPIException;
 import dtos.api.deprecated.ScrobbleProxy_V0_1;
 import dtos.api.util.deprecated.APIResponse_V0_1;
 import dtos.api.util.deprecated.APIStatus_V0_1;

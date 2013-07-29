@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import play.libs.Json;
-import controllers.api.util.SongwichAPIException;
+import usecases.api.util.SongwichAPIException;
 import dtos.api.util.deprecated.APIStatus_V0_1;
 
 @Deprecated

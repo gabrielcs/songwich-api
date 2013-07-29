@@ -7,7 +7,9 @@ import usecases.api.UsersUseCases;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.SongwichController;
 import dtos.api.UsersDTO_V0_4;
+import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
+import dtos.api.util.DataTransferObject;
 import dtos.api.util.PostUsersResponse_V0_4;
 
 public class UsersController_V0_4 extends SongwichController {
@@ -17,7 +19,10 @@ public class UsersController_V0_4 extends SongwichController {
 		Form<UsersDTO_V0_4> form = Form.form(UsersDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
-			return badRequest(form.errorsAsJson());
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(form.errors()));
+			return badRequest(Json.toJson(apiResponse));
 		} else {
 			UsersDTO_V0_4 userDTO = form.get();
 

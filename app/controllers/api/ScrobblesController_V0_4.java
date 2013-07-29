@@ -12,9 +12,9 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.ScrobblesUseCases;
+import usecases.api.util.SongwichAPIException;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
-import controllers.api.util.SongwichAPIException;
 import controllers.api.util.SongwichController;
 import dtos.api.ScrobblesDTO_V0_4;
 import dtos.api.util.APIResponse_V0_4;
@@ -58,7 +58,7 @@ public class ScrobblesController_V0_4 extends SongwichController {
 			objectId = new ObjectId(userId);
 		} catch (IllegalArgumentException illegalArgumentEx) {
 			SongwichAPIException apiEx = new SongwichAPIException(
-					"Invalid user id: " + userId,
+					"Invalid userId: " + userId,
 					APIStatus_V0_4.INVALID_PARAMETER);
 			Logger.warn(String.format("%s [%s]: %s", apiEx.getStatus()
 					.toString(), apiEx.getMessage(), Context.current()
