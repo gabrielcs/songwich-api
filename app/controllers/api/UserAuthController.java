@@ -20,6 +20,7 @@ import dtos.api.util.APIStatus_V0_4;
 public class UserAuthController extends Action<UserAuthenticated> {
 
 	public final static String USER_AUTH_TOKEN_HEADER = "X-Songwich.userAuthToken";
+	public final static String USER_AUTH_TOKEN_HEADER_ALTERNATE = "X-Songwich.userauthtoken";
 	public final static String USER = "user";
 
 	@Override
@@ -38,25 +39,33 @@ public class UserAuthController extends Action<UserAuthenticated> {
 		return delegate.call(context);
 	}
 
-	private void authenticateUser(Http.Context context) throws SongwichAPIException {
+	private void authenticateUser(Http.Context context)
+			throws SongwichAPIException {
 		String[] userAuthTokenHeaderValues = context.request().headers()
 				.get(USER_AUTH_TOKEN_HEADER);
+		if (userAuthTokenHeaderValues == null) {
+			// we need this on Heroku
+			userAuthTokenHeaderValues = context.request().headers()
+					.get(USER_AUTH_TOKEN_HEADER_ALTERNATE);
+		}
+
 		if ((userAuthTokenHeaderValues != null)
 				&& (userAuthTokenHeaderValues.length == 1)
 				&& (userAuthTokenHeaderValues[0] != null)) {
-			
+
 			// there's 1 and only 1 auth token
 			UserDAO<ObjectId> userDAO = new UserDAOMongo();
 			User user;
 			try {
-				user = userDAO.findByUserAuthToken(userAuthTokenHeaderValues[0]);
+				user = userDAO
+						.findByUserAuthToken(userAuthTokenHeaderValues[0]);
 			} catch (IllegalArgumentException e) {
 				// auth token cannot be converted into a UUID
 				throw new SongwichAPIException(
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 			}
-			
+
 			if (user != null) {
 				// authentication successful
 				context.args.put(USER, user);
@@ -72,11 +81,9 @@ public class UserAuthController extends Action<UserAuthenticated> {
 
 		} else {
 			// there's a number of userAuthTokens different than 1
-			Logger.warn(String.format("%s: %s",
-					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
-					userAuthTokenHeaderValues));
 			throw new SongwichAPIException(
-					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
+					"There's a number of X-Songwich.userAuthToken headers different than 1: "
+							+ userAuthTokenHeaderValues,
 					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 		}
 	}

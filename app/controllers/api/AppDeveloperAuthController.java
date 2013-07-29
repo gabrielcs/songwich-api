@@ -1,7 +1,5 @@
 package controllers.api;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import models.App;
@@ -89,7 +87,8 @@ public class AppDeveloperAuthController extends
 		} else {
 			// there's a number of userAuthTokens different than 1
 			throw new SongwichAPIException(
-					"There's a number of devAuthTokens different than 1",
+					"There's a number of X-Songwich.devAuthToken headers different than 1: "
+							+ devAuthTokenHeaderValues,
 					APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);
 		}
 	}
