@@ -1,5 +1,7 @@
 package controllers.api;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import models.App;
@@ -50,10 +52,14 @@ public class AppDeveloperAuthController extends
 		String[] devAuthTokenHeaderValues = context.request().headers()
 				.get(DEV_AUTH_TOKEN_HEADER);
 
-		Logger.debug("devAuthTokenHeaderValues.length="
-				+ devAuthTokenHeaderValues.length);
-		for (String token : devAuthTokenHeaderValues) {
-			Logger.debug("devAuthToken: " + token.toString());
+		Map<String, String[]> headers = context.request().headers();
+		Set<String> headersKeySet = headers.keySet();
+		String[] tokens;
+		for (String headerKey : headersKeySet) {
+			 tokens = headers.get(headerKey);
+			for (String token : tokens) {
+				Logger.debug(String.format("%s: %s", headerKey, token));
+			}
 		}
 
 		if ((devAuthTokenHeaderValues != null)
