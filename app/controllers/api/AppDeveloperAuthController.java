@@ -49,7 +49,13 @@ public class AppDeveloperAuthController extends
 
 		String[] devAuthTokenHeaderValues = context.request().headers()
 				.get(DEV_AUTH_TOKEN_HEADER);
-		Logger.debug(devAuthTokenHeaderValues.toString());
+
+		Logger.debug("devAuthTokenHeaderValues.length="
+				+ devAuthTokenHeaderValues.length);
+		for (String token : devAuthTokenHeaderValues) {
+			Logger.debug("devAuthToken: " + token.toString());
+		}
+
 		if ((devAuthTokenHeaderValues != null)
 				&& (devAuthTokenHeaderValues.length == 1)
 				&& (devAuthTokenHeaderValues[0] != null)) {
@@ -91,8 +97,8 @@ public class AppDeveloperAuthController extends
 		return appDAO.findByDevAuthToken(devAuthToken);
 	}
 
-	private AppDeveloper findAppDeveloper(Http.Context ctx, String devAuthToken,
-			App app) {
+	private AppDeveloper findAppDeveloper(Http.Context ctx,
+			String devAuthToken, App app) {
 		if (app != null) {
 			ctx.args.put(APP, app);
 			for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
@@ -120,7 +126,8 @@ public class AppDeveloperAuthController extends
 		AppDeveloper appDeveloper = new AppDeveloper("developers@songwich.com",
 				devAuthToken, "developers@songwich.com");
 		// creates a test App
-		App songwich = new App("Songwich", appDeveloper, "developers@songwich.com");
+		App songwich = new App("Songwich", appDeveloper,
+				"developers@songwich.com");
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(songwich);
 
