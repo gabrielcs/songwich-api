@@ -27,6 +27,7 @@ public class AppDeveloperAuthController extends
 		Action<AppDeveloperAuthenticated> {
 
 	public final static String DEV_AUTH_TOKEN_HEADER = "X-Songwich.devAuthToken";
+	public final static String DEV_AUTH_TOKEN_HEADER_ALTERNATIVE = "X-Songwich.devauthtoken";
 	public final static String DEV = "dev";
 	public final static String APP = "app";
 
@@ -51,15 +52,10 @@ public class AppDeveloperAuthController extends
 
 		String[] devAuthTokenHeaderValues = context.request().headers()
 				.get(DEV_AUTH_TOKEN_HEADER);
-
-		Map<String, String[]> headers = context.request().headers();
-		Set<String> headersKeySet = headers.keySet();
-		String[] tokens;
-		for (String headerKey : headersKeySet) {
-			 tokens = headers.get(headerKey);
-			for (String token : tokens) {
-				Logger.debug(String.format("%s: %s", headerKey, token));
-			}
+		if (devAuthTokenHeaderValues == null) {
+			// we need this on Heroku
+			devAuthTokenHeaderValues = context.request().headers()
+					.get(DEV_AUTH_TOKEN_HEADER_ALTERNATIVE);
 		}
 
 		if ((devAuthTokenHeaderValues != null)
