@@ -5,14 +5,14 @@ import play.libs.Json;
 import play.mvc.Result;
 import usecases.api.UsersUseCases;
 import controllers.api.annotation.AppDeveloperAuthenticated;
-import controllers.api.util.SongwichController;
+import controllers.api.util.APIController;
 import dtos.api.UsersDTO_V0_4;
 import dtos.api.util.APIResponse_V0_4;
 import dtos.api.util.APIStatus_V0_4;
 import dtos.api.util.DataTransferObject;
 import dtos.api.util.PostUsersResponse_V0_4;
 
-public class UsersController_V0_4 extends SongwichController {
+public class UsersController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	public static Result postUsers() {

@@ -9,7 +9,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import usecases.api.util.RequestContext;
 
-public class SongwichController extends Controller {
+public class APIController extends Controller {
 	
 	protected static RequestContext getContext() {
 		return new RequestContext(

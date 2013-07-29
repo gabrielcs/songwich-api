@@ -125,7 +125,7 @@ public class AppDeveloperAuthController extends
 
 		// creates a test AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper("developers@songwich.com",
-				devAuthToken, "developers@songwich.com");
+				"Songwich Developers", devAuthToken, "developers@songwich.com");
 		// creates a test App
 		App songwich = new App("Songwich", appDeveloper,
 				"developers@songwich.com");

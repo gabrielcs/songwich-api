@@ -61,7 +61,7 @@ public class App extends Model {
 		this.appDevelopers = appDevelopers;
 	}
 	
-	private void addAppDeveloper(AppDeveloper appDeveloper) {
+	public void addAppDeveloper(AppDeveloper appDeveloper) {
 		appDevelopers.add(appDeveloper);
 	}
 

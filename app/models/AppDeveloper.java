@@ -12,9 +12,7 @@ public class AppDeveloper extends Model {
 	@Indexed
 	private String emailAddress;
 	
-	private String firstName;
-	
-	private String lastName;
+	private String name;
 	
 	@Indexed
 	private String devAuthToken;
@@ -22,15 +20,17 @@ public class AppDeveloper extends Model {
 	protected AppDeveloper() {
 	}
 	
-	public AppDeveloper(String emailAddress, UUID devAuthToken, String createdBy) {
+	public AppDeveloper(String emailAddress, String name, UUID devAuthToken, String createdBy) {
 		super(createdBy);
 		setEmailAddress(emailAddress);
+		setName(name);
 		setDevAuthToken(devAuthToken);
 	}
 	
-	public AppDeveloper(String emailAddress, String devAuthToken, String createdBy) {
+	public AppDeveloper(String emailAddress, String name, String devAuthToken, String createdBy) {
 		super(createdBy);
 		setEmailAddress(emailAddress);
+		setName(name);
 		setDevAuthToken(devAuthToken);
 	}
 
@@ -42,20 +42,12 @@ public class AppDeveloper extends Model {
 		this.emailAddress = emailAddress;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDevAuthToken() {
@@ -72,23 +64,20 @@ public class AppDeveloper extends Model {
 
 	@Override
 	public String toString() {
-		return "AppDeveloper [emailAddress=" + emailAddress + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", devAuthToken="
-				+ devAuthToken + ", super.toString()=" + super.toString() + "]";
+		return "AppDeveloper [emailAddress=" + emailAddress + ", name=" + name
+				+ ", devAuthToken=" + devAuthToken + ", super.toString()="
+				+ super.toString() + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((devAuthToken == null) ? 0 : devAuthToken.hashCode());
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
-		result = prime * result
-				+ ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result
-				+ ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -96,7 +85,7 @@ public class AppDeveloper extends Model {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -111,16 +100,12 @@ public class AppDeveloper extends Model {
 				return false;
 		} else if (!emailAddress.equals(other.emailAddress))
 			return false;
-		if (firstName == null) {
-			if (other.firstName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
+
 }
