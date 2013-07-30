@@ -9,14 +9,11 @@ import dtos.api.AppDevelopersDTO;
 import dtos.api.util.DataTransferObject;
 
 public class AppDevelopersController extends Controller {
-	// the Form to be used in a web form
-	private static Form<AppDevelopersDTO> appDeveloperForm = Form
-			.form(AppDevelopersDTO.class);
-
+	
 	public static Result postAppDevelopers() {
-		Form<AppDevelopersDTO> appDevelopersForm = appDeveloperForm
-				.bindFromRequest();
-		if (appDeveloperForm.hasErrors()) {
+		Form<AppDevelopersDTO> appDevelopersForm = Form.form(
+				AppDevelopersDTO.class).bindFromRequest();
+		if (appDevelopersForm.hasErrors()) {
 			String errors = DataTransferObject.errorsAsString(appDevelopersForm
 					.errors());
 			// TODO, Caon
