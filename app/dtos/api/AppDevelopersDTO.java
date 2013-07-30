@@ -12,7 +12,7 @@ import dtos.api.util.DataTransferObject;
 
 // @JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-@JsonTypeName("user")
+@JsonTypeName("appDeveloper")
 public class AppDevelopersDTO extends DataTransferObject<Scrobble> {
 	
 	private String devEmail;

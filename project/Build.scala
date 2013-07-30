@@ -11,8 +11,8 @@ object ApplicationBuild extends Build {
     javaCore,
     
     // Add your project dependencies here,
-    //"org.mongodb" % "mongo-java-driver" % "2.11.2",
-    "org.mongodb" % "mongo-java-driver" % "2.10.0",
+    "org.mongodb" % "mongo-java-driver" % "2.11.2",
+    //"org.mongodb" % "mongo-java-driver" % "2.10.0",
     "com.google.code.morphia" % "morphia" % "0.101.0",
     "com.google.code.morphia" % "morphia-logging-slf4j" % "0.101.0"
     //"com.google.code.morphia" % "morphia-validation" % "0.101.0"
