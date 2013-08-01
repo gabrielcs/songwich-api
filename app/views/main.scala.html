@@ -1,0 +1,24 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <title>@title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="@routes.Assets.at("css/bootstrap.min.css")" rel="stylesheet" media="screen">
+        <link href="@routes.Assets.at("css/bootstrap-responsive.min.css")" rel="stylesheet" media="screen">
+        <!-- Other -->
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("css/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("img/favicon.png")">
+    </head>
+    <body>
+       <div id="fb-root"></div>
+        <!-- <script src="http://connect.facebook.net/en_US/all.js"></script>-->
+       <script src="@routes.Assets.at("js/jquery-1.9.1.min.js")"></script>
+       <script type="text/javascript" src="@routes.Assets.at("javascripts/web/fb_init.js")"></script>
+       @content 
+       <script src="@routes.Assets.at("js/bootstrap.min.js")"></script>
+    </body>
+</html>

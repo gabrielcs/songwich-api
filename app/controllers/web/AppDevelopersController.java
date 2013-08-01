@@ -1,4 +1,4 @@
-package controllers.api;
+package controllers.web;
 
 import models.AppDeveloper;
 import play.data.Form;
@@ -9,7 +9,7 @@ import dtos.api.AppDevelopersDTO;
 import dtos.api.util.DataTransferObject;
 
 public class AppDevelopersController extends Controller {
-	
+
 	public static Result postAppDevelopers() {
 		Form<AppDevelopersDTO> appDevelopersForm = Form.form(
 				AppDevelopersDTO.class).bindFromRequest();
@@ -27,4 +27,5 @@ public class AppDevelopersController extends Controller {
 			return ok();
 		}
 	}
+
 }
