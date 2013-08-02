@@ -15,8 +15,8 @@ GET    /v0.4/scrobbles/:user     controllers.api.ScrobblesController_V0_4.getScr
 POST   /v0.4/users               controllers.api.UsersController_V0_4.postUsers()
 
 # Home page
-GET     /                        controllers.web.Application.index()
-POST    /dev                     controllers.web.AppDevelopersController.postAppDevelopers()
+GET     /dev                        controllers.web.Application.index()
+POST    /postAppDeveloper           controllers.web.AppDevelopersController.postAppDevelopers()
 
 #
 GET     /assets/javascripts/routes          controllers.web.Application.javascriptRoutes()

@@ -75,6 +75,9 @@ function aboutMe() {
 				+ response.gender + '\n link : ' + response.link
 				+ '\n username : ' + response.username + '\n email : '
 				+ response.email);
+				document.getElementById("name").value = response.name;
+				document.getElementById("devEmail").value = response.email;
+		
 		// ARRAYS:/
 		/*
 		 * + '\n likes : ' + response.likes + '\n music : ' + response.music
@@ -94,7 +97,7 @@ function aboutMe() {
 function loginWithFacebook() {
 	FB.login(function(response) {
 		if (response.authResponse) {
-			window.location = "http://localhost:9000/"; // #fb_token="+response.authResponse.accessToken;
+			window.location = "http://localhost:9000/dev"; // #fb_token="+response.authResponse.accessToken;
 		} else {
 			console.log('User cancelled login or did not fully authorize.');
 		}
@@ -113,60 +116,29 @@ function logout() {
 	});
 };
 
-function closeDialog() {
-	alert($('#emailInput').val());
-	//$('#DeveloperDialog').modal('hide');
+function feedback(msg){
+	bootstrap_alert.warning(msg);
 };
-
-$('#cancelButton').click(function(e){
-    e.preventDefault();
-    closeDialog();
-});
-
-function okClicked() {
-	// document.title = document.getElementById ("xlInput").value;
-	alert("ok clicked");
-/*
-	var request = jsRoutes.controllers.web.AppDevelopersController.postAppDevelopers().ajax({
-		url : '/dev',
-		type : "POST",
-		data : $("#developerForm").serialize(),/*'{ "name" : "' + $("#nameInput").text + '","email" : "'
-				+ $("#emailInput").text + '","companys" : "' + $("#companyInput").text + '"}',
-		contentType : "application/json",
-		dataType : "json"
-	});
-	request.done(function(data) {
-		alert("ok");
-		if (console && console.log) {
-			alert("status  : \t" + data.status + "\nmessage : \t"
-					+ data.message + "\n");
-		}
-	});
-	request.fail(function(jqXHR, textStatus) {
-		alert("Request failed: " + textStatus);
-	});
-	
-	jsRoutes.controllers.web.AppDevelopersController.postAppDevelopers().ajax({
-		data : $("#developerForm").serialize(),
-		url : '@{web.AppDevelopersController.postAppDevelopers()}',
-		success : function(data) {
-			alert("Succsses");
-		},
-		error : function(err) {
-			alert("error");
-		}
-	});*/
-
-	//closeDialog();
-};
+bootstrap_alert = function() {
+}
+bootstrap_alert.warning = function(
+		message) {
+	$('#alert_placeholder')
+			.html(
+					'<div class="alert"><a class="close" data-dismiss="alert">x</a><span>'
+							+ message
+							+ '</span></div>')
+}
 
 $(document).ready(function() {
+	
 	$('#submitButton').bind('click', function() {
-	    $.post('http://localhost:9000/dev', 
+	    $.post('http://localhost:9000/postAppDeveloper', 
 	       $('#developerForm').serialize(), 
 	       function(data, status, xhr){
 	         // do something here with response;
-	    	 alert(data+ " "+status);
+	    	feedback(data + " " + status);
+	    	
 	       });
 	    
 	});
@@ -175,13 +147,6 @@ $(document).ready(function() {
 		logout();
 	});
 
-	$('#DeveloperDialog').bind('show', function() {
-		// document.getElementById ("xlInput").value = document.title;
-		FB.api('/me', function(response) {
-			document.getElementById("name").value = response.name;
-			document.getElementById("devEmail").value = response.email;
-		});
-	});
 
 	$('#LoggedOutDiv').show();
 	$('#LoggedInDiv').hide();

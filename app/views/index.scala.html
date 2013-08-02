@@ -112,18 +112,18 @@
     <div class="row-fluid pagination-centered">
       <div class="span3"></div>
       <div class="span6">
-        <h2>Development</h2>
-        <p>Users can become developers.</p>
-        <p>By registering your apps, you'll get an unique
-          development key.</p>
-        <div id="DeveloperDialog" class="modal hide fade" tabindex="-1"
-          role="dialog" aria-labelledby="windowTitleLabel"
-          aria-hidden="true">
+        <!-- <h2>Development</h2>-->
+
+        <div id="DeveloperDialog" class="tab-pane" tabindex="-1">
           <div class="modal-header">
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3>Developer Key Request</h3>
+            <!-- <a href="#" class="close" data-dismiss="modal">&times;xxxxxxxxx</a> -->
+            <h3 style="padding-bottom: 25px;">Developer Key Request</h3>
+            <!-- <p>Users can become developers.</p>
+            <p>By registering your apps, you'll get an unique
+              development key.</p> -->
           </div>
-          <form id="developerForm" class="form-horizontal"    style="padding-bottom: 0; margin-bottom: 0">
+          <form id="developerForm" class="form-horizontal"
+            style="padding-top: 25px; margin-bottom: 0">
 
             <div class="modal-body">
 
@@ -136,7 +136,7 @@
                     <div class="controls">
                       <input id="name" name="name" type="text"
                         placeholder="Name" class="input-xlarge"
-                        required="required" >
+                        required="">
 
                     </div>
                   </div>
@@ -145,9 +145,9 @@
                   <div class="control-group">
                     <label class="control-label">Email</label>
                     <div class="controls">
-                      <input id="devEmail" name="devEmail"
-                        type="text" placeholder="Email"
-                        class="input-xlarge" required="required"  >
+                      <input id="devEmail" name="devEmail" type="text"
+                        placeholder="Email" class="input-xlarge"
+                        required="">
 
                     </div>
                   </div>
@@ -156,9 +156,9 @@
                   <div class="control-group">
                     <label class="control-label">Company</label>
                     <div class="controls">
-                      <input id="appName" name="appName"
-                        type="text" placeholder="Company"
-                        class="input-xlarge" required="required">
+                      <input id="appName" name="appName" type="text"
+                        placeholder="Company" class="input-xlarge"
+                        required="">
 
                     </div>
                   </div>
@@ -167,28 +167,30 @@
 
               </div>
             </div>
+            <div id="alert_placeholder"></div>
+            
+            <!-- <div class="modal-footer"> -->
 
-            <div class="modal-footer">
-
-              <!--  <a id="btnDevOk" href="#" class="btn btn-primary"
+            <!--  <a id="btnDevOk" href="#" class="btn btn-primary"
               onclick="okClicked ();">OK</a> -->
-              <div class="control-group">
-                <label class="control-label"></label>
-                <div class="controls">
-                  <button type="submit" id="submitButton"
-                    name="submitButton" class="btn btn-primary">Get
-                    a key</button>
-                </div>
+            <div class="control-group" style="padding-bottom:50px;">
+              <!-- <label class="control-label"></label> -->
+              <div class="controls">
+                <a href="#" type="submit" id="submitButton" class="btn btn-primary">Get
+                  a key</a>
               </div>
             </div>
+            <!-- </div> -->
           </form>
         </div>
+        <!-- 
         <div class="divButtons">
-          <a data-toggle="modal" class="btn btn-primary btn-large"
+          <a data-toggle="tab" class="btn btn-primary btn-large"
             href="#DeveloperDialog">Get a Developer Key </a> <i
             class="icon-large icon-keys"></i>
         </div>
-        <p>Note: Your key may need pre approval.</p>
+        <p >Note: Your key may need pre approval.</p> -->
+
       </div>
 
     </div>
