@@ -30,6 +30,7 @@ public class App extends Model {
 	public App(String name, String createdBy) {
 		super(createdBy);
 		setName(name);
+		appDevelopers = new ArrayList<AppDeveloper>();
 	}
 
 	public App(String name, AppDeveloper appDeveloper, String createdBy) {
@@ -42,6 +43,7 @@ public class App extends Model {
 	public App(String name, List<AppDeveloper> appDevelopers, String createdBy) {
 		super(createdBy);
 		setName(name);
+		appDevelopers = new ArrayList<AppDeveloper>();
 		setAppDevelopers(appDevelopers);
 	}
 	

@@ -162,9 +162,8 @@ function okClicked() {
 
 $(document).ready(function() {
 	$('#submitButton').bind('click', function() {
-		
 	    $.post('http://localhost:9000/dev', 
-	       $('#myForm').serialize(), 
+	       $('#developerForm').serialize(), 
 	       function(data, status, xhr){
 	         // do something here with response;
 	    	 alert(data+ " "+status);
@@ -179,8 +178,8 @@ $(document).ready(function() {
 	$('#DeveloperDialog').bind('show', function() {
 		// document.getElementById ("xlInput").value = document.title;
 		FB.api('/me', function(response) {
-			document.getElementById("nameInput").value = response.name;
-			document.getElementById("emailInput").value = response.email;
+			document.getElementById("name").value = response.name;
+			document.getElementById("devEmail").value = response.email;
 		});
 	});
 

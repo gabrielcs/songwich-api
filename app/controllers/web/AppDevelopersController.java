@@ -23,9 +23,9 @@ public class AppDevelopersController extends Controller {
 		if (appDevelopersForm.hasErrors()) {
 			String errors = DataTransferObject.errorsAsString(appDevelopersForm
 					.errors());
-			 Logger.info("errors : "+errors);
+			Logger.info("errors : "+errors);
 			// TODO, Caon
-			return badRequest();
+			return badRequest(errors);
 		} else {
 			AppDevelopersUseCases appDevelopersUseCases = new AppDevelopersUseCases();
 			AppDeveloper appDeveloper = appDevelopersUseCases
@@ -33,7 +33,7 @@ public class AppDevelopersController extends Controller {
 			// appDeveloper saved successfully
 			 Logger.info(" appDeveloper saved successfully ");
 			// TODO, Caon
-			return ok();
+			return ok(appDeveloper.getDevAuthToken());
 		}
 	}
 

@@ -28,10 +28,15 @@ public class AppDevelopersUseCases extends UseCase {
 					appDevelopersDTO.getDevEmail());
 		}
 
+		Logger.debug(app.toString());
+		
 		// creates the AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper(
 				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getName(),
 				UUID.randomUUID(), appDevelopersDTO.getDevEmail());
+		
+		Logger.debug(appDeveloper.toString());
+		
 		app.addAppDeveloper(appDeveloper);
 		appDao.cascadeSave(app);
 
