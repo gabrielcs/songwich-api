@@ -40,7 +40,7 @@
 
           <div class="carousel-inner">
             <div class="item active">
-              <img src="../assets/images/sw1.png" alt="">
+              <img src="../assets/img/sw1.png" alt="">
               <div class="container">
                 <div class="carousel-caption">
                   <h1>Example headline.</h1>
@@ -55,7 +55,7 @@
               </div>
             </div>
             <div class="item">
-              <img src="../assets/images/sw2.png" alt="">
+              <img src="../assets/img/sw2.png" alt="">
               <div class="container">
                 <div class="carousel-caption">
                   <h1>Another example headline.</h1>
@@ -69,7 +69,7 @@
               </div>
             </div>
             <div class="item">
-              <img src="../assets/images/sw3.png" alt="">
+              <img src="../assets/img/sw3.png" alt="">
               <div class="container">
                 <div class="carousel-caption">
                   <h1>One more for good measure.</h1>
@@ -123,44 +123,65 @@
             <a href="#" class="close" data-dismiss="modal">&times;</a>
             <h3>Developer Key Request</h3>
           </div>
-          <div class="modal-body">
-            <div class="divDialogElements">
+          <form id="developerForm" class="form-horizontal"    style="padding-bottom: 0; margin-bottom: 0">
 
-              <div class="row ">
-                <div class="span2"></div>
-                <div class="span2 display-label">Name:</div>
-                <div class="span6 display-values">
-                  <input class="xlarge" id="nameInput" name="nameInput"
-                    type="text" disabled />
-                </div>
-                <div class="span2"></div>
-              </div>
+            <div class="modal-body">
 
-              <div class="row ">
-                <div class="span2"></div>
-                <div class="span2 display-label">Email:</div>
-                <div class="span6 display-values">
-                  <input class="xlarge" id="emailInput"
-                    name="emailInput" type="text" disabled />
-                </div>
-                <div class="span2"></div>
-              </div>
-              <div class="row ">
-                <div class="span2"></div>
-                <div class="span2 display-label">Company :</div>
-                <div class="span6 display-values">
-                  <input class="xlarge" id="companyInput"
-                    name="companyInput" type="text" />
-                </div>
-                <div class="span2"></div>
+              <div class="divDialogElements">
+                <fieldset>
+
+                  <!-- Text input-->
+                  <div class="control-group">
+                    <label class="control-label">Name</label>
+                    <div class="controls">
+                      <input id="nameInput" name="userName" type="text"
+                        placeholder="Name" class="input-xlarge"
+                        required="required" >
+
+                    </div>
+                  </div>
+
+                  <!-- Text input-->
+                  <div class="control-group">
+                    <label class="control-label">Email</label>
+                    <div class="controls">
+                      <input id="emailInput" name="userEmail"
+                        type="text" placeholder="Email"
+                        class="input-xlarge" required="required"  >
+
+                    </div>
+                  </div>
+
+                  <!-- Text input-->
+                  <div class="control-group">
+                    <label class="control-label">Company</label>
+                    <div class="controls">
+                      <input id="companyInput" name="userCompany"
+                        type="text" placeholder="Company"
+                        class="input-xlarge" required="required">
+
+                    </div>
+                  </div>
+
+                </fieldset>
+
               </div>
             </div>
 
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn" onclick="closeDialog ();">Cancel</a>
-            <a id="btnDevOk" href="#" class="btn btn-primary" onclick="okClicked ();">OK</a>
-          </div>
+            <div class="modal-footer">
+
+              <!--  <a id="btnDevOk" href="#" class="btn btn-primary"
+              onclick="okClicked ();">OK</a> -->
+              <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                  <button type="submit" id="submitButton"
+                    name="submitButton" class="btn btn-primary">Get
+                    a key</button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
         <div class="divButtons">
           <a data-toggle="modal" class="btn btn-primary btn-large"

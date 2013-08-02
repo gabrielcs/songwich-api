@@ -14,7 +14,7 @@ window.fbAsyncInit = function() {
 		xfbml : true
 	});
 	// Additional initialization code such as adding Event Listeners goes here
-	
+
 	FB.Event.subscribe('auth.statusChange', function(response) {
 		if (response.status === 'connected') {
 			// the user is logged in and has authenticated your app, and
@@ -22,7 +22,7 @@ window.fbAsyncInit = function() {
 			// the user's ID, a valid access token, a signed request, and the
 			// time the access token
 			// and signed request each expire
-			//alert("connected!!");
+			// alert("connected!!");
 
 			var uid = response.authResponse.userID;
 			var accessToken = response.authResponse.accessToken;
@@ -33,13 +33,13 @@ window.fbAsyncInit = function() {
 		} else if (response.status === 'not_authorized') {
 			// the user is logged in to Facebook,
 			// but has not authenticated your app
-			//alert("not authorized!!")
+			// alert("not authorized!!")
 			$('#logout-button').hide();
 			$('#LoggedOutDiv').show();
 		} else {
 			// the user isn't logged in to Facebook.
-			//alert("not logged in yet!!")
-			$('#picture').attr('src','');
+			// alert("not logged in yet!!")
+			$('#picture').attr('src', '');
 			$('#logout-button').hide();
 			$('#LoggedOutDiv').show();
 			$('#LoggedInDiv').hide();
@@ -58,44 +58,36 @@ window.fbAsyncInit = function() {
 	fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
-function aboutMe(){
+function aboutMe() {
 	FB.api('/me/picture', function(response) {
 		console.log('picture : ' + response.data.url + '?type=square');
-		$('#picture').attr('src',response.data.url + '?type=square');
+		$('#picture').attr('src', response.data.url + '?type=square');
 		$('#logout-button').show();
 		$('#LoggedOutDiv').hide();
 		$('#LoggedInDiv').show();
 	});
 	FB.api('/me', function(response) {
-	       console.log('Good to see you, \n'
-		   + '\n id : ' + response.id
-		   + '\n locale : ' + response.locale
-		   + '\n name : ' + response.name
-		   + '\n first_name : ' + response.first_name
-		   + '\n middle_name : ' + response.middle_name
-		   + '\n last_name : ' + response.last_name
-		   + '\n gender : ' + response.gender
-		   + '\n link : ' + response.link
-		   + '\n username : ' + response.username
-		   + '\n email : ' + response.email);
-		   //ARRAYS:/
-		   /*
-		   + '\n likes : ' + response.likes 
-		   + '\n music : ' + response.music  //requires: user_likes or friends_likes.
-		   + '\n user_actions.music :' + response.music //requires: friends_actions.music
-		   +'.');
-	       
-	       friendCount = response.data.length;
-	        for( i=0; i<response.data.length; i++) {
-	          friendId = response.data[i].id;
-	          FB.api('/'+friendId+'/movies', function(response) {
-	            movieList = movieList.concat(response.data);
-	            friendCount--;
-	            document.getElementById('test').innerHTML = friendCount 
-	              + " friends to go ... ";
-	            if(friendCount === 0) { data_fetch_postproc(); };
-	          });
-	        } */
+		console.log('Good to see you, \n' + '\n id : ' + response.id
+				+ '\n locale : ' + response.locale + '\n name : '
+				+ response.name + '\n first_name : ' + response.first_name
+				+ '\n middle_name : ' + response.middle_name
+				+ '\n last_name : ' + response.last_name + '\n gender : '
+				+ response.gender + '\n link : ' + response.link
+				+ '\n username : ' + response.username + '\n email : '
+				+ response.email);
+		// ARRAYS:/
+		/*
+		 * + '\n likes : ' + response.likes + '\n music : ' + response.music
+		 * //requires: user_likes or friends_likes. + '\n user_actions.music :' +
+		 * response.music //requires: friends_actions.music +'.');
+		 * 
+		 * friendCount = response.data.length; for( i=0; i<response.data.length;
+		 * i++) { friendId = response.data[i].id; FB.api('/'+friendId+'/movies',
+		 * function(response) { movieList = movieList.concat(response.data);
+		 * friendCount--; document.getElementById('test').innerHTML =
+		 * friendCount + " friends to go ... "; if(friendCount === 0) {
+		 * data_fetch_postproc(); }; }); }
+		 */
 	});
 }
 
@@ -113,37 +105,85 @@ function loginWithFacebook() {
 
 function logout() {
 	FB.logout(function(response) {
-		//alert("Person is now logged out");
-		$('#picture').attr('src','');
+		// alert("Person is now logged out");
+		$('#picture').attr('src', '');
 		$('#logout-button').hide();
 		$('#LoggedOutDiv').show();
 		$('#LoggedInDiv').hide();
 	});
 };
 
-function closeDialog () {
-	$('#DeveloperDialog').modal('hide'); 
-	};
-function okClicked () {
-	//document.title = document.getElementById ("xlInput").value;
-	alert("ok clicked");
-	closeDialog ();
-	};
+function closeDialog() {
+	alert($('#emailInput').val());
+	//$('#DeveloperDialog').modal('hide');
+};
 
+$('#cancelButton').click(function(e){
+    e.preventDefault();
+    closeDialog();
+});
+
+function okClicked() {
+	// document.title = document.getElementById ("xlInput").value;
+	alert("ok clicked");
+/*
+	var request = jsRoutes.controllers.web.AppDevelopersController.postAppDevelopers().ajax({
+		url : '/dev',
+		type : "POST",
+		data : $("#developerForm").serialize(),/*'{ "name" : "' + $("#nameInput").text + '","email" : "'
+				+ $("#emailInput").text + '","companys" : "' + $("#companyInput").text + '"}',
+		contentType : "application/json",
+		dataType : "json"
+	});
+	request.done(function(data) {
+		alert("ok");
+		if (console && console.log) {
+			alert("status  : \t" + data.status + "\nmessage : \t"
+					+ data.message + "\n");
+		}
+	});
+	request.fail(function(jqXHR, textStatus) {
+		alert("Request failed: " + textStatus);
+	});
+	
+	jsRoutes.controllers.web.AppDevelopersController.postAppDevelopers().ajax({
+		data : $("#developerForm").serialize(),
+		url : '@{web.AppDevelopersController.postAppDevelopers()}',
+		success : function(data) {
+			alert("Succsses");
+		},
+		error : function(err) {
+			alert("error");
+		}
+	});*/
+
+	//closeDialog();
+};
 
 $(document).ready(function() {
+	$('#submitButton').bind('click', function() {
+		
+	    $.post('http://localhost:9000/dev', 
+	       $('#myForm').serialize(), 
+	       function(data, status, xhr){
+	         // do something here with response;
+	    	 alert(data+ " "+status);
+	       });
+	    
+	});
+	
 	$('#logout-button').bind('click', function() {
 		logout();
 	});
-	
-	$('#DeveloperDialog').bind('show', function () {
-		//document.getElementById ("xlInput").value = document.title;
+
+	$('#DeveloperDialog').bind('show', function() {
+		// document.getElementById ("xlInput").value = document.title;
 		FB.api('/me', function(response) {
-			document.getElementById ("nameInput").value = response.name;
-			document.getElementById ("emailInput").value = response.email;
+			document.getElementById("nameInput").value = response.name;
+			document.getElementById("emailInput").value = response.email;
 		});
 	});
-	
+
 	$('#LoggedOutDiv').show();
 	$('#LoggedInDiv').hide();
 	/*

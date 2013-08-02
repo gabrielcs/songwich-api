@@ -2,12 +2,24 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+
+# Untrail GET URLs (http://stackoverflow.com/questions/13189095/play-framework2-remove-trailing-slash-from-urls)
+GET     /*path/                  controllers.web.Application.untrail(path: String)
+
+
 # Scrobbler
 POST   /v0.4/scrobbles           controllers.api.ScrobblesController_V0_4.postScrobbles()
 GET    /v0.4/scrobbles/:user     controllers.api.ScrobblesController_V0_4.getScrobbles(user)
 
 # User
 POST   /v0.4/users               controllers.api.UsersController_V0_4.postUsers()
+
+# Home page
+GET     /                        controllers.web.Application.index()
+POST    /dev                     controllers.web.AppDevelopersController.postAppDevelopers()
+
+#
+GET     /assets/javascripts/routes          controllers.web.Application.javascriptRoutes()
 
 # Deprecated
 POST   /v0.3/scrobble            controllers.api.deprecated.ScrobblesController_V0_3.postScrobble()
@@ -20,12 +32,6 @@ POST   /scrobbleErrorPost        controllers.api.util.ScrobblerFakeErrors.scrobb
 
 # Map static resources from the /public folder to the /assets URL path
 GET    /assets/*file             controllers.Assets.at(path="/public", file)
-
-# before we implement the client side code, source all javascript dependencies
-#GET    /assets/javascripts/routes   controllers.web.Application.javascriptRoutes()
-
-# Home page
-GET     /                        controllers.web.Application.index()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file            controllers.Assets.at(path="/public", file)

@@ -3,8 +3,9 @@ body {
 	padding-bottom: 40px;
 }	
 
-input:disabled{
- cursor:text;
+.cannot-change{
+   cursor:text;
+   
 }
 
 /* CUSTOMIZE THE CAROUSEL
