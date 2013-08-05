@@ -82,7 +82,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	private ValidationError validateArtistsNames() {
-		if (artistsNames.isEmpty()) {
+		if (artistsNames == null || artistsNames.isEmpty()) {
 			return new ValidationError("artistsNames",
 					"artistsNames is required");
 		} else {
@@ -165,7 +165,8 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	private ValidationError validateChosenByUser() {
-		if (chosenByUser.equalsIgnoreCase("true")
+		// choosenByUser is optional
+		if (chosenByUser == null || chosenByUser.equalsIgnoreCase("true")
 				|| chosenByUser.equalsIgnoreCase("false")) {
 			return null;
 		} else {
