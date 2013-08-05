@@ -16,8 +16,6 @@ public class AppDevelopersController extends Controller {
 
 	public static Result postAppDevelopers() {
 
-	    Logger.info("hello, inside postappdevelopersssssssssssssssssssssssssssssssssssssss\n");
-	    
 		Form<AppDevelopersDTO> appDevelopersForm = Form.form(
 				AppDevelopersDTO.class).bindFromRequest();
 		if (appDevelopersForm.hasErrors()) {

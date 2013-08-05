@@ -97,7 +97,7 @@ function aboutMe() {
 function loginWithFacebook() {
 	FB.login(function(response) {
 		if (response.authResponse) {
-			window.location = "http://localhost:9000/dev"; // #fb_token="+response.authResponse.accessToken;
+			window.location = "http://api.songwich.com/dev"; // #fb_token="+response.authResponse.accessToken;
 		} else {
 			console.log('User cancelled login or did not fully authorize.');
 		}
@@ -133,7 +133,7 @@ bootstrap_alert.warning = function(
 $(document).ready(function() {
 	
 	$('#submitButton').bind('click', function() {
-	    $.post('http://localhost:9000/postAppDeveloper', 
+	    $.post('http://api.songwich.com/postAppDeveloper', 
 	       $('#developerForm').serialize(), 
 	       function(data, status, xhr){
 	         // do something here with response;
