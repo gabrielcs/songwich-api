@@ -42,7 +42,7 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 			return new ValidationError("userEmail", "Invalid userEmail");
 		}
 		
-		// validation sucessfull
+		// validation successful
 		return null;
 	}
 
