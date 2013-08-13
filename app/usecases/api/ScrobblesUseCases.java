@@ -34,11 +34,60 @@ public class ScrobblesUseCases extends UseCase {
 
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		scrobbleDAO.save(scrobble);
-		
-		scrobbleDTO.setUserId(getContext().getUser().getId().toString());
 	}
 
 	public List<ScrobblesDTO_V0_4> getScrobbles(ObjectId userId)
+			throws SongwichAPIException {
+		authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = new ScrobbleDAOMongo().findByUserId(userId);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	public List<ScrobblesDTO_V0_4> getScrobbles(ObjectId userId, int results)
+			throws SongwichAPIException {
+		authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
+				.findLastScrobblesByUserId(userId, results);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(ObjectId userId,
+			int daysOffset) throws SongwichAPIException {
+		authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
+				.findByUserIdWithDaysOffset(userId, daysOffset);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(ObjectId userId,
+			int daysOffset, int results) throws SongwichAPIException {
+		authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
+				.findLastScrobblesByUserIdWithDaysOffset(userId, daysOffset,
+						results);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	private List<ScrobblesDTO_V0_4> createGetScrobblesResponse(
+			List<Scrobble> scrobbles) {
+		List<ScrobblesDTO_V0_4> scrobbleDTOs = new ArrayList<ScrobblesDTO_V0_4>(
+				scrobbles.size());
+		ScrobblesDTO_V0_4 scrobblesDTO;
+		for (Scrobble scrobble : scrobbles) {
+			scrobblesDTO = new ScrobblesDTO_V0_4();
+			scrobblesDTO.setTrackTitle(scrobble.getSongTitle());
+			scrobblesDTO.setArtistsNames(scrobble.getArtistsNames());
+			scrobblesDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
+			scrobblesDTO.setChosenByUser(Boolean.toString(scrobble
+					.isChoosenByUser()));
+			scrobblesDTO.setPlayer(scrobble.getPlayer());
+
+			scrobbleDTOs.add(scrobblesDTO);
+		}
+		return scrobbleDTOs;
+	}
+
+	private void authorizeUserGetScrobbles(ObjectId userId)
 			throws SongwichAPIException {
 		// check if the User the scrobbles were asked for is the same as the
 		// authenticated one
@@ -55,23 +104,5 @@ public class ScrobblesUseCases extends UseCase {
 					APIStatus_V0_4.UNAUTHORIZED.toString(),
 					APIStatus_V0_4.UNAUTHORIZED);
 		}
-
-		// user is authorized
-		List<Scrobble> scrobbles = new ScrobbleDAOMongo().findByUserId(userId);
-		List<ScrobblesDTO_V0_4> scrobbleDTOs = new ArrayList<ScrobblesDTO_V0_4>(
-				scrobbles.size());
-		ScrobblesDTO_V0_4 scrobbleDTO;
-		for (Scrobble scrobble : scrobbles) {
-			scrobbleDTO = new ScrobblesDTO_V0_4();
-			scrobbleDTO.setTrackTitle(scrobble.getSongTitle());
-			scrobbleDTO.setArtistsNames(scrobble.getArtistsNames());
-			scrobbleDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
-			scrobbleDTO.setChosenByUser(Boolean.toString(scrobble
-					.isChoosenByUser()));
-			scrobbleDTO.setPlayer(scrobble.getPlayer());
-
-			scrobbleDTOs.add(scrobbleDTO);
-		}
-		return scrobbleDTOs;
 	}
 }

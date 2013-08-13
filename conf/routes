@@ -9,7 +9,7 @@ GET     /*path/                  controllers.web.Application.untrail(path: Strin
 
 # Scrobbler
 POST   /v0.4/scrobbles           controllers.api.ScrobblesController_V0_4.postScrobbles()
-GET    /v0.4/scrobbles/:user     controllers.api.ScrobblesController_V0_4.getScrobbles(user)
+GET    /v0.4/scrobbles/:user     controllers.api.ScrobblesController_V0_4.getScrobbles(user, daysOffset: Int ?= -1, results: Int ?= -1)
 
 # User
 POST   /v0.4/users               controllers.api.UsersController_V0_4.postUsers()

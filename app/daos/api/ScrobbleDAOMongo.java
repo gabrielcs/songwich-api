@@ -1,5 +1,7 @@
 package daos.api;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import models.Scrobble;
@@ -25,6 +27,45 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 
 	@Override
 	public List<Scrobble> findByUserId(ObjectId userId) {
-		return ds.find(Scrobble.class).filter("userId", userId).asList();
+		return ds.find(Scrobble.class).filter("userId", userId)
+				.order("-timestamp").asList();
+	}
+	
+	@Override
+	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId, int results) {
+		return ds.find(Scrobble.class).filter("userId", userId)
+				.order("-timestamp").limit(results).asList();
+	}
+
+	@Override
+	public List<Scrobble> findByUserIdWithDaysOffset(ObjectId userId,
+			int daysOffset) {
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.DATE, -daysOffset);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		long offsetMillis = calendar.getTimeInMillis();
+
+		return ds.find(Scrobble.class).filter("userId", userId)
+				.filter("timestamp >", offsetMillis).order("-timestamp")
+				.asList();
+	}
+
+	@Override
+	public List<Scrobble> findLastScrobblesByUserIdWithDaysOffset(
+			ObjectId userId, int daysOffset, int results) {
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.DATE, -daysOffset);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		long offsetMillis = calendar.getTimeInMillis();
+
+		return ds.find(Scrobble.class).filter("userId", userId)
+				.filter("timestamp >", offsetMillis).order("-timestamp")
+				.limit(results).asList();
 	}
 }

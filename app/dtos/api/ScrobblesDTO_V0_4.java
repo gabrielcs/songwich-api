@@ -31,9 +31,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private String timestamp;
 
-	// not used for input, only for output
-	private String userId;
-
 	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
@@ -45,15 +42,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 				validateTimestamp(), validateChosenByUser());
 		// check for empty list and return null
 		return getValidationErrors().isEmpty() ? null : getValidationErrors();
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		// no validation since it's only used for output
-		this.userId = userId;
 	}
 
 	public String getTrackTitle() {

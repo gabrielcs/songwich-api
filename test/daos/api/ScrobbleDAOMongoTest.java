@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import models.Scrobble;
@@ -111,8 +113,8 @@ public class ScrobbleDAOMongoTest {
 		artists2.add("Pharrell Williams");
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), "Take a Walk",
-				"Passion Pit", System.currentTimeMillis(), false,
-				"Spotify", CREATED_BY);
+				"Passion Pit", System.currentTimeMillis(), false, "Spotify",
+				CREATED_BY);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), "Get Lucky", artists2,
 				System.currentTimeMillis(), true, "Deezer", CREATED_BY);
 
@@ -132,6 +134,40 @@ public class ScrobbleDAOMongoTest {
 
 		assertTrue(scrobblesUser1.iterator().next().equals(scrobble1));
 		assertTrue(scrobblesUser2.iterator().next().equals(scrobble2));
+	}
+
+	@Test
+	public void testFindByUserIdWithOffset() {
+		User user = new User("gabriel@example.com", "Gabriel Example");
+		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
+		userDao.cascadeSave(user);
+
+		Scrobble scrobble1 = new Scrobble(user.getId(), "Take a Walk",
+				"Passion Pit", System.currentTimeMillis(), false, "Spotify",
+				CREATED_BY);
+
+		Scrobble scrobble2 = new Scrobble(user.getId(), "Take a Walk 2",
+				"Passion Pit", System.currentTimeMillis(), false, "Spotify",
+				CREATED_BY);
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.DATE, -2);
+		Scrobble scrobble2DaysOld = new Scrobble(user.getId(),
+				"Take a Walk (old)", "Passion Pit", calendar.getTimeInMillis(),
+				false, "Spotify", CREATED_BY);
+
+		// ScrobbleDAOMongo is not a CascadeSaveDAO
+		// it requires saving its references beforehand
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
+		scrobbleDao.save(scrobble1);
+		scrobbleDao.save(scrobble2);
+		scrobbleDao.save(scrobble2DaysOld);
+		
+		List<Scrobble> scrobbles1DayOld = scrobbleDao.findByUserIdWithDaysOffset(user.getId(), 1);
+		List<Scrobble> scrobbles2DaysOld = scrobbleDao.findByUserIdWithDaysOffset(user.getId(), 2);
+
+		assertEquals(scrobbles1DayOld.size(), 2);
+		assertEquals(scrobbles2DaysOld.size(), 3);
 	}
 
 }

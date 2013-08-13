@@ -52,7 +52,7 @@ public class ScrobblesController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result getScrobbles(String userId) {
+	public static Result getScrobbles(String userId, int daysOffset, int results) {
 		ObjectId objectId;
 		try {
 			objectId = new ObjectId(userId);
@@ -72,7 +72,22 @@ public class ScrobblesController_V0_4 extends APIController {
 		ScrobblesUseCases scroblesUseCases = new ScrobblesUseCases(getContext());
 		List<ScrobblesDTO_V0_4> scrobbleDTOs;
 		try {
-			scrobbleDTOs = scroblesUseCases.getScrobbles(objectId);
+			if (daysOffset < 0) {
+				if (results < 0) {
+					scrobbleDTOs = scroblesUseCases.getScrobbles(objectId);
+				} else {
+					scrobbleDTOs = scroblesUseCases.getScrobbles(objectId,
+							results);
+				}
+			} else {
+				if (results < 0) {
+					scrobbleDTOs = scroblesUseCases.getScrobblesDaysOffset(
+							objectId, daysOffset);
+				} else {
+					scrobbleDTOs = scroblesUseCases.getScrobblesDaysOffset(
+							objectId, daysOffset, results);
+				}
+			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user
 			Logger.warn(String.format("%s [%s]: %s", exception.getStatus()
