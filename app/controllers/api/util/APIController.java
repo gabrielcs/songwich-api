@@ -1,8 +1,8 @@
 package controllers.api.util;
 
-import models.App;
-import models.AppDeveloper;
-import models.User;
+import models.api.App;
+import models.api.AppDeveloper;
+import models.api.User;
 import controllers.api.AppDeveloperAuthController;
 import controllers.api.UserAuthController;
 import play.mvc.Controller;

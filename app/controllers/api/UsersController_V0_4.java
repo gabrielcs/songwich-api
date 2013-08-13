@@ -4,13 +4,13 @@ import play.data.Form;
 import play.libs.Json;
 import play.mvc.Result;
 import usecases.api.UsersUseCases;
+import views.api.UsersDTO_V0_4;
+import views.api.util.APIResponse_V0_4;
+import views.api.util.APIStatus_V0_4;
+import views.api.util.DataTransferObject;
+import views.api.util.PostUsersResponse_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.util.APIController;
-import dtos.api.UsersDTO_V0_4;
-import dtos.api.util.APIResponse_V0_4;
-import dtos.api.util.APIStatus_V0_4;
-import dtos.api.util.DataTransferObject;
-import dtos.api.util.PostUsersResponse_V0_4;
 
 public class UsersController_V0_4 extends APIController {
 

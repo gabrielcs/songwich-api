@@ -2,8 +2,8 @@ package controllers.api;
 
 import java.util.UUID;
 
-import models.App;
-import models.AppDeveloper;
+import models.api.App;
+import models.api.AppDeveloper;
 
 import org.bson.types.ObjectId;
 
@@ -14,12 +14,12 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.util.SongwichAPIException;
+import views.api.util.APIResponse_V0_4;
+import views.api.util.APIStatus_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
-import daos.api.AppDAO;
-import daos.api.AppDAOMongo;
-import daos.api.util.CascadeSaveDAO;
-import dtos.api.util.APIResponse_V0_4;
-import dtos.api.util.APIStatus_V0_4;
+import database.api.AppDAO;
+import database.api.AppDAOMongo;
+import database.api.util.CascadeSaveDAO;
 
 public class AppDeveloperAuthController extends
 		Action<AppDeveloperAuthenticated> {

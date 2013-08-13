@@ -1,7 +1,7 @@
 package daos.api;
 
 import static org.junit.Assert.*;
-import models.App;
+import models.api.App;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -12,6 +12,9 @@ import usecases.api.util.DatabaseContext;
 
 import com.google.code.morphia.Key;
 import com.mongodb.WriteResult;
+
+import database.api.AppDAO;
+import database.api.AppDAOMongo;
 
 public class MusicServiceDAOMongoTest {
 	

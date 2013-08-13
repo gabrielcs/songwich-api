@@ -1,16 +1,16 @@
 package usecases.api;
 
-import models.AppUser;
-import models.User;
+import models.api.AppUser;
+import models.api.User;
 
 import org.bson.types.ObjectId;
 
 import usecases.api.util.DatabaseContext;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
-import daos.api.UserDAO;
-import daos.api.UserDAOMongo;
-import dtos.api.UsersDTO_V0_4;
+import views.api.UsersDTO_V0_4;
+import database.api.UserDAO;
+import database.api.UserDAOMongo;
 
 public class UsersUseCases extends UseCase {
 

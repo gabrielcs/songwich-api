@@ -8,8 +8,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import models.Scrobble;
-import models.User;
+import models.api.Scrobble;
+import models.api.User;
 
 import org.bson.types.ObjectId;
 import org.junit.After;
@@ -17,7 +17,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import usecases.api.util.DatabaseContext;
-import daos.api.util.CascadeSaveDAO;
+import database.api.ScrobbleDAO;
+import database.api.ScrobbleDAOMongo;
+import database.api.UserDAOMongo;
+import database.api.util.CascadeSaveDAO;
 
 public class ScrobbleDAOMongoTest {
 

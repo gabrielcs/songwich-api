@@ -3,20 +3,20 @@ package usecases.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Scrobble;
-import models.User;
+import models.api.Scrobble;
+import models.api.User;
 
 import org.bson.types.ObjectId;
 
 import usecases.api.util.RequestContext;
 import usecases.api.util.SongwichAPIException;
 import usecases.api.util.UseCase;
-import daos.api.ScrobbleDAO;
-import daos.api.ScrobbleDAOMongo;
-import daos.api.UserDAO;
-import daos.api.UserDAOMongo;
-import dtos.api.ScrobblesDTO_V0_4;
-import dtos.api.util.APIStatus_V0_4;
+import views.api.ScrobblesDTO_V0_4;
+import views.api.util.APIStatus_V0_4;
+import database.api.ScrobbleDAO;
+import database.api.ScrobbleDAOMongo;
+import database.api.UserDAO;
+import database.api.UserDAOMongo;
 
 public class ScrobblesUseCases extends UseCase {
 

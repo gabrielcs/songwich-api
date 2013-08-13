@@ -3,7 +3,7 @@ package usecases.api.util;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
-import models.User;
+import models.api.User;
 
 import org.bson.types.ObjectId;
 
@@ -14,8 +14,8 @@ import com.google.code.morphia.Morphia;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-import daos.api.UserDAO;
-import daos.api.UserDAOMongo;
+import database.api.UserDAO;
+import database.api.UserDAOMongo;
 
 public class DatabaseContext {
 	// it currently only supports 1 Datastore

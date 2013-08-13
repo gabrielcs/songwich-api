@@ -1,8 +1,8 @@
 package usecases.api.util;
 
-import models.App;
-import models.AppDeveloper;
-import models.User;
+import models.api.App;
+import models.api.AppDeveloper;
+import models.api.User;
 
 public class RequestContext {
 	

@@ -8,10 +8,10 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.util.SongwichAPIException;
+import views.api.deprecated.ScrobbleProxy_V0_3;
+import views.api.util.deprecated.APIResponse_V0_1;
+import views.api.util.deprecated.APIStatus_V0_1;
 import controllers.api.util.deprecated.PostRequestBodyParser;
-import dtos.api.deprecated.ScrobbleProxy_V0_3;
-import dtos.api.util.deprecated.APIResponse_V0_1;
-import dtos.api.util.deprecated.APIStatus_V0_1;
 
 @Deprecated
 public class ScrobblesController_V0_3 extends Controller {

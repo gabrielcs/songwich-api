@@ -1,20 +1,13 @@
 package controllers.web;
 
-import models.AppDeveloper;
 import play.Routes;
-import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import usecases.api.AppDevelopersUseCases;
-import views.html.index;
-import dtos.api.AppDevelopersDTO;
-import dtos.api.util.DataTransferObject;
-
 
 public class Application extends Controller {
 
 	public static Result index() {
-		return ok(index.render("Your new application is ready."));
+		return ok(views.html.web.index.render("Your new application is ready."));
 	}
 
 	/*

@@ -2,13 +2,13 @@ package usecases.api;
 
 import java.util.UUID;
 
-import models.App;
-import models.AppDeveloper;
+import models.api.App;
+import models.api.AppDeveloper;
 import play.Logger;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
-import daos.api.AppDAOMongo;
-import dtos.api.AppDevelopersDTO;
+import views.api.AppDevelopersDTO;
+import database.api.AppDAOMongo;
 
 public class AppDevelopersUseCases extends UseCase {
 	

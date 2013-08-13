@@ -5,13 +5,13 @@ import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.util.DatabaseContext;
+import views.api.util.APIResponse_V0_4;
+import views.api.util.APIStatus_V0_4;
 
 import com.google.code.morphia.logging.MorphiaLoggerFactory;
 import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
 
 import controllers.api.AppDeveloperAuthController;
-import dtos.api.util.APIResponse_V0_4;
-import dtos.api.util.APIStatus_V0_4;
 
 public class Global extends GlobalSettings {
 	

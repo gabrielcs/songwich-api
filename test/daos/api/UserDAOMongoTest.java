@@ -4,13 +4,15 @@ import static org.junit.Assert.*;
 
 import java.util.UUID;
 
-import models.App;
-import models.AppUser;
-import models.User;
+import models.api.App;
+import models.api.AppUser;
+import models.api.User;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import database.api.UserDAOMongo;
 
 import usecases.api.util.DatabaseContext;
 

@@ -2,14 +2,14 @@ package controllers.web;
 
 import java.io.Console;
 
-import models.AppDeveloper;
+import models.api.AppDeveloper;
 import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import usecases.api.AppDevelopersUseCases;
-import dtos.api.AppDevelopersDTO;
-import dtos.api.util.DataTransferObject;
+import views.api.AppDevelopersDTO;
+import views.api.util.DataTransferObject;
 
 public class AppDevelopersController extends Controller {
 

@@ -1,6 +1,6 @@
 package controllers.api;
 
-import models.User;
+import models.api.User;
 
 import org.bson.types.ObjectId;
 
@@ -11,11 +11,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.util.SongwichAPIException;
+import views.api.util.APIResponse_V0_4;
+import views.api.util.APIStatus_V0_4;
 import controllers.api.annotation.UserAuthenticated;
-import daos.api.UserDAO;
-import daos.api.UserDAOMongo;
-import dtos.api.util.APIResponse_V0_4;
-import dtos.api.util.APIStatus_V0_4;
+import database.api.UserDAO;
+import database.api.UserDAOMongo;
 
 public class UserAuthController extends Action<UserAuthenticated> {
 
