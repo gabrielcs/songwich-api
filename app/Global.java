@@ -14,15 +14,12 @@ import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
 import controllers.api.AppDeveloperAuthController;
 
 public class Global extends GlobalSettings {
-	
-	@Override
-	public void beforeStart(play.Application app) {
-		// this is causing problems with hot reloading
-		MorphiaLoggerFactory.registerLogger(SLF4JLogrImplFactory.class);
-	}
-
 	@Override
 	public void onStart(play.Application app) {
+		// @see http://nesbot.com/2011/11/28/play-2-morphia-logging-error
+        MorphiaLoggerFactory.reset();
+        MorphiaLoggerFactory.registerLogger(SLF4JLogrImplFactory.class);
+        
 		if (app.isProd()) {
 			// connects to our Mongo-as-a-Service database
 			String dbName = app.configuration().getString("mongo.name");
