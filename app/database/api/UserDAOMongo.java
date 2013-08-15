@@ -8,6 +8,8 @@ import models.api.User;
 
 import org.bson.types.ObjectId;
 
+import com.google.code.morphia.Key;
+
 import database.api.util.BasicDAOMongo;
 import database.api.util.CascadeSaveDAO;
 
@@ -23,31 +25,30 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	}
 
 	@Override
-	public void cascadeSave(User t) {
-		cascadeSaveMusicServices(t);
-		save(t);
+	public Key<User> cascadeSave(User t) {
+		cascadeSaveAppUser(t);
+		return save(t);
 	}
 
-	private void cascadeSaveMusicServices(User t) {
+	private void cascadeSaveAppUser(User t) {
 		if (t.getAppUsers().isEmpty()) {
 			// there's nothing to save
 			return;
 		}
 
 		// check if there are App's to save
-		CascadeSaveDAO<App, ObjectId> musicServiceDAO = new AppDAOMongo();
-		App musicService;
+		CascadeSaveDAO<App, ObjectId> appDAO = new AppDAOMongo();
+		App app;
 
-		Set<AppUser> musicServiceUsers = t.getAppUsers();
-		for (AppUser musicServiceUser : musicServiceUsers) {
-			musicService = musicServiceUser.getApp();
-			if (musicService.getId() == null) {
-				musicServiceDAO.save(musicService);
+		Set<AppUser> appUsers = t.getAppUsers();
+		for (AppUser appUser : appUsers) {
+			app = appUser.getApp();
+			if (app.getId() == null) {
+				appDAO.save(app);
 			}
 		}
 	}
 
-	// TODO: test
 	@Override
 	public User findByEmailAddress(String emailAddress) {
 		User user = ds.find(User.class).filter("emailAddress", emailAddress)
@@ -61,7 +62,6 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 				.filter("appUsers.userEmailAddress", emailAddress).get();
 	}
 
-	// TODO: test
 	@Override
 	public User findByUserAuthToken(String userAuthToken) {
 		return ds.find(User.class)
@@ -71,8 +71,6 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	/*
 	 * This might be a bit inefficient since it finds in the database and later 
 	 * in memory.
-	 * 
-	 * TODO: test
 	 */
 	@Override
 	public AppUser findAppUserByAuthToken(String userAuthToken) {

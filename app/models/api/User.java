@@ -23,24 +23,21 @@ public class User extends Model {
 	private String name;
 
 	@Embedded
-	private Set<AppUser> appUsers;
+	private Set<AppUser> appUsers = new HashSet<AppUser>();
 	
 	protected User() {
 		super();
-		appUsers = new HashSet<AppUser>();
 	}
 	
 	public User(String emailAddress, String createdBy) {
 		super(createdBy);
 		setEmailAddress(emailAddress);
-		appUsers = new HashSet<AppUser>();
 	}
 
 	public User(String emailAddress, String name, String createdBy) {
 		super(createdBy);
 		setEmailAddress(emailAddress);
 		setName(name);
-		appUsers = new HashSet<AppUser>();
 	}
 
 	/**

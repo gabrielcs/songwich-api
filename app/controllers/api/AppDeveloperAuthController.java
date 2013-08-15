@@ -77,9 +77,6 @@ public class AppDeveloperAuthController extends
 				// authentication successful
 				context.args.put(DEV, dev);
 			} else {
-				// authentication failed
-				// TODO: Caon should check with Apigee whether our data is
-				// up-do-date
 				throw new SongwichAPIException("Invalid devAuthToken: "
 						+ devAuthTokenHeaderValues[0],
 						APIStatus_V0_4.INVALID_DEV_AUTH_TOKEN);

@@ -7,20 +7,12 @@ import play.mvc.Results;
 import usecases.api.util.DatabaseContext;
 import views.api.util.APIResponse_V0_4;
 import views.api.util.APIStatus_V0_4;
-
-import com.google.code.morphia.logging.MorphiaLoggerFactory;
-import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
-
 import controllers.api.AppDeveloperAuthController;
 
 public class Global extends GlobalSettings {
 	@Override
 	public void onStart(play.Application app) {
-		// @see http://nesbot.com/2011/11/28/play-2-morphia-logging-error
-        MorphiaLoggerFactory.reset();
-        MorphiaLoggerFactory.registerLogger(SLF4JLogrImplFactory.class);
-        
-		if (app.isProd()) {
+        if (app.isProd()) {
 			// connects to our Mongo-as-a-Service database
 			String dbName = app.configuration().getString("mongo.name");
 			String uri = app.configuration().getString("mongo.uri");

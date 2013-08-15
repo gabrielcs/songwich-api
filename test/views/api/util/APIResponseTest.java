@@ -62,6 +62,6 @@ public class APIResponseTest {
 		System.out.println(Json.toJson(scrobbleResponse).toString());
 		assertEquals(
 				Json.toJson(scrobbleResponse).toString(),
-				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistsNames\":[\"Name1\",\"Name2\"],\"chosenByUser\":\"false\",\"player\":\"Spotify\",\"timestamp\":\"1012528800000\",\"user\":\"gabriel@example.com\"}}");
+				"{\"status\":\"0\",\"message\":\"Success\",\"scrobble\":{\"trackTitle\":\"Title\",\"artistsNames\":[\"Name1\",\"Name2\"],\"chosenByUser\":\"false\",\"player\":\"Spotify\",\"timestamp\":\"1012528800000\"}}");
 	}
 }

@@ -1,4 +1,4 @@
-package daos.api;
+package database.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -12,30 +12,12 @@ import models.api.Scrobble;
 import models.api.User;
 
 import org.bson.types.ObjectId;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import usecases.api.util.DatabaseContext;
-import database.api.ScrobbleDAO;
-import database.api.ScrobbleDAOMongo;
-import database.api.UserDAOMongo;
 import database.api.util.CascadeSaveDAO;
+import database.api.util.CleanDatabaseTest;
 
-public class ScrobbleDAOMongoTest {
-
-	private static final String CREATED_BY = "developers@songwich.com";
-	private String dbName = "songwich-api-test";
-
-	@Before
-	public void setUp() throws Exception {
-		DatabaseContext.createDatastore(dbName);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		DatabaseContext.dropDatabase();
-	}
+public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testSaveAndDelete() {
@@ -126,8 +108,6 @@ public class ScrobbleDAOMongoTest {
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		scrobbleDao.save(scrobble1);
 		scrobbleDao.save(scrobble2);
-
-		System.out.println(scrobbleDao.find().asList());
 
 		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId());
 		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId());

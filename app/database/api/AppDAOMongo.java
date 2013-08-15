@@ -1,9 +1,14 @@
 package database.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import models.api.App;
 import models.api.AppDeveloper;
 
 import org.bson.types.ObjectId;
+
+import com.google.code.morphia.Key;
 
 import database.api.util.BasicDAOMongo;
 import database.api.util.CascadeSaveDAO;
@@ -15,9 +20,9 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	}
 
 	@Override
-	public void cascadeSave(App t) {
+	public Key<App> cascadeSave(App t) {
 		// nothing to cascade
-		save(t);
+		return save(t);
 	}
 
 	@Override
@@ -30,25 +35,21 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 		return ds.find(App.class).filter("id", id).get();
 	}
 
-	// TODO: test
 	@Override
 	public App findByDevAuthToken(String appAuthToken) {
 		return ds.find(App.class)
 				.filter("appDevelopers.devAuthToken", appAuthToken).get();
 	}
 
-	// TODO: test
 	@Override
-	public App findByDevEmail(String devEmailAdress) {
+	public List<App> findByDevEmail(String devEmailAdress) {
 		return ds.find(App.class)
-				.filter("appDevelopers.emailAdress", devEmailAdress).get();
+				.filter("appDevelopers.emailAddress", devEmailAdress).asList();
 	}
 
 	/*
 	 * This might be a bit inefficient since it finds in the database and later 
 	 * in memory.
-	 * 
-	 * TODO: test
 	 */
 	@Override
 	public AppDeveloper findAppDevByAuthToken(String devAuthToken) {
@@ -66,20 +67,21 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	/*
 	 * This might be a bit inefficient since it finds in the database and later 
 	 * in memory.
-	 * 
-	 * TODO: test
 	 */
 	@Override
-	public AppDeveloper findAppDevByEmail(String devEmailAdress) {
-		App app = findByDevEmail(devEmailAdress);
+	public List<AppDeveloper> findAppDevByEmail(String devEmailAdress) {
+		List<App> appList = findByDevEmail(devEmailAdress);
 
-		for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
-			if (appDeveloper.getEmailAddress().equals(devEmailAdress)) {
-				return appDeveloper;
+		List<AppDeveloper> appDevelopers = new ArrayList<AppDeveloper>();
+		for (App app : appList) {
+			for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
+				if (appDeveloper.getEmailAddress().equals(devEmailAdress)) {
+					appDevelopers.add(appDeveloper);
+				}
 			}
 		}
-		// shouldn't reach this point
-		return null;
+		
+		return appDevelopers;
 	}
 
 }

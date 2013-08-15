@@ -1,5 +1,7 @@
 package database.api;
 
+import java.util.List;
+
 import models.api.App;
 import models.api.AppDeveloper;
 
@@ -15,7 +17,7 @@ public interface AppDAO<I> extends DAO<App, I> {
 	
 	public AppDeveloper findAppDevByAuthToken(String devAuthToken);
 
-	public App findByDevEmail(String devEmailAdress);
+	public List<App> findByDevEmail(String devEmailAdress);
 	
-	public AppDeveloper findAppDevByEmail(String devEmailAdress);
+	public List<AppDeveloper> findAppDevByEmail(String devEmailAdress);
 }

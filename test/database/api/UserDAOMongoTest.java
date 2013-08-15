@@ -1,6 +1,6 @@
-package daos.api;
+package database.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
@@ -8,29 +8,11 @@ import models.api.App;
 import models.api.AppUser;
 import models.api.User;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import database.api.UserDAOMongo;
+import database.api.util.CleanDatabaseTest;
 
-import usecases.api.util.DatabaseContext;
-
-public class UserDAOMongoTest {
-
-	private static final String CREATED_BY = "developers@songwich.com";
-	private String dbName = "songwich-api-test";
-
-	@Before
-	public void setUp() throws Exception {
-		DatabaseContext.createDatastore(dbName);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		DatabaseContext.dropDatabase();
-	}
-
+public class UserDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testSaveAndDelete() {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
@@ -99,4 +81,36 @@ public class UserDAOMongoTest {
 		assertTrue(userDao.findByEmailAddress("daniel@user.com").equals(user2));
 	}
 
+	@Test
+	public void testFindByAuthToken() {
+		User user = new User("gabriel@example.com", "Gabriel Example");
+		App app = new App("Spotify", "dev@example.com");
+		UUID authToken = UUID.randomUUID();
+		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken,
+				app.getCreatedBy());
+		user.addAppUser(appUser);
+
+		UserDAOMongo userDao = new UserDAOMongo();
+		userDao.cascadeSave(user);
+		User userDatabase = userDao.findByUserAuthToken(authToken.toString());
+
+		assertTrue(userDatabase.equals(user));
+	}
+
+	@Test
+	public void testFindAppUserByAuthToken() {
+		User user = new User("gabriel@example.com", "Gabriel Example");
+		App app = new App("Spotify", "dev@example.com");
+		UUID authToken = UUID.randomUUID();
+		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken,
+				app.getCreatedBy());
+		user.addAppUser(appUser);
+
+		UserDAOMongo userDao = new UserDAOMongo();
+		userDao.cascadeSave(user);
+		AppUser appUserDatabase = userDao.findAppUserByAuthToken(authToken
+				.toString());
+
+		assertTrue(appUserDatabase.equals(appUser));
+	}
 }

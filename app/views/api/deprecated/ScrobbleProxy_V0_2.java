@@ -69,7 +69,7 @@ public class ScrobbleProxy_V0_2 {
 	}
 
 	private void validateUserId(Long user_id) throws SongwichAPIException {
-		// TODO: authenticate user
+		// authenticate user
 	}
 
 	public String getTrack_title() {

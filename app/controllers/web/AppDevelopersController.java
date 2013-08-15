@@ -1,7 +1,5 @@
 package controllers.web;
 
-import java.io.Console;
-
 import models.api.AppDeveloper;
 import play.Logger;
 import play.data.Form;
@@ -21,8 +19,7 @@ public class AppDevelopersController extends Controller {
 		if (appDevelopersForm.hasErrors()) {
 			String errors = DataTransferObject.errorsAsString(appDevelopersForm
 					.errors());
-			Logger.info("errors : "+errors);
-			// TODO, Caon
+			Logger.info("Error on creating an AppDeveloper: " + errors);
 			return badRequest(errors);
 		} else {
 			AppDevelopersUseCases appDevelopersUseCases = new AppDevelopersUseCases();
@@ -30,7 +27,6 @@ public class AppDevelopersController extends Controller {
 					.saveNewAppDeveloper(appDevelopersForm.get());
 			// appDeveloper saved successfully
 			 Logger.info(" appDeveloper saved successfully ");
-			// TODO, Caon
 			return ok(appDeveloper.getDevAuthToken());
 		}
 	}

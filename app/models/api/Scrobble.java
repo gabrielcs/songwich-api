@@ -23,7 +23,7 @@ public class Scrobble extends Model {
 
 	private String songTitle;
 
-	private List<String> artistsNames;
+	private List<String> artistsNames = new ArrayList<String>();
 
 	@Indexed(IndexDirection.DESC)
 	private Long timestamp;
@@ -42,7 +42,6 @@ public class Scrobble extends Model {
 		super(createdBy);
 		setUserId(userId);
 		setSongTitle(songTitle);
-		artistsNames = new ArrayList<String>();
 		addArtistsName(artistName);
 		setTimestamp(timestamp);
 		setChoosenByUser(choosenByUser);
@@ -55,7 +54,6 @@ public class Scrobble extends Model {
 		super(createdBy);
 		setUserId(userId);
 		setSongTitle(songTitle);
-		artistsNames = new ArrayList<String>();
 		addArtistsName(artistName);
 		setTimestamp(timestamp);
 		setChoosenByUser(choosenByUser);
