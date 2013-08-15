@@ -1,11 +1,11 @@
 package controllers.web;
 
 import models.api.AppDeveloper;
-import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import usecases.api.AppDevelopersUseCases;
+import usecases.api.util.MyLogger;
 import views.api.AppDevelopersDTO;
 import views.api.util.DataTransferObject;
 
@@ -18,7 +18,7 @@ public class AppDevelopersController extends Controller {
 		if (appDevelopersForm.hasErrors()) {
 			String errors = DataTransferObject.errorsAsString(appDevelopersForm
 					.errors());
-			Logger.info(String.format(
+			MyLogger.info(String.format(
 					"Error(s) creating AppDeveloper [%s]: %s",
 					appDevelopersForm.toString(), errors));
 			return badRequest(errors);
@@ -26,7 +26,7 @@ public class AppDevelopersController extends Controller {
 			AppDevelopersUseCases appDevelopersUseCases = new AppDevelopersUseCases();
 			AppDeveloper appDeveloper = appDevelopersUseCases
 					.saveNewAppDeveloper(appDevelopersForm.get());
-			return ok(appDeveloper.getDevAuthToken());
+			return ok(appDeveloper.getDevAuthToken().getToken());
 		}
 	}
 

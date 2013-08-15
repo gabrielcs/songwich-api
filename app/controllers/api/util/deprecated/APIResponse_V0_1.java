@@ -1,4 +1,4 @@
-package views.api.util.deprecated;
+package controllers.api.util.deprecated;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -6,9 +6,10 @@ import java.util.Map;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import controllers.api.util.APIStatus;
+
 
 import play.libs.Json;
-import views.api.util.APIStatus;
 
 @Deprecated
 public class APIResponse_V0_1 {

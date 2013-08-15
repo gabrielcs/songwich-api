@@ -1,38 +1,35 @@
 package models.api;
 
-import java.util.UUID;
-
 import models.api.util.Model;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.NotSaved;
+import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.annotations.Reference;
 
 @Embedded
 public class AppUser extends Model {
 	@Reference
 	private App app;
-	
+
 	@Indexed
 	private String userEmailAddress;
-	
+
+	@Embedded
 	@Indexed
+	private AuthToken statefulUserAuthToken;
+
+	@Deprecated
+	@NotSaved
 	private String userAuthToken;
-	
+
 	protected AppUser() {
 		super();
 	}
 
 	public AppUser(App streamingService, String emailAddress,
-			UUID userAuthToken, String createdBy) {
-		super(createdBy);
-		setApp(streamingService);
-		setEmailAddress(emailAddress);
-		setUserAuthToken(userAuthToken);
-	}
-	
-	public AppUser(App streamingService, String emailAddress,
-			String userAuthToken, String createdBy) {
+			AuthToken userAuthToken, String createdBy) {
 		super(createdBy);
 		setApp(streamingService);
 		setEmailAddress(emailAddress);
@@ -47,7 +44,8 @@ public class AppUser extends Model {
 	}
 
 	/**
-	 * @param app the app to set
+	 * @param app
+	 *            the app to set
 	 */
 	public void setApp(App app) {
 		this.app = app;
@@ -61,80 +59,75 @@ public class AppUser extends Model {
 	}
 
 	/**
-	 * @param userEmailAddress the userEmailAddress to set
+	 * @param userEmailAddress
+	 *            the userEmailAddress to set
 	 */
 	public void setEmailAddress(String emailAddress) {
 		this.userEmailAddress = emailAddress;
 	}
 
-	/**
-	 * @return the userAuthToken
-	 */
-	public String getUserAuthToken() {
-		return userAuthToken;
+	public AuthToken getUserAuthToken() {
+		return statefulUserAuthToken;
 	}
 
-	/**
-	 * @param userAuthToken the userAuthToken to set
+	public void setUserAuthToken(AuthToken userAuthToken) {
+		this.statefulUserAuthToken = userAuthToken;
+	}
+
+	/*
+	 * Handle deprecated stateless auth token
 	 */
-	public void setUserAuthToken(String userAuthToken) {
-		this.userAuthToken = userAuthToken;
+	@PostLoad
+	protected void handleDeprecatedAuthToken() {
+		if (statefulUserAuthToken == null && userAuthToken != null) {
+			statefulUserAuthToken = new AuthToken(userAuthToken.toString());
+		}
 	}
-	
-	public void setUserAuthToken(UUID userAuthToken) {
-		this.userAuthToken = userAuthToken.toString();
-	}
-	
+
 	@Override
 	public String toString() {
 		return "AppUser [app=" + app + ", userEmailAddress=" + userEmailAddress
-				+ ", userAuthToken=" + userAuthToken + ", super.toString()="
-				+ super.toString() + "]";
+				+ ", userAuthToken=" + statefulUserAuthToken + "]";
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((userEmailAddress == null) ? 0 : userEmailAddress.hashCode());
+		int result = super.hashCode();
+		result = prime * result + ((app == null) ? 0 : app.hashCode());
 		result = prime
 				* result
-				+ ((app == null) ? 0 : app.hashCode());
-		result = prime * result
-				+ ((userAuthToken == null) ? 0 : userAuthToken.hashCode());
+				+ ((statefulUserAuthToken == null) ? 0 : statefulUserAuthToken
+						.hashCode());
+		result = prime
+				* result
+				+ ((userEmailAddress == null) ? 0 : userEmailAddress.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		AppUser other = (AppUser) obj;
-		if (userEmailAddress == null) {
-			if (other.userEmailAddress != null)
-				return false;
-		} else if (!userEmailAddress.equals(other.userEmailAddress))
-			return false;
 		if (app == null) {
 			if (other.app != null)
 				return false;
 		} else if (!app.equals(other.app))
 			return false;
-		if (userAuthToken == null) {
-			if (other.userAuthToken != null)
+		if (statefulUserAuthToken == null) {
+			if (other.statefulUserAuthToken != null)
 				return false;
-		} else if (!userAuthToken.equals(other.userAuthToken))
+		} else if (!statefulUserAuthToken.equals(other.statefulUserAuthToken))
+			return false;
+		if (userEmailAddress == null) {
+			if (other.userEmailAddress != null)
+				return false;
+		} else if (!userEmailAddress.equals(other.userEmailAddress))
 			return false;
 		return true;
 	}

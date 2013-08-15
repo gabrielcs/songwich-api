@@ -1,11 +1,9 @@
 package database.api;
 
 import static org.junit.Assert.assertTrue;
-
-import java.util.UUID;
-
 import models.api.App;
 import models.api.AppUser;
+import models.api.AuthToken;
 import models.api.User;
 
 import org.junit.Test;
@@ -64,13 +62,15 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		App service2 = new App("Rdio", CREATED_BY);
 
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
+		AuthToken authToken = AuthToken.createUserAuthToken();
 		AppUser service1User1 = new AppUser(service1, "gabriel@user.com",
-				UUID.randomUUID(), CREATED_BY);
+				authToken, CREATED_BY);
 		user1.addAppUser(service1User1);
 
 		User user2 = new User("daniel@example.com", "Daniel Example");
+		AuthToken authToken2 = AuthToken.createUserAuthToken();
 		AppUser service2User2 = new AppUser(service2, "daniel@user.com",
-				UUID.randomUUID(), CREATED_BY);
+				authToken2, CREATED_BY);
 		user2.addAppUser(service2User2);
 
 		UserDAOMongo userDao = new UserDAOMongo();
@@ -85,14 +85,14 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 	public void testFindByAuthToken() {
 		User user = new User("gabriel@example.com", "Gabriel Example");
 		App app = new App("Spotify", "dev@example.com");
-		UUID authToken = UUID.randomUUID();
+		AuthToken authToken = AuthToken.createUserAuthToken();
 		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken,
 				app.getCreatedBy());
 		user.addAppUser(appUser);
 
 		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(user);
-		User userDatabase = userDao.findByUserAuthToken(authToken.toString());
+		User userDatabase = userDao.findByUserAuthToken(authToken.getToken());
 
 		assertTrue(userDatabase.equals(user));
 	}
@@ -101,7 +101,7 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 	public void testFindAppUserByAuthToken() {
 		User user = new User("gabriel@example.com", "Gabriel Example");
 		App app = new App("Spotify", "dev@example.com");
-		UUID authToken = UUID.randomUUID();
+		AuthToken authToken = AuthToken.createUserAuthToken();
 		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken,
 				app.getCreatedBy());
 		user.addAppUser(appUser);
@@ -109,7 +109,7 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(user);
 		AppUser appUserDatabase = userDao.findAppUserByAuthToken(authToken
-				.toString());
+				.getToken());
 
 		assertTrue(appUserDatabase.equals(appUser));
 	}

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import play.Logger;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -12,16 +11,17 @@ import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.ScrobblesUseCases;
+import usecases.api.util.MyLogger;
 import usecases.api.util.SongwichAPIException;
 import views.api.ScrobblesDTO_V0_4;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
 import views.api.util.DataTransferObject;
-import views.api.util.GetScrobblesResponse_V0_4;
-import views.api.util.PostScrobblesResponse_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 import controllers.api.util.APIController;
+import controllers.api.util.APIResponse_V0_4;
+import controllers.api.util.APIStatus_V0_4;
+import controllers.api.util.GetScrobblesResponse_V0_4;
+import controllers.api.util.PostScrobblesResponse_V0_4;
 
 public class ScrobblesController_V0_4 extends APIController {
 
@@ -60,7 +60,7 @@ public class ScrobblesController_V0_4 extends APIController {
 			SongwichAPIException apiEx = new SongwichAPIException(
 					"Invalid userId: " + userId,
 					APIStatus_V0_4.INVALID_PARAMETER);
-			Logger.warn(String.format("%s [%s]: %s", apiEx.getStatus()
+			MyLogger.warn(String.format("%s [%s]: %s", apiEx.getStatus()
 					.toString(), apiEx.getMessage(), Context.current()
 					.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(apiEx.getStatus(),
@@ -90,7 +90,7 @@ public class ScrobblesController_V0_4 extends APIController {
 			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user
-			Logger.warn(String.format("%s [%s]: %s", exception.getStatus()
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
 					.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(
@@ -101,10 +101,10 @@ public class ScrobblesController_V0_4 extends APIController {
 		// return the response
 		GetScrobblesResponse_V0_4 response = new GetScrobblesResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTOs);
-		Logger.info(String.format(
+		MyLogger.info(String.format(
 				"GET scrobbles processed for user=%s by devAuthToken=%s",
 				getContext().getUser().getId(), getContext().getAppDeveloper()
-						.getDevAuthToken()));
+						.getDevAuthToken().getToken()));
 		return ok(Json.toJson(response));
 	}
 }

@@ -1,13 +1,13 @@
 import play.GlobalSettings;
-import play.Logger;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
 import usecases.api.util.DatabaseContext;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
+import usecases.api.util.MyLogger;
 import controllers.api.AppDeveloperAuthController;
+import controllers.api.util.APIResponse_V0_4;
+import controllers.api.util.APIStatus_V0_4;
 
 public class Global extends GlobalSettings {
 	@Override
@@ -33,7 +33,7 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public Result onBadRequest(RequestHeader request, String error) {
-		Logger.warn(String.format("Bad request [%s]: %s\n", error, request));
+		MyLogger.warn(String.format("Bad request [%s]: %s\n", error, request));
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.BAD_REQUEST, error);
 		return Results.badRequest(Json.toJson(response));
@@ -46,7 +46,7 @@ public class Global extends GlobalSettings {
 			return Results.badRequest();
 		}
 
-		Logger.warn("Handler not found: " + request);
+		MyLogger.warn("Handler not found: " + request);
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.BAD_REQUEST, String.format(
 						"API method not found: %s %s", request.method(),
@@ -64,7 +64,7 @@ public class Global extends GlobalSettings {
 					.getMessage());
 		}
 		// it's currently not showing POST requests parameters
-		Logger.error(String.format("Error while processing: %s [%s]", request,
+		MyLogger.error(String.format("Error while processing: %s [%s]", request,
 				message));
 
 		APIResponse_V0_4 response = new APIResponse_V0_4(

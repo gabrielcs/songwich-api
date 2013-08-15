@@ -8,11 +8,12 @@ import models.api.User;
 
 import org.bson.types.ObjectId;
 
+import controllers.api.util.APIStatus_V0_4;
+
 import usecases.api.util.RequestContext;
 import usecases.api.util.SongwichAPIException;
 import usecases.api.util.UseCase;
 import views.api.ScrobblesDTO_V0_4;
-import views.api.util.APIStatus_V0_4;
 import database.api.ScrobbleDAO;
 import database.api.ScrobbleDAOMongo;
 import database.api.UserDAO;

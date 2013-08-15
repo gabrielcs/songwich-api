@@ -1,6 +1,6 @@
-package views.api.util.deprecated;
+package controllers.api.util.deprecated;
 
-import views.api.util.APIStatus;
+import controllers.api.util.APIStatus;
 
 @Deprecated
 public enum APIStatus_V0_1 implements APIStatus {

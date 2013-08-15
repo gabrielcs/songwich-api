@@ -1,13 +1,8 @@
 package usecases.api.util;
 
 import java.net.UnknownHostException;
-import java.util.UUID;
 
-import models.api.User;
 
-import org.bson.types.ObjectId;
-
-import play.Logger;
 
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
@@ -16,8 +11,6 @@ import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-import database.api.UserDAO;
-import database.api.UserDAOMongo;
 
 public class DatabaseContext {
 	// it currently only supports 1 Datastore
@@ -37,10 +30,10 @@ public class DatabaseContext {
 		try {
 			datastore = new Morphia()
 					.createDatastore(new MongoClient(), dbName);
-			Logger.info("Connected to database " + dbName);
+			MyLogger.info("Connected to database " + dbName);
 			return getDatastore();
 		} catch (UnknownHostException e) {
-			Logger.error(String.format("Couldn't connect to database %s: %s",
+			MyLogger.error(String.format("Couldn't connect to database %s: %s",
 					dbName, e.getMessage()));
 			throw new RuntimeException(e);
 		}
@@ -57,10 +50,10 @@ public class DatabaseContext {
 			MongoClient mongoClient = new MongoClient(mongoClientURI);
 			datastore = new Morphia().createDatastore(mongoClient, dbName);
 
-			Logger.info("Connected to database " + uri);
+			MyLogger.info("Connected to database " + uri);
 			return getDatastore();
 		} catch (UnknownHostException e) {
-			Logger.error(String.format(
+			MyLogger.error(String.format(
 					"Couldn't connect to database '%s' : %s", uri,
 					e.getMessage()));
 			throw new RuntimeException(e);
@@ -70,7 +63,7 @@ public class DatabaseContext {
 	public static boolean dropDatabase() {
 		if (datastore != null) {
 			datastore.getDB().dropDatabase();
-			Logger.info("Dropped database");
+			MyLogger.info("Dropped database");
 			return true;
 		} else {
 			return false;
@@ -79,17 +72,5 @@ public class DatabaseContext {
 
 	public static Datastore getDatastore() {
 		return datastore;
-	}
-
-	public static String createUserAuthToken() {
-		String userAuthToken = UUID.randomUUID().toString();
-		// assert that the random UUID is unique (might be expensive)
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findByUserAuthToken(userAuthToken);
-		if (user == null) {
-			return userAuthToken;
-		} else {
-			return createUserAuthToken();
-		}
 	}
 }

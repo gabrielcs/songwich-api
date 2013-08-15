@@ -1,4 +1,4 @@
-package views.api.util;
+package controllers.api.util;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 

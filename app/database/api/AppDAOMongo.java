@@ -38,7 +38,7 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	@Override
 	public App findByDevAuthToken(String appAuthToken) {
 		return ds.find(App.class)
-				.filter("appDevelopers.devAuthToken", appAuthToken).get();
+				.filter("appDevelopers.statefulDevAuthToken.token", appAuthToken).get();
 	}
 
 	@Override
@@ -54,9 +54,13 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	@Override
 	public AppDeveloper findAppDevByAuthToken(String devAuthToken) {
 		App app = findByDevAuthToken(devAuthToken);
+		if (app == null) {
+			// the devAuthToken is not in the database
+			return null;
+		}
 
 		for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
-			if (appDeveloper.getDevAuthToken().equals(devAuthToken)) {
+			if (appDeveloper.getDevAuthToken().getToken().equals(devAuthToken)) {
 				return appDeveloper;
 			}
 		}

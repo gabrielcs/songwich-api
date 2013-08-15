@@ -1,10 +1,9 @@
 package usecases.api;
 
-import java.util.UUID;
-
 import models.api.App;
 import models.api.AppDeveloper;
-import play.Logger;
+import models.api.AuthToken;
+import usecases.api.util.MyLogger;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
 import views.api.AppDevelopersDTO;
@@ -31,10 +30,10 @@ public class AppDevelopersUseCases extends UseCase {
 					.getDevEmail());
 			if (appDevDatabase != null) {
 				// AppDeveloper already in database
-				Logger.info(String
+				MyLogger.info(String
 						.format("Tried to create AppDeveloper \"%s\" but it was already in database with authToken=%s",
 								appDevelopersDTO.getDevEmail(),
-								appDevDatabase.getDevAuthToken()));
+								appDevDatabase.getDevAuthToken().getToken()));
 				return appDevDatabase;
 			}
 		}
@@ -42,14 +41,14 @@ public class AppDevelopersUseCases extends UseCase {
 		// creates the AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper(
 				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getName(),
-				UUID.randomUUID(), appDevelopersDTO.getDevEmail());
+				AuthToken.createDevAuthToken(), appDevelopersDTO.getDevEmail());
 		app.addAppDeveloper(appDeveloper);
 		appDao.cascadeSave(app);
 
-		Logger.info(String.format(
+		MyLogger.info(String.format(
 				"Created '%s' working at '%s' with devAuthToken=%s",
 				appDeveloper.getEmailAddress(), appDevelopersDTO.getAppName(),
-				appDeveloper.getDevAuthToken()));
+				appDeveloper.getDevAuthToken().getToken()));
 		return appDeveloper;
 	}
 }

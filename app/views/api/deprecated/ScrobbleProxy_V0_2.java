@@ -5,9 +5,10 @@ import java.util.GregorianCalendar;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import controllers.api.util.deprecated.APIStatus_V0_1;
+
 import play.libs.Json;
 import usecases.api.util.SongwichAPIException;
-import views.api.util.deprecated.APIStatus_V0_1;
 
 @Deprecated
 public class ScrobbleProxy_V0_2 {

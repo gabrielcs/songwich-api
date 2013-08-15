@@ -1,11 +1,11 @@
 package models.api;
 
-import java.util.UUID;
-
 import models.api.util.Model;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.NotSaved;
+import com.google.code.morphia.annotations.PostLoad;
 
 @Embedded
 public class AppDeveloper extends Model {
@@ -14,20 +14,18 @@ public class AppDeveloper extends Model {
 	
 	private String name;
 	
+	@Embedded
 	@Indexed
+	private AuthToken statefulDevAuthToken;
+	
+	@Deprecated
+	@NotSaved
 	private String devAuthToken;
 	
 	protected AppDeveloper() {
 	}
 	
-	public AppDeveloper(String emailAddress, String name, UUID devAuthToken, String createdBy) {
-		super(createdBy);
-		setEmailAddress(emailAddress);
-		setName(name);
-		setDevAuthToken(devAuthToken);
-	}
-	
-	public AppDeveloper(String emailAddress, String name, String devAuthToken, String createdBy) {
+	public AppDeveloper(String emailAddress, String name, AuthToken devAuthToken, String createdBy) {
 		super(createdBy);
 		setEmailAddress(emailAddress);
 		setName(name);
@@ -50,23 +48,28 @@ public class AppDeveloper extends Model {
 		this.name = name;
 	}
 
-	public String getDevAuthToken() {
-		return devAuthToken;
+	public AuthToken getDevAuthToken() {
+		return statefulDevAuthToken;
 	}
 
-	public void setDevAuthToken(String devAuthToken) {
-		this.devAuthToken = devAuthToken;
+	public void setDevAuthToken(AuthToken devAuthToken) {
+		this.statefulDevAuthToken = devAuthToken;
 	}
-	
-	public void setDevAuthToken(UUID devAuthToken) {
-		this.devAuthToken = devAuthToken.toString();
+
+	/*
+	 * Handle deprecated stateless auth token
+	 */
+	@PostLoad
+	protected void handleDeprecatedAuthToken() {
+		if (statefulDevAuthToken == null && devAuthToken != null) {
+			statefulDevAuthToken = new AuthToken(devAuthToken.toString());
+		}
 	}
 
 	@Override
 	public String toString() {
 		return "AppDeveloper [emailAddress=" + emailAddress + ", name=" + name
-				+ ", devAuthToken=" + devAuthToken + ", super.toString()="
-				+ super.toString() + "]";
+				+ ", devAuthToken=" + statefulDevAuthToken + "]";
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class AppDeveloper extends Model {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((devAuthToken == null) ? 0 : devAuthToken.hashCode());
+				+ ((statefulDevAuthToken == null) ? 0 : statefulDevAuthToken.hashCode());
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -90,10 +93,10 @@ public class AppDeveloper extends Model {
 		if (getClass() != obj.getClass())
 			return false;
 		AppDeveloper other = (AppDeveloper) obj;
-		if (devAuthToken == null) {
-			if (other.devAuthToken != null)
+		if (statefulDevAuthToken == null) {
+			if (other.statefulDevAuthToken != null)
 				return false;
-		} else if (!devAuthToken.equals(other.devAuthToken))
+		} else if (!statefulDevAuthToken.equals(other.statefulDevAuthToken))
 			return false;
 		if (emailAddress == null) {
 			if (other.emailAddress != null)
@@ -107,5 +110,4 @@ public class AppDeveloper extends Model {
 			return false;
 		return true;
 	}
-
 }

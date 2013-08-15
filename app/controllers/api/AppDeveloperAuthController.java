@@ -1,22 +1,21 @@
 package controllers.api;
 
-import java.util.UUID;
-
 import models.api.App;
 import models.api.AppDeveloper;
+import models.api.AuthToken;
 
 import org.bson.types.ObjectId;
 
-import play.Logger;
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import usecases.api.util.MyLogger;
 import usecases.api.util.SongwichAPIException;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.util.APIResponse_V0_4;
+import controllers.api.util.APIStatus_V0_4;
 import database.api.AppDAO;
 import database.api.AppDAOMongo;
 import database.api.util.CascadeSaveDAO;
@@ -34,7 +33,7 @@ public class AppDeveloperAuthController extends
 		try {
 			authenticateAppDeveloper(ctx);
 		} catch (SongwichAPIException e) {
-			Logger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
+			MyLogger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
 					e.getMessage(), ctx.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
 					e.getMessage());
@@ -64,7 +63,7 @@ public class AppDeveloperAuthController extends
 			AppDeveloper dev;
 			try {
 				String devAuthToken = devAuthTokenHeaderValues[0];
-				App app = setApp(devAuthToken);
+				App app = findApp(devAuthToken);
 				dev = findAppDeveloper(context, devAuthToken, app);
 			} catch (IllegalArgumentException e) {
 				// auth token cannot be converted into a UUID
@@ -90,7 +89,7 @@ public class AppDeveloperAuthController extends
 		}
 	}
 
-	private App setApp(String devAuthToken) {
+	private App findApp(String devAuthToken) {
 		AppDAO<ObjectId> appDAO = new AppDAOMongo();
 		return appDAO.findByDevAuthToken(devAuthToken);
 	}
@@ -100,7 +99,7 @@ public class AppDeveloperAuthController extends
 		if (app != null) {
 			ctx.args.put(APP, app);
 			for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
-				if (appDeveloper.getDevAuthToken().equals(devAuthToken)) {
+				if (appDeveloper.getDevAuthToken().getToken().equals(devAuthToken)) {
 					ctx.args.put(DEV, appDeveloper);
 					return appDeveloper;
 				}
@@ -110,27 +109,25 @@ public class AppDeveloperAuthController extends
 	}
 
 	/*
-	 * Creates an AppDeveloper associated to an App. If devAuthToken is null a
-	 * new one will be created.
+	 * Creates an AppDeveloper associated to an App.
 	 */
 	public static String createTestAppWithDeveloper(String devAuthToken) {
-		Logger.debug("About to create a test AppDeveloper");
+		MyLogger.debug("About to create a test AppDeveloper");
 
-		if (devAuthToken == null) {
-			devAuthToken = UUID.randomUUID().toString();
-		}
+		AuthToken authToken = AuthToken.createDevAuthToken();
+		authToken.setToken(devAuthToken);
 
 		// creates a test AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper("developers@songwich.com",
-				"Songwich Developers", devAuthToken, "developers@songwich.com");
+				"Songwich Developers", authToken, "developers@songwich.com");
 		// creates a test App
 		App songwich = new App("Songwich", appDeveloper,
 				"developers@songwich.com");
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(songwich);
 
-		Logger.info("Created 'developers@songwich.com' working at 'Songwich' with devAuthToken="
-				+ devAuthToken);
+		MyLogger.info("Created 'developers@songwich.com' working at 'Songwich' with devAuthToken="
+				+ authToken);
 
 		return devAuthToken;
 	}

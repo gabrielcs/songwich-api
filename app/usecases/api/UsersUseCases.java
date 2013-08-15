@@ -1,13 +1,12 @@
 package usecases.api;
 
 import models.api.AppUser;
+import models.api.AuthToken;
 import models.api.User;
 
 import org.bson.types.ObjectId;
 
-import play.Logger;
-
-import usecases.api.util.DatabaseContext;
+import usecases.api.util.MyLogger;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
 import views.api.UsersDTO_V0_4;
@@ -30,11 +29,11 @@ public class UsersUseCases extends UseCase {
 				if (appUser.getApp().equals(getContext().getApp())) {
 					// AppUser was also already in the database
 					updateDTO(user, appUser, userDTO);
-					Logger.info(String
+					MyLogger.info(String
 							.format("Tried to create user \"%s\" but it was already in database with id=%s",
 									userDTO.getUserEmail(), userDTO.getUserId())
 							+ String.format(". devAuthToken=%s", getContext()
-									.getAppDeveloper().getDevAuthToken()));
+									.getAppDeveloper().getDevAuthToken().getToken()));
 					return;
 				} else {
 					// registers a new AppUser for that User
@@ -50,7 +49,7 @@ public class UsersUseCases extends UseCase {
 			AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
 			updateDTO(user, newAppUser, userDTO);
 		}
-		Logger.info(String.format(
+		MyLogger.info(String.format(
 				"Created user \"%s\" with id=%s and authToken=%s",
 				userDTO.getUserEmail(), userDTO.getUserId(),
 				userDTO.getUserAuthToken()));
@@ -62,7 +61,7 @@ public class UsersUseCases extends UseCase {
 	private AppUser saveNewAppUser(User user, String userEmail) {
 		String createdBy = getContext().getAppDeveloper().getEmailAddress();
 
-		String userAuthToken = DatabaseContext.createUserAuthToken();
+		AuthToken userAuthToken = AuthToken.createUserAuthToken();
 		AppUser newAppUser = new AppUser(getContext().getApp(), userEmail,
 				userAuthToken, createdBy);
 		user.addAppUser(newAppUser);
@@ -74,7 +73,7 @@ public class UsersUseCases extends UseCase {
 	}
 
 	private void updateDTO(User user, AppUser newAppUser, UsersDTO_V0_4 userDTO) {
-		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().toString());
+		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
 		userDTO.setUserId(user.getId().toString());
 	}
 }

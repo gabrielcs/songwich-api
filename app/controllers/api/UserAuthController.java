@@ -4,16 +4,16 @@ import models.api.User;
 
 import org.bson.types.ObjectId;
 
-import play.Logger;
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import usecases.api.util.MyLogger;
 import usecases.api.util.SongwichAPIException;
-import views.api.util.APIResponse_V0_4;
-import views.api.util.APIStatus_V0_4;
 import controllers.api.annotation.UserAuthenticated;
+import controllers.api.util.APIResponse_V0_4;
+import controllers.api.util.APIStatus_V0_4;
 import database.api.UserDAO;
 import database.api.UserDAOMongo;
 
@@ -28,7 +28,7 @@ public class UserAuthController extends Action<UserAuthenticated> {
 		try {
 			authenticateUser(context);
 		} catch (SongwichAPIException e) {
-			Logger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
+			MyLogger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
 					e.getMessage(), context.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
 					e.getMessage());
@@ -71,7 +71,7 @@ public class UserAuthController extends Action<UserAuthenticated> {
 				context.args.put(USER, user);
 			} else {
 				// authentication failed
-				Logger.warn(String.format("%s: %s",
+				MyLogger.warn(String.format("%s: %s",
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN.toString(),
 						userAuthTokenHeaderValues[0]));
 				throw new SongwichAPIException(
