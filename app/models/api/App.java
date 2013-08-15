@@ -63,6 +63,15 @@ public class App extends Model {
 	public void addAppDeveloper(AppDeveloper appDeveloper) {
 		appDevelopers.add(appDeveloper);
 	}
+	
+	public AppDeveloper getAppDeveloper(String appDeveloperEmail) {
+		for (AppDeveloper appDev : appDevelopers) {
+			if (appDev.getEmailAddress().equals(appDeveloperEmail)) {
+				return appDev;
+			}
+		}
+		return null;
+	}
 
 	public ObjectId getId() {
 		return id;

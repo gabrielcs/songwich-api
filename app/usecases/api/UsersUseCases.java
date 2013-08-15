@@ -5,6 +5,8 @@ import models.api.User;
 
 import org.bson.types.ObjectId;
 
+import play.Logger;
+
 import usecases.api.util.DatabaseContext;
 import usecases.api.util.RequestContext;
 import usecases.api.util.UseCase;
@@ -27,10 +29,17 @@ public class UsersUseCases extends UseCase {
 			for (AppUser appUser : user.getAppUsers()) {
 				if (appUser.getApp().equals(getContext().getApp())) {
 					// AppUser was also already in the database
-					// TODO: decide what to do
+					updateDTO(user, appUser, userDTO);
+					Logger.info(String
+							.format("Tried to create user \"%s\" but it was already in database with id=%s",
+									userDTO.getUserEmail(), userDTO.getUserId())
+							+ String.format(". devAuthToken=%s", getContext()
+									.getAppDeveloper().getDevAuthToken()));
+					return;
 				} else {
 					// registers a new AppUser for that User
-					AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
+					AppUser newAppUser = saveNewAppUser(user,
+							userDTO.getUserEmail());
 					updateDTO(user, newAppUser, userDTO);
 				}
 			}
@@ -41,6 +50,10 @@ public class UsersUseCases extends UseCase {
 			AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
 			updateDTO(user, newAppUser, userDTO);
 		}
+		Logger.info(String.format(
+				"Created user \"%s\" with id=%s and authToken=%s",
+				userDTO.getUserEmail(), userDTO.getUserId(),
+				userDTO.getUserAuthToken()));
 	}
 
 	/*

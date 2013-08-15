@@ -11,7 +11,6 @@ import views.api.util.DataTransferObject;
 
 public class AppDevelopersController extends Controller {
 
-
 	public static Result postAppDevelopers() {
 
 		Form<AppDevelopersDTO> appDevelopersForm = Form.form(
@@ -19,14 +18,14 @@ public class AppDevelopersController extends Controller {
 		if (appDevelopersForm.hasErrors()) {
 			String errors = DataTransferObject.errorsAsString(appDevelopersForm
 					.errors());
-			Logger.info("Error on creating an AppDeveloper: " + errors);
+			Logger.info(String.format(
+					"Error(s) creating AppDeveloper [%s]: %s",
+					appDevelopersForm.toString(), errors));
 			return badRequest(errors);
 		} else {
 			AppDevelopersUseCases appDevelopersUseCases = new AppDevelopersUseCases();
 			AppDeveloper appDeveloper = appDevelopersUseCases
 					.saveNewAppDeveloper(appDevelopersForm.get());
-			// appDeveloper saved successfully
-			 Logger.info(" appDeveloper saved successfully ");
 			return ok(appDeveloper.getDevAuthToken());
 		}
 	}

@@ -11,14 +11,13 @@ import views.api.AppDevelopersDTO;
 import database.api.AppDAOMongo;
 
 public class AppDevelopersUseCases extends UseCase {
-	
+
 	public AppDevelopersUseCases() {
 		// this is not an API resource
 		super(new RequestContext(null, null, null));
 	}
 
-	public AppDeveloper saveNewAppDeveloper(
-			AppDevelopersDTO appDevelopersDTO) {
+	public AppDeveloper saveNewAppDeveloper(AppDevelopersDTO appDevelopersDTO) {
 		// search the app in the database
 		AppDAOMongo appDao = new AppDAOMongo();
 		App app = appDao.findByName(appDevelopersDTO.getAppName());
@@ -26,17 +25,24 @@ public class AppDevelopersUseCases extends UseCase {
 			// app was not in the database
 			app = new App(appDevelopersDTO.getAppName(),
 					appDevelopersDTO.getDevEmail());
+		} else {
+			// check that AppDeveloper is not already in database
+			AppDeveloper appDevDatabase = app.getAppDeveloper(appDevelopersDTO
+					.getDevEmail());
+			if (appDevDatabase != null) {
+				// AppDeveloper already in database
+				Logger.info(String
+						.format("Tried to create AppDeveloper \"%s\" but it was already in database with authToken=%s",
+								appDevelopersDTO.getDevEmail(),
+								appDevDatabase.getDevAuthToken()));
+				return appDevDatabase;
+			}
 		}
 
-		Logger.debug(app.toString());
-		
 		// creates the AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper(
 				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getName(),
 				UUID.randomUUID(), appDevelopersDTO.getDevEmail());
-		
-		Logger.debug(appDeveloper.toString());
-		
 		app.addAppDeveloper(appDeveloper);
 		appDao.cascadeSave(app);
 
@@ -44,7 +50,6 @@ public class AppDevelopersUseCases extends UseCase {
 				"Created '%s' working at '%s' with devAuthToken=%s",
 				appDeveloper.getEmailAddress(), appDevelopersDTO.getAppName(),
 				appDeveloper.getDevAuthToken()));
-
 		return appDeveloper;
 	}
 }
