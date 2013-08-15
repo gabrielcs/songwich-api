@@ -36,9 +36,19 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	}
 
 	@Override
-	public App findByDevAuthToken(String appAuthToken) {
+	public App findByDevAuthToken(String devAuthToken) {
+		App app = ds
+				.find(App.class)
+				.filter("appDevelopers.statefulDevAuthToken.token",
+						devAuthToken).get();
+		if (app != null) {
+			return app;
+		}
+
+		// search for it in the deprecated field
 		return ds.find(App.class)
-				.filter("appDevelopers.statefulDevAuthToken.token", appAuthToken).get();
+				.filter("appDevelopers.devAuthToken", devAuthToken).get();
+
 	}
 
 	@Override
@@ -48,7 +58,7 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	}
 
 	/*
-	 * This might be a bit inefficient since it finds in the database and later 
+	 * This might be a bit inefficient since it finds in the database and later
 	 * in memory.
 	 */
 	@Override
@@ -69,7 +79,7 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	}
 
 	/*
-	 * This might be a bit inefficient since it finds in the database and later 
+	 * This might be a bit inefficient since it finds in the database and later
 	 * in memory.
 	 */
 	@Override
@@ -84,7 +94,7 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 				}
 			}
 		}
-		
+
 		return appDevelopers;
 	}
 

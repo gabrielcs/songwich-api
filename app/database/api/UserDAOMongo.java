@@ -64,12 +64,20 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	@Override
 	public User findByUserAuthToken(String userAuthToken) {
+		User user = ds.find(User.class)
+				.filter("appUsers.statefulUserAuthToken.token", userAuthToken)
+				.get();
+		if (user != null) {
+			return user;
+		}
+
+		// search for it in the deprecated field
 		return ds.find(User.class)
-				.filter("appUsers.statefulUserAuthToken.token", userAuthToken).get();
+				.filter("appUsers.userAuthToken", userAuthToken).get();
 	}
 
 	/*
-	 * This might be a bit inefficient since it finds in the database and later 
+	 * This might be a bit inefficient since it finds in the database and later
 	 * in memory.
 	 */
 	@Override
@@ -78,7 +86,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 		if (user == null) {
 			// the userAuthToken is not in the database
 			return null;
-		} 
+		}
 
 		for (AppUser appUser : user.getAppUsers()) {
 			if (appUser.getUserAuthToken().getToken().equals(userAuthToken)) {
