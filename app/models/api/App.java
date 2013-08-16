@@ -10,14 +10,12 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Indexed;
 
 @Entity
 public class App extends Model {
 	@Id
 	private ObjectId id;
 
-	@Indexed
 	private String name;
 	
 	@Embedded

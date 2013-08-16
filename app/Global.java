@@ -23,7 +23,7 @@ public class Global extends GlobalSettings {
 
 		if (app.isDev()) {
 			// starts with a clean local database if in development mode
-			String dbName = app.configuration().getString("mongo.dev.name");
+			String dbName = app.configuration().getString("mongo.local.dbname");
 			DatabaseContext.createDatastore(dbName);
 			DatabaseContext.dropDatabase();
 
