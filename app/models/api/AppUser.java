@@ -17,7 +17,6 @@ public class AppUser extends Model {
 	private String userEmailAddress;
 
 	@Embedded
-	@Indexed
 	private AuthToken statefulUserAuthToken;
 
 	@Deprecated

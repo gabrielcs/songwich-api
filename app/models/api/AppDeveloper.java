@@ -15,7 +15,6 @@ public class AppDeveloper extends Model {
 	private String name;
 	
 	@Embedded
-	@Indexed
 	private AuthToken statefulDevAuthToken;
 	
 	@Deprecated

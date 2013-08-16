@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Indexed;
 
 import database.api.AppDAO;
 import database.api.AppDAOMongo;
@@ -13,8 +14,9 @@ import database.api.UserDAOMongo;
 
 @Embedded
 public class AuthToken {
-	
+	@Indexed
 	private String token;
+	
 	private AuthTokenState state;
 	
 	@SuppressWarnings("unused")

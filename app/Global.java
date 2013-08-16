@@ -12,10 +12,12 @@ import controllers.api.util.APIStatus_V0_4;
 public class Global extends GlobalSettings {
 	@Override
 	public void onStart(play.Application app) {
-        if (app.isProd()) {
-			// connects to our Mongo-as-a-Service database
-			String dbName = app.configuration().getString("mongo.name");
-			String uri = app.configuration().getString("mongo.uri");
+		if (app.isProd()) {
+			// connects to a MongodDB-as-a-Service database
+			// it may be a production or a staging database according to the
+			// environment variable
+			String dbName = System.getenv("MONGOHQ_DBNAME");
+			String uri = System.getenv("MONGOHQ_URL");
 			DatabaseContext.createDatastore(uri, dbName);
 		}
 
@@ -64,8 +66,8 @@ public class Global extends GlobalSettings {
 					.getMessage());
 		}
 		// it's currently not showing POST requests parameters
-		MyLogger.error(String.format("Error while processing: %s [%s]", request,
-				message));
+		MyLogger.error(String.format("Error while processing: %s [%s]",
+				request, message));
 
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.UNKNOWN_ERROR, message);
