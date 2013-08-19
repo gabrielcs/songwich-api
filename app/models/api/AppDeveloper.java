@@ -61,7 +61,7 @@ public class AppDeveloper extends Model {
 	@PostLoad
 	protected void handleDeprecatedAuthToken() {
 		if (statefulDevAuthToken == null && devAuthToken != null) {
-			statefulDevAuthToken = new AuthToken(devAuthToken.toString());
+			setDevAuthToken(new AuthToken(devAuthToken.toString()));
 		}
 	}
 

@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.api.Scrobble;
+import models.api.Song;
 import models.api.User;
 
 import org.bson.types.ObjectId;
-
-import controllers.api.util.APIStatus_V0_4;
 
 import usecases.api.util.RequestContext;
 import usecases.api.util.SongwichAPIException;
 import usecases.api.util.UseCase;
 import views.api.ScrobblesDTO_V0_4;
+import controllers.api.util.APIStatus_V0_4;
 import database.api.ScrobbleDAO;
 import database.api.ScrobbleDAOMongo;
 import database.api.UserDAO;
@@ -26,8 +26,9 @@ public class ScrobblesUseCases extends UseCase {
 	}
 
 	public void postScrobbles(ScrobblesDTO_V0_4 scrobbleDTO) {
-		Scrobble scrobble = new Scrobble(getContext().getUser().getId(),
-				scrobbleDTO.getTrackTitle(), scrobbleDTO.getArtistsNames(),
+		Song song = new Song(scrobbleDTO.getTrackTitle(),
+				scrobbleDTO.getArtistsNames());
+		Scrobble scrobble = new Scrobble(getContext().getUser().getId(), song,
 				Long.parseLong(scrobbleDTO.getTimestamp()),
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
 				scrobbleDTO.getPlayer(), getContext().getAppDeveloper()
@@ -76,8 +77,8 @@ public class ScrobblesUseCases extends UseCase {
 		ScrobblesDTO_V0_4 scrobblesDTO;
 		for (Scrobble scrobble : scrobbles) {
 			scrobblesDTO = new ScrobblesDTO_V0_4();
-			scrobblesDTO.setTrackTitle(scrobble.getSongTitle());
-			scrobblesDTO.setArtistsNames(scrobble.getArtistsNames());
+			scrobblesDTO.setTrackTitle(scrobble.getSong().getSongTitle());
+			scrobblesDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
 			scrobblesDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
 			scrobblesDTO.setChosenByUser(Boolean.toString(scrobble
 					.isChoosenByUser()));

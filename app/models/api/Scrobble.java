@@ -11,6 +11,8 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.NotSaved;
+import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
@@ -20,9 +22,15 @@ public class Scrobble extends Model {
 
 	@Indexed
 	private ObjectId userId;
+	
+	private Song song;
 
+	@Deprecated
+	@NotSaved
 	private String songTitle;
 
+	@Deprecated
+	@NotSaved
 	private List<String> artistsNames = new ArrayList<String>();
 
 	@Indexed(IndexDirection.DESC)
@@ -36,49 +44,22 @@ public class Scrobble extends Model {
 	protected Scrobble() {
 		super();
 	}
-
-	public Scrobble(ObjectId userId, String songTitle, String artistName,
-			Long timestamp, Boolean choosenByUser, String service, String createdBy) {
-		super(createdBy);
-		setUserId(userId);
-		setSongTitle(songTitle);
-		addArtistsName(artistName);
-		setTimestamp(timestamp);
-		setChoosenByUser(choosenByUser);
-		setService(service);
-	}
-
-	public Scrobble(ObjectId userId, String songTitle, String artistName,
-			GregorianCalendar timestamp, Boolean choosenByUser, String service,
-			String createdBy) {
-		super(createdBy);
-		setUserId(userId);
-		setSongTitle(songTitle);
-		addArtistsName(artistName);
-		setTimestamp(timestamp);
-		setChoosenByUser(choosenByUser);
-		setService(service);
-	}
-
-	public Scrobble(ObjectId userId, String songTitle,
-			List<String> artistsNames, Long timestamp, Boolean choosenByUser,
-			String service, String createdBy) {
-		super(createdBy);
-		setUserId(userId);
-		setSongTitle(songTitle);
-		setArtistsNames(artistsNames);
-		setTimestamp(timestamp);
-		setChoosenByUser(choosenByUser);
-		setService(service);
-	}
-
-	public Scrobble(ObjectId userId, String songTitle,
-			List<String> artistsNames, GregorianCalendar timestamp,
+	
+	public Scrobble(ObjectId userId, Song song, GregorianCalendar timestamp,
 			Boolean choosenByUser, String service, String createdBy) {
 		super(createdBy);
 		setUserId(userId);
-		setSongTitle(songTitle);
-		setArtistsNames(artistsNames);
+		setSong(song);
+		setTimestamp(timestamp);
+		setChoosenByUser(choosenByUser);
+		setService(service);
+	}
+	
+	public Scrobble(ObjectId userId, Song song, long timestamp,
+			Boolean choosenByUser, String service, String createdBy) {
+		super(createdBy);
+		setUserId(userId);
+		setSong(song);
 		setTimestamp(timestamp);
 		setChoosenByUser(choosenByUser);
 		setService(service);
@@ -97,40 +78,6 @@ public class Scrobble extends Model {
 	 */
 	public void setUserId(ObjectId userId) {
 		this.userId = userId;
-	}
-
-	/**
-	 * @return the songTitle
-	 */
-	public String getSongTitle() {
-		return songTitle;
-	}
-
-	/**
-	 * @param songTitle
-	 *            the songTitle to set
-	 */
-	public void setSongTitle(String songTitle) {
-		this.songTitle = songTitle;
-	}
-
-	/**
-	 * @return the artistsNames
-	 */
-	public List<String> getArtistsNames() {
-		return artistsNames;
-	}
-
-	/**
-	 * @param artistsNames
-	 *            the artistsNames to set
-	 */
-	public void setArtistsNames(List<String> artistsNames) {
-		this.artistsNames = artistsNames;
-	}
-
-	public void addArtistsName(String artistsName) {
-		artistsNames.add(artistsName);
 	}
 
 	/**
@@ -189,12 +136,30 @@ public class Scrobble extends Model {
 		return id;
 	}
 
+	public Song getSong() {
+		return song;
+	}
+
+	public void setSong(Song song) {
+		this.song = song;
+	}
+
+	/*
+	 * Handle deprecated song properties
+	 */
+	@PostLoad
+	protected void handleDeprecatedSongProperties() {
+		if (song == null && songTitle != null && artistsNames != null) {
+			setSong(new Song(songTitle, artistsNames));
+		}
+	}
+
 	@Override
 	public String toString() {
-		return "Scrobble [id=" + id + ", userId=" + userId + ", songTitle="
-				+ songTitle + ", artistsNames=" + artistsNames + ", timestamp="
-				+ timestamp + ", choosenByUser=" + choosenByUser + ", player="
-				+ player + ", super.toString()=" + super.toString() + "]";
+		return "Scrobble [id=" + id + ", userId=" + userId + ", song=" + song
+				+ ", timestamp=" + timestamp + ", choosenByUser="
+				+ choosenByUser + ", player=" + player + ", super.toString()="
+				+ super.toString() + "]";
 	}
 
 	@Override
@@ -202,12 +167,9 @@ public class Scrobble extends Model {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
-		result = prime * result
 				+ ((choosenByUser == null) ? 0 : choosenByUser.hashCode());
 		result = prime * result + ((player == null) ? 0 : player.hashCode());
-		result = prime * result
-				+ ((songTitle == null) ? 0 : songTitle.hashCode());
+		result = prime * result + ((song == null) ? 0 : song.hashCode());
 		result = prime * result
 				+ ((timestamp == null) ? 0 : timestamp.hashCode());
 		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
@@ -223,11 +185,6 @@ public class Scrobble extends Model {
 		if (getClass() != obj.getClass())
 			return false;
 		Scrobble other = (Scrobble) obj;
-		if (artistsNames == null) {
-			if (other.artistsNames != null)
-				return false;
-		} else if (!artistsNames.equals(other.artistsNames))
-			return false;
 		if (choosenByUser == null) {
 			if (other.choosenByUser != null)
 				return false;
@@ -238,10 +195,10 @@ public class Scrobble extends Model {
 				return false;
 		} else if (!player.equals(other.player))
 			return false;
-		if (songTitle == null) {
-			if (other.songTitle != null)
+		if (song == null) {
+			if (other.song != null)
 				return false;
-		} else if (!songTitle.equals(other.songTitle))
+		} else if (!song.equals(other.song))
 			return false;
 		if (timestamp == null) {
 			if (other.timestamp != null)
