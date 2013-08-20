@@ -2,6 +2,8 @@ package models.api;
 
 import java.util.UUID;
 
+import models.api.util.Model;
+
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
@@ -13,18 +15,17 @@ import database.api.UserDAO;
 import database.api.UserDAOMongo;
 
 @Embedded
-public class AuthToken {
+public class AuthToken extends Model {
 	@Indexed
 	private String token;
 	
 	private AuthTokenState state;
 	
-	@SuppressWarnings("unused")
-	private AuthToken() {}
+	protected AuthToken() {}
 	
 	protected AuthToken(String authToken) {
-		this.token = authToken;
-		state = AuthTokenState.VALID;
+		setToken(authToken);
+		setState(AuthTokenState.VALID);
 	}
 	
 	/*

@@ -3,6 +3,7 @@ package database.api;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 
 import models.api.Scrobble;
 
@@ -30,41 +31,72 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return ds.find(Scrobble.class).filter("userId", userId)
 				.order("-timestamp").asList();
 	}
-	
+
+	// TODO: test
+	@Override
+	public List<Scrobble> findByUserIds(Set<ObjectId> userIds) {
+		return ds.find(Scrobble.class).filter("userId in", userIds)
+				.order("-timestamp").asList();
+	}
+
 	@Override
 	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId, int results) {
 		return ds.find(Scrobble.class).filter("userId", userId)
 				.order("-timestamp").limit(results).asList();
 	}
 
+	// TODO: test
+	@Override
+	public List<Scrobble> findLastScrobblesByUserIds(Set<ObjectId> userIds,
+			int results) {
+		return ds.find(Scrobble.class).filter("userId in", userIds)
+				.order("-timestamp").limit(results).asList();
+	}
+
 	@Override
 	public List<Scrobble> findByUserIdWithDaysOffset(ObjectId userId,
 			int daysOffset) {
-		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.DATE, -daysOffset);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		long offsetMillis = calendar.getTimeInMillis();
-
+		long offsetMillis = calculateOffsetMillis(daysOffset);
 		return ds.find(Scrobble.class).filter("userId", userId)
 				.filter("timestamp >", offsetMillis).order("-timestamp")
 				.asList();
 	}
 
+	// TODO: test
 	@Override
-	public List<Scrobble> findLastScrobblesByUserIdWithDaysOffset(
-			ObjectId userId, int daysOffset, int results) {
+	public List<Scrobble> findByUserIdsWithDaysOffset(Set<ObjectId> userIds,
+			int daysOffset) {
+		long offsetMillis = calculateOffsetMillis(daysOffset);
+		return ds.find(Scrobble.class).filter("userId in", userIds)
+				.filter("timestamp >", offsetMillis).order("-timestamp")
+				.asList();
+	}
+
+	private long calculateOffsetMillis(int daysOffset) {
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.DATE, -daysOffset);
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
-		long offsetMillis = calendar.getTimeInMillis();
+		return calendar.getTimeInMillis();
+	}
 
+	@Override
+	public List<Scrobble> findLastScrobblesByUserIdWithDaysOffset(
+			ObjectId userId, int daysOffset, int results) {
+		long offsetMillis = calculateOffsetMillis(daysOffset);
 		return ds.find(Scrobble.class).filter("userId", userId)
+				.filter("timestamp >", offsetMillis).order("-timestamp")
+				.limit(results).asList();
+	}
+
+	// TODO: test
+	@Override
+	public List<Scrobble> findLastScrobblesByUserIdsWithDaysOffset(
+			Set<ObjectId> userIds, int daysOffset, int results) {
+		long offsetMillis = calculateOffsetMillis(daysOffset);
+		return ds.find(Scrobble.class).filter("userId in", userIds)
 				.filter("timestamp >", offsetMillis).order("-timestamp")
 				.limit(results).asList();
 	}

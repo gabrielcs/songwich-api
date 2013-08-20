@@ -17,6 +17,10 @@ public class StationHistoryEntry extends Model {
 	@Embedded
 	private Set<SongFeedback> feedback = new HashSet<SongFeedback>();
 	
+	protected StationHistoryEntry() {
+		super();
+	}
+	
 	public StationHistoryEntry(Song song, long timestamp,
 			Set<SongFeedback> feedback) {
 		super();

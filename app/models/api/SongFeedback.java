@@ -20,6 +20,10 @@ public class SongFeedback extends Model {
 		THUMBS_UP, THUMBS_DOWN, STAR;
 	}
 	
+	protected SongFeedback() {
+		super();
+	}
+	
 	public SongFeedback(FeedbackType feedback, ObjectId userId) {
 		super();
 		setFeedbackType(feedback);

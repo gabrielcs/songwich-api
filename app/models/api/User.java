@@ -13,7 +13,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
 
 @Entity
-public class User extends Model {
+public class User extends Model implements Scrobbler {
 	@Id
 	private ObjectId id;
 
@@ -24,11 +24,11 @@ public class User extends Model {
 
 	@Embedded
 	private Set<AppUser> appUsers = new HashSet<AppUser>();
-	
+
 	protected User() {
 		super();
 	}
-	
+
 	public User(String emailAddress, String createdBy) {
 		super(createdBy);
 		setEmailAddress(emailAddress);
@@ -80,14 +80,21 @@ public class User extends Model {
 	public boolean addAppUser(AppUser appUser) {
 		return appUsers.add(appUser);
 	}
-	
+
 	/**
 	 * @return the id
 	 */
 	public ObjectId getId() {
 		return id;
 	}
-	
+
+	@Override
+	public Set<ObjectId> getActiveScrobblersUserIds() {
+		Set<ObjectId> userIds = new HashSet<ObjectId>();
+		userIds.add(getId());
+		return userIds;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", emailAddress=" + emailAddress + ", name="
@@ -95,7 +102,9 @@ public class User extends Model {
 				+ super.toString() + "]";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -104,15 +113,15 @@ public class User extends Model {
 		int result = 1;
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
-		result = prime
-				* result
-				+ ((appUsers == null) ? 0 : appUsers
-						.hashCode());
+		result = prime * result
+				+ ((appUsers == null) ? 0 : appUsers.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

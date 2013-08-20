@@ -10,6 +10,7 @@ public abstract class Model {
 	private String lastModifiedBy;
 	
 	protected Model() {
+		super();
 	}
 	
 	public Model(String createdBy) {
