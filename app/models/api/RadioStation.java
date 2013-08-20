@@ -28,8 +28,7 @@ public class RadioStation<T extends Scrobbler> extends Model {
 		super();
 	}
 
-	public RadioStation(String name, T scrobbler, StationStrategy strategy,
-			String createdBy) {
+	public RadioStation(String name, T scrobbler, String createdBy) {
 		super(createdBy);
 		setName(name);
 		setScrobbler(scrobbler);

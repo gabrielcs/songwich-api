@@ -37,5 +37,4 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return ds.find(StationHistoryEntry.class)
 				.filter("stationId", stationId).asList();
 	}
-
 }

@@ -3,17 +3,15 @@ package models.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.api.util.Model;
-
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class Song extends Model {	
-	
+public class Song {
+
 	private String songTitle;
-	
+
 	private List<String> artistsNames = new ArrayList<String>();
-	
+
 	protected Song() {
 		super();
 	}
@@ -23,7 +21,7 @@ public class Song extends Model {
 		setSongTitle(songTitle);
 		setArtistsNames(artistsNames);
 	}
-	
+
 	public Song(String songTitle, String artistName) {
 		super();
 		setSongTitle(songTitle);
@@ -45,7 +43,7 @@ public class Song extends Model {
 	public void setArtistsNames(List<String> artistsNames) {
 		this.artistsNames = artistsNames;
 	}
-	
+
 	public void addArtistName(String artistName) {
 		artistsNames.add(artistName);
 	}
@@ -53,13 +51,13 @@ public class Song extends Model {
 	@Override
 	public String toString() {
 		return "Song [songTitle=" + songTitle + ", artistsNames="
-				+ artistsNames + ", super.toString()=" + super.toString() + "]";
+				+ artistsNames + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result
@@ -71,7 +69,7 @@ public class Song extends Model {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -88,5 +86,5 @@ public class Song extends Model {
 			return false;
 		return true;
 	}
-	
+
 }
