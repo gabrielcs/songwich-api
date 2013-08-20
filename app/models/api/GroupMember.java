@@ -17,8 +17,8 @@ public class GroupMember extends Model {
 		super();
 	}
 
-	public GroupMember(User user, Long startDate, Long endDate) {
-		super();
+	public GroupMember(User user, Long startDate, Long endDate, String createdBy) {
+		super(createdBy);
 		setUser(user);
 		setStartDate(startDate);
 		setEndDate(endDate);

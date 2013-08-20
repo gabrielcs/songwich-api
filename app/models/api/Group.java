@@ -23,8 +23,8 @@ public class Group extends Model implements Scrobbler {
 		super();
 	}
 	
-	public Group(Set<GroupMember> groupMembers) {
-		super();
+	public Group(Set<GroupMember> groupMembers, String createdBy) {
+		super(createdBy);
 		setGroupMembers(groupMembers);
 	}
 

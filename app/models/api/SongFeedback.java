@@ -24,8 +24,8 @@ public class SongFeedback extends Model {
 		super();
 	}
 	
-	public SongFeedback(FeedbackType feedback, ObjectId userId) {
-		super();
+	public SongFeedback(FeedbackType feedback, ObjectId userId, String createdBy) {
+		super(createdBy);
 		setFeedbackType(feedback);
 		setUserId(userId);
 	}
