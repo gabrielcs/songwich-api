@@ -6,6 +6,8 @@ import models.api.NaiveStationStrategy;
 import models.api.RadioStation;
 import models.api.Scrobbler;
 import models.api.Song;
+import models.api.SongFeedback;
+import models.api.SongFeedback.FeedbackType;
 import models.api.StationHistoryEntry;
 import models.api.StationStrategy;
 
@@ -18,13 +20,13 @@ import database.api.RadioStationDAOMongo;
 import database.api.StationHistoryDAO;
 import database.api.StationHistoryDAOMongo;
 
-public class RadioUseCases<I> extends UseCase {
+public class StationsUseCases<I> extends UseCase {
 
-	public RadioUseCases(RequestContext context) {
+	public StationsUseCases(RequestContext context) {
 		super(context);
 	}
 
-	public StationHistoryEntry nextSong(ObjectId radioId) {
+	public StationHistoryEntry getNextSong(ObjectId radioId) {
 		RadioStationDAO<ObjectId> radioStationDao = new RadioStationDAOMongo();
 		@SuppressWarnings("unchecked")
 		RadioStation<? extends Scrobbler> radioStation = radioStationDao
@@ -55,6 +57,22 @@ public class RadioUseCases<I> extends UseCase {
 				getContext().getAppDeveloper().getEmailAddress());
 		stationHistoryDao.save(stationHistoryEntry);
 		return stationHistoryEntry;
+	}
+
+	public void postSongFeedback(ObjectId stationHistoryEntryId,
+			FeedbackType feedback) {
+
+		StationHistoryDAO<ObjectId> stationHistoryDao = new StationHistoryDAOMongo();
+		StationHistoryEntry stationHistoryEntry = stationHistoryDao
+				.findById(stationHistoryEntryId);
+		SongFeedback songFeedback = new SongFeedback(feedback, getContext().getUser().getId(),
+				getContext().getAppDeveloper().getEmailAddress()); 
+		stationHistoryEntry.addSongFeedback(songFeedback);
+		
+		// execute the update
+		stationHistoryEntry.setLastModifiedAt(System.currentTimeMillis());
+		stationHistoryEntry.setLastModifiedBy(getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(stationHistoryEntry);
 	}
 
 }
