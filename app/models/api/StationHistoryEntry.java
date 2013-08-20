@@ -5,28 +5,32 @@ import java.util.Set;
 
 import models.api.util.Model;
 
+import org.bson.types.ObjectId;
+
 import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Id;
 
 @Embedded
 public class StationHistoryEntry extends Model {
+	@Id
+	private ObjectId id;
+	
 	@Embedded
 	private Song song;
 	
 	private long timestamp;
 	
 	@Embedded
-	private Set<SongFeedback> feedback = new HashSet<SongFeedback>();
+	private Set<SongFeedback> songFeedback = new HashSet<SongFeedback>();
 	
 	protected StationHistoryEntry() {
 		super();
 	}
 	
-	public StationHistoryEntry(Song song, long timestamp,
-			Set<SongFeedback> feedback) {
+	public StationHistoryEntry(Song song, long timestamp) {
 		super();
 		setSong(song);
 		setTimestamp(timestamp);
-		setFeedback(feedback);
 	}
 
 	public Song getSong() {
@@ -45,19 +49,27 @@ public class StationHistoryEntry extends Model {
 		this.timestamp = timestamp;
 	}
 
-	public Set<SongFeedback> getFeedback() {
-		return feedback;
+	public Set<SongFeedback> getSongFeedback() {
+		return songFeedback;
 	}
 
-	public void setFeedback(Set<SongFeedback> feedback) {
-		this.feedback = feedback;
+	public void setSongFeedback(Set<SongFeedback> songFeedback) {
+		this.songFeedback = songFeedback;
+	}
+	
+	public void addSongFeedback(SongFeedback songFeedback) {
+		this.songFeedback.add(songFeedback);
+	}
+
+	public ObjectId getId() {
+		return id;
 	}
 
 	@Override
 	public String toString() {
-		return "StationHistoryEntry [song=" + song + ", timestamp=" + timestamp
-				+ ", feedback=" + feedback + ", super.toString()=" + super.toString()
-				+ "]";
+		return "StationHistoryEntry [id=" + id + ", song=" + song
+				+ ", timestamp=" + timestamp + ", songFeedback=" + songFeedback
+				+ ", super.toString()=" + super.toString() + "]";
 	}
 
 	@Override
@@ -65,7 +77,7 @@ public class StationHistoryEntry extends Model {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((feedback == null) ? 0 : feedback.hashCode());
+				+ ((songFeedback == null) ? 0 : songFeedback.hashCode());
 		result = prime * result + ((song == null) ? 0 : song.hashCode());
 		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
 		return result;
@@ -80,10 +92,10 @@ public class StationHistoryEntry extends Model {
 		if (getClass() != obj.getClass())
 			return false;
 		StationHistoryEntry other = (StationHistoryEntry) obj;
-		if (feedback == null) {
-			if (other.feedback != null)
+		if (songFeedback == null) {
+			if (other.songFeedback != null)
 				return false;
-		} else if (!feedback.equals(other.feedback))
+		} else if (!songFeedback.equals(other.songFeedback))
 			return false;
 		if (song == null) {
 			if (other.song != null)
