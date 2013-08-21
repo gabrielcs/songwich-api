@@ -37,10 +37,10 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), new Song(
 				"Take a Walk", artists1), System.currentTimeMillis(), false,
-				"Spotify", CREATED_BY);
+				"Spotify", DEV_EMAIL);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), new Song("Get Lucky",
 				artists2), System.currentTimeMillis(), true, "Deezer",
-				CREATED_BY);
+				DEV_EMAIL);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -73,10 +73,10 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), new Song(
 				"Take a Walk", artists1), System.currentTimeMillis(), false,
-				"Spotify", CREATED_BY);
+				"Spotify", DEV_EMAIL);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), new Song("Get Lucky",
 				artists2), System.currentTimeMillis(), true, "Deezer",
-				CREATED_BY);
+				DEV_EMAIL);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -102,10 +102,10 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 		Scrobble scrobble1 = new Scrobble(user1.getId(), new Song(
 				"Take a Walk", "Passion Pit"), System.currentTimeMillis(),
-				false, "Spotify", CREATED_BY);
+				false, "Spotify", DEV_EMAIL);
 		Scrobble scrobble2 = new Scrobble(user2.getId(), new Song("Get Lucky",
 				artists2), System.currentTimeMillis(), true, "Deezer",
-				CREATED_BY);
+				DEV_EMAIL);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
@@ -131,17 +131,17 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 		Scrobble scrobble1 = new Scrobble(user.getId(), new Song("Take a Walk",
 				"Passion Pit"), System.currentTimeMillis(), false, "Spotify",
-				CREATED_BY);
+				DEV_EMAIL);
 
 		Scrobble scrobble2 = new Scrobble(user.getId(), new Song(
 				"Take a Walk 2", "Passion Pit"), System.currentTimeMillis(),
-				false, "Spotify", CREATED_BY);
+				false, "Spotify", DEV_EMAIL);
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.DATE, -2);
 		Scrobble scrobble2DaysOld = new Scrobble(user.getId(), new Song(
 				"Take a Walk (old)", "Passion Pit"),
-				calendar.getTimeInMillis(), false, "Spotify", CREATED_BY);
+				calendar.getTimeInMillis(), false, "Spotify", DEV_EMAIL);
 
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand

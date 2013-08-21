@@ -26,33 +26,36 @@ public class AppDeveloper extends Model {
 	
 	public AppDeveloper(String emailAddress, String name, AuthToken devAuthToken, String createdBy) {
 		super(createdBy);
-		setEmailAddress(emailAddress);
-		setName(name);
-		setDevAuthToken(devAuthToken);
+		this.emailAddress = emailAddress;
+		this.name = name;
+		this.statefulDevAuthToken = devAuthToken;
 	}
 
 	public String getEmailAddress() {
 		return emailAddress;
 	}
 
-	public void setEmailAddress(String emailAddress) {
+	public void setEmailAddress(String emailAddress, String modifiedBy) {
 		this.emailAddress = emailAddress;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name, String modifiedBy) {
 		this.name = name;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public AuthToken getDevAuthToken() {
 		return statefulDevAuthToken;
 	}
 
-	public void setDevAuthToken(AuthToken devAuthToken) {
+	public void setDevAuthToken(AuthToken devAuthToken, String modifiedBy) {
 		this.statefulDevAuthToken = devAuthToken;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/*
@@ -61,7 +64,7 @@ public class AppDeveloper extends Model {
 	@PostLoad
 	protected void handleDeprecatedAuthToken() {
 		if (statefulDevAuthToken == null && devAuthToken != null) {
-			setDevAuthToken(new AuthToken(devAuthToken.toString()));
+			this.statefulDevAuthToken = new AuthToken(devAuthToken.toString());
 		}
 	}
 

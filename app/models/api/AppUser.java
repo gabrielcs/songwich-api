@@ -27,12 +27,12 @@ public class AppUser extends Model {
 		super();
 	}
 
-	public AppUser(App streamingService, String emailAddress,
+	public AppUser(App app, String emailAddress,
 			AuthToken userAuthToken, String createdBy) {
 		super(createdBy);
-		setApp(streamingService);
-		setEmailAddress(emailAddress);
-		setUserAuthToken(userAuthToken);
+		this.app = app;
+		this.userEmailAddress = emailAddress;
+		this.statefulUserAuthToken = userAuthToken;
 	}
 
 	/**
@@ -42,12 +42,9 @@ public class AppUser extends Model {
 		return app;
 	}
 
-	/**
-	 * @param app
-	 *            the app to set
-	 */
-	public void setApp(App app) {
+	public void setApp(App app, String modifiedBy) {
 		this.app = app;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -57,20 +54,18 @@ public class AppUser extends Model {
 		return userEmailAddress;
 	}
 
-	/**
-	 * @param userEmailAddress
-	 *            the userEmailAddress to set
-	 */
-	public void setEmailAddress(String emailAddress) {
+	public void setEmailAddress(String emailAddress, String modifiedBy) {
 		this.userEmailAddress = emailAddress;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public AuthToken getUserAuthToken() {
 		return statefulUserAuthToken;
 	}
 
-	public void setUserAuthToken(AuthToken userAuthToken) {
+	public void setUserAuthToken(AuthToken userAuthToken, String modifiedBy) {
 		this.statefulUserAuthToken = userAuthToken;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/*

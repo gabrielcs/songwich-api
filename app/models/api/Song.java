@@ -44,8 +44,13 @@ public class Song {
 		this.artistsNames = artistsNames;
 	}
 
-	public void addArtistName(String artistName) {
-		artistsNames.add(artistName);
+	/**
+	 * 
+	 * @param artistName
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
+	 */
+	public boolean addArtistName(String artistName) {
+		return artistsNames.add(artistName);
 	}
 
 	@Override

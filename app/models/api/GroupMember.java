@@ -19,39 +19,42 @@ public class GroupMember extends Model {
 	
 	public GroupMember(User user, Long startDate, String createdBy) {
 		super(createdBy);
-		setUser(user);
-		setStartDate(startDate);
+		this.user = user;
+		this.startDate = startDate;
 	}
 
 	public GroupMember(User user, Long startDate, Long endDate, String createdBy) {
 		super(createdBy);
-		setUser(user);
-		setStartDate(startDate);
-		setEndDate(endDate);
+		this.user = user;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(User user, String modifiedBy) {
 		this.user = user;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public Long getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(long startDate) {
+	public void setStartDate(long startDate, String modifiedBy) {
 		this.startDate = startDate;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public Long getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(long endDate) {
+	public void setEndDate(long endDate, String modifiedBy) {
 		this.endDate = endDate;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	@Override

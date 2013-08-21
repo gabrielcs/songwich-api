@@ -59,12 +59,12 @@ public class UsersUseCases extends UseCase {
 	 * If the User is also a new one it will be saved to the database as well.
 	 */
 	private AppUser saveNewAppUser(User user, String userEmail) {
-		String createdBy = getContext().getAppDeveloper().getEmailAddress();
+		String appDevEmail = getContext().getAppDeveloper().getEmailAddress();
 
 		AuthToken userAuthToken = AuthToken.createUserAuthToken();
 		AppUser newAppUser = new AppUser(getContext().getApp(), userEmail,
-				userAuthToken, createdBy);
-		user.addAppUser(newAppUser);
+				userAuthToken, appDevEmail);
+		user.addAppUser(newAppUser, appDevEmail);
 
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		userDAO.save(user);

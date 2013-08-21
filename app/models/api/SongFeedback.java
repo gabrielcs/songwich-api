@@ -15,7 +15,6 @@ public class SongFeedback extends Model {
 	
 	private ObjectId userId;
 	
-	@Embedded
 	public enum FeedbackType {
 		THUMBS_UP, THUMBS_DOWN, STAR;
 	}
@@ -26,24 +25,26 @@ public class SongFeedback extends Model {
 	
 	public SongFeedback(FeedbackType feedback, ObjectId userId, String createdBy) {
 		super(createdBy);
-		setUserId(userId);
-		setFeedbackType(feedback);
+		this.userId = userId;
+		this.feedbackType = feedback;
 	}
 
 	public FeedbackType getFeedbackType() {
 		return feedbackType;
 	}
 
-	public void setFeedbackType(FeedbackType feedback) {
+	public void setFeedbackType(FeedbackType feedback, String modifiedBy) {
 		this.feedbackType = feedback;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public ObjectId getUserId() {
 		return userId;
 	}
 
-	public void setUserId(ObjectId userId) {
+	public void setUserId(ObjectId userId, String modifiedBy) {
 		this.userId = userId;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	@Override

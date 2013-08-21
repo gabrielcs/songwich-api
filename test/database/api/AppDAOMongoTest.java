@@ -22,15 +22,15 @@ import database.api.util.CleanDatabaseTest;
 public class AppDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testSaveAndDelete() {
-		App app1 = new App("Spotify", CREATED_BY);
-		App app2 = new App("Deezer", CREATED_BY);
+		App app1 = new App("Spotify", DEV_EMAIL);
+		App app2 = new App("Deezer", DEV_EMAIL);
 
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
 		Key<App> keySave = appDao.save(app1);
 		appDao.save(app2);
 
 		// updates a document using save()
-		app1.setName("Rdio");
+		app1.setName("Rdio", DEV_EMAIL);
 		Key<App> keySaveAgain = appDao.save(app1);
 		// checks that it doesn't save twice
 		assertEquals(keySave.getId(), keySaveAgain.getId());
@@ -55,8 +55,8 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindById() {
-		App app1 = new App("Spotify", CREATED_BY);
-		App app2 = new App("Deezer", CREATED_BY);
+		App app1 = new App("Spotify", DEV_EMAIL);
+		App app2 = new App("Deezer", DEV_EMAIL);
 
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
 		appDao.save(app1);
@@ -68,8 +68,8 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindByName() {
-		App app1 = new App("Spotify", CREATED_BY);
-		App app2 = new App("Deezer", CREATED_BY);
+		App app1 = new App("Spotify", DEV_EMAIL);
+		App app2 = new App("Deezer", DEV_EMAIL);
 
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
 		appDao.save(app1);
@@ -81,11 +81,11 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindByDevAuthToken() {
-		App app = new App("Spotify", CREATED_BY);
+		App app = new App("Spotify", DEV_EMAIL);
 		AuthToken authToken = AuthToken.createDevAuthToken();
 		AppDeveloper appDev = new AppDeveloper("gabriel@example.com",
-				"Gabriel", authToken, CREATED_BY);
-		app.addAppDeveloper(appDev);
+				"Gabriel", authToken, DEV_EMAIL);
+		app.addAppDeveloper(appDev, DEV_EMAIL);
 
 		AppDAOMongo appDao = new AppDAOMongo();
 		appDao.cascadeSave(app);
@@ -95,11 +95,11 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindAppDevByAuthToken() {
-		App app = new App("Spotify", CREATED_BY);
+		App app = new App("Spotify", DEV_EMAIL);
 		AuthToken authToken = AuthToken.createDevAuthToken();
 		AppDeveloper appDev = new AppDeveloper("gabriel@example.com",
-				"Gabriel", authToken, CREATED_BY);
-		app.addAppDeveloper(appDev);
+				"Gabriel", authToken, DEV_EMAIL);
+		app.addAppDeveloper(appDev, DEV_EMAIL);
 
 		AppDAOMongo appDao = new AppDAOMongo();
 		appDao.cascadeSave(app);
@@ -110,11 +110,11 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindByDevEmail() {
-		App app = new App("Spotify", CREATED_BY);
+		App app = new App("Spotify", DEV_EMAIL);
 		AuthToken authToken = AuthToken.createDevAuthToken();
 		AppDeveloper appDev = new AppDeveloper("gabriel@example.com",
-				"Gabriel", authToken, CREATED_BY);
-		app.addAppDeveloper(appDev);
+				"Gabriel", authToken, DEV_EMAIL);
+		app.addAppDeveloper(appDev, DEV_EMAIL);
 
 		AppDAOMongo appDao = new AppDAOMongo();
 		appDao.cascadeSave(app);
@@ -126,11 +126,11 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindAppDevByEmail() {
-		App app = new App("Spotify", CREATED_BY);
+		App app = new App("Spotify", DEV_EMAIL);
 		AuthToken authToken = AuthToken.createDevAuthToken();
 		AppDeveloper appDev = new AppDeveloper("gabriel@example.com",
-				"Gabriel", authToken, CREATED_BY);
-		app.addAppDeveloper(appDev);
+				"Gabriel", authToken, DEV_EMAIL);
+		app.addAppDeveloper(appDev, DEV_EMAIL);
 
 		AppDAOMongo appDao = new AppDAOMongo();
 		appDao.cascadeSave(app);

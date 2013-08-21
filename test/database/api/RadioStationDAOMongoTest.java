@@ -41,32 +41,32 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 	}
 
 	private void initData() {
-		fatMike = new User("fatmike@nofx.com", "Fat Mike", CREATED_BY);
+		fatMike = new User("fatmike@nofx.com", "Fat Mike", DEV_EMAIL);
 		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis(),
-				CREATED_BY);
-		elHefe = new User("elhefe@nofx.com", "El Hefe", CREATED_BY);
+				DEV_EMAIL);
+		elHefe = new User("elhefe@nofx.com", "El Hefe", DEV_EMAIL);
 		elHefeFromNofx = new GroupMember(elHefe, System.currentTimeMillis(),
-				CREATED_BY);
+				DEV_EMAIL);
 		nofxGroupMembers = new HashSet<GroupMember>();
 		nofxGroupMembers.add(fatMikeFromNofx);
 		nofxGroupMembers.add(elHefeFromNofx);
-		nofx = new Group(nofxGroupMembers, CREATED_BY);
+		nofx = new Group(nofxGroupMembers, DEV_EMAIL);
 
-		spotify = new App("Spotify", CREATED_BY);
-		rdio = new App("Rdio", CREATED_BY);
+		spotify = new App("Spotify", DEV_EMAIL);
+		rdio = new App("Rdio", DEV_EMAIL);
 		fatMikeOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
-				AuthToken.createUserAuthToken(), CREATED_BY);
+				AuthToken.createUserAuthToken(), DEV_EMAIL);
 		elHefeOnRdio = new AppUser(rdio, "elhefe@nofx.com",
-				AuthToken.createUserAuthToken(), CREATED_BY);
+				AuthToken.createUserAuthToken(), DEV_EMAIL);
 
-		fatMike.addAppUser(fatMikeOnSpotify);
-		elHefe.addAppUser(elHefeOnRdio);
+		fatMike.addAppUser(fatMikeOnSpotify, DEV_EMAIL);
+		elHefe.addAppUser(elHefeOnRdio, DEV_EMAIL);
 		
-		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, CREATED_BY);
+		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, DEV_EMAIL);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant);
-		nofxRadioStation.setLookAhead(linoleum);
+		nofxRadioStation.setNowPlaying(doWhatYouWant, DEV_EMAIL);
+		nofxRadioStation.setLookAhead(linoleum, DEV_EMAIL);
 		
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
 		radioStationDAO.cascadeSave(nofxRadioStation);

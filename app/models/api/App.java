@@ -27,39 +27,48 @@ public class App extends Model {
 
 	public App(String name, String createdBy) {
 		super(createdBy);
-		setName(name);
+		this.name = name;
 	}
 
 	public App(String name, AppDeveloper appDeveloper, String createdBy) {
 		super(createdBy);
-		setName(name);
-		addAppDeveloper(appDeveloper);
+		this.name = name;
+		appDevelopers.add(appDeveloper);
 	}
 	
 	public App(String name, List<AppDeveloper> appDevelopers, String createdBy) {
 		super(createdBy);
-		setName(name);
-		setAppDevelopers(appDevelopers);
+		this.name = name;
+		this.appDevelopers = appDevelopers;
 	}
 	
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name, String modifiedBy) {
 		this.name = name;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public List<AppDeveloper> getAppDevelopers() {
 		return appDevelopers;
 	}
 
-	public void setAppDevelopers(List<AppDeveloper> appDevelopers) {
+	public void setAppDevelopers(List<AppDeveloper> appDevelopers, String modifiedBy) {
 		this.appDevelopers = appDevelopers;
+		setLastModifiedBy(modifiedBy);
 	}
 	
-	public void addAppDeveloper(AppDeveloper appDeveloper) {
-		appDevelopers.add(appDeveloper);
+	/**
+	 * 
+	 * @param appDeveloper
+	 * @param modifiedBy
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
+	 */
+	public boolean addAppDeveloper(AppDeveloper appDeveloper, String modifiedBy) {
+		setLastModifiedBy(modifiedBy);
+		return appDevelopers.add(appDeveloper);
 	}
 	
 	public AppDeveloper getAppDeveloper(String appDeveloperEmail) {

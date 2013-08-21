@@ -22,7 +22,7 @@ public class Scrobble extends Model {
 
 	@Indexed
 	private ObjectId userId;
-	
+
 	private Song song;
 
 	@Deprecated
@@ -44,25 +44,25 @@ public class Scrobble extends Model {
 	protected Scrobble() {
 		super();
 	}
-	
+
 	public Scrobble(ObjectId userId, Song song, GregorianCalendar timestamp,
-			Boolean choosenByUser, String service, String createdBy) {
+			Boolean choosenByUser, String player, String createdBy) {
 		super(createdBy);
-		setUserId(userId);
-		setSong(song);
-		setTimestamp(timestamp);
-		setChoosenByUser(choosenByUser);
-		setService(service);
+		this.userId = userId;
+		this.song = song;
+		this.timestamp = timestamp.getTimeInMillis();
+		this.choosenByUser = choosenByUser;
+		this.player = player;
 	}
-	
-	public Scrobble(ObjectId userId, Song song, long timestamp,
-			Boolean choosenByUser, String service, String createdBy) {
+
+	public Scrobble(ObjectId userId, Song song, Long timestamp,
+			Boolean choosenByUser, String player, String createdBy) {
 		super(createdBy);
-		setUserId(userId);
-		setSong(song);
-		setTimestamp(timestamp);
-		setChoosenByUser(choosenByUser);
-		setService(service);
+		this.userId = userId;
+		this.song = song;
+		this.timestamp = timestamp;
+		this.choosenByUser = choosenByUser;
+		this.player = player;
 	}
 
 	/**
@@ -76,8 +76,9 @@ public class Scrobble extends Model {
 	 * @param user
 	 *            the user to set
 	 */
-	public void setUserId(ObjectId userId) {
+	public void setUserId(ObjectId userId, String modifiedBy) {
 		this.userId = userId;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -91,12 +92,14 @@ public class Scrobble extends Model {
 	 * @param timestamp
 	 *            the timestamp to set
 	 */
-	public void setTimestamp(Long timestamp) {
+	public void setTimestamp(Long timestamp, String modifiedBy) {
 		this.timestamp = timestamp;
+		setLastModifiedBy(modifiedBy);
 	}
 
-	public void setTimestamp(GregorianCalendar timestamp) {
+	public void setTimestamp(GregorianCalendar timestamp, String modifiedBy) {
 		this.timestamp = timestamp.getTimeInMillis();
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -110,8 +113,9 @@ public class Scrobble extends Model {
 	 * @param choosenByUser
 	 *            the choosenByUser to set
 	 */
-	public void setChoosenByUser(Boolean choosenByUser) {
+	public void setChoosenByUser(Boolean choosenByUser, String modifiedBy) {
 		this.choosenByUser = choosenByUser;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -125,8 +129,9 @@ public class Scrobble extends Model {
 	 * @param player
 	 *            the player to set
 	 */
-	public void setService(String player) {
+	public void setPlayer(String player, String modifiedBy) {
 		this.player = player;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -140,8 +145,9 @@ public class Scrobble extends Model {
 		return song;
 	}
 
-	public void setSong(Song song) {
+	public void setSong(Song song, String modifiedBy) {
 		this.song = song;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/*
@@ -150,7 +156,7 @@ public class Scrobble extends Model {
 	@PostLoad
 	protected void handleDeprecatedSongProperties() {
 		if (song == null && songTitle != null && artistsNames != null) {
-			setSong(new Song(songTitle, artistsNames));
+			this.song = new Song(songTitle, artistsNames);
 		}
 	}
 

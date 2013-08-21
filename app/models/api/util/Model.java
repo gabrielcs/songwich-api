@@ -5,14 +5,14 @@ import java.util.GregorianCalendar;
 public abstract class Model {
 	private Long createdAt;
 	private String createdBy;
-	
+
 	private Long lastModifiedAt;
 	private String lastModifiedBy;
-	
+
 	protected Model() {
 		super();
 	}
-	
+
 	public Model(String createdBy) {
 		setCreatedAt(System.currentTimeMillis());
 		setCreatedBy(createdBy);
@@ -25,7 +25,7 @@ public abstract class Model {
 	public void setCreatedAt(long createdAt) {
 		this.createdAt = createdAt;
 	}
-	
+
 	public void setCreatedAt(GregorianCalendar createdAt) {
 		this.createdAt = createdAt.getTimeInMillis();
 	}
@@ -45,7 +45,7 @@ public abstract class Model {
 	public void setLastModifiedAt(long lastModifiedAt) {
 		this.lastModifiedAt = lastModifiedAt;
 	}
-	
+
 	public void setLastModifiedAt(GregorianCalendar lastModifiedAt) {
 		this.lastModifiedAt = lastModifiedAt.getTimeInMillis();
 	}
@@ -54,8 +54,15 @@ public abstract class Model {
 		return lastModifiedBy;
 	}
 
+	/**
+	 * It also calls setLastModifiedAt(). If getId() returns null it doesn't do
+	 * anything (the object is not yet in the database).
+	 * 
+	 * @param lastModifiedBy
+	 */
 	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
+		setLastModifiedAt(System.currentTimeMillis());
 	}
 
 	@Override

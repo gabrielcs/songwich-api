@@ -32,8 +32,8 @@ public class AppDevelopersUseCases extends UseCase {
 				// AppDeveloper already in database
 				MyLogger.info(String
 						.format("Tried to create AppDeveloper \"%s\" but it was already in database with authToken=%s",
-								appDevelopersDTO.getDevEmail(),
-								appDevDatabase.getDevAuthToken().getToken()));
+								appDevelopersDTO.getDevEmail(), appDevDatabase
+										.getDevAuthToken().getToken()));
 				return appDevDatabase;
 			}
 		}
@@ -42,7 +42,7 @@ public class AppDevelopersUseCases extends UseCase {
 		AppDeveloper appDeveloper = new AppDeveloper(
 				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getName(),
 				AuthToken.createDevAuthToken(), appDevelopersDTO.getDevEmail());
-		app.addAppDeveloper(appDeveloper);
+		app.addAppDeveloper(appDeveloper, appDevelopersDTO.getDevEmail());
 		appDao.cascadeSave(app);
 
 		MyLogger.info(String.format(

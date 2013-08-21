@@ -30,44 +30,44 @@ public class RadioStation<T extends Scrobbler> extends Model {
 
 	public RadioStation(String name, T scrobbler, String createdBy) {
 		super(createdBy);
-		setName(name);
-		setScrobbler(scrobbler);
-	}
-
-	public void addFeedback() {
-
+		this.name = name;
+		this.scrobbler = scrobbler;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name, String modifiedBy) {
 		this.name = name;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public T getScrobbler() {
 		return scrobbler;
 	}
 
-	public void setScrobbler(T scrobbler) {
+	public void setScrobbler(T scrobbler, String modifiedBy) {
 		this.scrobbler = scrobbler;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public Song getNowPlaying() {
 		return nowPlaying;
 	}
 
-	public void setNowPlaying(Song nowPlaying) {
+	public void setNowPlaying(Song nowPlaying, String modifiedBy) {
 		this.nowPlaying = nowPlaying;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public Song getLookAhead() {
 		return lookAhead;
 	}
 
-	public void setLookAhead(Song lookAhead) {
+	public void setLookAhead(Song lookAhead, String modifiedBy) {
 		this.lookAhead = lookAhead;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public ObjectId getId() {

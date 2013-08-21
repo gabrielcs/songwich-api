@@ -36,37 +36,48 @@ public class StationHistoryEntry extends Model {
 
 	public StationHistoryEntry(ObjectId stationId, Song song, Long timestamp, String createdBy) {
 		super(createdBy);
-		setStationId(stationId);
-		setSong(song);
-		setTimestamp(timestamp);
+		this.stationId = stationId;
+		this.song = song;
+		this.timestamp = timestamp;
 	}
 
 	public Song getSong() {
 		return song;
 	}
 
-	public void setSong(Song song) {
+	public void setSong(Song song, String modifiedBy) {
 		this.song = song;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public Long getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Long timestamp) {
+	public void setTimestamp(Long timestamp, String modifiedBy) {
 		this.timestamp = timestamp;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public Set<SongFeedback> getSongFeedback() {
 		return songFeedback;
 	}
 
-	public void setSongFeedback(Set<SongFeedback> songFeedback) {
+	public void setSongFeedback(Set<SongFeedback> songFeedback, String modifiedBy) {
 		this.songFeedback = songFeedback;
+		setLastModifiedBy(modifiedBy);
 	}
 
-	public void addSongFeedback(SongFeedback songFeedback) {
-		this.songFeedback.add(songFeedback);
+	/**
+	 * 
+	 * @param songFeedback
+	 * @param modifiedBy
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
+	 */
+	public boolean addSongFeedback(SongFeedback songFeedback, String modifiedBy) {
+		setLastModifiedBy(modifiedBy);
+		return this.songFeedback.add(songFeedback);
+		
 	}
 
 	public ObjectId getId() {
@@ -77,8 +88,9 @@ public class StationHistoryEntry extends Model {
 		return stationId;
 	}
 
-	public void setStationId(ObjectId stationId) {
+	public void setStationId(ObjectId stationId, String modifiedBy) {
 		this.stationId = stationId;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	@Override

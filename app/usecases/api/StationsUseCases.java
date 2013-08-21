@@ -37,20 +37,21 @@ public class StationsUseCases<I> extends UseCase {
 				.findByStationId(radioStation.getId());
 
 		StationStrategy stationStrategy = new NaiveStationStrategy();
+		String modifiedBy = getContext().getAppDeveloper().getEmailAddress();
 
 		if (radioStation.getNowPlaying() == null) {
 			// brand new station
 			radioStation.setLookAhead(stationStrategy.next(radioStation
 					.getScrobbler().getActiveScrobblersUserIds(),
-					stationHistory, radioStation.getLookAhead()));
+					stationHistory, radioStation.getLookAhead()), modifiedBy);
 		}
 
 		Song next = stationStrategy.next(radioStation.getScrobbler()
 				.getActiveScrobblersUserIds(), stationHistory, radioStation
 				.getLookAhead());
 
-		radioStation.setNowPlaying(radioStation.getLookAhead());
-		radioStation.setLookAhead(next);
+		radioStation.setNowPlaying(radioStation.getLookAhead(), modifiedBy);
+		radioStation.setLookAhead(next, modifiedBy);
 
 		StationHistoryEntry stationHistoryEntry = new StationHistoryEntry(
 				radioStation.getId(), radioStation.getNowPlaying(),
@@ -66,10 +67,11 @@ public class StationsUseCases<I> extends UseCase {
 		StationHistoryDAO<ObjectId> stationHistoryDao = new StationHistoryDAOMongo();
 		StationHistoryEntry stationHistoryEntry = stationHistoryDao
 				.findById(stationHistoryEntryId);
+		String appDevEmail = getContext().getAppDeveloper()
+				.getEmailAddress();
 		SongFeedback songFeedback = new SongFeedback(feedback, getContext()
-				.getUser().getId(), getContext().getAppDeveloper()
-				.getEmailAddress());
-		stationHistoryEntry.addSongFeedback(songFeedback);
+				.getUser().getId(), appDevEmail);
+		stationHistoryEntry.addSongFeedback(songFeedback, appDevEmail);
 
 		// execute the update
 		stationHistoryEntry.setLastModifiedAt(System.currentTimeMillis());
@@ -77,5 +79,4 @@ public class StationsUseCases<I> extends UseCase {
 				.getEmailAddress());
 		stationHistoryDao.save(stationHistoryEntry);
 	}
-
 }

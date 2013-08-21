@@ -45,67 +45,67 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 	}
 
 	private void initData() {
-		fatMike = new User("fatmike@nofx.com", "Fat Mike", CREATED_BY);
+		fatMike = new User("fatmike@nofx.com", "Fat Mike", DEV_EMAIL);
 		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis(),
-				CREATED_BY);
-		elHefe = new User("elhefe@nofx.com", "El Hefe", CREATED_BY);
+				DEV_EMAIL);
+		elHefe = new User("elhefe@nofx.com", "El Hefe", DEV_EMAIL);
 		elHefeFromNofx = new GroupMember(elHefe, System.currentTimeMillis(),
-				CREATED_BY);
+				DEV_EMAIL);
 		nofxGroupMembers = new HashSet<GroupMember>();
 		nofxGroupMembers.add(fatMikeFromNofx);
 		nofxGroupMembers.add(elHefeFromNofx);
-		nofx = new Group(nofxGroupMembers, CREATED_BY);
+		nofx = new Group(nofxGroupMembers, DEV_EMAIL);
 
-		spotify = new App("Spotify", CREATED_BY);
-		rdio = new App("Rdio", CREATED_BY);
+		spotify = new App("Spotify", DEV_EMAIL);
+		rdio = new App("Rdio", DEV_EMAIL);
 		fatMikeOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
-				AuthToken.createUserAuthToken(), CREATED_BY);
+				AuthToken.createUserAuthToken(), DEV_EMAIL);
 		elHefeOnRdio = new AppUser(rdio, "elhefe@nofx.com",
-				AuthToken.createUserAuthToken(), CREATED_BY);
+				AuthToken.createUserAuthToken(), DEV_EMAIL);
 
-		fatMike.addAppUser(fatMikeOnSpotify);
-		elHefe.addAppUser(elHefeOnRdio);
+		fatMike.addAppUser(fatMikeOnSpotify, DEV_EMAIL);
+		elHefe.addAppUser(elHefeOnRdio, DEV_EMAIL);
 
-		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, CREATED_BY);
+		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, DEV_EMAIL);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant);
-		nofxRadioStation.setLookAhead(linoleum);
+		nofxRadioStation.setNowPlaying(doWhatYouWant, DEV_EMAIL);
+		nofxRadioStation.setLookAhead(linoleum, DEV_EMAIL);
 
 		// saves the radio station
 		RadioStationDAOMongo radioStationDao = new RadioStationDAOMongo();
 		radioStationDao.cascadeSave(nofxRadioStation);
 
 		linoleumEntry = new StationHistoryEntry(nofxRadioStation.getId(),
-				linoleum, System.currentTimeMillis(), CREATED_BY);
+				linoleum, System.currentTimeMillis(), DEV_EMAIL);
 		// saves the radio station history entry
 		stationHistoryDao.save(linoleumEntry);
 
 		// adds feedback
 		User gabriel = new User("gabriel@example.com", "Gabriel Cypriano",
-				CREATED_BY);
+				DEV_EMAIL);
 		User daniel = new User("daniel@example.com", "Daniel Caon",
-				CREATED_BY);
+				DEV_EMAIL);
 		AppUser gabrielOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
-				AuthToken.createUserAuthToken(), CREATED_BY);
+				AuthToken.createUserAuthToken(), DEV_EMAIL);
 		AppUser danielOnRdio = new AppUser(rdio, "daniel@example.com",
-				AuthToken.createUserAuthToken(), CREATED_BY);
-		gabriel.addAppUser(gabrielOnSpotify);
-		daniel.addAppUser(danielOnRdio);
+				AuthToken.createUserAuthToken(), DEV_EMAIL);
+		gabriel.addAppUser(gabrielOnSpotify, DEV_EMAIL);
+		daniel.addAppUser(danielOnRdio, DEV_EMAIL);
 		// saves the users so they have an id
 		UserDAOMongo userDao = new UserDAOMongo();
 		userDao.cascadeSave(gabriel);
 		userDao.cascadeSave(daniel);
 
 		SongFeedback linoleumFeedbackGabriel = new SongFeedback(
-				FeedbackType.THUMBS_UP, gabriel.getId(), CREATED_BY);
+				FeedbackType.THUMBS_UP, gabriel.getId(), DEV_EMAIL);
 		SongFeedback linoleumFeedbackDaniel = new SongFeedback(
-				FeedbackType.THUMBS_DOWN, daniel.getId(), CREATED_BY);
-		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel);
-		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel);
+				FeedbackType.THUMBS_DOWN, daniel.getId(), DEV_EMAIL);
+		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel, DEV_EMAIL);
+		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel, DEV_EMAIL);
 		// updates the feedback entry
 		linoleumEntry.setLastModifiedAt(System.currentTimeMillis());
-		linoleumEntry.setLastModifiedBy(CREATED_BY);
+		linoleumEntry.setLastModifiedBy(DEV_EMAIL);
 		stationHistoryDao.save(linoleumEntry);
 	}
 

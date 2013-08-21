@@ -24,8 +24,8 @@ public class AuthToken extends Model {
 	protected AuthToken() {}
 	
 	protected AuthToken(String authToken) {
-		setToken(authToken);
-		setState(AuthTokenState.VALID);
+		this.token = authToken;
+		this.state = AuthTokenState.VALID;
 	}
 	
 	/*
@@ -62,20 +62,23 @@ public class AuthToken extends Model {
 		return token;
 	}
 
-	public void setToken(String authToken) {
+	public void setToken(String authToken, String modifiedBy) {
 		this.token = authToken;
+		setLastModifiedBy(modifiedBy);
 	}
 	
-	public void setToken(UUID authToken) {
+	public void setToken(UUID authToken, String modifiedBy) {
 		this.token = authToken.toString();
+		setLastModifiedBy(modifiedBy);
 	}
 
 	public AuthTokenState getState() {
 		return state;
 	}
 
-	public void setState(AuthTokenState state) {
+	public void setState(AuthTokenState state, String modifiedBy) {
 		this.state = state;
+		setLastModifiedBy(modifiedBy);
 	}
 	
 	public enum AuthTokenState {

@@ -31,13 +31,13 @@ public class User extends Model implements Scrobbler {
 
 	public User(String emailAddress, String createdBy) {
 		super(createdBy);
-		setEmailAddress(emailAddress);
+		this.emailAddress = emailAddress;
 	}
 
 	public User(String emailAddress, String name, String createdBy) {
 		super(createdBy);
-		setEmailAddress(emailAddress);
-		setName(name);
+		this.emailAddress = emailAddress;
+		this.name = name;
 	}
 
 	/**
@@ -51,8 +51,9 @@ public class User extends Model implements Scrobbler {
 	 * @param emailAddress
 	 *            the emailAddress to set
 	 */
-	public void setEmailAddress(String emailAddress) {
+	public void setEmailAddress(String emailAddress, String modifiedBy) {
 		this.emailAddress = emailAddress;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -66,8 +67,9 @@ public class User extends Model implements Scrobbler {
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(String name) {
+	public void setName(String name, String modifiedBy) {
 		this.name = name;
+		setLastModifiedBy(modifiedBy);
 	}
 
 	/**
@@ -77,7 +79,14 @@ public class User extends Model implements Scrobbler {
 		return appUsers;
 	}
 
-	public boolean addAppUser(AppUser appUser) {
+	/**
+	 * 
+	 * @param appUser
+	 * @param modifiedBy
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
+	 */
+	public boolean addAppUser(AppUser appUser, String modifiedBy) {
+		setLastModifiedBy(modifiedBy);
 		return appUsers.add(appUser);
 	}
 

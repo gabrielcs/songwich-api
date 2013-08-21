@@ -33,8 +33,8 @@ public class AppDeveloperAuthController extends
 		try {
 			authenticateAppDeveloper(ctx);
 		} catch (SongwichAPIException e) {
-			MyLogger.warn(String.format("%s [%s]: %s", e.getStatus().toString(),
-					e.getMessage(), ctx.request()));
+			MyLogger.warn(String.format("%s [%s]: %s",
+					e.getStatus().toString(), e.getMessage(), ctx.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
 					e.getMessage());
 			return Results.unauthorized(Json.toJson(response));
@@ -99,7 +99,8 @@ public class AppDeveloperAuthController extends
 		if (app != null) {
 			ctx.args.put(APP, app);
 			for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
-				if (appDeveloper.getDevAuthToken().getToken().equals(devAuthToken)) {
+				if (appDeveloper.getDevAuthToken().getToken()
+						.equals(devAuthToken)) {
 					ctx.args.put(DEV, appDeveloper);
 					return appDeveloper;
 				}
@@ -113,16 +114,16 @@ public class AppDeveloperAuthController extends
 	 */
 	public static String createTestAppWithDeveloper(String devAuthToken) {
 		MyLogger.debug("About to create a test AppDeveloper");
+		String homeDevEmail = "developers@songwich.com";
 
 		AuthToken authToken = AuthToken.createDevAuthToken();
-		authToken.setToken(devAuthToken);
+		authToken.setToken(devAuthToken, homeDevEmail);
 
 		// creates a test AppDeveloper
-		AppDeveloper appDeveloper = new AppDeveloper("developers@songwich.com",
-				"Songwich Developers", authToken, "developers@songwich.com");
+		AppDeveloper appDeveloper = new AppDeveloper(homeDevEmail,
+				"Songwich Developers", authToken, homeDevEmail);
 		// creates a test App
-		App songwich = new App("Songwich", appDeveloper,
-				"developers@songwich.com");
+		App songwich = new App("Songwich", appDeveloper, homeDevEmail);
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(songwich);
 

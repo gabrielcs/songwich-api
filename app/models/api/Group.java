@@ -20,18 +20,26 @@ public class Group extends Model implements Scrobbler {
 	
 	public Group(Set<GroupMember> groupMembers, String createdBy) {
 		super(createdBy);
-		setGroupMembers(groupMembers);
+		this.groupMembers = groupMembers;
 	}
 
 	public Set<GroupMember> getGroupMembers() {
 		return groupMembers;
 	}
 
-	public void setGroupMembers(Set<GroupMember> groupMembers) {
+	public void setGroupMembers(Set<GroupMember> groupMembers, String modifiedBy) {
 		this.groupMembers = groupMembers;
+		setLastModifiedBy(modifiedBy);
 	}
 	
-	public boolean addGroupMember(GroupMember groupMember) {
+    /**
+     * 
+     * @param groupMember
+     * @param modifiedBy
+     * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
+     */
+	public boolean addGroupMember(GroupMember groupMember, String modifiedBy) {
+		setLastModifiedBy(modifiedBy);
 		return this.groupMembers.add(groupMember);
 	}
 

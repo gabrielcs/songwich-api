@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import usecases.api.util.DatabaseContext;
 
 public class CleanDatabaseTest {
-	protected static final String CREATED_BY = "developers@songwich.com";
+	protected static final String DEV_EMAIL = "developers@songwich.com";
 	private String dbName = "songwich-api-test";
 
 	@Before
