@@ -158,8 +158,7 @@ public class Scrobble extends Model {
 	public String toString() {
 		return "Scrobble [id=" + id + ", userId=" + userId + ", song=" + song
 				+ ", timestamp=" + timestamp + ", choosenByUser="
-				+ choosenByUser + ", player=" + player + ", super.toString()="
-				+ super.toString() + "]";
+				+ choosenByUser + ", player=" + player + "]";
 	}
 
 	@Override

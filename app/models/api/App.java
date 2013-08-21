@@ -78,7 +78,7 @@ public class App extends Model {
 	@Override
 	public String toString() {
 		return "App [id=" + id + ", name=" + name + ", appDevelopers="
-				+ appDevelopers + ", super.toString()=" + super.toString() + "]";
+				+ appDevelopers + "]";
 	}
 
 	@Override

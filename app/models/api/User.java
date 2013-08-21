@@ -98,8 +98,7 @@ public class User extends Model implements Scrobbler {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", emailAddress=" + emailAddress + ", name="
-				+ name + ", appUsers=" + appUsers + ", super.toString()="
-				+ super.toString() + "]";
+				+ name + ", appUsers=" + appUsers + "]";
 	}
 
 	/*

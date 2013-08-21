@@ -8,14 +8,9 @@ import models.api.util.Model;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
 
-@Entity
+@Embedded
 public class Group extends Model implements Scrobbler {
-	@Id
-	private ObjectId id;
-	
 	@Embedded
 	private Set<GroupMember> groupMembers = new HashSet<GroupMember>();
 	
@@ -40,10 +35,6 @@ public class Group extends Model implements Scrobbler {
 		return this.groupMembers.add(groupMember);
 	}
 
-	public ObjectId getId() {
-		return id;
-	}
-
 	@Override
 	public Set<ObjectId> getActiveScrobblersUserIds() {
 		Set<ObjectId> userIds = new HashSet<ObjectId>();
@@ -55,8 +46,7 @@ public class Group extends Model implements Scrobbler {
 
 	@Override
 	public String toString() {
-		return "Group [id=" + id + ", groupMembers=" + groupMembers
-				+ ", super.toString()=" + super.toString() + "]";
+		return "Group [groupMembers=" + groupMembers + "]";
 	}
 
 	@Override
@@ -65,7 +55,6 @@ public class Group extends Model implements Scrobbler {
 		int result = super.hashCode();
 		result = prime * result
 				+ ((groupMembers == null) ? 0 : groupMembers.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -82,11 +71,6 @@ public class Group extends Model implements Scrobbler {
 			if (other.groupMembers != null)
 				return false;
 		} else if (!groupMembers.equals(other.groupMembers))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

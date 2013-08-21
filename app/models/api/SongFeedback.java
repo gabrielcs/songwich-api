@@ -49,7 +49,7 @@ public class SongFeedback extends Model {
 	@Override
 	public String toString() {
 		return "SongFeedback [feedbackType=" + feedbackType + ", userId="
-				+ userId + ", super.toString()=" + super.toString() + "]";
+				+ userId + "]";
 	}
 
 	@Override

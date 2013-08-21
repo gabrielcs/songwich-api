@@ -6,23 +6,13 @@ import models.api.RadioStation;
 
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.Key;
-
 import database.api.util.BasicDAOMongo;
-import database.api.util.CascadeSaveDAO;
 
 @SuppressWarnings("rawtypes")
 public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
-		RadioStationDAO<ObjectId>, CascadeSaveDAO<RadioStation, ObjectId> {
+		RadioStationDAO<ObjectId> {
 
 	public RadioStationDAOMongo() {
-	}
-
-	// TODO: test
-	@Override
-	public Key<RadioStation> cascadeSave(RadioStation t) {
-		// nothing to cascade
-		return save(t);
 	}
 
 	// TODO: test

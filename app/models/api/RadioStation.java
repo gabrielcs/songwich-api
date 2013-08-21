@@ -78,7 +78,7 @@ public class RadioStation<T extends Scrobbler> extends Model {
 	public String toString() {
 		return "RadioStation [id=" + id + ", name=" + name + ", scrobbler="
 				+ scrobbler + ", nowPlaying=" + nowPlaying + ", lookAhead="
-				+ lookAhead + ", super.toString()=" + super.toString() + "]";
+				+ lookAhead + "]";
 	}
 
 	@Override

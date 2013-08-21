@@ -84,8 +84,7 @@ public class StationHistoryEntry extends Model {
 	public String toString() {
 		return "StationHistoryEntry [id=" + id + ", stationId=" + stationId
 				+ ", song=" + song + ", timestamp=" + timestamp
-				+ ", songFeedback=" + songFeedback + ", super.toString()="
-				+ super.toString() + "]";
+				+ ", songFeedback=" + songFeedback + "]";
 	}
 
 	@Override

@@ -57,8 +57,7 @@ public class GroupMember extends Model {
 	@Override
 	public String toString() {
 		return "GroupMember [user=" + user + ", startDate=" + startDate
-				+ ", endDate=" + endDate + ", super.toString()=" + super.toString()
-				+ "]";
+				+ ", endDate=" + endDate + "]";
 	}
 
 	@Override
