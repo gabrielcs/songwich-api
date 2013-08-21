@@ -53,8 +53,9 @@ public class StationsUseCases<I> extends UseCase {
 		radioStation.setLookAhead(next);
 
 		StationHistoryEntry stationHistoryEntry = new StationHistoryEntry(
-				radioStation.getNowPlaying(), System.currentTimeMillis(),
-				getContext().getAppDeveloper().getEmailAddress());
+				radioStation.getId(), radioStation.getNowPlaying(),
+				System.currentTimeMillis(), getContext().getAppDeveloper()
+						.getEmailAddress());
 		stationHistoryDao.save(stationHistoryEntry);
 		return stationHistoryEntry;
 	}
@@ -65,13 +66,15 @@ public class StationsUseCases<I> extends UseCase {
 		StationHistoryDAO<ObjectId> stationHistoryDao = new StationHistoryDAOMongo();
 		StationHistoryEntry stationHistoryEntry = stationHistoryDao
 				.findById(stationHistoryEntryId);
-		SongFeedback songFeedback = new SongFeedback(feedback, getContext().getUser().getId(),
-				getContext().getAppDeveloper().getEmailAddress()); 
+		SongFeedback songFeedback = new SongFeedback(feedback, getContext()
+				.getUser().getId(), getContext().getAppDeveloper()
+				.getEmailAddress());
 		stationHistoryEntry.addSongFeedback(songFeedback);
-		
+
 		// execute the update
 		stationHistoryEntry.setLastModifiedAt(System.currentTimeMillis());
-		stationHistoryEntry.setLastModifiedBy(getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryEntry.setLastModifiedBy(getContext().getAppDeveloper()
+				.getEmailAddress());
 		stationHistoryDao.save(stationHistoryEntry);
 	}
 

@@ -23,6 +23,7 @@ import database.api.util.CleanDatabaseTest;
 public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 
 	private RadioStationDAO<ObjectId> radioStationDao;
+	
 	private User fatMike, elHefe;
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
 	private Set<GroupMember> nofxGroupMembers;
@@ -35,8 +36,8 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		initData();
 		radioStationDao = new RadioStationDAOMongo();
+		initData();
 	}
 
 	private void initData() {
@@ -61,23 +62,14 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		fatMike.addAppUser(fatMikeOnSpotify);
 		elHefe.addAppUser(elHefeOnRdio);
 		
-		AppDAO<ObjectId> appDao = new AppDAOMongo();
-		appDao.save(spotify);
-		appDao.save(rdio);
-		UserDAO<ObjectId> userDao = new UserDAOMongo();
-		userDao.save(fatMike);
-		userDao.save(elHefe);
-		
 		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, CREATED_BY);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
 		nofxRadioStation.setNowPlaying(doWhatYouWant);
 		nofxRadioStation.setLookAhead(linoleum);
 		
-		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.save(nofxRadioStation);
-		
-		System.out.println(nofxRadioStation);
+		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
+		radioStationDAO.cascadeSave(nofxRadioStation);
 	}
 
 	@Test
@@ -85,6 +77,7 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		assertTrue(radioStationDao.count() == 1);
 		radioStationDao.delete(nofxRadioStation);
 		assertTrue(radioStationDao.count() == 0);
+		//System.out.println(nofxRadioStation);
 	}
 
 	@Test

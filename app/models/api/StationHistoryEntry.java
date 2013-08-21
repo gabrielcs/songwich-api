@@ -34,8 +34,9 @@ public class StationHistoryEntry extends Model {
 		super();
 	}
 
-	public StationHistoryEntry(Song song, Long timestamp, String createdBy) {
+	public StationHistoryEntry(ObjectId stationId, Song song, Long timestamp, String createdBy) {
 		super(createdBy);
+		setStationId(stationId);
 		setSong(song);
 		setTimestamp(timestamp);
 	}
