@@ -11,8 +11,8 @@ import models.api.stations.SongFeedback.FeedbackType;
 
 import org.bson.types.ObjectId;
 
-import behavior.api.radio.NaiveStationStrategy;
-import behavior.api.radio.StationStrategy;
+import behavior.api.stations.NaiveStationStrategy;
+import behavior.api.stations.StationStrategy;
 
 import database.api.RadioStationDAO;
 import database.api.RadioStationDAOMongo;

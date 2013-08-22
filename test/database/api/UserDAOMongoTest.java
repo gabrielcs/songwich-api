@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import database.api.util.CleanDatabaseTest;
 
+
+
 public class UserDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testSaveAndDelete() {

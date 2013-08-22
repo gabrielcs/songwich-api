@@ -14,10 +14,12 @@ import models.api.scrobbles.AuthToken;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 
+
 import com.google.code.morphia.Key;
 import com.mongodb.WriteResult;
 
 import database.api.util.CleanDatabaseTest;
+
 
 public class AppDAOMongoTest extends CleanDatabaseTest {
 	@Test

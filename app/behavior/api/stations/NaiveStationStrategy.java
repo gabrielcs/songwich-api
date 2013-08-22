@@ -1,4 +1,4 @@
-package behavior.api.radio;
+package behavior.api.stations;
 
 import java.util.List;
 import java.util.Set;

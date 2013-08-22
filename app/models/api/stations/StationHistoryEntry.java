@@ -23,6 +23,7 @@ public class StationHistoryEntry extends Model {
 	private ObjectId stationId;
 
 	@Embedded
+	@Indexed
 	private Song song;
 
 	@Indexed(IndexDirection.DESC)

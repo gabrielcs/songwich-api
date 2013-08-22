@@ -9,6 +9,8 @@ import models.api.scrobbles.Scrobble;
 
 import org.bson.types.ObjectId;
 
+import com.google.code.morphia.query.Query;
+
 import database.api.util.BasicDAOMongo;
 
 /*
@@ -28,66 +30,51 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 
 	@Override
 	public List<Scrobble> findByUserId(ObjectId userId) {
-		return ds.find(Scrobble.class).filter("userId", userId)
-				.order("-timestamp").asList();
+		return queryByUserId(userId).order("-timestamp").asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIds(Set<ObjectId> userIds) {
-		return ds.find(Scrobble.class).filter("userId in", userIds)
-				.order("-timestamp").asList();
+		return queryByUserIds(userIds).order("-timestamp").asList();
 	}
 
+	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId, int results) {
-		return ds.find(Scrobble.class).filter("userId", userId)
-				.order("-timestamp").limit(results).asList();
+		return queryByUserId(userId).order("-timestamp").limit(results)
+				.asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIds(Set<ObjectId> userIds,
 			int results) {
-		return ds.find(Scrobble.class).filter("userId in", userIds)
-				.order("-timestamp").limit(results).asList();
+		return queryByUserIds(userIds).order("-timestamp").limit(results)
+				.asList();
 	}
 
 	@Override
 	public List<Scrobble> findByUserIdWithDaysOffset(ObjectId userId,
 			int daysOffset) {
-		long offsetMillis = calculateOffsetMillis(daysOffset);
-		return ds.find(Scrobble.class).filter("userId", userId)
-				.filter("timestamp >", offsetMillis).order("-timestamp")
-				.asList();
+		Query<Scrobble> query = queryByUserId(userId);
+		return filterDaysOffset(query, daysOffset).order("-timestamp").asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIdsWithDaysOffset(Set<ObjectId> userIds,
 			int daysOffset) {
-		long offsetMillis = calculateOffsetMillis(daysOffset);
-		return ds.find(Scrobble.class).filter("userId in", userIds)
-				.filter("timestamp >", offsetMillis).order("-timestamp")
-				.asList();
+		Query<Scrobble> query = queryByUserIds(userIds);
+		return filterDaysOffset(query, daysOffset).order("-timestamp").asList();
 	}
 
-	private long calculateOffsetMillis(int daysOffset) {
-		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.DATE, -daysOffset);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		return calendar.getTimeInMillis();
-	}
-
+	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIdWithDaysOffset(
 			ObjectId userId, int daysOffset, int results) {
-		long offsetMillis = calculateOffsetMillis(daysOffset);
-		return ds.find(Scrobble.class).filter("userId", userId)
-				.filter("timestamp >", offsetMillis).order("-timestamp")
+		Query<Scrobble> query = queryByUserId(userId);
+		return filterDaysOffset(query, daysOffset).order("-timestamp")
 				.limit(results).asList();
 	}
 
@@ -95,9 +82,27 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIdsWithDaysOffset(
 			Set<ObjectId> userIds, int daysOffset, int results) {
-		long offsetMillis = calculateOffsetMillis(daysOffset);
-		return ds.find(Scrobble.class).filter("userId in", userIds)
-				.filter("timestamp >", offsetMillis).order("-timestamp")
+		Query<Scrobble> query = queryByUserIds(userIds);
+		return filterDaysOffset(query, daysOffset).order("-timestamp")
 				.limit(results).asList();
+	}
+
+	private Query<Scrobble> queryByUserId(ObjectId userId) {
+		return ds.find(Scrobble.class).filter("userId", userId);
+	}
+
+	private Query<Scrobble> queryByUserIds(Set<ObjectId> userIds) {
+		return ds.find(Scrobble.class).filter("userId in", userIds);
+	}
+
+	private <T> Query<T> filterDaysOffset(Query<T> query, int daysOffset) {
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.DATE, -daysOffset);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		long daysOffsetMillis = calendar.getTimeInMillis();
+		return query.filter("timestamp >", daysOffsetMillis);
 	}
 }
