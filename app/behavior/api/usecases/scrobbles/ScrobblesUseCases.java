@@ -13,8 +13,8 @@ import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
 import util.api.SongwichAPIException;
+import views.api.APIStatus_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
-import controllers.api.APIStatus_V0_4;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 import database.api.scrobbles.UserDAO;

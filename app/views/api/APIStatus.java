@@ -1,4 +1,4 @@
-package controllers.api;
+package views.api;
 
 public interface APIStatus {
 	

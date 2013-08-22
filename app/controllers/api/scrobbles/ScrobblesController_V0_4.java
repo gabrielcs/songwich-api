@@ -14,11 +14,13 @@ import play.mvc.Result;
 import play.mvc.Results;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
+import views.api.APIResponse_V0_4;
+import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
+import views.api.scrobbles.GetScrobblesResponse_V0_4;
+import views.api.scrobbles.PostScrobblesResponse_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
 import controllers.api.APIController;
-import controllers.api.APIResponse_V0_4;
-import controllers.api.APIStatus_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 

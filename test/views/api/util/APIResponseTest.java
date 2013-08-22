@@ -12,12 +12,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 
-import controllers.api.APIResponse_V0_4;
-import controllers.api.APIStatus_V0_4;
-import controllers.api.scrobbles.PostScrobblesResponse_V0_4;
 
 import play.libs.Json;
 import util.api.SongwichAPIException;
+import views.api.APIResponse_V0_4;
+import views.api.APIStatus_V0_4;
+import views.api.scrobbles.PostScrobblesResponse_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
 
 public class APIResponseTest {

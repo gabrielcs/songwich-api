@@ -1,13 +1,12 @@
-package controllers.api.scrobbles;
+package views.api.scrobbles;
 
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-import controllers.api.APIResponse_V0_4;
-import controllers.api.APIStatus;
 
-import views.api.scrobbles.ScrobblesDTO_V0_4;
+import views.api.APIResponse_V0_4;
+import views.api.APIStatus;
 
 
 public class GetScrobblesResponse_V0_4 extends APIResponse_V0_4 {

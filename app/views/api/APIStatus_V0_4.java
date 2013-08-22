@@ -1,4 +1,4 @@
-package controllers.api;
+package views.api;
 
 public enum APIStatus_V0_4 implements APIStatus {
 

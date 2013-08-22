@@ -1,4 +1,4 @@
-package controllers.api;
+package views.api;
 
 public class APIResponse_V0_4 {
 

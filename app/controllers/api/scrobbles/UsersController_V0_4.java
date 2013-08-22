@@ -4,11 +4,12 @@ import behavior.api.usecases.scrobbles.UsersUseCases;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Result;
+import views.api.APIResponse_V0_4;
+import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
+import views.api.scrobbles.PostUsersResponse_V0_4;
 import views.api.scrobbles.UsersDTO_V0_4;
 import controllers.api.APIController;
-import controllers.api.APIResponse_V0_4;
-import controllers.api.APIStatus_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 
 public class UsersController_V0_4 extends APIController {
