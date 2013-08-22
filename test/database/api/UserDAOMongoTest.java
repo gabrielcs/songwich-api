@@ -8,6 +8,7 @@ import models.api.scrobbles.User;
 
 import org.junit.Test;
 
+import database.api.scrobbles.UserDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
 

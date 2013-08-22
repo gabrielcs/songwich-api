@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import play.mvc.With;
-import controllers.api.AppDeveloperAuthController;
+import controllers.api.auth.AppDeveloperAuthController;
 
 @With(AppDeveloperAuthController.class)
 @Target({ElementType.TYPE, ElementType.METHOD})

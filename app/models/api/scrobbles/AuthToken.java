@@ -9,10 +9,10 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
 
-import database.api.AppDAO;
-import database.api.AppDAOMongo;
-import database.api.UserDAO;
-import database.api.UserDAOMongo;
+import database.api.scrobbles.AppDAO;
+import database.api.scrobbles.AppDAOMongo;
+import database.api.scrobbles.UserDAO;
+import database.api.scrobbles.UserDAOMongo;
 
 @Embedded
 public class AuthToken extends Model {

@@ -5,7 +5,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import behavior.api.util.DatabaseContext;
+import util.api.DatabaseContext;
+
 
 
 public class CleanDatabaseTest {

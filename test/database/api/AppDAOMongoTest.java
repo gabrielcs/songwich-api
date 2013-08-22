@@ -18,6 +18,8 @@ import org.junit.Test;
 import com.google.code.morphia.Key;
 import com.mongodb.WriteResult;
 
+import database.api.scrobbles.AppDAO;
+import database.api.scrobbles.AppDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
 

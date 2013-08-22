@@ -21,9 +21,11 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
+import database.api.scrobbles.UserDAOMongo;
+import database.api.stations.RadioStationDAOMongo;
+import database.api.stations.StationHistoryDAO;
+import database.api.stations.StationHistoryDAOMongo;
 import database.api.util.CleanDatabaseTest;
-
-
 
 public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 

@@ -16,7 +16,9 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
-import database.api.util.CascadeSaveDAO;
+import database.api.scrobbles.ScrobbleDAO;
+import database.api.scrobbles.ScrobbleDAOMongo;
+import database.api.scrobbles.UserDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
 public class ScrobbleDAOMongoTest extends CleanDatabaseTest {

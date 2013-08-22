@@ -1,13 +1,13 @@
-import behavior.api.util.DatabaseContext;
-import behavior.api.util.MyLogger;
 import play.GlobalSettings;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
-import controllers.api.AppDeveloperAuthController;
-import controllers.api.util.APIResponse_V0_4;
-import controllers.api.util.APIStatus_V0_4;
+import util.api.DatabaseContext;
+import util.api.MyLogger;
+import controllers.api.APIResponse_V0_4;
+import controllers.api.APIStatus_V0_4;
+import controllers.api.auth.AppDeveloperAuthController;
 
 public class Global extends GlobalSettings {
 	@Override
