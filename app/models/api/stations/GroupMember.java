@@ -1,6 +1,7 @@
-package models.api;
+package models.api.stations;
 
-import models.api.util.Model;
+import models.api.Model;
+import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
 

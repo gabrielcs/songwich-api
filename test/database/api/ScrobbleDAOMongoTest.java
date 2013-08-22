@@ -8,9 +8,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import models.api.Scrobble;
-import models.api.Song;
-import models.api.User;
+import models.api.scrobbles.Scrobble;
+import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 import org.junit.Test;

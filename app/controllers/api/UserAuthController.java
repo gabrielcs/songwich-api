@@ -1,16 +1,17 @@
 package controllers.api;
 
-import models.api.User;
+import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
+
+import behavior.api.util.MyLogger;
+import behavior.api.util.SongwichAPIException;
 
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
-import usecases.api.util.MyLogger;
-import usecases.api.util.SongwichAPIException;
 import controllers.api.annotation.UserAuthenticated;
 import controllers.api.util.APIResponse_V0_4;
 import controllers.api.util.APIStatus_V0_4;

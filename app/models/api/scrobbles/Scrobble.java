@@ -1,10 +1,10 @@
-package models.api;
+package models.api.scrobbles;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import models.api.util.Model;
+import models.api.Model;
 
 import org.bson.types.ObjectId;
 

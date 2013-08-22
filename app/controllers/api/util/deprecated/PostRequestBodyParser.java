@@ -11,11 +11,12 @@ import java.util.Set;
 
 import org.codehaus.jackson.JsonNode;
 
+import behavior.api.util.SongwichAPIException;
+
 
 import play.Logger;
 import play.mvc.Http.Context;
 import play.mvc.Http.MultipartFormData;
-import usecases.api.util.SongwichAPIException;
 
 @Deprecated
 public class PostRequestBodyParser {

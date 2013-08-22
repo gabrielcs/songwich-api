@@ -3,7 +3,7 @@ package views.api;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import models.api.Scrobble;
+import models.api.scrobbles.Scrobble;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;

@@ -1,6 +1,6 @@
-package models.api;
+package models.api.scrobbles;
 
-import models.api.util.Model;
+import models.api.Model;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;

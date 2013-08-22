@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
-import models.api.Scrobble;
+import models.api.scrobbles.Scrobble;
 
 import org.bson.types.ObjectId;
 

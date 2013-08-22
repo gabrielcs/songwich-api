@@ -1,4 +1,4 @@
-package models.api.util;
+package models.api;
 
 import java.util.GregorianCalendar;
 

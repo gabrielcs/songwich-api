@@ -2,8 +2,8 @@ package database.api;
 
 import java.util.List;
 
-import models.api.App;
-import models.api.AppDeveloper;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppDeveloper;
 
 import com.google.code.morphia.dao.DAO;
 

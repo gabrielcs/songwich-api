@@ -1,9 +1,9 @@
 package controllers.api;
 
+import behavior.api.usecases.UsersUseCases;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Result;
-import usecases.api.UsersUseCases;
 import views.api.UsersDTO_V0_4;
 import views.api.util.DataTransferObject;
 import controllers.api.annotation.AppDeveloperAuthenticated;

@@ -1,14 +1,13 @@
-package usecases.api;
+package behavior.api.usecases;
 
-import models.api.AppUser;
-import models.api.AuthToken;
-import models.api.User;
+import models.api.scrobbles.AppUser;
+import models.api.scrobbles.AuthToken;
+import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 
-import usecases.api.util.MyLogger;
-import usecases.api.util.RequestContext;
-import usecases.api.util.UseCase;
+import behavior.api.util.MyLogger;
+
 import views.api.UsersDTO_V0_4;
 import database.api.UserDAO;
 import database.api.UserDAOMongo;

@@ -2,7 +2,8 @@ package database.api.util;
 
 import org.bson.types.ObjectId;
 
-import usecases.api.util.DatabaseContext;
+
+import behavior.api.util.DatabaseContext;
 
 import com.google.code.morphia.dao.BasicDAO;
 

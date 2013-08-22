@@ -1,7 +1,11 @@
-package models.api;
+package behavior.api.radio;
 
 import java.util.List;
 import java.util.Set;
+
+import models.api.scrobbles.Scrobble;
+import models.api.scrobbles.Song;
+import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
 

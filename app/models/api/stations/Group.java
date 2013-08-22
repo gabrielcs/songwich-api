@@ -1,9 +1,9 @@
-package models.api;
+package models.api.stations;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import models.api.util.Model;
+import models.api.Model;
 
 import org.bson.types.ObjectId;
 

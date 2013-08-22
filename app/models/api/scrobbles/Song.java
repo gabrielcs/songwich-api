@@ -1,4 +1,4 @@
-package models.api;
+package models.api.scrobbles;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,10 @@
 package database.api;
 
 import static org.junit.Assert.assertTrue;
-import models.api.App;
-import models.api.AppUser;
-import models.api.AuthToken;
-import models.api.User;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppUser;
+import models.api.scrobbles.AuthToken;
+import models.api.scrobbles.User;
 
 import org.junit.Test;
 

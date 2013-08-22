@@ -3,11 +3,11 @@ package database.api;
 import java.util.List;
 import java.util.Set;
 
-import models.api.Group;
-import models.api.GroupMember;
-import models.api.RadioStation;
-import models.api.Scrobbler;
-import models.api.User;
+import models.api.scrobbles.User;
+import models.api.stations.Group;
+import models.api.stations.GroupMember;
+import models.api.stations.RadioStation;
+import models.api.stations.Scrobbler;
 
 import org.bson.types.ObjectId;
 

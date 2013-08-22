@@ -1,8 +1,8 @@
-package usecases.api.util;
+package behavior.api.usecases;
 
-import models.api.App;
-import models.api.AppDeveloper;
-import models.api.User;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppDeveloper;
+import models.api.scrobbles.User;
 
 public class RequestContext {
 	

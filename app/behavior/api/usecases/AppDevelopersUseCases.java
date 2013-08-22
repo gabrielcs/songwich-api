@@ -1,11 +1,9 @@
-package usecases.api;
+package behavior.api.usecases;
 
-import models.api.App;
-import models.api.AppDeveloper;
-import models.api.AuthToken;
-import usecases.api.util.MyLogger;
-import usecases.api.util.RequestContext;
-import usecases.api.util.UseCase;
+import behavior.api.util.MyLogger;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppDeveloper;
+import models.api.scrobbles.AuthToken;
 import views.api.AppDevelopersDTO;
 import database.api.AppDAOMongo;
 

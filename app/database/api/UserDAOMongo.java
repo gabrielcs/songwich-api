@@ -2,9 +2,9 @@ package database.api;
 
 import java.util.Set;
 
-import models.api.App;
-import models.api.AppUser;
-import models.api.User;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppUser;
+import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 

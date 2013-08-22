@@ -1,5 +1,6 @@
 package controllers.api.deprecated;
 
+import behavior.api.util.SongwichAPIException;
 import controllers.api.util.deprecated.APIResponse_V0_1;
 import controllers.api.util.deprecated.APIStatus_V0_1;
 import play.Logger;
@@ -7,7 +8,6 @@ import play.mvc.Controller;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
-import usecases.api.util.SongwichAPIException;
 import views.api.deprecated.ScrobbleProxy_V0_2;
 
 @Deprecated

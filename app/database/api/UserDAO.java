@@ -1,7 +1,7 @@
 package database.api;
 
-import models.api.AppUser;
-import models.api.User;
+import models.api.scrobbles.AppUser;
+import models.api.scrobbles.User;
 
 import com.google.code.morphia.dao.DAO;
 

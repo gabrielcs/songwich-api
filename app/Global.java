@@ -1,10 +1,10 @@
+import behavior.api.util.DatabaseContext;
+import behavior.api.util.MyLogger;
 import play.GlobalSettings;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
-import usecases.api.util.DatabaseContext;
-import usecases.api.util.MyLogger;
 import controllers.api.AppDeveloperAuthController;
 import controllers.api.util.APIResponse_V0_4;
 import controllers.api.util.APIStatus_V0_4;

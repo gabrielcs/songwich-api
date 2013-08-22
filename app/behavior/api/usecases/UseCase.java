@@ -1,4 +1,4 @@
-package usecases.api.util;
+package behavior.api.usecases;
 
 public abstract class UseCase {
 	

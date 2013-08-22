@@ -1,20 +1,19 @@
-package usecases.api;
+package behavior.api.usecases;
 
 import java.util.List;
 
-import models.api.NaiveStationStrategy;
-import models.api.RadioStation;
-import models.api.Scrobbler;
-import models.api.Song;
-import models.api.SongFeedback;
-import models.api.SongFeedback.FeedbackType;
-import models.api.StationHistoryEntry;
-import models.api.StationStrategy;
+import models.api.scrobbles.Song;
+import models.api.stations.RadioStation;
+import models.api.stations.Scrobbler;
+import models.api.stations.SongFeedback;
+import models.api.stations.StationHistoryEntry;
+import models.api.stations.SongFeedback.FeedbackType;
 
 import org.bson.types.ObjectId;
 
-import usecases.api.util.RequestContext;
-import usecases.api.util.UseCase;
+import behavior.api.radio.NaiveStationStrategy;
+import behavior.api.radio.StationStrategy;
+
 import database.api.RadioStationDAO;
 import database.api.RadioStationDAOMongo;
 import database.api.StationHistoryDAO;

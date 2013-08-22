@@ -7,9 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import models.api.App;
-import models.api.AppDeveloper;
-import models.api.AuthToken;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppDeveloper;
+import models.api.scrobbles.AuthToken;
 
 import org.bson.types.ObjectId;
 import org.junit.Test;

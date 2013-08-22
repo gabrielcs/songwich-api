@@ -1,17 +1,16 @@
-package usecases.api;
+package behavior.api.usecases;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import models.api.Scrobble;
-import models.api.Song;
-import models.api.User;
+import models.api.scrobbles.Scrobble;
+import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 
-import usecases.api.util.RequestContext;
-import usecases.api.util.SongwichAPIException;
-import usecases.api.util.UseCase;
+import behavior.api.util.SongwichAPIException;
+
 import views.api.ScrobblesDTO_V0_4;
 import controllers.api.util.APIStatus_V0_4;
 import database.api.ScrobbleDAO;

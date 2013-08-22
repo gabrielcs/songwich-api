@@ -11,12 +11,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import behavior.api.util.SongwichAPIException;
+
 import controllers.api.util.APIResponse_V0_4;
 import controllers.api.util.APIStatus_V0_4;
 import controllers.api.util.PostScrobblesResponse_V0_4;
 
 import play.libs.Json;
-import usecases.api.util.SongwichAPIException;
 import views.api.ScrobblesDTO_V0_4;
 
 public class APIResponseTest {

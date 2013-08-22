@@ -3,7 +3,7 @@ package database.api;
 import java.util.List;
 import java.util.Set;
 
-import models.api.Scrobble;
+import models.api.scrobbles.Scrobble;
 
 import com.google.code.morphia.dao.DAO;
 

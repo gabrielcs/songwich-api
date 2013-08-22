@@ -1,11 +1,11 @@
 package controllers.web;
 
-import models.api.AppDeveloper;
+import behavior.api.usecases.AppDevelopersUseCases;
+import behavior.api.util.MyLogger;
+import models.api.scrobbles.AppDeveloper;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import usecases.api.AppDevelopersUseCases;
-import usecases.api.util.MyLogger;
 import views.api.AppDevelopersDTO;
 import views.api.util.DataTransferObject;
 

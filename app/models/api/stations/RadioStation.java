@@ -1,6 +1,7 @@
-package models.api;
+package models.api.stations;
 
-import models.api.util.Model;
+import models.api.Model;
+import models.api.scrobbles.Song;
 
 import org.bson.types.ObjectId;
 

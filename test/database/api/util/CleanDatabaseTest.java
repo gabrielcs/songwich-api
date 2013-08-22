@@ -5,7 +5,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import usecases.api.util.DatabaseContext;
+import behavior.api.util.DatabaseContext;
+
 
 public class CleanDatabaseTest {
 	protected static final String DEV_EMAIL = "developers@songwich.com";

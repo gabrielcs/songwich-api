@@ -2,7 +2,7 @@ package database.api;
 
 import java.util.List;
 
-import models.api.StationHistoryEntry;
+import models.api.stations.StationHistoryEntry;
 
 import com.google.code.morphia.dao.DAO;
 

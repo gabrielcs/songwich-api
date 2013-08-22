@@ -1,4 +1,4 @@
-package models.api;
+package models.api.stations;
 
 import java.util.Set;
 

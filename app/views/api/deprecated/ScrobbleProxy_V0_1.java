@@ -4,11 +4,12 @@ import java.util.GregorianCalendar;
 
 import org.codehaus.jackson.JsonNode;
 
+import behavior.api.util.SongwichAPIException;
+
 import controllers.api.util.deprecated.APIStatus_V0_1;
 
 import play.Logger;
 import play.libs.Json;
-import usecases.api.util.SongwichAPIException;
 
 @Deprecated
 public class ScrobbleProxy_V0_1 {

@@ -2,7 +2,7 @@ package database.api;
 
 import java.util.List;
 
-import models.api.RadioStation;
+import models.api.stations.RadioStation;
 
 import com.google.code.morphia.dao.DAO;
 

@@ -4,15 +4,16 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
+import behavior.api.usecases.ScrobblesUseCases;
+import behavior.api.util.MyLogger;
+import behavior.api.util.SongwichAPIException;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
-import usecases.api.ScrobblesUseCases;
-import usecases.api.util.MyLogger;
-import usecases.api.util.SongwichAPIException;
 import views.api.ScrobblesDTO_V0_4;
 import views.api.util.DataTransferObject;
 import controllers.api.annotation.AppDeveloperAuthenticated;

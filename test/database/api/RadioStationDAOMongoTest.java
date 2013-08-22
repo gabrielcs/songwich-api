@@ -5,14 +5,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.api.App;
-import models.api.AppUser;
-import models.api.AuthToken;
-import models.api.Group;
-import models.api.GroupMember;
-import models.api.RadioStation;
-import models.api.Song;
-import models.api.User;
+import models.api.scrobbles.App;
+import models.api.scrobbles.AppUser;
+import models.api.scrobbles.AuthToken;
+import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
+import models.api.stations.Group;
+import models.api.stations.GroupMember;
+import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;

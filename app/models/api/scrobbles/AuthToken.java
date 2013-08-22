@@ -1,8 +1,8 @@
-package models.api;
+package models.api.scrobbles;
 
 import java.util.UUID;
 
-import models.api.util.Model;
+import models.api.Model;
 
 import org.bson.types.ObjectId;
 
