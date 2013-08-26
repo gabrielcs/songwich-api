@@ -28,6 +28,13 @@ object ApplicationBuild extends Build {
   val main = play.Project(appName, appVersion, appDependencies).settings(
     resolvers += "MongoDB repo" at "https://github.com/mongodb/mongo-java-driver/",
     resolvers += "Morphia repo" at "http://morphia.googlecode.com/svn/mavenrepo/",
-    checksums := Nil
-  )
+    checksums := Nil,
+ 
+    testOptions in Test ~= { args =>
+      for {
+        arg <- args
+        val ta: Tests.Argument = arg.asInstanceOf[Tests.Argument]
+        val newArg = if (ta.framework == Some(TestFrameworks.JUnit)) ta.copy(args = List.empty[String]) else ta
+      } yield newArg
+    })
 }

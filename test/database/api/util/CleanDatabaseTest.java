@@ -7,15 +7,13 @@ import org.junit.BeforeClass;
 
 import util.api.DatabaseContext;
 
-
-
 public class CleanDatabaseTest {
 	protected static final String DEV_EMAIL = "developers@songwich.com";
-	private String dbName = "songwich-api-test";
+	private static final String DB_NAME = "songwich-api-test";
 
 	@Before
 	public void setUp() throws Exception {
-		DatabaseContext.createDatastore(dbName);
+		DatabaseContext.createDatastore(DB_NAME);
 	}
 	
 	@After
