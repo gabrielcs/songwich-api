@@ -77,8 +77,8 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindByUserId() {
-		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId());
-		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId());
+		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId(), false);
+		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId(), false);
 
 		assertEquals(scrobblesUser1.size(), 1);
 		assertEquals(scrobblesUser2.size(), 1);
@@ -104,9 +104,9 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		scrobbleDao.save(scrobble5DaysOld);
 
 		List<Scrobble> scrobbles2DaysOld = scrobbleDao
-				.findByUserIdWithDaysOffset(user1.getId(), 5);
+				.findByUserIdWithDaysOffset(user1.getId(), 5, false);
 		List<Scrobble> scrobbles1DayOld = scrobbleDao
-				.findByUserIdWithDaysOffset(user1.getId(), 1);
+				.findByUserIdWithDaysOffset(user1.getId(), 1, false);
 
 		assertEquals(3, scrobbles2DaysOld.size());
 		assertEquals(2, scrobbles1DayOld.size());

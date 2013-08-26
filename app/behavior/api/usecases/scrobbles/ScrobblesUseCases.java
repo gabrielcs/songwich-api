@@ -42,7 +42,8 @@ public class ScrobblesUseCases extends UseCase {
 	public List<ScrobblesDTO_V0_4> getScrobbles(ObjectId userId)
 			throws SongwichAPIException {
 		authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = new ScrobbleDAOMongo().findByUserId(userId);
+		List<Scrobble> scrobbles = new ScrobbleDAOMongo().findByUserId(userId,
+				false);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
@@ -50,7 +51,7 @@ public class ScrobblesUseCases extends UseCase {
 			throws SongwichAPIException {
 		authorizeUserGetScrobbles(userId);
 		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
-				.findLastScrobblesByUserId(userId, results);
+				.findLastScrobblesByUserId(userId, results, false);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
@@ -58,7 +59,7 @@ public class ScrobblesUseCases extends UseCase {
 			int daysOffset) throws SongwichAPIException {
 		authorizeUserGetScrobbles(userId);
 		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
-				.findByUserIdWithDaysOffset(userId, daysOffset);
+				.findByUserIdWithDaysOffset(userId, daysOffset, false);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
@@ -67,7 +68,7 @@ public class ScrobblesUseCases extends UseCase {
 		authorizeUserGetScrobbles(userId);
 		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
 				.findLastScrobblesByUserIdWithDaysOffset(userId, daysOffset,
-						results);
+						results, false);
 		return createGetScrobblesResponse(scrobbles);
 	}
 

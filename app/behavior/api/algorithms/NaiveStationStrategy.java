@@ -29,7 +29,7 @@ public class NaiveStationStrategy implements StationStrategy {
 		
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		List<Scrobble> scrobbles = scrobbleDao.findLastScrobblesByUserIds(
-				scrobblersIds, 5);
+				scrobblersIds, 5, false);
 
 		Song next;
 		int index;

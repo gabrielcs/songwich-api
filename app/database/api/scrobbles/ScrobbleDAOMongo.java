@@ -28,63 +28,97 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return ds.find(Scrobble.class).filter("id", id).get();
 	}
 
+	// TODO: test
 	@Override
-	public List<Scrobble> findByUserId(ObjectId userId) {
-		return queryByUserId(userId).order("-timestamp").asList();
+	public List<Scrobble> findByUserId(ObjectId userId, boolean chosenByUserOnly) {
+		Query<Scrobble> query = queryByUserId(userId);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").asList();
 	}
 
 	// TODO: test
 	@Override
-	public List<Scrobble> findByUserIds(Set<ObjectId> userIds) {
-		return queryByUserIds(userIds).order("-timestamp").asList();
+	public List<Scrobble> findByUserIds(Set<ObjectId> userIds,
+			boolean chosenByUserOnly) {
+		Query<Scrobble> query = queryByUserIds(userIds);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").asList();
 	}
 
 	// TODO: test
 	@Override
-	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId, int results) {
-		return queryByUserId(userId).order("-timestamp").limit(results)
-				.asList();
+	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId,
+			int results, boolean chosenByUserOnly) {
+		Query<Scrobble> query = queryByUserId(userId);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").limit(results).asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIds(Set<ObjectId> userIds,
-			int results) {
-		return queryByUserIds(userIds).order("-timestamp").limit(results)
-				.asList();
+			int results, boolean chosenByUserOnly) {
+		Query<Scrobble> query = queryByUserIds(userIds);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").limit(results).asList();
 	}
 
+	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIdWithDaysOffset(ObjectId userId,
-			int daysOffset) {
+			int daysOffset, boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserId(userId);
-		return filterDaysOffset(query, daysOffset).order("-timestamp").asList();
+		query = filterDaysOffset(query, daysOffset);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIdsWithDaysOffset(Set<ObjectId> userIds,
-			int daysOffset) {
+			int daysOffset, boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserIds(userIds);
-		return filterDaysOffset(query, daysOffset).order("-timestamp").asList();
+		query = filterDaysOffset(query, daysOffset);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIdWithDaysOffset(
-			ObjectId userId, int daysOffset, int results) {
+			ObjectId userId, int daysOffset, int results,
+			boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserId(userId);
-		return filterDaysOffset(query, daysOffset).order("-timestamp")
-				.limit(results).asList();
+		query = filterDaysOffset(query, daysOffset);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").limit(results).asList();
 	}
 
 	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIdsWithDaysOffset(
-			Set<ObjectId> userIds, int daysOffset, int results) {
+			Set<ObjectId> userIds, int daysOffset, int results,
+			boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserIds(userIds);
-		return filterDaysOffset(query, daysOffset).order("-timestamp")
-				.limit(results).asList();
+		query = filterDaysOffset(query, daysOffset);
+		if (chosenByUserOnly) {
+			query = filterChosenByUserOnly(query);
+		}
+		return query.order("-timestamp").limit(results).asList();
 	}
 
 	private Query<Scrobble> queryByUserId(ObjectId userId) {
@@ -93,6 +127,10 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 
 	private Query<Scrobble> queryByUserIds(Set<ObjectId> userIds) {
 		return ds.find(Scrobble.class).filter("userId in", userIds);
+	}
+
+	private <T> Query<T> filterChosenByUserOnly(Query<T> query) {
+		return query.filter("chosenByUser", true);
 	}
 
 	private <T> Query<T> filterDaysOffset(Query<T> query, int daysOffset) {
