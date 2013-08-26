@@ -3,14 +3,14 @@
 # ~~~~
 
 # Untrail GET URLs (http://stackoverflow.com/questions/13189095/play-framework2-remove-trailing-slash-from-urls)
-GET     /*path/                  controllers.web.Application.untrail(path: String)
+GET     /*path/                      controllers.web.Application.untrail(path: String)
 
 # Scrobbler
-POST   /v0.4/scrobbles               controllers.api.ScrobblesController_V0_4.postScrobbles()
-GET    /v0.4/scrobbles/:user         controllers.api.ScrobblesController_V0_4.getScrobbles(user, daysOffset: Int ?= -1, results: Int ?= -1)
+POST   /v0.4/scrobbles               controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()
+GET    /v0.4/scrobbles/:user         controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(user, daysOffset: Int ?= -1, results: Int ?= -1)
 
 # User
-POST   /v0.4/users                   controllers.api.UsersController_V0_4.postUsers()
+POST   /v0.4/users                   controllers.api.scrobbles.UsersController_V0_4.postUsers()
 
 # Home page
 GET    /dev                          controllers.web.Application.index()
