@@ -40,8 +40,8 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
 		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1);
-		userDao.cascadeSave(user2);
+		userDao.cascadeSave(user1, DEV_EMAIL);
+		userDao.cascadeSave(user2, DEV_EMAIL);
 
 		List<String> artists1 = new ArrayList<String>();
 		artists1.add("Passion Pit");
@@ -50,15 +50,14 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		artists2.add("Pharrell Williams");
 
 		scrobble1 = new Scrobble(user1.getId(), new Song("Take a Walk",
-				artists1), System.currentTimeMillis(), false, "Spotify",
-				DEV_EMAIL);
+				artists1), System.currentTimeMillis(), false, "Spotify");
 		scrobble2 = new Scrobble(user2.getId(),
 				new Song("Get Lucky", artists2), System.currentTimeMillis(),
-				true, "Deezer", DEV_EMAIL);
+				true, "Deezer");
 
 		// saves the scrobbles
-		scrobbleDao.save(scrobble1);
-		scrobbleDao.save(scrobble2);
+		scrobbleDao.save(scrobble1, DEV_EMAIL);
+		scrobbleDao.save(scrobble2, DEV_EMAIL);
 	}
 
 	@Test
@@ -77,8 +76,10 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindByUserId() {
-		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId(), false);
-		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId(), false);
+		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId(),
+				false);
+		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId(),
+				false);
 
 		assertEquals(scrobblesUser1.size(), 1);
 		assertEquals(scrobblesUser2.size(), 1);
@@ -91,17 +92,17 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 	public void testFindByUserIdWithDaysOffset() {
 		Scrobble scrobble3 = new Scrobble(user1.getId(), new Song(
 				"Are You Gonna Be My Girl", "Jet"), System.currentTimeMillis(),
-				false, "Spotify", DEV_EMAIL);
+				false, "Spotify");
 
 		Calendar fiveDaysAgo = new GregorianCalendar();
 		fiveDaysAgo.add(Calendar.DATE, -5);
 		System.out.println(fiveDaysAgo);
 		Scrobble scrobble5DaysOld = new Scrobble(user1.getId(), new Song(
 				"Take a Walk (old)", "Passion Pit"),
-				fiveDaysAgo.getTimeInMillis(), false, "Spotify", DEV_EMAIL);
+				fiveDaysAgo.getTimeInMillis(), false, "Spotify");
 
-		scrobbleDao.save(scrobble3);
-		scrobbleDao.save(scrobble5DaysOld);
+		scrobbleDao.save(scrobble3, DEV_EMAIL);
+		scrobbleDao.save(scrobble5DaysOld, DEV_EMAIL);
 
 		List<Scrobble> scrobbles2DaysOld = scrobbleDao
 				.findByUserIdWithDaysOffset(user1.getId(), 5, false);

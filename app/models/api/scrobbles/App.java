@@ -3,7 +3,8 @@ package models.api.scrobbles;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.api.Model;
+import models.api.MongoEntity;
+import models.api.ModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -12,7 +13,7 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 @Entity
-public class App extends Model {
+public class App extends ModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 
@@ -25,19 +26,16 @@ public class App extends Model {
 		super();
 	}
 
-	public App(String name, String createdBy) {
-		super(createdBy);
+	public App(String name) {
 		this.name = name;
 	}
 
-	public App(String name, AppDeveloper appDeveloper, String createdBy) {
-		super(createdBy);
+	public App(String name, AppDeveloper appDeveloper) {
 		this.name = name;
 		appDevelopers.add(appDeveloper);
 	}
 	
-	public App(String name, List<AppDeveloper> appDevelopers, String createdBy) {
-		super(createdBy);
+	public App(String name, List<AppDeveloper> appDevelopers) {
 		this.name = name;
 		this.appDevelopers = appDevelopers;
 	}
@@ -46,29 +44,29 @@ public class App extends Model {
 		return name;
 	}
 
-	public void setName(String name, String modifiedBy) {
+	public void setName(String name) {
 		this.name = name;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public List<AppDeveloper> getAppDevelopers() {
 		return appDevelopers;
 	}
 
-	public void setAppDevelopers(List<AppDeveloper> appDevelopers, String modifiedBy) {
+	public void setAppDevelopers(List<AppDeveloper> appDevelopers) {
 		this.appDevelopers = appDevelopers;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 	
 	/**
 	 * 
 	 * @param appDeveloper
-	 * @param modifiedBy
 	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
 	 */
-	public boolean addAppDeveloper(AppDeveloper appDeveloper, String modifiedBy) {
-		setLastModifiedBy(modifiedBy);
-		return appDevelopers.add(appDeveloper);
+	public boolean addAppDeveloper(AppDeveloper appDeveloper) {
+		boolean result = appDevelopers.add(appDeveloper);
+		fireModelUpdated();
+		return result;
 	}
 	
 	public AppDeveloper getAppDeveloper(String appDeveloperEmail) {
@@ -80,6 +78,7 @@ public class App extends Model {
 		return null;
 	}
 
+	@Override
 	public ObjectId getId() {
 		return id;
 	}

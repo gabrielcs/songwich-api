@@ -2,10 +2,9 @@ package database.api.scrobbles;
 
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.User;
+import database.api.SongwichDAO;
 
-import com.google.code.morphia.dao.DAO;
-
-public interface UserDAO<I> extends DAO<User, I> {
+public interface UserDAO<I> extends SongwichDAO<User, I> {
 	
 	public User findById(I id);
 

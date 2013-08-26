@@ -34,7 +34,8 @@ public class UsersUseCases extends UseCase {
 							.format("Tried to create user \"%s\" but it was already in database with id=%s",
 									userDTO.getUserEmail(), userDTO.getUserId())
 							+ String.format(". devAuthToken=%s", getContext()
-									.getAppDeveloper().getDevAuthToken().getToken()));
+									.getAppDeveloper().getDevAuthToken()
+									.getToken()));
 					return;
 				} else {
 					// registers a new AppUser for that User
@@ -60,15 +61,13 @@ public class UsersUseCases extends UseCase {
 	 * If the User is also a new one it will be saved to the database as well.
 	 */
 	private AppUser saveNewAppUser(User user, String userEmail) {
-		String appDevEmail = getContext().getAppDeveloper().getEmailAddress();
-
 		AuthToken userAuthToken = AuthToken.createUserAuthToken();
 		AppUser newAppUser = new AppUser(getContext().getApp(), userEmail,
-				userAuthToken, appDevEmail);
-		user.addAppUser(newAppUser, appDevEmail);
+				userAuthToken);
+		user.addAppUser(newAppUser);
 
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(user);
+		userDAO.save(user, getContext().getAppDeveloper().getEmailAddress());
 
 		return newAppUser;
 	}

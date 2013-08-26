@@ -3,7 +3,8 @@ package models.api.stations;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.api.Model;
+import models.api.MongoEntity;
+import models.api.ModelImpl;
 import models.api.scrobbles.Song;
 
 import org.bson.types.ObjectId;
@@ -15,7 +16,7 @@ import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
-public class StationHistoryEntry extends Model {
+public class StationHistoryEntry extends ModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 
@@ -36,8 +37,7 @@ public class StationHistoryEntry extends Model {
 		super();
 	}
 
-	public StationHistoryEntry(ObjectId stationId, Song song, Long timestamp, String createdBy) {
-		super(createdBy);
+	public StationHistoryEntry(ObjectId stationId, Song song, Long timestamp) {
 		this.stationId = stationId;
 		this.song = song;
 		this.timestamp = timestamp;
@@ -47,41 +47,41 @@ public class StationHistoryEntry extends Model {
 		return song;
 	}
 
-	public void setSong(Song song, String modifiedBy) {
+	public void setSong(Song song) {
 		this.song = song;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public Long getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Long timestamp, String modifiedBy) {
+	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public Set<SongFeedback> getSongFeedback() {
 		return songFeedback;
 	}
 
-	public void setSongFeedback(Set<SongFeedback> songFeedback, String modifiedBy) {
+	public void setSongFeedback(Set<SongFeedback> songFeedback) {
 		this.songFeedback = songFeedback;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
 	 * 
 	 * @param songFeedback
-	 * @param modifiedBy
 	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
 	 */
-	public boolean addSongFeedback(SongFeedback songFeedback, String modifiedBy) {
-		setLastModifiedBy(modifiedBy);
-		return this.songFeedback.add(songFeedback);
-		
+	public boolean addSongFeedback(SongFeedback songFeedback) {
+		boolean result = this.songFeedback.add(songFeedback);
+		fireModelUpdated();
+		return result;
 	}
 
+	@Override
 	public ObjectId getId() {
 		return id;
 	}
@@ -90,9 +90,9 @@ public class StationHistoryEntry extends Model {
 		return stationId;
 	}
 
-	public void setStationId(ObjectId stationId, String modifiedBy) {
+	public void setStationId(ObjectId stationId) {
 		this.stationId = stationId;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	@Override

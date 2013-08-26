@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Set;
 
 import models.api.scrobbles.Scrobble;
+import database.api.SongwichDAO;
 
-import com.google.code.morphia.dao.DAO;
-
-public interface ScrobbleDAO<I> extends DAO<Scrobble, I> {
+public interface ScrobbleDAO<I> extends SongwichDAO<Scrobble, I> {
 
 	public Scrobble findById(I id);
 

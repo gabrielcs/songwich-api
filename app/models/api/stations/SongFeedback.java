@@ -1,6 +1,7 @@
 package models.api.stations;
 
-import models.api.Model;
+import models.api.MongoModel;
+import models.api.ModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -8,7 +9,7 @@ import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
 
 @Embedded
-public class SongFeedback extends Model {
+public class SongFeedback extends ModelImpl implements MongoModel {
 	@Indexed
 	@Embedded
 	private FeedbackType feedbackType;
@@ -23,8 +24,7 @@ public class SongFeedback extends Model {
 		super();
 	}
 	
-	public SongFeedback(FeedbackType feedback, ObjectId userId, String createdBy) {
-		super(createdBy);
+	public SongFeedback(FeedbackType feedback, ObjectId userId) {
 		this.userId = userId;
 		this.feedbackType = feedback;
 	}
@@ -33,18 +33,18 @@ public class SongFeedback extends Model {
 		return feedbackType;
 	}
 
-	public void setFeedbackType(FeedbackType feedback, String modifiedBy) {
+	public void setFeedbackType(FeedbackType feedback) {
 		this.feedbackType = feedback;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public ObjectId getUserId() {
 		return userId;
 	}
 
-	public void setUserId(ObjectId userId, String modifiedBy) {
+	public void setUserId(ObjectId userId) {
 		this.userId = userId;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	@Override
@@ -81,6 +81,4 @@ public class SongFeedback extends Model {
 			return false;
 		return true;
 	}
-
-	
 }

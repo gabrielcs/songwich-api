@@ -118,15 +118,15 @@ public class AppDeveloperAuthController extends
 		String homeDevEmail = "developers@songwich.com";
 
 		AuthToken authToken = AuthToken.createDevAuthToken();
-		authToken.setToken(devAuthToken, homeDevEmail);
+		authToken.setToken(devAuthToken);
 
 		// creates a test AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper(homeDevEmail,
-				"Songwich Developers", authToken, homeDevEmail);
+				"Songwich Developers", authToken);
 		// creates a test App
-		App songwich = new App("Songwich", appDeveloper, homeDevEmail);
+		App songwich = new App("Songwich", appDeveloper);
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
-		appDao.cascadeSave(songwich);
+		appDao.cascadeSave(songwich, homeDevEmail);
 
 		MyLogger.info("Created 'developers@songwich.com' working at 'Songwich' with devAuthToken="
 				+ authToken);

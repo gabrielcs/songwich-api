@@ -22,8 +22,7 @@ public class AppDevelopersUseCases extends UseCase {
 		App app = appDao.findByName(appDevelopersDTO.getAppName());
 		if (app == null) {
 			// app was not in the database
-			app = new App(appDevelopersDTO.getAppName(),
-					appDevelopersDTO.getDevEmail());
+			app = new App(appDevelopersDTO.getAppName());
 		} else {
 			// check that AppDeveloper is not already in database
 			AppDeveloper appDevDatabase = app.getAppDeveloper(appDevelopersDTO
@@ -41,9 +40,9 @@ public class AppDevelopersUseCases extends UseCase {
 		// creates the AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper(
 				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getName(),
-				AuthToken.createDevAuthToken(), appDevelopersDTO.getDevEmail());
-		app.addAppDeveloper(appDeveloper, appDevelopersDTO.getDevEmail());
-		appDao.cascadeSave(app);
+				AuthToken.createDevAuthToken());
+		app.addAppDeveloper(appDeveloper);
+		appDao.cascadeSave(app, appDevelopersDTO.getDevEmail());
 
 		MyLogger.info(String.format(
 				"Created '%s' working at '%s' with devAuthToken=%s",

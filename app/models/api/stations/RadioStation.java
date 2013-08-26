@@ -1,6 +1,7 @@
 package models.api.stations;
 
-import models.api.Model;
+import models.api.MongoEntity;
+import models.api.ModelImpl;
 import models.api.scrobbles.Song;
 
 import org.bson.types.ObjectId;
@@ -10,7 +11,8 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 @Entity
-public class RadioStation<T extends Scrobbler> extends Model {
+public class RadioStation<T extends Scrobbler> extends ModelImpl implements
+		MongoEntity {
 	@Id
 	private ObjectId id;
 
@@ -29,8 +31,7 @@ public class RadioStation<T extends Scrobbler> extends Model {
 		super();
 	}
 
-	public RadioStation(String name, T scrobbler, String createdBy) {
-		super(createdBy);
+	public RadioStation(String name, T scrobbler) {
 		this.name = name;
 		this.scrobbler = scrobbler;
 	}
@@ -39,38 +40,39 @@ public class RadioStation<T extends Scrobbler> extends Model {
 		return name;
 	}
 
-	public void setName(String name, String modifiedBy) {
+	public void setName(String name) {
 		this.name = name;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public T getScrobbler() {
 		return scrobbler;
 	}
 
-	public void setScrobbler(T scrobbler, String modifiedBy) {
+	public void setScrobbler(T scrobbler) {
 		this.scrobbler = scrobbler;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public Song getNowPlaying() {
 		return nowPlaying;
 	}
 
-	public void setNowPlaying(Song nowPlaying, String modifiedBy) {
+	public void setNowPlaying(Song nowPlaying) {
 		this.nowPlaying = nowPlaying;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public Song getLookAhead() {
 		return lookAhead;
 	}
 
-	public void setLookAhead(Song lookAhead, String modifiedBy) {
+	public void setLookAhead(Song lookAhead) {
 		this.lookAhead = lookAhead;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
+	@Override
 	public ObjectId getId() {
 		return id;
 	}

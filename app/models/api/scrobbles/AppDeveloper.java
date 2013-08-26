@@ -1,6 +1,7 @@
 package models.api.scrobbles;
 
-import models.api.Model;
+import models.api.MongoModel;
+import models.api.ModelImpl;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
@@ -8,7 +9,7 @@ import com.google.code.morphia.annotations.NotSaved;
 import com.google.code.morphia.annotations.PostLoad;
 
 @Embedded
-public class AppDeveloper extends Model {
+public class AppDeveloper extends ModelImpl implements MongoModel {
 	@Indexed
 	private String emailAddress;
 	
@@ -24,8 +25,7 @@ public class AppDeveloper extends Model {
 	protected AppDeveloper() {
 	}
 	
-	public AppDeveloper(String emailAddress, String name, AuthToken devAuthToken, String createdBy) {
-		super(createdBy);
+	public AppDeveloper(String emailAddress, String name, AuthToken devAuthToken) {
 		this.emailAddress = emailAddress;
 		this.name = name;
 		this.statefulDevAuthToken = devAuthToken;
@@ -35,27 +35,27 @@ public class AppDeveloper extends Model {
 		return emailAddress;
 	}
 
-	public void setEmailAddress(String emailAddress, String modifiedBy) {
+	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name, String modifiedBy) {
+	public void setName(String name) {
 		this.name = name;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public AuthToken getDevAuthToken() {
 		return statefulDevAuthToken;
 	}
 
-	public void setDevAuthToken(AuthToken devAuthToken, String modifiedBy) {
+	public void setDevAuthToken(AuthToken devAuthToken) {
 		this.statefulDevAuthToken = devAuthToken;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/*

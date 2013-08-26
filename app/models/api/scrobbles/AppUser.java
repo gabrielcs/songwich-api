@@ -1,6 +1,7 @@
 package models.api.scrobbles;
 
-import models.api.Model;
+import models.api.MongoModel;
+import models.api.ModelImpl;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
@@ -9,7 +10,7 @@ import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.annotations.Reference;
 
 @Embedded
-public class AppUser extends Model {
+public class AppUser extends ModelImpl implements MongoModel {
 	@Reference
 	private App app;
 
@@ -28,8 +29,7 @@ public class AppUser extends Model {
 	}
 
 	public AppUser(App app, String emailAddress,
-			AuthToken userAuthToken, String createdBy) {
-		super(createdBy);
+			AuthToken userAuthToken) {
 		this.app = app;
 		this.userEmailAddress = emailAddress;
 		this.statefulUserAuthToken = userAuthToken;
@@ -42,9 +42,9 @@ public class AppUser extends Model {
 		return app;
 	}
 
-	public void setApp(App app, String modifiedBy) {
+	public void setApp(App app) {
 		this.app = app;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
@@ -54,18 +54,18 @@ public class AppUser extends Model {
 		return userEmailAddress;
 	}
 
-	public void setEmailAddress(String emailAddress, String modifiedBy) {
+	public void setEmailAddress(String emailAddress) {
 		this.userEmailAddress = emailAddress;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public AuthToken getUserAuthToken() {
 		return statefulUserAuthToken;
 	}
 
-	public void setUserAuthToken(AuthToken userAuthToken, String modifiedBy) {
+	public void setUserAuthToken(AuthToken userAuthToken) {
 		this.statefulUserAuthToken = userAuthToken;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/*

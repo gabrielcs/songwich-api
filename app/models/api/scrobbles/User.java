@@ -3,7 +3,8 @@ package models.api.scrobbles;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.api.Model;
+import models.api.MongoEntity;
+import models.api.ModelImpl;
 import models.api.stations.Scrobbler;
 
 import org.bson.types.ObjectId;
@@ -14,7 +15,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
 
 @Entity
-public class User extends Model implements Scrobbler {
+public class User extends ModelImpl implements Scrobbler, MongoEntity {
 	@Id
 	private ObjectId id;
 
@@ -30,13 +31,11 @@ public class User extends Model implements Scrobbler {
 		super();
 	}
 
-	public User(String emailAddress, String createdBy) {
-		super(createdBy);
+	public User(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
 
-	public User(String emailAddress, String name, String createdBy) {
-		super(createdBy);
+	public User(String emailAddress, String name) {
 		this.emailAddress = emailAddress;
 		this.name = name;
 	}
@@ -52,9 +51,9 @@ public class User extends Model implements Scrobbler {
 	 * @param emailAddress
 	 *            the emailAddress to set
 	 */
-	public void setEmailAddress(String emailAddress, String modifiedBy) {
+	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
@@ -68,9 +67,9 @@ public class User extends Model implements Scrobbler {
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(String name, String modifiedBy) {
+	public void setName(String name) {
 		this.name = name;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
@@ -86,14 +85,16 @@ public class User extends Model implements Scrobbler {
 	 * @param modifiedBy
 	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
 	 */
-	public boolean addAppUser(AppUser appUser, String modifiedBy) {
-		setLastModifiedBy(modifiedBy);
-		return appUsers.add(appUser);
+	public boolean addAppUser(AppUser appUser) {
+		boolean result = appUsers.add(appUser);
+		fireModelUpdated();
+		return result;
 	}
 
 	/**
 	 * @return the id
 	 */
+    @Override
 	public ObjectId getId() {
 		return id;
 	}

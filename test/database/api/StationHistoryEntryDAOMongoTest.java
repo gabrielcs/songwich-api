@@ -49,68 +49,61 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 	}
 
 	private void initData() {
-		fatMike = new User("fatmike@nofx.com", "Fat Mike", DEV_EMAIL);
-		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis(),
-				DEV_EMAIL);
-		elHefe = new User("elhefe@nofx.com", "El Hefe", DEV_EMAIL);
-		elHefeFromNofx = new GroupMember(elHefe, System.currentTimeMillis(),
-				DEV_EMAIL);
+		fatMike = new User("fatmike@nofx.com", "Fat Mike");
+		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis());
+		elHefe = new User("elhefe@nofx.com", "El Hefe");
+		elHefeFromNofx = new GroupMember(elHefe, System.currentTimeMillis());
 		nofxGroupMembers = new HashSet<GroupMember>();
 		nofxGroupMembers.add(fatMikeFromNofx);
 		nofxGroupMembers.add(elHefeFromNofx);
-		nofx = new Group(nofxGroupMembers, DEV_EMAIL);
+		nofx = new Group(nofxGroupMembers);
 
-		spotify = new App("Spotify", DEV_EMAIL);
-		rdio = new App("Rdio", DEV_EMAIL);
+		spotify = new App("Spotify");
+		rdio = new App("Rdio");
 		fatMikeOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
-				AuthToken.createUserAuthToken(), DEV_EMAIL);
+				AuthToken.createUserAuthToken());
 		elHefeOnRdio = new AppUser(rdio, "elhefe@nofx.com",
-				AuthToken.createUserAuthToken(), DEV_EMAIL);
+				AuthToken.createUserAuthToken());
 
-		fatMike.addAppUser(fatMikeOnSpotify, DEV_EMAIL);
-		elHefe.addAppUser(elHefeOnRdio, DEV_EMAIL);
+		fatMike.addAppUser(fatMikeOnSpotify);
+		elHefe.addAppUser(elHefeOnRdio);
 
-		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, DEV_EMAIL);
+		nofxRadioStation = new RadioStation<Group>("NOFX", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant, DEV_EMAIL);
-		nofxRadioStation.setLookAhead(linoleum, DEV_EMAIL);
+		nofxRadioStation.setNowPlaying(doWhatYouWant);
+		nofxRadioStation.setLookAhead(linoleum);
 
 		// saves the radio station
 		RadioStationDAOMongo radioStationDao = new RadioStationDAOMongo();
-		radioStationDao.cascadeSave(nofxRadioStation);
+		radioStationDao.cascadeSave(nofxRadioStation, DEV_EMAIL);
 
 		linoleumEntry = new StationHistoryEntry(nofxRadioStation.getId(),
-				linoleum, System.currentTimeMillis(), DEV_EMAIL);
+				linoleum, System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(linoleumEntry);
+		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
 
 		// adds feedback
-		User gabriel = new User("gabriel@example.com", "Gabriel Cypriano",
-				DEV_EMAIL);
-		User daniel = new User("daniel@example.com", "Daniel Caon",
-				DEV_EMAIL);
+		User gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
+		User daniel = new User("daniel@example.com", "Daniel Caon");
 		AppUser gabrielOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
-				AuthToken.createUserAuthToken(), DEV_EMAIL);
+				AuthToken.createUserAuthToken());
 		AppUser danielOnRdio = new AppUser(rdio, "daniel@example.com",
-				AuthToken.createUserAuthToken(), DEV_EMAIL);
-		gabriel.addAppUser(gabrielOnSpotify, DEV_EMAIL);
-		daniel.addAppUser(danielOnRdio, DEV_EMAIL);
+				AuthToken.createUserAuthToken());
+		gabriel.addAppUser(gabrielOnSpotify);
+		daniel.addAppUser(danielOnRdio);
 		// saves the users so they have an id
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(gabriel);
-		userDao.cascadeSave(daniel);
+		userDao.cascadeSave(gabriel, DEV_EMAIL);
+		userDao.cascadeSave(daniel, DEV_EMAIL);
 
 		SongFeedback linoleumFeedbackGabriel = new SongFeedback(
-				FeedbackType.THUMBS_UP, gabriel.getId(), DEV_EMAIL);
+				FeedbackType.THUMBS_UP, gabriel.getId());
 		SongFeedback linoleumFeedbackDaniel = new SongFeedback(
-				FeedbackType.THUMBS_DOWN, daniel.getId(), DEV_EMAIL);
-		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel, DEV_EMAIL);
-		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel, DEV_EMAIL);
-		// updates the feedback entry
-		linoleumEntry.setLastModifiedAt(System.currentTimeMillis());
-		linoleumEntry.setLastModifiedBy(DEV_EMAIL);
-		stationHistoryDao.save(linoleumEntry);
+				FeedbackType.THUMBS_DOWN, daniel.getId());
+		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel);
+		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel);
+		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
 	}
 
 	@Test
@@ -118,7 +111,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		assertTrue(stationHistoryDao.count() == 1);
 		stationHistoryDao.delete(linoleumEntry);
 		assertTrue(stationHistoryDao.count() == 0);
-		//System.out.println(linoleumEntry);
+		// System.out.println(linoleumEntry);
 	}
 
 	@Test

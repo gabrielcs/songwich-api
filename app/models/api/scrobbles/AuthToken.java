@@ -2,7 +2,8 @@ package models.api.scrobbles;
 
 import java.util.UUID;
 
-import models.api.Model;
+import models.api.MongoModel;
+import models.api.ModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -15,7 +16,7 @@ import database.api.scrobbles.UserDAO;
 import database.api.scrobbles.UserDAOMongo;
 
 @Embedded
-public class AuthToken extends Model {
+public class AuthToken extends ModelImpl implements MongoModel {
 	@Indexed
 	private String token;
 	
@@ -62,23 +63,23 @@ public class AuthToken extends Model {
 		return token;
 	}
 
-	public void setToken(String authToken, String modifiedBy) {
+	public void setToken(String authToken) {
 		this.token = authToken;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 	
-	public void setToken(UUID authToken, String modifiedBy) {
+	public void setToken(UUID authToken) {
 		this.token = authToken.toString();
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public AuthTokenState getState() {
 		return state;
 	}
 
-	public void setState(AuthTokenState state, String modifiedBy) {
+	public void setState(AuthTokenState state) {
 		this.state = state;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 	
 	public enum AuthTokenState {

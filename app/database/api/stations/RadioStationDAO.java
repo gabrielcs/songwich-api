@@ -3,11 +3,10 @@ package database.api.stations;
 import java.util.List;
 
 import models.api.stations.RadioStation;
-
-import com.google.code.morphia.dao.DAO;
+import database.api.SongwichDAO;
 
 @SuppressWarnings("rawtypes")
-public interface RadioStationDAO<I> extends DAO<RadioStation, I> {
+public interface RadioStationDAO<I> extends SongwichDAO<RadioStation, I> {
 	
 	public RadioStation findById(I id);
 

@@ -4,10 +4,9 @@ import java.util.List;
 
 import models.api.scrobbles.Song;
 import models.api.stations.StationHistoryEntry;
+import database.api.SongwichDAO;
 
-import com.google.code.morphia.dao.DAO;
-
-public interface StationHistoryDAO<I> extends DAO<StationHistoryEntry, I> {
+public interface StationHistoryDAO<I> extends SongwichDAO<StationHistoryEntry, I> {
 	public StationHistoryEntry findById(I id);
 
 	public long countByStationId(I stationId);

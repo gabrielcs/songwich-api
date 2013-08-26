@@ -20,9 +20,9 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	}
 
 	@Override
-	public Key<App> cascadeSave(App t) {
+	public Key<App> cascadeSave(App t, String devEmail) {
 		// nothing to cascade
-		return save(t);
+		return save(t, devEmail);
 	}
 
 	@Override

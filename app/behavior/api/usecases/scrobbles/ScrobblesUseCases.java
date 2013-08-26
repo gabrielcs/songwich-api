@@ -32,11 +32,11 @@ public class ScrobblesUseCases extends UseCase {
 		Scrobble scrobble = new Scrobble(getContext().getUser().getId(), song,
 				Long.parseLong(scrobbleDTO.getTimestamp()),
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
-				scrobbleDTO.getPlayer(), getContext().getAppDeveloper()
-						.getEmailAddress());
+				scrobbleDTO.getPlayer());
 
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		scrobbleDAO.save(scrobble);
+		scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+				.getEmailAddress());
 	}
 
 	public List<ScrobblesDTO_V0_4> getScrobbles(ObjectId userId)

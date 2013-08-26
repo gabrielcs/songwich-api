@@ -3,23 +3,22 @@ package models.api.stations;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.api.Model;
+import models.api.ModelImpl;
 
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class Group extends Model implements Scrobbler {
+public class Group extends ModelImpl implements Scrobbler {
 	@Embedded
 	private Set<GroupMember> groupMembers = new HashSet<GroupMember>();
-	
+
 	protected Group() {
 		super();
 	}
-	
-	public Group(Set<GroupMember> groupMembers, String createdBy) {
-		super(createdBy);
+
+	public Group(Set<GroupMember> groupMembers) {
 		this.groupMembers = groupMembers;
 	}
 
@@ -27,20 +26,20 @@ public class Group extends Model implements Scrobbler {
 		return groupMembers;
 	}
 
-	public void setGroupMembers(Set<GroupMember> groupMembers, String modifiedBy) {
+	public void setGroupMembers(Set<GroupMember> groupMembers) {
 		this.groupMembers = groupMembers;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
-	
-    /**
-     * 
-     * @param groupMember
-     * @param modifiedBy
-     * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
-     */
-	public boolean addGroupMember(GroupMember groupMember, String modifiedBy) {
-		setLastModifiedBy(modifiedBy);
-		return this.groupMembers.add(groupMember);
+
+	/**
+	 * 
+	 * @param groupMember
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
+	 */
+	public boolean addGroupMember(GroupMember groupMember) {
+		boolean result = this.groupMembers.add(groupMember);
+		fireModelUpdated();
+		return result;
 	}
 
 	@Override

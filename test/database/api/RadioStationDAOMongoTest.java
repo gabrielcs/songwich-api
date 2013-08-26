@@ -22,8 +22,6 @@ import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
-
-
 public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 
 	private RadioStationDAO<ObjectId> radioStationDao;
@@ -45,35 +43,33 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 	}
 
 	private void initData() {
-		fatMike = new User("fatmike@nofx.com", "Fat Mike", DEV_EMAIL);
-		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis(),
-				DEV_EMAIL);
-		elHefe = new User("elhefe@nofx.com", "El Hefe", DEV_EMAIL);
-		elHefeFromNofx = new GroupMember(elHefe, System.currentTimeMillis(),
-				DEV_EMAIL);
+		fatMike = new User("fatmike@nofx.com", "Fat Mike");
+		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis());
+		elHefe = new User("elhefe@nofx.com", "El Hefe");
+		elHefeFromNofx = new GroupMember(elHefe, System.currentTimeMillis());
 		nofxGroupMembers = new HashSet<GroupMember>();
 		nofxGroupMembers.add(fatMikeFromNofx);
 		nofxGroupMembers.add(elHefeFromNofx);
-		nofx = new Group(nofxGroupMembers, DEV_EMAIL);
+		nofx = new Group(nofxGroupMembers);
 
-		spotify = new App("Spotify", DEV_EMAIL);
-		rdio = new App("Rdio", DEV_EMAIL);
+		spotify = new App("Spotify");
+		rdio = new App("Rdio");
 		fatMikeOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
-				AuthToken.createUserAuthToken(), DEV_EMAIL);
+				AuthToken.createUserAuthToken());
 		elHefeOnRdio = new AppUser(rdio, "elhefe@nofx.com",
-				AuthToken.createUserAuthToken(), DEV_EMAIL);
+				AuthToken.createUserAuthToken());
 
-		fatMike.addAppUser(fatMikeOnSpotify, DEV_EMAIL);
-		elHefe.addAppUser(elHefeOnRdio, DEV_EMAIL);
+		fatMike.addAppUser(fatMikeOnSpotify);
+		elHefe.addAppUser(elHefeOnRdio);
 		
-		nofxRadioStation = new RadioStation<Group>("NOFX", nofx, DEV_EMAIL);
+		nofxRadioStation = new RadioStation<Group>("NOFX", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant, DEV_EMAIL);
-		nofxRadioStation.setLookAhead(linoleum, DEV_EMAIL);
+		nofxRadioStation.setNowPlaying(doWhatYouWant);
+		nofxRadioStation.setLookAhead(linoleum);
 		
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(nofxRadioStation);
+		radioStationDAO.cascadeSave(nofxRadioStation, DEV_EMAIL);
 	}
 
 	@Test

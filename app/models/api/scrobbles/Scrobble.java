@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import models.api.Model;
+import models.api.MongoEntity;
+import models.api.ModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -16,7 +17,7 @@ import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
-public class Scrobble extends Model {
+public class Scrobble extends ModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 
@@ -46,8 +47,7 @@ public class Scrobble extends Model {
 	}
 
 	public Scrobble(ObjectId userId, Song song, GregorianCalendar timestamp,
-			Boolean choosenByUser, String player, String createdBy) {
-		super(createdBy);
+			Boolean choosenByUser, String player) {
 		this.userId = userId;
 		this.song = song;
 		this.timestamp = timestamp.getTimeInMillis();
@@ -56,8 +56,7 @@ public class Scrobble extends Model {
 	}
 
 	public Scrobble(ObjectId userId, Song song, Long timestamp,
-			Boolean choosenByUser, String player, String createdBy) {
-		super(createdBy);
+			Boolean choosenByUser, String player) {
 		this.userId = userId;
 		this.song = song;
 		this.timestamp = timestamp;
@@ -76,9 +75,9 @@ public class Scrobble extends Model {
 	 * @param user
 	 *            the user to set
 	 */
-	public void setUserId(ObjectId userId, String modifiedBy) {
+	public void setUserId(ObjectId userId) {
 		this.userId = userId;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
@@ -92,14 +91,14 @@ public class Scrobble extends Model {
 	 * @param timestamp
 	 *            the timestamp to set
 	 */
-	public void setTimestamp(Long timestamp, String modifiedBy) {
+	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
-	public void setTimestamp(GregorianCalendar timestamp, String modifiedBy) {
+	public void setTimestamp(GregorianCalendar timestamp) {
 		this.timestamp = timestamp.getTimeInMillis();
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
@@ -113,9 +112,9 @@ public class Scrobble extends Model {
 	 * @param choosenByUser
 	 *            the choosenByUser to set
 	 */
-	public void setChoosenByUser(Boolean choosenByUser, String modifiedBy) {
+	public void setChoosenByUser(Boolean choosenByUser) {
 		this.choosenByUser = choosenByUser;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
@@ -129,14 +128,15 @@ public class Scrobble extends Model {
 	 * @param player
 	 *            the player to set
 	 */
-	public void setPlayer(String player, String modifiedBy) {
+	public void setPlayer(String player) {
 		this.player = player;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/**
 	 * @return the id
 	 */
+	@Override
 	public ObjectId getId() {
 		return id;
 	}
@@ -145,9 +145,9 @@ public class Scrobble extends Model {
 		return song;
 	}
 
-	public void setSong(Song song, String modifiedBy) {
+	public void setSong(Song song) {
 		this.song = song;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	/*

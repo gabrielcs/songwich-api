@@ -38,27 +38,26 @@ public class StationsUseCases<I> extends UseCase {
 				.findByStationId(radioStation.getId());
 
 		StationStrategy stationStrategy = new NaiveStationStrategy();
-		String modifiedBy = getContext().getAppDeveloper().getEmailAddress();
 
 		if (radioStation.getNowPlaying() == null) {
 			// brand new station
 			radioStation.setLookAhead(stationStrategy.next(radioStation
 					.getScrobbler().getActiveScrobblersUserIds(),
-					stationHistory, radioStation.getLookAhead()), modifiedBy);
+					stationHistory, radioStation.getLookAhead()));
 		}
 
 		Song next = stationStrategy.next(radioStation.getScrobbler()
 				.getActiveScrobblersUserIds(), stationHistory, radioStation
 				.getLookAhead());
 
-		radioStation.setNowPlaying(radioStation.getLookAhead(), modifiedBy);
-		radioStation.setLookAhead(next, modifiedBy);
+		radioStation.setNowPlaying(radioStation.getLookAhead());
+		radioStation.setLookAhead(next);
 
 		StationHistoryEntry stationHistoryEntry = new StationHistoryEntry(
 				radioStation.getId(), radioStation.getNowPlaying(),
-				System.currentTimeMillis(), getContext().getAppDeveloper()
-						.getEmailAddress());
-		stationHistoryDao.save(stationHistoryEntry);
+				System.currentTimeMillis());
+		stationHistoryDao.save(stationHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 		return stationHistoryEntry;
 	}
 
@@ -68,16 +67,15 @@ public class StationsUseCases<I> extends UseCase {
 		StationHistoryDAO<ObjectId> stationHistoryDao = new StationHistoryDAOMongo();
 		StationHistoryEntry stationHistoryEntry = stationHistoryDao
 				.findById(stationHistoryEntryId);
-		String appDevEmail = getContext().getAppDeveloper()
-				.getEmailAddress();
 		SongFeedback songFeedback = new SongFeedback(feedback, getContext()
-				.getUser().getId(), appDevEmail);
-		stationHistoryEntry.addSongFeedback(songFeedback, appDevEmail);
+				.getUser().getId());
+		stationHistoryEntry.addSongFeedback(songFeedback);
 
 		// execute the update
 		stationHistoryEntry.setLastModifiedAt(System.currentTimeMillis());
 		stationHistoryEntry.setLastModifiedBy(getContext().getAppDeveloper()
 				.getEmailAddress());
-		stationHistoryDao.save(stationHistoryEntry);
+		stationHistoryDao.save(stationHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 	}
 }

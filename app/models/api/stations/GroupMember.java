@@ -1,12 +1,13 @@
 package models.api.stations;
 
-import models.api.Model;
+import models.api.ModelImpl;
+import models.api.MongoModel;
 import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class GroupMember extends Model {
+public class GroupMember extends ModelImpl implements MongoModel {
 	@Embedded
 	private User user;
 	
@@ -18,14 +19,12 @@ public class GroupMember extends Model {
 		super();
 	}
 	
-	public GroupMember(User user, Long startDate, String createdBy) {
-		super(createdBy);
+	public GroupMember(User user, Long startDate) {
 		this.user = user;
 		this.startDate = startDate;
 	}
 
-	public GroupMember(User user, Long startDate, Long endDate, String createdBy) {
-		super(createdBy);
+	public GroupMember(User user, Long startDate, Long endDate) {
 		this.user = user;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -35,27 +34,27 @@ public class GroupMember extends Model {
 		return user;
 	}
 
-	public void setUser(User user, String modifiedBy) {
+	public void setUser(User user) {
 		this.user = user;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public Long getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(long startDate, String modifiedBy) {
+	public void setStartDate(long startDate) {
 		this.startDate = startDate;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	public Long getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(long endDate, String modifiedBy) {
+	public void setEndDate(long endDate) {
 		this.endDate = endDate;
-		setLastModifiedBy(modifiedBy);
+		fireModelUpdated();
 	}
 
 	@Override

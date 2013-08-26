@@ -26,12 +26,13 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 
 	// TODO: test
 	@Override
-	public Key<RadioStation> cascadeSave(RadioStation radioStation) {
-		cascadeSaveScrobbler(radioStation);
-		return save(radioStation);
+	public Key<RadioStation> cascadeSave(RadioStation radioStation,
+			String devEmail) {
+		cascadeSaveScrobbler(radioStation, devEmail);
+		return save(radioStation, devEmail);
 	}
 
-	private void cascadeSaveScrobbler(RadioStation radioStation) {
+	private void cascadeSaveScrobbler(RadioStation radioStation, String devEmail) {
 		if (radioStation.getScrobbler() == null) {
 			// there's nothing to save
 			return;
@@ -39,22 +40,22 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 
 		Scrobbler scrobbler = radioStation.getScrobbler();
 		if (scrobbler instanceof Group) {
-			cascadeSaveGroup((Group) scrobbler);
+			cascadeSaveGroup((Group) scrobbler, devEmail);
 		} else if (scrobbler instanceof User) {
-			cascadeSaveUser((User) scrobbler);
-		}
-	}
-	
-	private void cascadeSaveGroup(Group group) {
-		Set<GroupMember> groupMembers = group.getGroupMembers();
-		for (GroupMember groupMember : groupMembers) {
-			cascadeSaveUser(groupMember.getUser());
+			cascadeSaveUser((User) scrobbler, devEmail);
 		}
 	}
 
-	private void cascadeSaveUser(User user) {
+	private void cascadeSaveGroup(Group group, String devEmail) {
+		Set<GroupMember> groupMembers = group.getGroupMembers();
+		for (GroupMember groupMember : groupMembers) {
+			cascadeSaveUser(groupMember.getUser(), devEmail);
+		}
+	}
+
+	private void cascadeSaveUser(User user, String devEmail) {
 		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
-		userDao.cascadeSave(user);
+		userDao.cascadeSave(user, devEmail);
 	}
 
 	@Override

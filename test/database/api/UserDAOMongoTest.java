@@ -11,8 +11,6 @@ import org.junit.Test;
 import database.api.scrobbles.UserDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
-
-
 public class UserDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testSaveAndDelete() {
@@ -20,8 +18,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1);
-		userDao.cascadeSave(user2);
+		userDao.cascadeSave(user1, DEV_EMAIL);
+		userDao.cascadeSave(user2, DEV_EMAIL);
 
 		assertTrue(userDao.count() == 2);
 
@@ -37,8 +35,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1);
-		userDao.cascadeSave(user2);
+		userDao.cascadeSave(user1, DEV_EMAIL);
+		userDao.cascadeSave(user2, DEV_EMAIL);
 
 		assertTrue(userDao.findById(user1.getId()).equals(user1));
 		assertTrue(userDao.findById(user2.getId()).equals(user2));
@@ -50,8 +48,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1);
-		userDao.cascadeSave(user2);
+		userDao.cascadeSave(user1, DEV_EMAIL);
+		userDao.cascadeSave(user2, DEV_EMAIL);
 
 		assertTrue(userDao.findByEmailAddress("gabriel@example.com").equals(
 				user1));
@@ -61,24 +59,24 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 
 	@Test
 	public void testFindByEmailAddressWithMusicServiceUser() {
-		App service1 = new App("Spotify", DEV_EMAIL);
-		App service2 = new App("Rdio", DEV_EMAIL);
+		App service1 = new App("Spotify");
+		App service2 = new App("Rdio");
 
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		AuthToken authToken = AuthToken.createUserAuthToken();
 		AppUser service1User1 = new AppUser(service1, "gabriel@user.com",
-				authToken, DEV_EMAIL);
-		user1.addAppUser(service1User1, DEV_EMAIL);
+				authToken);
+		user1.addAppUser(service1User1);
 
 		User user2 = new User("daniel@example.com", "Daniel Example");
 		AuthToken authToken2 = AuthToken.createUserAuthToken();
 		AppUser service2User2 = new AppUser(service2, "daniel@user.com",
-				authToken2, DEV_EMAIL);
-		user2.addAppUser(service2User2, DEV_EMAIL);
+				authToken2);
+		user2.addAppUser(service2User2);
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1);
-		userDao.cascadeSave(user2);
+		userDao.cascadeSave(user1, DEV_EMAIL);
+		userDao.cascadeSave(user2, DEV_EMAIL);
 
 		assertTrue(userDao.findByEmailAddress("gabriel@user.com").equals(user1));
 		assertTrue(userDao.findByEmailAddress("daniel@user.com").equals(user2));
@@ -87,14 +85,13 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testFindByAuthToken() {
 		User user = new User("gabriel@example.com", "Gabriel Example");
-		App app = new App("Spotify", "dev@example.com");
+		App app = new App("Spotify");
 		AuthToken authToken = AuthToken.createUserAuthToken();
-		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken,
-				app.getCreatedBy());
-		user.addAppUser(appUser, DEV_EMAIL);
+		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken);
+		user.addAppUser(appUser);
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user);
+		userDao.cascadeSave(user, DEV_EMAIL);
 		User userDatabase = userDao.findByUserAuthToken(authToken.getToken());
 
 		assertTrue(userDatabase.equals(user));
@@ -103,14 +100,13 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testFindAppUserByAuthToken() {
 		User user = new User("gabriel@example.com", "Gabriel Example");
-		App app = new App("Spotify", "dev@example.com");
+		App app = new App("Spotify");
 		AuthToken authToken = AuthToken.createUserAuthToken();
-		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken,
-				app.getCreatedBy());
-		user.addAppUser(appUser, DEV_EMAIL);
+		AppUser appUser = new AppUser(app, user.getEmailAddress(), authToken);
+		user.addAppUser(appUser);
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user);
+		userDao.cascadeSave(user, DEV_EMAIL);
 		AppUser appUserDatabase = userDao.findAppUserByAuthToken(authToken
 				.getToken());
 
