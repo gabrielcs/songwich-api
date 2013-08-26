@@ -26,7 +26,8 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 
 	@Override
 	public List<StationHistoryEntry> findByStationId(ObjectId stationId) {
-		return queryByStationId(stationId).order("-timestamp").asList();
+		Query<StationHistoryEntry> query = queryByStationId(stationId); 
+		return order(query).asList();
 	}
 
 	// TODO: test
@@ -40,7 +41,8 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 	public List<StationHistoryEntry> findByStationIdWithHourOffset(
 			ObjectId stationId, int hourOffset) {
 		Query<StationHistoryEntry> query = queryByStationId(stationId);
-		return filterHourOffset(query, hourOffset).order("-timestamp").asList();
+		filterHourOffset(query, hourOffset);
+		return order(query).asList();
 	}
 
 	// TODO: test
@@ -56,8 +58,8 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 	@Override
 	public List<StationHistoryEntry> findLastEntriesByStationId(
 			ObjectId stationId, int numberOfEntries) {
-		return queryByStationId(stationId).order("-timestamp")
-				.limit(numberOfEntries).asList();
+		Query<StationHistoryEntry> query = queryByStationId(stationId);
+		return order(query).limit(numberOfEntries).asList();
 	}
 
 	// TODO: test
@@ -70,8 +72,9 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 	@Override
 	public List<StationHistoryEntry> findByStationIdAndArtist(
 			ObjectId stationId, String artistName) {
-		return queryByStationIdAndArtist(stationId, artistName).order(
-				"-timestamp").asList();
+		Query<StationHistoryEntry> query = queryByStationIdAndArtist(stationId,
+				artistName);
+		return order(query).asList();
 	}
 
 	// TODO: test
@@ -86,8 +89,13 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 	@Override
 	public List<StationHistoryEntry> findByStationIdAndArtistWithHourOffset(
 			ObjectId stationId, String artistName, int hourOffset) {
-		return queryByStationIdAndArtistWithHourOffset(stationId, artistName,
-				hourOffset).order("-timestamp").asList();
+		Query<StationHistoryEntry> query = queryByStationIdAndArtistWithHourOffset(
+				stationId, artistName, hourOffset);
+		return order(query).asList();
+	}
+
+	private Query<StationHistoryEntry> order(Query<StationHistoryEntry> query) {
+		return query.order("-timestamp");
 	}
 
 	private Query<StationHistoryEntry> queryByStationId(ObjectId stationId) {
