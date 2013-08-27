@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import models.api.MongoEntity;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 import models.api.stations.Scrobbler;
 
 import org.bson.types.ObjectId;
@@ -15,7 +15,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
 
 @Entity
-public class User extends ModelImpl implements Scrobbler, MongoEntity {
+public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
 	@Id
 	private ObjectId id;
 

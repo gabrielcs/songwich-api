@@ -1,7 +1,7 @@
 package models.api.stations;
 
 import models.api.MongoEntity;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 import models.api.scrobbles.Song;
 
 import org.bson.types.ObjectId;
@@ -11,7 +11,7 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 @Entity
-public class RadioStation<T extends Scrobbler> extends ModelImpl implements
+public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
 		MongoEntity {
 	@Id
 	private ObjectId id;

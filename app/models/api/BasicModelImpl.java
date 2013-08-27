@@ -1,66 +1,16 @@
 package models.api;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
 
-import com.google.code.morphia.annotations.NotSaved;
-import com.google.code.morphia.annotations.PostLoad;
-
-public abstract class ModelImpl implements MongoModel {
+public abstract class BasicModelImpl implements MongoModel {
 	private Long createdAt;
 	private String createdBy;
 
 	private Long lastModifiedAt;
 	private String lastModifiedBy;
 
-	@NotSaved
-	private boolean modelPersisted = false;
-	@NotSaved
-	private boolean modelUpdated = false;
-
-	protected ModelImpl() {
+	protected BasicModelImpl() {
 		super();
-	}
-
-	protected void fireModelUpdated() {
-		modelUpdated = true;
-	}
-
-	@Override
-	public Set<MongoModel> getEmbeddedModels() throws IllegalArgumentException,
-			IllegalAccessException {
-		Set<MongoModel> embeddedModels = new HashSet<MongoModel>();
-		Field[] fields = this.getClass().getFields();
-		for (Field field : fields) {
-			if (Arrays.asList(field.getClass().getInterfaces()).contains(
-					MongoModel.class)) {
-				embeddedModels.add((MongoModel) field.get(this));
-			}
-		}
-		return embeddedModels;
-	}
-
-	@Override
-	public boolean isModelUpdated() {
-		return modelUpdated;
-	}
-
-	@Override
-	public boolean isModelPersisted() {
-		return modelPersisted;
-	}
-
-	@Override
-	public void setModelPersisted(boolean modelPersisted) {
-		this.modelPersisted = modelPersisted;
-	}
-
-	@PostLoad
-	private void setModelPersisted() {
-		this.modelPersisted = true;
 	}
 
 	@Override
@@ -150,7 +100,7 @@ public abstract class ModelImpl implements MongoModel {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ModelImpl other = (ModelImpl) obj;
+		BasicModelImpl other = (BasicModelImpl) obj;
 		if (createdAt == null) {
 			if (other.createdAt != null)
 				return false;

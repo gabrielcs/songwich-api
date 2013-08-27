@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.api.MongoEntity;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -13,7 +13,7 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 @Entity
-public class App extends ModelImpl implements MongoEntity {
+public class App extends MongoModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 

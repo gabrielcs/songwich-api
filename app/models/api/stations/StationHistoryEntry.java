@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import models.api.MongoEntity;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 import models.api.scrobbles.Song;
 
 import org.bson.types.ObjectId;
@@ -16,7 +16,7 @@ import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
-public class StationHistoryEntry extends ModelImpl implements MongoEntity {
+public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 

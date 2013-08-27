@@ -3,7 +3,7 @@ package models.api.scrobbles;
 import java.util.UUID;
 
 import models.api.MongoModel;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -16,7 +16,7 @@ import database.api.scrobbles.UserDAO;
 import database.api.scrobbles.UserDAOMongo;
 
 @Embedded
-public class AuthToken extends ModelImpl implements MongoModel {
+public class AuthToken extends MongoModelImpl implements MongoModel {
 	@Indexed
 	private String token;
 	

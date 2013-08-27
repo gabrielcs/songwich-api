@@ -1,7 +1,7 @@
 package models.api.scrobbles;
 
 import models.api.MongoModel;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
@@ -10,7 +10,7 @@ import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.annotations.Reference;
 
 @Embedded
-public class AppUser extends ModelImpl implements MongoModel {
+public class AppUser extends MongoModelImpl implements MongoModel {
 	@Reference
 	private App app;
 

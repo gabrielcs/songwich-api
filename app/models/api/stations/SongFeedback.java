@@ -1,7 +1,7 @@
 package models.api.stations;
 
 import models.api.MongoModel;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -9,7 +9,7 @@ import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
 
 @Embedded
-public class SongFeedback extends ModelImpl implements MongoModel {
+public class SongFeedback extends MongoModelImpl implements MongoModel {
 	@Indexed
 	@Embedded
 	private FeedbackType feedbackType;

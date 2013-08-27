@@ -3,14 +3,14 @@ package models.api.stations;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class Group extends ModelImpl implements Scrobbler {
+public class Group extends MongoModelImpl implements Scrobbler {
 	@Embedded
 	private Set<GroupMember> groupMembers = new HashSet<GroupMember>();
 

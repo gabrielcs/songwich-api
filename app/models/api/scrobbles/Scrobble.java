@@ -5,7 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import models.api.MongoEntity;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import org.bson.types.ObjectId;
 
@@ -17,7 +17,7 @@ import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
-public class Scrobble extends ModelImpl implements MongoEntity {
+public class Scrobble extends MongoModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 

@@ -1,7 +1,7 @@
 package models.api.scrobbles;
 
 import models.api.MongoModel;
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
@@ -9,7 +9,7 @@ import com.google.code.morphia.annotations.NotSaved;
 import com.google.code.morphia.annotations.PostLoad;
 
 @Embedded
-public class AppDeveloper extends ModelImpl implements MongoModel {
+public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	@Indexed
 	private String emailAddress;
 	

@@ -2,7 +2,7 @@ package models.api;
 
 import java.util.GregorianCalendar;
 
-public interface Model {
+public interface BasicModel {
 
 	public void setCreatedBy(String devEmail);
 

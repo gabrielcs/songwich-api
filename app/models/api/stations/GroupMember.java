@@ -1,13 +1,13 @@
 package models.api.stations;
 
-import models.api.ModelImpl;
+import models.api.MongoModelImpl;
 import models.api.MongoModel;
 import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class GroupMember extends ModelImpl implements MongoModel {
+public class GroupMember extends MongoModelImpl implements MongoModel {
 	@Embedded
 	private User user;
 	

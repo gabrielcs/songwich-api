@@ -2,7 +2,7 @@ package models.api;
 
 import java.util.Set;
 
-public interface MongoModel extends Model {
+public interface MongoModel extends BasicModel {
 
 	public Set<MongoModel> getEmbeddedModels() throws IllegalArgumentException,
 			IllegalAccessException;
