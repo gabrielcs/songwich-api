@@ -63,6 +63,7 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 		return ds.find(RadioStation.class).filter("id", id).get();
 	}
 
+	// TODO: test
 	@Override
 	public List<RadioStation> findByName(String name) {
 		return ds.find(RadioStation.class).filter("name", name).asList();

@@ -63,12 +63,12 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		Calendar threeDaysAgo = new GregorianCalendar();
 		threeDaysAgo.add(Calendar.DATE, -3);
 		scrobble2 = new Scrobble(user2.getId(),
-				new Song("Get Lucky", artists2), threeDaysAgo.getTimeInMillis(),
-				true, "Deezer");
+				new Song("Get Lucky", artists2),
+				threeDaysAgo.getTimeInMillis(), true, "Deezer");
 		scrobbleDao.save(scrobble2, DEV_EMAIL);
 
 		scrobble3 = new Scrobble(user1.getId(), new Song("Take a Walk 2",
-				artists1), System.currentTimeMillis(), false, "Spotify");
+				artists1), System.currentTimeMillis(), true, "Spotify");
 		scrobbleDao.save(scrobble3, DEV_EMAIL);
 
 		scrobble4 = new Scrobble(user2.getId(), new Song("Get Lucky 2",
@@ -122,6 +122,14 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 	}
 
 	@Test
+	public void chosenByUserOnly() {
+		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId(),
+				true);
+		assertEquals(scrobblesUser1.size(), 1);
+		assertTrue(scrobblesUser1.contains(scrobble3));
+	}
+
+	@Test
 	public void testFindLastScrobblesByUserId() {
 		List<Scrobble> scrobblesUser1 = scrobbleDao.findLastScrobblesByUserId(
 				user1.getId(), 2, false);
@@ -136,8 +144,8 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		Set<ObjectId> userIds = new HashSet<ObjectId>();
 		userIds.add(user1.getId());
 		userIds.add(user2.getId());
-		List<Scrobble> scrobblesUser1User2 = scrobbleDao.findLastScrobblesByUserIds(
-				userIds, 3, false);
+		List<Scrobble> scrobblesUser1User2 = scrobbleDao
+				.findLastScrobblesByUserIds(userIds, 3, false);
 
 		assertEquals(scrobblesUser1User2.size(), 3);
 		assertTrue(scrobblesUser1User2.iterator().next().equals(scrobble6));
@@ -178,20 +186,24 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 	@Test
 	public void testFindByUserIdsWithDaysOffset() {
 		List<Scrobble> scrobbles5DaysOld = scrobbleDao
-				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 5, 2, false);
+				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 5, 2,
+						false);
 		List<Scrobble> scrobbles1DayOld = scrobbleDao
-				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 1, 1, false);
+				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 1, 1,
+						false);
 
 		assertEquals(2, scrobbles5DaysOld.size());
 		assertEquals(1, scrobbles1DayOld.size());
 	}
-	
+
 	@Test
 	public void testFindLastScrobblesByUserIdsWithDaysOffset() {
 		List<Scrobble> scrobbles5DaysOld = scrobbleDao
-				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 5, 2, false);
+				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 5, 2,
+						false);
 		List<Scrobble> scrobbles1DayOld = scrobbleDao
-				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 1, 1, false);
+				.findLastScrobblesByUserIdWithDaysOffset(user1.getId(), 1, 1,
+						false);
 
 		assertEquals(2, scrobbles5DaysOld.size());
 		assertEquals(1, scrobbles1DayOld.size());

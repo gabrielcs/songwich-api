@@ -37,8 +37,12 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 	@Indexed(IndexDirection.DESC)
 	private Long timestamp;
 
-	@Indexed
+	@Deprecated
+	@NotSaved
 	private Boolean choosenByUser;
+	
+	@Indexed
+	private Boolean chosenByUser;
 
 	private String player;
 
@@ -47,20 +51,20 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 	}
 
 	public Scrobble(ObjectId userId, Song song, GregorianCalendar timestamp,
-			Boolean choosenByUser, String player) {
+			Boolean chosenByUser, String player) {
 		this.userId = userId;
 		this.song = song;
 		this.timestamp = timestamp.getTimeInMillis();
-		this.choosenByUser = choosenByUser;
+		this.chosenByUser = chosenByUser;
 		this.player = player;
 	}
 
 	public Scrobble(ObjectId userId, Song song, Long timestamp,
-			Boolean choosenByUser, String player) {
+			Boolean chosenByUser, String player) {
 		this.userId = userId;
 		this.song = song;
 		this.timestamp = timestamp;
-		this.choosenByUser = choosenByUser;
+		this.chosenByUser = chosenByUser;
 		this.player = player;
 	}
 
@@ -104,16 +108,16 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 	/**
 	 * @return the choosenByUser
 	 */
-	public Boolean isChoosenByUser() {
-		return choosenByUser;
+	public Boolean isChosenByUser() {
+		return chosenByUser;
 	}
 
 	/**
-	 * @param choosenByUser
-	 *            the choosenByUser to set
+	 * @param chosenByUser
+	 *            the chosenByUser to set
 	 */
-	public void setChoosenByUser(Boolean choosenByUser) {
-		this.choosenByUser = choosenByUser;
+	public void setChosenByUser(Boolean chosenByUser) {
+		this.chosenByUser = chosenByUser;
 		fireModelUpdated();
 	}
 
@@ -151,20 +155,24 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 	}
 
 	/*
-	 * Handle deprecated song properties
+	 * Handle deprecated properties
 	 */
 	@PostLoad
-	protected void handleDeprecatedSongProperties() {
+	protected void handleDeprecatedProperties() {
 		if (song == null && songTitle != null && artistsNames != null) {
 			this.song = new Song(songTitle, artistsNames);
+		}
+		
+		if (chosenByUser == null && choosenByUser != null) {
+			chosenByUser = new Boolean(choosenByUser);
 		}
 	}
 
 	@Override
 	public String toString() {
 		return "Scrobble [id=" + id + ", userId=" + userId + ", song=" + song
-				+ ", timestamp=" + timestamp + ", choosenByUser="
-				+ choosenByUser + ", player=" + player + "]";
+				+ ", timestamp=" + timestamp + ", chosenByUser="
+				+ chosenByUser + ", player=" + player + "]";
 	}
 
 	@Override
@@ -172,7 +180,7 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((choosenByUser == null) ? 0 : choosenByUser.hashCode());
+				+ ((chosenByUser == null) ? 0 : chosenByUser.hashCode());
 		result = prime * result + ((player == null) ? 0 : player.hashCode());
 		result = prime * result + ((song == null) ? 0 : song.hashCode());
 		result = prime * result
@@ -190,10 +198,10 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		Scrobble other = (Scrobble) obj;
-		if (choosenByUser == null) {
-			if (other.choosenByUser != null)
+		if (chosenByUser == null) {
+			if (other.chosenByUser != null)
 				return false;
-		} else if (!choosenByUser.equals(other.choosenByUser))
+		} else if (!chosenByUser.equals(other.chosenByUser))
 			return false;
 		if (player == null) {
 			if (other.player != null)
