@@ -28,7 +28,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return ds.find(Scrobble.class).filter("id", id).get();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findByUserId(ObjectId userId, boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserId(userId);
@@ -36,7 +35,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIds(Set<ObjectId> userIds,
 			boolean chosenByUserOnly) {
@@ -45,7 +43,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId,
 			int results, boolean chosenByUserOnly) {
@@ -53,8 +50,7 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		filterChosenByUserOnly(query, chosenByUserOnly);
 		return order(query).limit(results).asList();
 	}
-
-	// TODO: test
+	
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIds(Set<ObjectId> userIds,
 			int results, boolean chosenByUserOnly) {
@@ -63,7 +59,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).limit(results).asList();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIdWithDaysOffset(ObjectId userId,
 			int daysOffset, boolean chosenByUserOnly) {
@@ -73,7 +68,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findByUserIdsWithDaysOffset(Set<ObjectId> userIds,
 			int daysOffset, boolean chosenByUserOnly) {
@@ -83,7 +77,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIdWithDaysOffset(
 			ObjectId userId, int daysOffset, int results,
@@ -94,7 +87,6 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).limit(results).asList();
 	}
 
-	// TODO: test
 	@Override
 	public List<Scrobble> findLastScrobblesByUserIdsWithDaysOffset(
 			Set<ObjectId> userIds, int daysOffset, int results,

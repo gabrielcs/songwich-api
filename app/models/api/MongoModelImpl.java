@@ -25,6 +25,7 @@ public abstract class MongoModelImpl extends BasicModelImpl implements MongoMode
 	@Override
 	public Set<MongoModel> getEmbeddedModels() throws IllegalArgumentException,
 			IllegalAccessException {
+		// HashSet with initial capacity=16 and loadFactor=0.75
 		Set<MongoModel> embeddedModels = new HashSet<MongoModel>();
 		Field[] fields = this.getClass().getFields();
 		for (Field field : fields) {
