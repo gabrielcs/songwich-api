@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
+import models.api.MongoModel;
 import models.api.scrobbles.App;
+import models.api.scrobbles.AppDeveloper;
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.AuthToken;
 import models.api.scrobbles.Song;
@@ -15,34 +17,36 @@ import models.api.stations.Group;
 import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
 
-import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
-import database.api.stations.RadioStationDAO;
+import database.api.scrobbles.AppDAOMongo;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
-public class RadioStationDAOMongoTest extends CleanDatabaseTest {
-
-	private RadioStationDAO<ObjectId> radioStationDao;
+public class ModelAndDAOTest extends CleanDatabaseTest {
+	private RadioStationDAOMongo radioStationDao;
+	private AppDAOMongo appDao; 
 
 	private User fatMike, elHefe;
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
-	private HashSet<GroupMember> nofxGroupMembers;
+	private Set<GroupMember> nofxGroupMembers;
 	private Group nofx;
 	private RadioStation<Group> nofxRadioStation;
 	private App spotify, rdio;
 	private AppUser fatMikeOnSpotify, elHefeOnRdio;
 	private Song linoleum, doWhatYouWant;
+	
+	private final static String UPDATE_DEV_EMAIL = "update@songwich.com";
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		radioStationDao = new RadioStationDAOMongo();
+		appDao = new AppDAOMongo();
 		initData();
 	}
-
+	
 	private void initData() {
 		fatMike = new User("fatmike@nofx.com", "Fat Mike");
 		fatMikeFromNofx = new GroupMember(fatMike, System.currentTimeMillis());
@@ -69,39 +73,41 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		nofxRadioStation.setNowPlaying(doWhatYouWant);
 		nofxRadioStation.setLookAhead(linoleum);
 
-		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(nofxRadioStation, DEV_EMAIL);
+		radioStationDao.cascadeSave(nofxRadioStation, DEV_EMAIL);
+	}
+	
+	@Test
+	public void testModelSave() {
+		spotify = appDao.findById(spotify.getId());
+		assertEquals(DEV_EMAIL, spotify.getCreatedBy());
 	}
 
 	@Test
-	public void testCountAndDelete() {
-		assertTrue(radioStationDao.count() == 1);
-		radioStationDao.delete(nofxRadioStation);
-		assertTrue(radioStationDao.count() == 0);
-	}
+	public void testModelUpdate() {
+		// updates a document using save()
+		AppDeveloper appDeveloper = new AppDeveloper(UPDATE_DEV_EMAIL,
+				"Updater", AuthToken.createDevAuthToken());
+		spotify.addAppDeveloper(appDeveloper);
+		appDao.save(spotify, UPDATE_DEV_EMAIL);
 
-	@Test
-	public void testFindById() {
-		@SuppressWarnings("unchecked")
-		RadioStation<Group> databaseStation = (RadioStation<Group>) radioStationDao
-				.findById(nofxRadioStation.getId());
-		assertEquals(nofxRadioStation, databaseStation);
-		assertEquals(databaseStation, nofxRadioStation);
-		
-		System.out.println(databaseStation);
+		spotify = appDao.findById(spotify.getId());
+		assertEquals(DEV_EMAIL, spotify.getCreatedBy());
+		assertEquals(UPDATE_DEV_EMAIL, spotify.getLastModifiedBy());
+		assertTrue(spotify.getCreatedAt() < spotify.getLastModifiedAt());
 	}
-
+	
 	@Test
-	public void testFindByName() {
+	public void testEmbeddedModelsCreate() throws IllegalArgumentException, IllegalAccessException {
 		@SuppressWarnings("rawtypes")
-		List<RadioStation> radioStations = radioStationDao
-				.findByName(nofxRadioStation.getName());
-
-		assertTrue(radioStations.size() == 1);
-		@SuppressWarnings("unchecked")
-		RadioStation<Group> databaseStation = radioStations.iterator().next();
-
-		assertEquals(databaseStation, nofxRadioStation);
-		assertEquals(nofxRadioStation, databaseStation);
+		RadioStation databaseStation = radioStationDao.findById(nofxRadioStation.getId());
+		testEmbeddedModelsCreate(databaseStation.getEmbeddedModels());
+	}
+	
+	private void testEmbeddedModelsCreate(Set<MongoModel> models) throws IllegalArgumentException, IllegalAccessException {
+		for (MongoModel model : models) {
+			assertTrue(model.getCreatedBy().equals(DEV_EMAIL));
+			assertTrue(model.getCreatedAt() < System.currentTimeMillis());
+			testEmbeddedModelsCreate(model.getEmbeddedModels());
+		}
 	}
 }

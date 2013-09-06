@@ -28,8 +28,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 		super();
 	}
 
-	public AppUser(App app, String emailAddress,
-			AuthToken userAuthToken) {
+	public AppUser(App app, String emailAddress, AuthToken userAuthToken) {
 		this.app = app;
 		this.userEmailAddress = emailAddress;
 		this.statefulUserAuthToken = userAuthToken;
@@ -81,7 +80,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 	@Override
 	public String toString() {
 		return "AppUser [app=" + app + ", userEmailAddress=" + userEmailAddress
-				+ ", userAuthToken=" + statefulUserAuthToken + "]";
+				+ ", statefulUserAuthToken=" + statefulUserAuthToken + "]";
 	}
 
 	@Override

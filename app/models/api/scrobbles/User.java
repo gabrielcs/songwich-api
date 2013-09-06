@@ -94,7 +94,7 @@ public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
 	/**
 	 * @return the id
 	 */
-    @Override
+	@Override
 	public ObjectId getId() {
 		return id;
 	}
@@ -112,33 +112,21 @@ public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
 				+ name + ", appUsers=" + appUsers + "]";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
-		result = prime * result
-				+ ((appUsers == null) ? 0 : appUsers.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -148,11 +136,6 @@ public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
 				return false;
 		} else if (!emailAddress.equals(other.emailAddress))
 			return false;
-		if (appUsers == null) {
-			if (other.appUsers != null)
-				return false;
-		} else if (!appUsers.equals(other.appUsers))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -160,5 +143,4 @@ public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
 			return false;
 		return true;
 	}
-
 }

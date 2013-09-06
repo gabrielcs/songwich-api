@@ -12,19 +12,19 @@ import com.google.code.morphia.annotations.PostLoad;
 public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	@Indexed
 	private String emailAddress;
-	
+
 	private String name;
-	
+
 	@Embedded
 	private AuthToken statefulDevAuthToken;
-	
+
 	@Deprecated
 	@NotSaved
 	private String devAuthToken;
-	
+
 	protected AppDeveloper() {
 	}
-	
+
 	public AppDeveloper(String emailAddress, String name, AuthToken devAuthToken) {
 		this.emailAddress = emailAddress;
 		this.name = name;
@@ -71,15 +71,17 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	@Override
 	public String toString() {
 		return "AppDeveloper [emailAddress=" + emailAddress + ", name=" + name
-				+ ", devAuthToken=" + statefulDevAuthToken + "]";
+				+ ", statefulDevAuthToken=" + statefulDevAuthToken + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((statefulDevAuthToken == null) ? 0 : statefulDevAuthToken.hashCode());
+		result = prime
+				* result
+				+ ((statefulDevAuthToken == null) ? 0 : statefulDevAuthToken
+						.hashCode());
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());

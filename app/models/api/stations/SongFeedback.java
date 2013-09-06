@@ -13,17 +13,17 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 	@Indexed
 	@Embedded
 	private FeedbackType feedbackType;
-	
+
 	private ObjectId userId;
-	
+
 	public enum FeedbackType {
 		THUMBS_UP, THUMBS_DOWN, STAR;
 	}
-	
+
 	protected SongFeedback() {
 		super();
 	}
-	
+
 	public SongFeedback(FeedbackType feedback, ObjectId userId) {
 		this.userId = userId;
 		this.feedbackType = feedback;

@@ -47,7 +47,11 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	}
 
 	private void cascadeSaveGroup(Group group, String devEmail) {
-		Set<GroupMember> groupMembers = group.getGroupMembers();
+		cascadeSaveGroupMembers(group.getGroupMembers(), devEmail);
+	}
+
+	private void cascadeSaveGroupMembers(Set<GroupMember> groupMembers,
+			String devEmail) {
 		for (GroupMember groupMember : groupMembers) {
 			cascadeSaveUser(groupMember.getUser(), devEmail);
 		}

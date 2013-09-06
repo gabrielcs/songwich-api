@@ -11,15 +11,27 @@ import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
 public class Group extends MongoModelImpl implements Scrobbler {
+	
+	private String name;
+
 	@Embedded
 	private Set<GroupMember> groupMembers = new HashSet<GroupMember>();
-
+	
 	protected Group() {
 		super();
 	}
 
-	public Group(Set<GroupMember> groupMembers) {
+	public Group(String name, Set<GroupMember> groupMembers) {
+		this.name = name;
 		this.groupMembers = groupMembers;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Set<GroupMember> getGroupMembers() {
@@ -53,15 +65,14 @@ public class Group extends MongoModelImpl implements Scrobbler {
 
 	@Override
 	public String toString() {
-		return "Group [groupMembers=" + groupMembers + "]";
+		return "Group [name=" + name + ", groupMembers=" + groupMembers + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((groupMembers == null) ? 0 : groupMembers.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -74,11 +85,12 @@ public class Group extends MongoModelImpl implements Scrobbler {
 		if (getClass() != obj.getClass())
 			return false;
 		Group other = (Group) obj;
-		if (groupMembers == null) {
-			if (other.groupMembers != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!groupMembers.equals(other.groupMembers))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
+
 }

@@ -18,10 +18,10 @@ public class App extends MongoModelImpl implements MongoEntity {
 	private ObjectId id;
 
 	private String name;
-	
+
 	@Embedded
 	private List<AppDeveloper> appDevelopers = new ArrayList<AppDeveloper>();
-	
+
 	protected App() {
 		super();
 	}
@@ -34,12 +34,12 @@ public class App extends MongoModelImpl implements MongoEntity {
 		this.name = name;
 		appDevelopers.add(appDeveloper);
 	}
-	
+
 	public App(String name, List<AppDeveloper> appDevelopers) {
 		this.name = name;
 		this.appDevelopers = appDevelopers;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -57,7 +57,7 @@ public class App extends MongoModelImpl implements MongoEntity {
 		this.appDevelopers = appDevelopers;
 		fireModelUpdated();
 	}
-	
+
 	/**
 	 * 
 	 * @param appDeveloper
@@ -68,7 +68,7 @@ public class App extends MongoModelImpl implements MongoEntity {
 		fireModelUpdated();
 		return result;
 	}
-	
+
 	public AppDeveloper getAppDeveloper(String appDeveloperEmail) {
 		for (AppDeveloper appDev : appDevelopers) {
 			if (appDev.getEmailAddress().equals(appDeveloperEmail)) {
@@ -92,9 +92,7 @@ public class App extends MongoModelImpl implements MongoEntity {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((appDevelopers == null) ? 0 : appDevelopers.hashCode());
+		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -103,16 +101,11 @@ public class App extends MongoModelImpl implements MongoEntity {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		App other = (App) obj;
-		if (appDevelopers == null) {
-			if (other.appDevelopers != null)
-				return false;
-		} else if (!appDevelopers.equals(other.appDevelopers))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -120,4 +113,5 @@ public class App extends MongoModelImpl implements MongoEntity {
 			return false;
 		return true;
 	}
+
 }

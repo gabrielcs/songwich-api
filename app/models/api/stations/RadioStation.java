@@ -88,11 +88,7 @@ public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((lookAhead == null) ? 0 : lookAhead.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((nowPlaying == null) ? 0 : nowPlaying.hashCode());
 		result = prime * result
 				+ ((scrobbler == null) ? 0 : scrobbler.hashCode());
 		return result;
@@ -100,34 +96,32 @@ public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		@SuppressWarnings("rawtypes")
 		RadioStation other = (RadioStation) obj;
-		if (lookAhead == null) {
-			if (other.lookAhead != null)
-				return false;
-		} else if (!lookAhead.equals(other.lookAhead))
-			return false;
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+
+		} else if (!name.equals(other.name)) {
 			return false;
-		if (nowPlaying == null) {
-			if (other.nowPlaying != null)
-				return false;
-		} else if (!nowPlaying.equals(other.nowPlaying))
-			return false;
+		}
 		if (scrobbler == null) {
 			if (other.scrobbler != null)
 				return false;
-		} else if (!scrobbler.equals(other.scrobbler))
+		} else if (!scrobbler.equals(other.scrobbler)) {
 			return false;
+		}
 		return true;
 	}
+
 }

@@ -19,16 +19,17 @@ import database.api.scrobbles.UserDAOMongo;
 public class AuthToken extends MongoModelImpl implements MongoModel {
 	@Indexed
 	private String token;
-	
+
 	private AuthTokenState state;
-	
-	protected AuthToken() {}
-	
+
+	protected AuthToken() {
+	}
+
 	protected AuthToken(String authToken) {
 		this.token = authToken;
 		this.state = AuthTokenState.VALID;
 	}
-	
+
 	/*
 	 * Creates a unique user auth token with a valid state
 	 */
@@ -43,7 +44,7 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 			return createUserAuthToken();
 		}
 	}
-	
+
 	/*
 	 * Creates a unique dev auth token with a valid state
 	 */
@@ -58,7 +59,7 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 			return createDevAuthToken();
 		}
 	}
-	
+
 	public String getToken() {
 		return token;
 	}
@@ -67,7 +68,7 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 		this.token = authToken;
 		fireModelUpdated();
 	}
-	
+
 	public void setToken(UUID authToken) {
 		this.token = authToken.toString();
 		fireModelUpdated();
@@ -81,10 +82,9 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 		this.state = state;
 		fireModelUpdated();
 	}
-	
+
 	public enum AuthTokenState {
-		VALID, 
-		REVOKED; 
+		VALID, REVOKED;
 	}
 
 	@Override
@@ -95,10 +95,8 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((token == null) ? 0 : token.hashCode());
-		result = prime * result + ((state == null) ? 0 : state.hashCode());
+		int result = super.hashCode();
+		result = prime * result + ((token == null) ? 0 : token.hashCode());
 		return result;
 	}
 
@@ -106,7 +104,7 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -115,8 +113,6 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 			if (other.token != null)
 				return false;
 		} else if (!token.equals(other.token))
-			return false;
-		if (state != other.state)
 			return false;
 		return true;
 	}

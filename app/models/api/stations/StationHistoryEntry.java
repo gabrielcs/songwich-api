@@ -108,8 +108,6 @@ public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
 		int result = super.hashCode();
 		result = prime * result + ((song == null) ? 0 : song.hashCode());
 		result = prime * result
-				+ ((songFeedback == null) ? 0 : songFeedback.hashCode());
-		result = prime * result
 				+ ((stationId == null) ? 0 : stationId.hashCode());
 		result = prime * result
 				+ ((timestamp == null) ? 0 : timestamp.hashCode());
@@ -129,11 +127,6 @@ public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
 			if (other.song != null)
 				return false;
 		} else if (!song.equals(other.song))
-			return false;
-		if (songFeedback == null) {
-			if (other.songFeedback != null)
-				return false;
-		} else if (!songFeedback.equals(other.songFeedback))
 			return false;
 		if (stationId == null) {
 			if (other.stationId != null)

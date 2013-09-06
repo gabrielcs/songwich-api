@@ -87,7 +87,8 @@ public abstract class BasicDAOMongo<T extends MongoEntity> extends
 
 	private void checkModelsForUpdate(Set<MongoModel> models, String devEmail) {
 		// protect against null Sets instead of empty ones
-		if (models == null) return;
+		if (models == null)
+			return;
 
 		for (MongoModel model : models) {
 			try {
@@ -118,7 +119,8 @@ public abstract class BasicDAOMongo<T extends MongoEntity> extends
 
 	private void checkModelsForInsert(Set<MongoModel> models, String devEmail) {
 		// protect against null Sets instead of empty ones
-		if (models == null) return;
+		if (models == null)
+			return;
 
 		for (MongoModel model : models) {
 			model.setCreatedBy(devEmail);
@@ -134,7 +136,8 @@ public abstract class BasicDAOMongo<T extends MongoEntity> extends
 
 	private void checkModelsAsPersisted(Set<MongoModel> models) {
 		// protect against null Sets instead of empty ones
-		if (models == null) return;
+		if (models == null)
+			return;
 
 		for (MongoModel model : models) {
 			model.setModelPersisted(true);

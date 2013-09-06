@@ -3,7 +3,6 @@ package database.api;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import models.api.scrobbles.App;
 import models.api.scrobbles.AppUser;
@@ -33,7 +32,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 
 	private User fatMike, elHefe;
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
-	private Set<GroupMember> nofxGroupMembers;
+	private HashSet<GroupMember> nofxGroupMembers;
 	private Group nofx;
 	private RadioStation<Group> nofxRadioStation;
 	private App spotify, rdio;
@@ -56,7 +55,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		nofxGroupMembers = new HashSet<GroupMember>();
 		nofxGroupMembers.add(fatMikeFromNofx);
 		nofxGroupMembers.add(elHefeFromNofx);
-		nofx = new Group(nofxGroupMembers);
+		nofx = new Group("NOFX", nofxGroupMembers);
 
 		spotify = new App("Spotify");
 		rdio = new App("Rdio");
@@ -68,7 +67,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		fatMike.addAppUser(fatMikeOnSpotify);
 		elHefe.addAppUser(elHefeOnRdio);
 
-		nofxRadioStation = new RadioStation<Group>("NOFX", nofx);
+		nofxRadioStation = new RadioStation<Group>("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
 		nofxRadioStation.setNowPlaying(doWhatYouWant);
@@ -111,7 +110,6 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		assertTrue(stationHistoryDao.count() == 1);
 		stationHistoryDao.delete(linoleumEntry);
 		assertTrue(stationHistoryDao.count() == 0);
-		// System.out.println(linoleumEntry);
 	}
 
 	@Test

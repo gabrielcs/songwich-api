@@ -10,15 +10,15 @@ import com.google.code.morphia.annotations.Embedded;
 public class GroupMember extends MongoModelImpl implements MongoModel {
 	@Embedded
 	private User user;
-	
+
 	private Long startDate;
-	
+
 	private Long endDate;
-	
+
 	protected GroupMember() {
 		super();
 	}
-	
+
 	public GroupMember(User user, Long startDate) {
 		this.user = user;
 		this.startDate = startDate;
@@ -67,7 +67,6 @@ public class GroupMember extends MongoModelImpl implements MongoModel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
 		result = prime * result
 				+ ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
@@ -83,11 +82,6 @@ public class GroupMember extends MongoModelImpl implements MongoModel {
 		if (getClass() != obj.getClass())
 			return false;
 		GroupMember other = (GroupMember) obj;
-		if (endDate == null) {
-			if (other.endDate != null)
-				return false;
-		} else if (!endDate.equals(other.endDate))
-			return false;
 		if (startDate == null) {
 			if (other.startDate != null)
 				return false;
@@ -100,4 +94,5 @@ public class GroupMember extends MongoModelImpl implements MongoModel {
 			return false;
 		return true;
 	}
+
 }

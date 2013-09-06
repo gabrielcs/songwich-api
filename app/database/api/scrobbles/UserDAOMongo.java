@@ -26,11 +26,11 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	@Override
 	public Key<User> cascadeSave(User t, String devEmail) {
-		cascadeSaveAppUser(t);
+		cascadeSaveAppUser(t, devEmail);
 		return save(t, devEmail);
 	}
 
-	private void cascadeSaveAppUser(User t) {
+	private void cascadeSaveAppUser(User t, String devEmail) {
 		if (t.getAppUsers().isEmpty()) {
 			// there's nothing to save
 			return;
@@ -43,8 +43,8 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 		Set<AppUser> appUsers = t.getAppUsers();
 		for (AppUser appUser : appUsers) {
 			app = appUser.getApp();
-			if (app.getId() == null) {
-				appDAO.save(app);
+			if (!app.isModelPersisted() || app.isModelUpdated()) {
+				appDAO.save(app, devEmail);
 			}
 		}
 	}
