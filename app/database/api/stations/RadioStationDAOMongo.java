@@ -1,7 +1,6 @@
 package database.api.stations;
 
 import java.util.List;
-import java.util.Set;
 
 import models.api.scrobbles.User;
 import models.api.stations.Group;
@@ -24,7 +23,6 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	public RadioStationDAOMongo() {
 	}
 
-	// TODO: test
 	@Override
 	public Key<RadioStation> cascadeSave(RadioStation radioStation,
 			String devEmail) {
@@ -33,27 +31,13 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	}
 
 	private void cascadeSaveScrobbler(RadioStation radioStation, String devEmail) {
-		if (radioStation.getScrobbler() == null) {
-			// there's nothing to save
-			return;
-		}
-
 		Scrobbler scrobbler = radioStation.getScrobbler();
 		if (scrobbler instanceof Group) {
-			cascadeSaveGroup((Group) scrobbler, devEmail);
+			for (GroupMember groupMember : ((Group) scrobbler).getGroupMembers()) {
+				cascadeSaveUser(groupMember.getUser(), devEmail);
+			}
 		} else if (scrobbler instanceof User) {
 			cascadeSaveUser((User) scrobbler, devEmail);
-		}
-	}
-
-	private void cascadeSaveGroup(Group group, String devEmail) {
-		cascadeSaveGroupMembers(group.getGroupMembers(), devEmail);
-	}
-
-	private void cascadeSaveGroupMembers(Set<GroupMember> groupMembers,
-			String devEmail) {
-		for (GroupMember groupMember : groupMembers) {
-			cascadeSaveUser(groupMember.getUser(), devEmail);
 		}
 	}
 
@@ -67,7 +51,6 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 		return ds.find(RadioStation.class).filter("id", id).get();
 	}
 
-	// TODO: test
 	@Override
 	public List<RadioStation> findByName(String name) {
 		return ds.find(RadioStation.class).filter("name", name).asList();
