@@ -1,8 +1,12 @@
 package database.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 
 import models.api.scrobbles.App;
 import models.api.scrobbles.AppUser;
@@ -34,11 +38,13 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
 	private HashSet<GroupMember> nofxGroupMembers;
 	private Group nofx;
-	private RadioStation nofxRadioStation;
+	private RadioStation nofxStation, fatMikeStation;
 	private App spotify, rdio;
 	private AppUser fatMikeOnSpotify, elHefeOnRdio;
-	private Song linoleum, doWhatYouWant;
-	private StationHistoryEntry linoleumEntry;
+	private Song linoleum, doWhatYouWant, dontCallMeWhite;
+	private StationHistoryEntry linoleumEntry, dontCallMeWhiteFatMikeEntry,
+			dontCallMeWhiteNofx4HoursOldEntry, doWhatYouWantEntry,
+			doWhatYouWantEntry4HoursOldEntry;
 
 	@Before
 	public void setUp() throws Exception {
@@ -67,20 +73,48 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		fatMike.addAppUser(fatMikeOnSpotify);
 		elHefe.addAppUser(elHefeOnRdio);
 
-		nofxRadioStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant);
-		nofxRadioStation.setLookAhead(linoleum);
+		dontCallMeWhite = new Song("Don't Call Me White", "NOFX");
+		nofxStation = new RadioStation("NOFX FM", nofx);
+		nofxStation.setNowPlaying(doWhatYouWant);
+		nofxStation.setLookAhead(linoleum);
+
+		fatMikeStation = new RadioStation("Fat Mike FM", fatMike);
 
 		// saves the radio station
 		RadioStationDAOMongo radioStationDao = new RadioStationDAOMongo();
-		radioStationDao.cascadeSave(nofxRadioStation, DEV_EMAIL);
+		radioStationDao.cascadeSave(nofxStation, DEV_EMAIL);
+		radioStationDao.cascadeSave(fatMikeStation, DEV_EMAIL);
 
-		linoleumEntry = new StationHistoryEntry(nofxRadioStation.getId(),
-				linoleum, System.currentTimeMillis());
+		linoleumEntry = new StationHistoryEntry(nofxStation.getId(), linoleum,
+				System.currentTimeMillis());
 		// saves the radio station history entry
 		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.HOUR, -4);
+		dontCallMeWhiteNofx4HoursOldEntry = new StationHistoryEntry(
+				nofxStation.getId(), dontCallMeWhite,
+				calendar.getTimeInMillis());
+		// saves the radio station history entry
+		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV_EMAIL);
+
+		dontCallMeWhiteFatMikeEntry = new StationHistoryEntry(
+				fatMikeStation.getId(), dontCallMeWhite,
+				System.currentTimeMillis());
+		// saves the radio station history entry
+		stationHistoryDao.save(dontCallMeWhiteFatMikeEntry, DEV_EMAIL);
+
+		doWhatYouWantEntry = new StationHistoryEntry(nofxStation.getId(),
+				doWhatYouWant, System.currentTimeMillis());
+		// saves the radio station history entry
+		stationHistoryDao.save(doWhatYouWantEntry, DEV_EMAIL);
+
+		doWhatYouWantEntry4HoursOldEntry = new StationHistoryEntry(
+				nofxStation.getId(), doWhatYouWant, calendar.getTimeInMillis());
+		// saves the radio station history entry
+		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, DEV_EMAIL);
 
 		// adds feedback
 		User gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
@@ -103,13 +137,19 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel);
 		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel);
 		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
+
+		SongFeedback dontCallMeWhiteFeedbackGabriel = new SongFeedback(
+				FeedbackType.THUMBS_DOWN, gabriel.getId());
+		dontCallMeWhiteNofx4HoursOldEntry
+				.addSongFeedback(dontCallMeWhiteFeedbackGabriel);
+		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV_EMAIL);
 	}
 
 	@Test
 	public void testSaveAndDelete() {
-		assertTrue(stationHistoryDao.count() == 1);
+		assertTrue(stationHistoryDao.count() == 5);
 		stationHistoryDao.delete(linoleumEntry);
-		assertTrue(stationHistoryDao.count() == 0);
+		assertTrue(stationHistoryDao.count() == 4);
 	}
 
 	@Test
@@ -119,8 +159,100 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 	}
 
 	@Test
-	public void testFindByStationId() {
-		assertTrue(stationHistoryDao.findByStationId(nofxRadioStation.getId())
-				.size() == 1);
+	public void testCountByStationId() {
+		assertEquals(4, stationHistoryDao.countByStationId(nofxStation.getId()));
 	}
+
+	@Test
+	public void testFindByStationId() {
+		List<StationHistoryEntry> entries = stationHistoryDao
+				.findByStationId(nofxStation.getId());
+		assertEquals(4, entries.size());
+		assertTrue(entries.contains(linoleumEntry));
+		assertTrue(entries.contains(dontCallMeWhiteNofx4HoursOldEntry));
+		assertTrue(entries.contains(doWhatYouWantEntry));
+		assertTrue(entries.contains(doWhatYouWantEntry4HoursOldEntry));
+	}
+
+	@Test
+	public void testCountByStationIdAndArtist() {
+		assertEquals(2, stationHistoryDao.countByStationIdAndArtist(
+				nofxStation.getId(), "NOFX"));
+	}
+
+	@Test
+	public void testCountByStationIdAndArtistWithHourOffset() {
+		assertEquals(1,
+				stationHistoryDao.countByStationIdAndArtistWithHourOffset(
+						nofxStation.getId(), "NOFX", 3));
+		assertEquals(2,
+				stationHistoryDao.countByStationIdAndArtistWithHourOffset(
+						nofxStation.getId(), "NOFX", 5));
+	}
+
+	@Test
+	public void testCountByStationIdAndSongWithHourOffset() {
+		assertEquals(1,
+				stationHistoryDao.countByStationIdAndSongWithHourOffset(
+						nofxStation.getId(), doWhatYouWant, 3));
+		assertEquals(2,
+				stationHistoryDao.countByStationIdAndSongWithHourOffset(
+						nofxStation.getId(), doWhatYouWant, 5));
+	}
+
+	@Test
+	public void testFindByStationIdAndArtist() {
+		List<StationHistoryEntry> entries = stationHistoryDao
+				.findByStationIdAndArtist(nofxStation.getId(), "NOFX");
+		assertEquals(2, entries.size());
+		assertTrue(entries.contains(linoleumEntry));
+		assertTrue(entries.contains(dontCallMeWhiteNofx4HoursOldEntry));
+	}
+
+	@Test
+	public void testFindByStationIdAndArtistWithHourOffset() {
+		List<StationHistoryEntry> entries = stationHistoryDao
+				.findByStationIdAndArtistWithHourOffset(nofxStation.getId(),
+						"NOFX", 3);
+		assertEquals(1, entries.size());
+		assertTrue(entries.contains(linoleumEntry));
+
+		entries = stationHistoryDao.findByStationIdAndArtistWithHourOffset(
+				nofxStation.getId(), "NOFX", 5);
+		assertEquals(2, entries.size());
+		assertTrue(entries.contains(linoleumEntry));
+		assertTrue(entries.contains(dontCallMeWhiteNofx4HoursOldEntry));
+	}
+
+	@Test
+	public void testFindByStationIdWithHourOffset() {
+		List<StationHistoryEntry> entries = stationHistoryDao
+				.findByStationIdWithHourOffset(nofxStation.getId(), 3);
+		assertEquals(2, entries.size());
+		assertTrue(entries.contains(linoleumEntry));
+		assertTrue(entries.contains(doWhatYouWantEntry));
+		
+		entries = stationHistoryDao
+				.findByStationIdWithHourOffset(nofxStation.getId(), 5);
+		assertEquals(4, entries.size());
+		assertTrue(entries.contains(linoleumEntry));
+		assertTrue(entries.contains(doWhatYouWantEntry));
+		assertTrue(entries.contains(dontCallMeWhiteNofx4HoursOldEntry));
+		assertTrue(entries.contains(doWhatYouWantEntry4HoursOldEntry));
+	}
+
+	@Test
+	public void testFindLastEntriesByStationId() {
+		List<StationHistoryEntry> entries = stationHistoryDao
+				.findLastEntriesByStationId(nofxStation.getId(), 2);
+		assertEquals(2, entries.size());
+		assertTrue(entries.contains(doWhatYouWantEntry));
+		assertTrue(entries.contains(linoleumEntry));
+
+		entries = stationHistoryDao.findLastEntriesByStationId(
+				nofxStation.getId(), 1);
+		assertEquals(1, entries.size());
+		assertTrue(entries.contains(doWhatYouWantEntry));
+	}
+
 }

@@ -30,13 +30,11 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public long countByStationId(ObjectId stationId) {
 		return queryByStationId(stationId).countAll();
 	}
 
-	// TODO: test
 	@Override
 	public List<StationHistoryEntry> findByStationIdWithHourOffset(
 			ObjectId stationId, int hourOffset) {
@@ -45,7 +43,6 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public long countByStationIdAndSongWithHourOffset(ObjectId stationId,
 			Song song, int hourOffset) {
@@ -54,7 +51,6 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return filterHourOffset(query, hourOffset).countAll();
 	}
 
-	// TODO: test
 	@Override
 	public List<StationHistoryEntry> findLastEntriesByStationId(
 			ObjectId stationId, int numberOfEntries) {
@@ -62,13 +58,11 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return order(query).limit(numberOfEntries).asList();
 	}
 
-	// TODO: test
 	@Override
 	public long countByStationIdAndArtist(ObjectId stationId, String artistName) {
 		return queryByStationIdAndArtist(stationId, artistName).countAll();
 	}
 
-	// TODO: test
 	@Override
 	public List<StationHistoryEntry> findByStationIdAndArtist(
 			ObjectId stationId, String artistName) {
@@ -77,7 +71,6 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return order(query).asList();
 	}
 
-	// TODO: test
 	@Override
 	public long countByStationIdAndArtistWithHourOffset(ObjectId stationId,
 			String artistName, int hourOffset) {
@@ -85,7 +78,6 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 				hourOffset).countAll();
 	}
 
-	// TODO: test
 	@Override
 	public List<StationHistoryEntry> findByStationIdAndArtistWithHourOffset(
 			ObjectId stationId, String artistName, int hourOffset) {
@@ -105,7 +97,7 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 
 	private Query<StationHistoryEntry> queryByStationIdAndArtist(
 			ObjectId stationId, String artistName) {
-		return queryByStationId(stationId).filter("song.artistNames",
+		return queryByStationId(stationId).filter("song.artistsNames",
 				artistName);
 	}
 
@@ -126,7 +118,6 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		calendar.add(Calendar.HOUR, -hourOffset);
 		long hourOffsetMillis = calendar.getTimeInMillis();
 
-		return query.filter("timestamp", System.currentTimeMillis()
-				- hourOffsetMillis);
+		return query.filter("timestamp >", hourOffsetMillis);
 	}
 }
