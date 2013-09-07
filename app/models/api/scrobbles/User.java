@@ -5,7 +5,6 @@ import java.util.Set;
 
 import models.api.MongoEntity;
 import models.api.MongoModelImpl;
-import models.api.stations.Scrobbler;
 
 import org.bson.types.ObjectId;
 
@@ -15,7 +14,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
 
 @Entity
-public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
+public class User extends MongoModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 
@@ -97,13 +96,6 @@ public class User extends MongoModelImpl implements Scrobbler, MongoEntity {
 	@Override
 	public ObjectId getId() {
 		return id;
-	}
-
-	@Override
-	public Set<ObjectId> getActiveScrobblersUserIds() {
-		Set<ObjectId> userIds = new HashSet<ObjectId>();
-		userIds.add(getId());
-		return userIds;
 	}
 
 	@Override

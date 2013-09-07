@@ -5,12 +5,10 @@ import java.util.Set;
 
 import models.api.MongoModelImpl;
 
-import org.bson.types.ObjectId;
-
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class Group extends MongoModelImpl implements Scrobbler {
+public class Group extends MongoModelImpl {
 	
 	private String name;
 
@@ -52,15 +50,6 @@ public class Group extends MongoModelImpl implements Scrobbler {
 		boolean result = this.groupMembers.add(groupMember);
 		fireModelUpdated();
 		return result;
-	}
-
-	@Override
-	public Set<ObjectId> getActiveScrobblersUserIds() {
-		Set<ObjectId> userIds = new HashSet<ObjectId>();
-		for (GroupMember groupMember : groupMembers) {
-			userIds.add(groupMember.getUser().getId());
-		}
-		return userIds;
 	}
 
 	@Override

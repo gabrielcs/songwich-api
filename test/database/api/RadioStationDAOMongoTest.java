@@ -31,7 +31,7 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
 	private HashSet<GroupMember> nofxGroupMembers;
 	private Group nofx;
-	private RadioStation<Group> nofxRadioStation;
+	private RadioStation nofxStation, fatMikeStation;
 	private App spotify, rdio;
 	private AppUser fatMikeOnSpotify, elHefeOnRdio;
 	private Song linoleum, doWhatYouWant;
@@ -63,45 +63,60 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		fatMike.addAppUser(fatMikeOnSpotify);
 		elHefe.addAppUser(elHefeOnRdio);
 
-		nofxRadioStation = new RadioStation<Group>("NOFX FM", nofx);
+		nofxStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant);
-		nofxRadioStation.setLookAhead(linoleum);
+		nofxStation.setNowPlaying(doWhatYouWant);
+		nofxStation.setLookAhead(linoleum);
+
+		fatMikeStation = new RadioStation("Fat Mike", fatMike);
+		fatMikeStation.setNowPlaying(linoleum);
+		fatMikeStation.setLookAhead(doWhatYouWant);
 
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(nofxRadioStation, DEV_EMAIL);
+		radioStationDAO.cascadeSave(nofxStation, DEV_EMAIL);
+		radioStationDAO.cascadeSave(fatMikeStation, DEV_EMAIL);
 	}
 
 	@Test
 	public void testCountAndDelete() {
+		assertTrue(radioStationDao.count() == 2);
+		radioStationDao.delete(nofxStation);
 		assertTrue(radioStationDao.count() == 1);
-		radioStationDao.delete(nofxRadioStation);
-		assertTrue(radioStationDao.count() == 0);
 	}
 
 	@Test
 	public void testFindById() {
-		@SuppressWarnings("unchecked")
-		RadioStation<Group> databaseStation = (RadioStation<Group>) radioStationDao
-				.findById(nofxRadioStation.getId());
-		assertEquals(nofxRadioStation, databaseStation);
-		assertEquals(databaseStation, nofxRadioStation);
-		
-		System.out.println(databaseStation);
+		RadioStation databaseStation = (RadioStation) radioStationDao
+				.findById(nofxStation.getId());
+		assertEquals(nofxStation, databaseStation);
+		assertEquals(databaseStation, nofxStation);
 	}
 
 	@Test
 	public void testFindByName() {
-		@SuppressWarnings("rawtypes")
 		List<RadioStation> radioStations = radioStationDao
-				.findByName(nofxRadioStation.getName());
+				.findByName(nofxStation.getName());
 
 		assertTrue(radioStations.size() == 1);
-		@SuppressWarnings("unchecked")
-		RadioStation<Group> databaseStation = radioStations.iterator().next();
+		RadioStation databaseStation = radioStations.iterator().next();
 
-		assertEquals(databaseStation, nofxRadioStation);
-		assertEquals(nofxRadioStation, databaseStation);
+		assertEquals(databaseStation, nofxStation);
+		assertEquals(nofxStation, databaseStation);
+	}
+
+	@Test
+	public void testFindByScrobblerId() {
+		List<RadioStation> mikeStations = radioStationDao
+				.findByScrobblerId(fatMike.getId());
+		assertTrue(mikeStations.size() == 2);
+		assertTrue(mikeStations.contains(fatMikeStation));
+		assertTrue(mikeStations.contains(nofxStation));
+		
+		List<RadioStation> hefeStations = radioStationDao
+				.findByScrobblerId(elHefe.getId());
+		assertTrue(hefeStations.size() == 1);
+		assertTrue(hefeStations.contains(nofxStation));
+		
 	}
 }

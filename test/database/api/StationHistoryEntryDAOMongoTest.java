@@ -34,7 +34,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
 	private HashSet<GroupMember> nofxGroupMembers;
 	private Group nofx;
-	private RadioStation<Group> nofxRadioStation;
+	private RadioStation nofxRadioStation;
 	private App spotify, rdio;
 	private AppUser fatMikeOnSpotify, elHefeOnRdio;
 	private Song linoleum, doWhatYouWant;
@@ -67,7 +67,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		fatMike.addAppUser(fatMikeOnSpotify);
 		elHefe.addAppUser(elHefeOnRdio);
 
-		nofxRadioStation = new RadioStation<Group>("NOFX FM", nofx);
+		nofxRadioStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
 		nofxRadioStation.setNowPlaying(doWhatYouWant);

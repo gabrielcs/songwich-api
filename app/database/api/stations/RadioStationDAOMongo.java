@@ -3,10 +3,9 @@ package database.api.stations;
 import java.util.List;
 
 import models.api.scrobbles.User;
-import models.api.stations.Group;
 import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
-import models.api.stations.Scrobbler;
+import models.api.stations.ScrobblerBridge;
 
 import org.bson.types.ObjectId;
 
@@ -16,7 +15,6 @@ import database.api.BasicDAOMongo;
 import database.api.CascadeSaveDAO;
 import database.api.scrobbles.UserDAOMongo;
 
-@SuppressWarnings("rawtypes")
 public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 		RadioStationDAO<ObjectId>, CascadeSaveDAO<RadioStation, ObjectId> {
 
@@ -31,13 +29,14 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	}
 
 	private void cascadeSaveScrobbler(RadioStation radioStation, String devEmail) {
-		Scrobbler scrobbler = radioStation.getScrobbler();
-		if (scrobbler instanceof Group) {
-			for (GroupMember groupMember : ((Group) scrobbler).getGroupMembers()) {
+		ScrobblerBridge scrobbler = radioStation.getScrobbler();
+		if (scrobbler.isGroupScrobbler()) {
+			for (GroupMember groupMember : scrobbler.getGroup()
+					.getGroupMembers()) {
 				cascadeSaveUser(groupMember.getUser(), devEmail);
 			}
-		} else if (scrobbler instanceof User) {
-			cascadeSaveUser((User) scrobbler, devEmail);
+		} else if (scrobbler.isUserScrobbler()) {
+			cascadeSaveUser(scrobbler.getUser(), devEmail);
 		}
 	}
 
@@ -54,5 +53,12 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	@Override
 	public List<RadioStation> findByName(String name) {
 		return ds.find(RadioStation.class).filter("name", name).asList();
+	}
+
+	@Override
+	public List<RadioStation> findByScrobblerId(ObjectId scrobblerId) {
+		return ds.find(RadioStation.class)
+				.filter("scrobbler.activeScrobblersUserIds", scrobblerId)
+				.asList();
 	}
 }

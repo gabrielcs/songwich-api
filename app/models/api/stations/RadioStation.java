@@ -3,6 +3,7 @@ package models.api.stations;
 import models.api.MongoEntity;
 import models.api.MongoModelImpl;
 import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 
@@ -11,15 +12,14 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
 @Entity
-public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
-		MongoEntity {
+public class RadioStation extends MongoModelImpl implements MongoEntity {
 	@Id
 	private ObjectId id;
 
 	private String name;
 
 	@Embedded
-	private T scrobbler;
+	private ScrobblerBridge scrobbler;
 
 	@Embedded
 	private Song nowPlaying;
@@ -31,9 +31,19 @@ public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
 		super();
 	}
 
-	public RadioStation(String name, T scrobbler) {
+	public RadioStation(String name, ScrobblerBridge scrobbler) {
 		this.name = name;
 		this.scrobbler = scrobbler;
+	}
+	
+	public RadioStation(String name, Group group) {
+		this.name = name;
+		this.scrobbler = new ScrobblerBridge(group);
+	}
+	
+	public RadioStation(String name, User user) {
+		this.name = name;
+		this.scrobbler = new ScrobblerBridge(user);
 	}
 
 	public String getName() {
@@ -45,11 +55,11 @@ public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
 		fireModelUpdated();
 	}
 
-	public T getScrobbler() {
+	public ScrobblerBridge getScrobbler() {
 		return scrobbler;
 	}
 
-	public void setScrobbler(T scrobbler) {
+	public void setScrobbler(ScrobblerBridge scrobbler) {
 		this.scrobbler = scrobbler;
 		fireModelUpdated();
 	}
@@ -105,7 +115,6 @@ public class RadioStation<T extends Scrobbler> extends MongoModelImpl implements
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		@SuppressWarnings("rawtypes")
 		RadioStation other = (RadioStation) obj;
 		if (name == null) {
 			if (other.name != null) {
