@@ -16,6 +16,7 @@ import models.api.scrobbles.User;
 import models.api.stations.Group;
 import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
+import models.api.stations.Track;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,8 +71,8 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 		nofxRadioStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(doWhatYouWant);
-		nofxRadioStation.setLookAhead(linoleum);
+		nofxRadioStation.setNowPlaying(new Track(null, doWhatYouWant));
+		nofxRadioStation.setLookAhead(new Track(null, linoleum));
 
 		radioStationDao.cascadeSave(nofxRadioStation, DEV_EMAIL);
 	}

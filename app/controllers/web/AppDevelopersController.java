@@ -7,14 +7,14 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import util.api.MyLogger;
 import views.api.DataTransferObject;
-import views.api.scrobbles.AppDevelopersDTO;
+import views.api.scrobbles.AppDevelopersDTO_V0_4;
 
 public class AppDevelopersController extends Controller {
 
 	public static Result postAppDevelopers() {
 
-		Form<AppDevelopersDTO> appDevelopersForm = Form.form(
-				AppDevelopersDTO.class).bindFromRequest();
+		Form<AppDevelopersDTO_V0_4> appDevelopersForm = Form.form(
+				AppDevelopersDTO_V0_4.class).bindFromRequest();
 		if (appDevelopersForm.hasErrors()) {
 			String errors = DataTransferObject.errorsAsString(appDevelopersForm
 					.errors());

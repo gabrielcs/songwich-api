@@ -1,12 +1,9 @@
 package views.api.scrobbles;
 
-import java.util.List;
-
 import models.api.scrobbles.Scrobble;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 
 import play.data.validation.ValidationError;
 import views.api.DataTransferObject;
@@ -14,7 +11,7 @@ import views.api.DataTransferObject;
 // @JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("appDeveloper")
-public class AppDevelopersDTO extends DataTransferObject<Scrobble> {
+public class AppDevelopersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String devEmail;
 
@@ -22,45 +19,24 @@ public class AppDevelopersDTO extends DataTransferObject<Scrobble> {
 
 	private String appName;
 
-	public AppDevelopersDTO() {
+	public AppDevelopersDTO_V0_4() {
 	}
 
 	@Override
-	public List<ValidationError> validate() {
+	public void addValidation() {
 		addValidation(validateDevEmail(), validateName(), validateAppName());
-		// check for empty list and return null
-		return getValidationErrors().isEmpty() ? null : getValidationErrors();
 	}
 
 	private ValidationError validateDevEmail() {
-		if (devEmail == null || devEmail.isEmpty()) {
-			return new ValidationError("devEmail", "devEmail is required");
-		}
-		
-		if (!DataTransferObject.validateEmailAddress(devEmail)) {
-			return new ValidationError("devEmail", "Invalid devEmail");
-		}
-		
-		// validation sucessfull
-		return null;
+		return validateRequiredEmailAddress("devEmail", devEmail);
 	}
 	
 	private ValidationError validateName() {
-		if (name == null || name.isEmpty()) {
-			return new ValidationError("name", "name is required");
-		}
-		
-		// validation sucessfull
-		return null;
+		return validateRequiredProperty("name", name);
 	}
 	
 	private ValidationError validateAppName() {
-		if (appName == null || appName.isEmpty()) {
-			return new ValidationError("appName", "appName is required");
-		}
-		
-		// validation sucessfull
-		return null;
+		return validateRequiredProperty("appName", appName);
 	}
 
 	/**

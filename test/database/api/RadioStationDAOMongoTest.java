@@ -14,6 +14,7 @@ import models.api.scrobbles.User;
 import models.api.stations.Group;
 import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
+import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -66,12 +67,12 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		nofxStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxStation.setNowPlaying(doWhatYouWant);
-		nofxStation.setLookAhead(linoleum);
+		nofxStation.setNowPlaying(new Track(null, doWhatYouWant));
+		nofxStation.setLookAhead(new Track(null, linoleum));
 
 		fatMikeStation = new RadioStation("Fat Mike", fatMike);
-		fatMikeStation.setNowPlaying(linoleum);
-		fatMikeStation.setLookAhead(doWhatYouWant);
+		fatMikeStation.setNowPlaying(new Track(null, linoleum));
+		fatMikeStation.setLookAhead(new Track(null, doWhatYouWant));
 
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
 		radioStationDAO.cascadeSave(nofxStation, DEV_EMAIL);

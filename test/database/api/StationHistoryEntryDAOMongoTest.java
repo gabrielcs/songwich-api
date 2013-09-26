@@ -19,6 +19,7 @@ import models.api.stations.RadioStation;
 import models.api.stations.SongFeedback;
 import models.api.stations.SongFeedback.FeedbackType;
 import models.api.stations.StationHistoryEntry;
+import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -77,8 +78,6 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
 		dontCallMeWhite = new Song("Don't Call Me White", "NOFX");
 		nofxStation = new RadioStation("NOFX FM", nofx);
-		nofxStation.setNowPlaying(doWhatYouWant);
-		nofxStation.setLookAhead(linoleum);
 
 		fatMikeStation = new RadioStation("Fat Mike FM", fatMike);
 
@@ -115,6 +114,11 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 				nofxStation.getId(), doWhatYouWant, calendar.getTimeInMillis());
 		// saves the radio station history entry
 		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, DEV_EMAIL);
+
+		// sets nofxStation's nowPlaying and lookAhead
+		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, doWhatYouWant));
+		nofxStation.setLookAhead(new Track(linoleumEntry, linoleum));
+		radioStationDao.save(nofxStation, DEV_EMAIL);
 
 		// adds feedback
 		User gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
@@ -231,9 +235,9 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		assertEquals(2, entries.size());
 		assertTrue(entries.contains(linoleumEntry));
 		assertTrue(entries.contains(doWhatYouWantEntry));
-		
-		entries = stationHistoryDao
-				.findByStationIdWithHourOffset(nofxStation.getId(), 5);
+
+		entries = stationHistoryDao.findByStationIdWithHourOffset(
+				nofxStation.getId(), 5);
 		assertEquals(4, entries.size());
 		assertTrue(entries.contains(linoleumEntry));
 		assertTrue(entries.contains(doWhatYouWantEntry));

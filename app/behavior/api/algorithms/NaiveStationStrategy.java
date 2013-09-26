@@ -5,7 +5,8 @@ import java.util.Set;
 
 import models.api.scrobbles.Scrobble;
 import models.api.scrobbles.Song;
-import models.api.stations.StationHistoryEntry;
+import models.api.stations.RadioStation;
+import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 
@@ -24,13 +25,15 @@ public class NaiveStationStrategy implements StationStrategy {
 	}
 
 	@Override
-	public Song next(Set<ObjectId> scrobblersIds,
-			List<StationHistoryEntry> history, Song lookAhead) {
-		
+	public Song next(RadioStation radioStation) {
+		Set<ObjectId> scrobblersIds = radioStation.getScrobbler()
+				.getActiveScrobblersUserIds();
+
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		List<Scrobble> scrobbles = scrobbleDao.findLastScrobblesByUserIds(
 				scrobblersIds, 5, false);
 
+		Track lookAhead = radioStation.getLookAhead();
 		Song next;
 		int index;
 		do {

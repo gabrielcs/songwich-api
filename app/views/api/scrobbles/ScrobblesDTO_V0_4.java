@@ -8,7 +8,6 @@ import models.api.scrobbles.Scrobble;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-
 import play.data.validation.ValidationError;
 import views.api.DataTransferObject;
 
@@ -38,11 +37,9 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	@Override
-	public List<ValidationError> validate() {
+	public void addValidation() {
 		addValidation(validateTrackTitle(), validateArtistsNames(),
 				validateTimestamp(), validateChosenByUser());
-		// check for empty list and return null
-		return getValidationErrors().isEmpty() ? null : getValidationErrors();
 	}
 
 	public String getTrackTitle() {
@@ -54,11 +51,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	private ValidationError validateTrackTitle() {
-		if (trackTitle == null || trackTitle.isEmpty()) {
-			return new ValidationError("trackTitle", "trackTitle is required");
-		}
-
-		return null;
+		return validateRequiredProperty("trackTitle", trackTitle);
 	}
 
 	public List<String> getArtistsNames() {
@@ -71,19 +64,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	private ValidationError validateArtistsNames() {
-		if (artistsNames == null || artistsNames.isEmpty()) {
-			return new ValidationError("artistsNames",
-					"artistsNames is required");
-		} else {
-			for (String artistName : artistsNames) {
-				if (!artistName.isEmpty()) {
-					return null;
-				}
-			}
-			// no artistName was non-empty
-			return new ValidationError("artistsNames",
-					"artistsNames is required");
-		}
+		return validateRequiredNonEmptyArray("artistsNames", artistsNames);
 	}
 
 	public String getPlayer() {
@@ -155,12 +136,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private ValidationError validateChosenByUser() {
 		// choosenByUser is optional
-		if (chosenByUser == null || chosenByUser.equalsIgnoreCase("true")
-				|| chosenByUser.equalsIgnoreCase("false")) {
-			return null;
-		} else {
-			return new ValidationError("chosenByUser",
-					"chosenByUser should be either true or false");
-		}
+		return validateBoolean("chosenByUser", chosenByUser);
 	}
 }

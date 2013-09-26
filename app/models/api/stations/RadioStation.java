@@ -1,8 +1,9 @@
 package models.api.stations;
 
+import java.net.URL;
+
 import models.api.MongoEntity;
 import models.api.MongoModelImpl;
-import models.api.scrobbles.Song;
 import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
@@ -17,15 +18,17 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	private ObjectId id;
 
 	private String name;
+	
+	private URL imageUrl;
 
 	@Embedded
 	private ScrobblerBridge scrobbler;
 
 	@Embedded
-	private Song nowPlaying;
+	private Track nowPlaying;
 
 	@Embedded
-	private Song lookAhead;
+	private Track lookAhead;
 
 	protected RadioStation() {
 		super();
@@ -35,15 +38,42 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.name = name;
 		this.scrobbler = scrobbler;
 	}
+
+	public RadioStation(String name, ScrobblerBridge scrobbler, URL imageUrl) {
+		this.name = name;
+		this.scrobbler = scrobbler;
+		this.imageUrl = imageUrl;
+	}
 	
 	public RadioStation(String name, Group group) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(group);
 	}
 	
+	public RadioStation(String name, Group group, URL imageUrl) {
+		this.name = name;
+		this.scrobbler = new ScrobblerBridge(group);
+		this.imageUrl = imageUrl;
+	}
+	
 	public RadioStation(String name, User user) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(user);
+	}
+	
+	public RadioStation(String name, User user, URL imageUrl) {
+		this.name = name;
+		this.scrobbler = new ScrobblerBridge(user);
+		this.imageUrl = imageUrl;
+	}
+	
+	public URL getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(URL imageUrl) {
+		this.imageUrl = imageUrl;
+		fireModelUpdated();
 	}
 
 	public String getName() {
@@ -64,20 +94,20 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		fireModelUpdated();
 	}
 
-	public Song getNowPlaying() {
+	public Track getNowPlaying() {
 		return nowPlaying;
 	}
 
-	public void setNowPlaying(Song nowPlaying) {
+	public void setNowPlaying(Track nowPlaying) {
 		this.nowPlaying = nowPlaying;
 		fireModelUpdated();
 	}
 
-	public Song getLookAhead() {
+	public Track getLookAhead() {
 		return lookAhead;
 	}
 
-	public void setLookAhead(Song lookAhead) {
+	public void setLookAhead(Track lookAhead) {
 		this.lookAhead = lookAhead;
 		fireModelUpdated();
 	}
@@ -89,9 +119,9 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 
 	@Override
 	public String toString() {
-		return "RadioStation [id=" + id + ", name=" + name + ", scrobbler="
-				+ scrobbler + ", nowPlaying=" + nowPlaying + ", lookAhead="
-				+ lookAhead + "]";
+		return "RadioStation [id=" + id + ", name=" + name + ", imageUrl="
+				+ imageUrl + ", scrobbler=" + scrobbler + ", nowPlaying="
+				+ nowPlaying + ", lookAhead=" + lookAhead + "]";
 	}
 
 	@Override

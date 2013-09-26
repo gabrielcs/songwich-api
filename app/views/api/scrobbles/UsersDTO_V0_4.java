@@ -1,12 +1,9 @@
 package views.api.scrobbles;
 
-import java.util.List;
-
 import models.api.scrobbles.Scrobble;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 
 import play.data.validation.ValidationError;
 import views.api.DataTransferObject;
@@ -28,23 +25,12 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	@Override
-	public List<ValidationError> validate() {
+	public void addValidation() {
 		addValidation(validateUserEmail());
-		// check for empty list and return null
-		return getValidationErrors().isEmpty() ? null : getValidationErrors();
 	}
 
 	private ValidationError validateUserEmail() {
-		if (userEmail == null || userEmail.isEmpty()) {
-			return new ValidationError("userEmail", "userEmail is required");
-		}
-		
-		if (!DataTransferObject.validateEmailAddress(userEmail)) {
-			return new ValidationError("userEmail", "Invalid userEmail");
-		}
-		
-		// validation successful
-		return null;
+		return validateRequiredEmailAddress("userEmail", userEmail);
 	}
 
 	/**

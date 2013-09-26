@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.bson.types.ObjectId;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import play.data.validation.ValidationError;
@@ -17,9 +18,15 @@ public abstract class DataTransferObject<T> {
 
 	private final static Pattern EMAIL_REGEX = Pattern
 			.compile("\\b[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*\\b");
-	
+
 	// method called by Play!
-	public abstract List<ValidationError> validate();
+	public List<ValidationError> validate() {
+		addValidation();
+		// check for empty list and return null
+		return getValidationErrors().isEmpty() ? null : getValidationErrors();
+	}
+
+	public abstract void addValidation();
 
 	@JsonIgnore
 	private List<ValidationError> validationErrors;
@@ -60,13 +67,89 @@ public abstract class DataTransferObject<T> {
 		}
 		return errorsString.toString();
 	}
-	
+
+	protected static ValidationError validateRequiredProperty(
+			String propertyName, String property) {
+		if (property == null || property.isEmpty()) {
+			return new ValidationError(propertyName, propertyName
+					+ " is required");
+		} else {
+			return null;
+		}
+	}
+
 	/*
-	 * Returns true if the email address is valid or false otherwise
-	 * 
-	 * Source: https://github.com/playframework/playframework/blob/master/framework/src/play-java/src/main/java/play/data/validation/Constraints.java
+	 * https://github.com/playframework/playframework/blob/master/framework
+	 * /src/play-java/src/main/java/play/data/validation/Constraints.java
 	 */
-	public static boolean validateEmailAddress(String emailAddress) {
-		return EMAIL_REGEX.matcher(emailAddress).matches();
+	protected static ValidationError validateEmailAddress(String propertyName,
+			String emailAddress) {
+		if (!EMAIL_REGEX.matcher(emailAddress).matches()) {
+			return new ValidationError(propertyName, propertyName
+					+ "is invalid");
+		} else {
+			// validation successful
+			return null;
+		}
+	}
+
+	protected static ValidationError validateRequiredEmailAddress(
+			String propertyName, String emailAddress) {
+		ValidationError validationError = validateRequiredProperty(
+				propertyName, emailAddress);
+		if (validationError != null) {
+			return validationError;
+		} else {
+			return validationError = validateEmailAddress(propertyName,
+					emailAddress);
+		}
+	}
+
+	protected static ValidationError validateRequiredObjectId(
+			String propertyName, String objectId) {
+		ValidationError validationError = validateRequiredProperty(
+				propertyName, objectId);
+		if (validationError != null) {
+			return validationError;
+		} else {
+			return validationError = validateObjectId(propertyName, objectId);
+		}
+	}
+
+	protected static ValidationError validateObjectId(String propertyName,
+			String objectId) {
+		if (!ObjectId.isValid(objectId)) {
+			return new ValidationError(propertyName, propertyName
+					+ " is invalid");
+		} else {
+			// validation successful
+			return null;
+		}
+	}
+
+	protected static ValidationError validateBoolean(String propertyName,
+			String value) {
+		if (value == null || value.equalsIgnoreCase("true")
+				|| value.equalsIgnoreCase("false")) {
+			return null;
+		} else {
+			return new ValidationError(propertyName, propertyName
+					+ " should be either true or false");
+		}
+	}
+
+	protected static ValidationError validateRequiredNonEmptyArray(
+			String arrayName, List<String> array) {
+		if (array == null || array.isEmpty()) {
+			return new ValidationError(arrayName, arrayName + " is required");
+		} else {
+			for (String value : array) {
+				if (!value.isEmpty()) {
+					return null;
+				}
+			}
+			// no value was non-empty
+			return new ValidationError(arrayName, arrayName + " is required");
+		}
 	}
 }
