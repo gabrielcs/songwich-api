@@ -48,6 +48,7 @@ public class StationsUseCases extends UseCase {
 		if (radioStationDTO.getScrobblerIds().size() == 1) {
 			ObjectId userId = new ObjectId(radioStationDTO.getScrobblerIds()
 					.get(0));
+			// TODO: check if the user exists
 			scrobblerBridge = new ScrobblerBridge(userDAO.findById(userId));
 		} else {
 			// validation guarantees there will be multiple scrobblerIds
@@ -56,6 +57,7 @@ public class StationsUseCases extends UseCase {
 					userIds.size());
 			User user;
 			for (String userId : userIds) {
+				// TODO: check if the users exist
 				user = userDAO.findById(new ObjectId(userId));
 				groupMembers.add(new GroupMember(user, System
 						.currentTimeMillis()));
@@ -71,8 +73,8 @@ public class StationsUseCases extends UseCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		RadioStation radioStation = new RadioStation(radioStationDTO.getStationName(),
-				scrobblerBridge, imageUrl);
+		RadioStation radioStation = new RadioStation(
+				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// set nowPlaying
 		StationStrategy stationStrategy = new NaiveStationStrategy();
@@ -93,17 +95,18 @@ public class StationsUseCases extends UseCase {
 				.getAppDeveloper().getEmailAddress());
 		radioStation.setLookAhead(new Track(lookAheadHistoryEntry,
 				lookAheadSong));
-		
+
 		// save RadioStation
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(radioStation, getContext().getAppDeveloper()
-				.getEmailAddress());
-		
+		radioStationDAO.cascadeSave(radioStation, getContext()
+				.getAppDeveloper().getEmailAddress());
+
 		// update the DataTransferObject
 		radioStationDTO.setStationId(radioStation.getId().toString());
 		// nowPlaying
 		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
-		nowPlayingDTO.setArtistName(nowPlayingSong.getArtistsNames().toString());
+		nowPlayingDTO
+				.setArtistName(nowPlayingSong.getArtistsNames().toString());
 		nowPlayingDTO.setTrackTitle(nowPlayingSong.getSongTitle());
 		nowPlayingDTO.setFeedbackId(nowPlayingHistoryEntry.getId().toString());
 		radioStationDTO.setNowPlaying(nowPlayingDTO);
@@ -128,7 +131,11 @@ public class StationsUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		// turn the lookAhead Track into next
+		// run the algorithm to decide what the lookAhead Song will be
+		StationStrategy stationStrategy = new NaiveStationStrategy();
+		Song lookAheadSong = stationStrategy.next(radioStation);
+
+		// turn the lookAhead Track into next and set the new lookAhead
 		Track nowPlayingTrack = radioStation.getLookAhead();
 		StationHistoryEntry nowPlayingHistoryEntry = nowPlayingTrack
 				.getStationHistoryEntry();
@@ -136,10 +143,6 @@ public class StationsUseCases extends UseCase {
 		stationHistoryDAO.save(nowPlayingHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
 		radioStation.setNowPlaying(nowPlayingTrack);
-
-		// run the algorithm to decide what the lookAhead Song will be
-		StationStrategy stationStrategy = new NaiveStationStrategy();
-		Song lookAheadSong = stationStrategy.next(radioStation);
 
 		// create and save the StationHistoryEntry for the lookAhead Track (with
 		// timestamp=null)
