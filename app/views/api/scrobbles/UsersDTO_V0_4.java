@@ -15,6 +15,8 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String userEmail;
 
+	private String name;
+
 	// not used for input, only for output
 	private String userId;
 
@@ -31,6 +33,14 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private ValidationError validateUserEmail() {
 		return validateRequiredEmailAddress("userEmail", userEmail);
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**

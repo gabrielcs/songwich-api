@@ -45,9 +45,8 @@ public class UsersUseCases extends UseCase {
 				}
 			}
 		} else {
-			// creates a brand new User with an associated AppUser
-			String createdBy = getContext().getAppDeveloper().getEmailAddress();
-			user = new User(userDTO.getUserEmail(), createdBy);
+			// TODO: add name to UserDTO
+			user = new User(userDTO.getUserEmail(), userDTO.getName());
 			AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
 			updateDTO(user, newAppUser, userDTO);
 		}
