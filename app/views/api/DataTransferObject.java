@@ -152,4 +152,27 @@ public abstract class DataTransferObject<T> {
 			return new ValidationError(arrayName, arrayName + " is required");
 		}
 	}
+	
+	protected static ValidationError validateRequiredNonEmptyObjectIdArray(
+			String arrayName, String arrayItemName, List<String> array) {
+		// TODO
+		return null;
+	}
+	
+	protected static ValidationError validateUrl(
+			String propertyName, String url) {
+		// TODO: validate URL
+		return null;
+	}
+	
+	protected static ValidationError validateImageUrl(
+			String propertyName, String imageUrl) {
+		ValidationError validationError = validateUrl(propertyName, imageUrl);
+		if (validationError != null) {
+			return validationError;
+		}
+		
+		// TODO: validate it's the URL of an accepted image format
+		return null;
+	}
 }

@@ -11,7 +11,7 @@ GET    /v0.4/scrobbles/:user         controllers.api.scrobbles.ScrobblesControll
 POST   /v0.4/users                   controllers.api.scrobbles.UsersController_V0_4.postUsers()
 
 # Stations API
-#POST /v0.4/stations                  controllers.api.stations.StationsController_V0_4.postStations()
+POST /v0.4/stations                  controllers.api.stations.StationsController_V0_4.postStations()
 POST /v0.4/nextSong	                 controllers.api.stations.StationsController_V0_4.postNextSong()
 
 # Web App

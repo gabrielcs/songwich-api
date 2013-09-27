@@ -2,7 +2,6 @@ package views.api.stations;
 
 import models.api.scrobbles.Scrobble;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -16,10 +15,10 @@ public class StationSongListDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String stationId;
 	
-	@JsonProperty("nowPlaying")
+	// only for output
 	private StationSongListEntryDTO_V0_4 nowPlaying;
 	
-	@JsonProperty("lookAhead")
+    // only for output
 	private StationSongListEntryDTO_V0_4 lookAhead;
 
 	public StationSongListDTO_V0_4() {

@@ -1,9 +1,15 @@
 package behavior.api.usecases.stations;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
+import models.api.stations.Group;
+import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
 import models.api.stations.ScrobblerBridge;
 import models.api.stations.StationHistoryEntry;
@@ -13,12 +19,15 @@ import org.bson.types.ObjectId;
 
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
+import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.algorithms.NaiveStationStrategy;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
+import database.api.scrobbles.UserDAO;
+import database.api.scrobbles.UserDAOMongo;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.stations.StationHistoryDAO;
@@ -30,26 +39,81 @@ public class StationsUseCases extends UseCase {
 		super(context);
 	}
 
-	/*
-	 * It returns a Map with the new radio station as the value and the first
-	 * song to be played
-	 *
-	public Map<StationHistoryEntry, RadioStation> postStations(
-			String stationName, ScrobblerBridge stationScrobblers) {
+	public void postStations(RadioStationDTO_V0_4 radioStationDTO)
+			throws SongwichAPIException {
 
-		RadioStation radioStation = new RadioStation(stationName,
-				stationScrobblers);
-		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.save(radioStation, getContext().getAppDeveloper()
+		// creates either a User RadioStation or a Group RadioStation
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		ScrobblerBridge scrobblerBridge;
+		if (radioStationDTO.getScrobblerIds().size() == 1) {
+			ObjectId userId = new ObjectId(radioStationDTO.getScrobblerIds()
+					.get(0));
+			scrobblerBridge = new ScrobblerBridge(userDAO.findById(userId));
+		} else {
+			// validation guarantees there will be multiple scrobblerIds
+			List<String> userIds = radioStationDTO.getScrobblerIds();
+			Set<GroupMember> groupMembers = new HashSet<GroupMember>(
+					userIds.size());
+			User user;
+			for (String userId : userIds) {
+				user = userDAO.findById(new ObjectId(userId));
+				groupMembers.add(new GroupMember(user, System
+						.currentTimeMillis()));
+			}
+			// add Group name to DTO
+			scrobblerBridge = new ScrobblerBridge(new Group(
+					radioStationDTO.getGroupName(), groupMembers));
+		}
+		URL imageUrl = null;
+		try {
+			imageUrl = new URL(radioStationDTO.getImageUrl());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		RadioStation radioStation = new RadioStation(radioStationDTO.getStationName(),
+				scrobblerBridge, imageUrl);
+
+		// set nowPlaying
+		StationStrategy stationStrategy = new NaiveStationStrategy();
+		Song nowPlayingSong = stationStrategy.next(radioStation);
+		StationHistoryEntry nowPlayingHistoryEntry = new StationHistoryEntry(
+				radioStation.getId(), nowPlayingSong, null);
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		stationHistoryDAO.save(nowPlayingHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
+		radioStation.setNowPlaying(new Track(nowPlayingHistoryEntry,
+				nowPlayingSong));
+
+		// set lookAhead
+		Song lookAheadSong = stationStrategy.next(radioStation);
+		StationHistoryEntry lookAheadHistoryEntry = new StationHistoryEntry(
+				radioStation.getId(), lookAheadSong, null);
+		stationHistoryDAO.save(lookAheadHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
+		radioStation.setLookAhead(new Track(lookAheadHistoryEntry,
+				lookAheadSong));
+		
+		// save RadioStation
+		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
+		radioStationDAO.cascadeSave(radioStation, getContext().getAppDeveloper()
 				.getEmailAddress());
-
-		StationHistoryEntry stationHistory = postNextSong(radioStation);
-
-		Map<StationHistoryEntry, RadioStation> radioStationMap = new HashMap<StationHistoryEntry, RadioStation>();
-		radioStationMap.put(stationHistory, radioStation);
-		return radioStationMap;
+		
+		// update the DataTransferObject
+		radioStationDTO.setStationId(radioStation.getId().toString());
+		// nowPlaying
+		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
+		nowPlayingDTO.setArtistName(nowPlayingSong.getArtistsNames().toString());
+		nowPlayingDTO.setTrackTitle(nowPlayingSong.getSongTitle());
+		nowPlayingDTO.setFeedbackId(nowPlayingHistoryEntry.getId().toString());
+		radioStationDTO.setNowPlaying(nowPlayingDTO);
+		// lookAhead
+		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
+		lookAheadDTO.setArtistName(lookAheadSong.getArtistsNames().toString());
+		lookAheadDTO.setTrackTitle(lookAheadSong.getSongTitle());
+		lookAheadDTO.setFeedbackId(lookAheadHistoryEntry.getId().toString());
+		radioStationDTO.setLookAhead(lookAheadDTO);
 	}
-	*/
 
 	public void postNextSong(StationSongListDTO_V0_4 stationSongListDTO)
 			throws SongwichAPIException {
@@ -90,7 +154,7 @@ public class StationsUseCases extends UseCase {
 		radioStationDAO.save(radioStation, getContext().getAppDeveloper()
 				.getEmailAddress());
 
-		// update DataTransferObject
+		// update the DataTransferObject
 		updateDTOForPostNextSong(stationSongListDTO, nowPlayingHistoryEntry,
 				lookAheadHistoryEntry);
 	}
@@ -118,7 +182,7 @@ public class StationsUseCases extends UseCase {
 				.getSongTitle());
 		lookAheadSongListEntryDTO.setFeedbackId(lookAheadHistoryEntry.getId()
 				.toString());
-		stationSongListDTO.setNowPlaying(lookAheadSongListEntryDTO);
+		stationSongListDTO.setLookAhead(lookAheadSongListEntryDTO);
 	}
 
 	/*
