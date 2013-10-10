@@ -1,7 +1,5 @@
 package models.api.stations;
 
-import java.net.URL;
-
 import models.api.MongoEntity;
 import models.api.MongoModelImpl;
 import models.api.scrobbles.User;
@@ -19,7 +17,7 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 
 	private String name;
 	
-	private URL imageUrl;
+	private String imageUrl;
 
 	@Embedded
 	private ScrobblerBridge scrobbler;
@@ -39,7 +37,7 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = scrobbler;
 	}
 
-	public RadioStation(String name, ScrobblerBridge scrobbler, URL imageUrl) {
+	public RadioStation(String name, ScrobblerBridge scrobbler, String imageUrl) {
 		this.name = name;
 		this.scrobbler = scrobbler;
 		this.imageUrl = imageUrl;
@@ -50,7 +48,7 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = new ScrobblerBridge(group);
 	}
 	
-	public RadioStation(String name, Group group, URL imageUrl) {
+	public RadioStation(String name, Group group, String imageUrl) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(group);
 		this.imageUrl = imageUrl;
@@ -61,17 +59,17 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = new ScrobblerBridge(user);
 	}
 	
-	public RadioStation(String name, User user, URL imageUrl) {
+	public RadioStation(String name, User user, String imageUrl) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(user);
 		this.imageUrl = imageUrl;
 	}
 	
-	public URL getImageUrl() {
+	public String getImageUrl() {
 		return imageUrl;
 	}
 
-	public void setImageUrl(URL imageUrl) {
+	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 		fireModelUpdated();
 	}

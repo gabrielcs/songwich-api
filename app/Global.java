@@ -1,8 +1,9 @@
 import play.GlobalSettings;
+import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
-import play.mvc.Result;
 import play.mvc.Results;
+import play.mvc.SimpleResult;
 import util.api.DatabaseContext;
 import util.api.MyLogger;
 import views.api.APIResponse_V0_4;
@@ -34,18 +35,21 @@ public class Global extends GlobalSettings {
 	}
 
 	@Override
-	public Result onBadRequest(RequestHeader request, String error) {
+	public Promise<SimpleResult> onBadRequest(RequestHeader request,
+			String error) {
 		MyLogger.warn(String.format("Bad request [%s]: %s\n", error, request));
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.BAD_REQUEST, error);
-		return Results.badRequest(Json.toJson(response));
+		return Promise.<SimpleResult> pure(Results.badRequest(Json
+				.toJson(response)));
 	}
 
 	@Override
-	public Result onHandlerNotFound(RequestHeader request) {
+	public Promise<SimpleResult> onHandlerNotFound(RequestHeader request) {
 		// ignore GET /favicon.ico
 		if (request.toString().equals("GET /favicon.ico")) {
-			return Results.badRequest();
+
+			return Promise.<SimpleResult> pure(Results.badRequest());
 		}
 
 		MyLogger.warn("Handler not found: " + request);
@@ -53,11 +57,13 @@ public class Global extends GlobalSettings {
 				APIStatus_V0_4.BAD_REQUEST, String.format(
 						"API method not found: %s %s", request.method(),
 						request.path()));
-		return Results.badRequest(Json.toJson(response));
+
+		return Promise.<SimpleResult> pure(Results.badRequest(Json
+				.toJson(response)));
 	}
 
 	@Override
-	public Result onError(RequestHeader request, Throwable t) {
+	public Promise<SimpleResult> onError(RequestHeader request, Throwable t) {
 		// get the message of the Exception wrapped inside Play's
 		// ExecutionExeption
 		String message = t.getCause().getClass().getSimpleName();
@@ -71,6 +77,8 @@ public class Global extends GlobalSettings {
 
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.UNKNOWN_ERROR, message);
-		return Results.badRequest(Json.toJson(response));
+		return Promise.<SimpleResult> pure(Results.badRequest(Json
+				.toJson(response)));
 	}
+
 }

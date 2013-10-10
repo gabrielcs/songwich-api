@@ -1,5 +1,7 @@
 package controllers.api.stations;
 
+import java.util.List;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -10,6 +12,8 @@ import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
+import views.api.stations.GetStationsResponse_V0_4;
+import views.api.stations.NewRadioStationDTO_V0_4;
 import views.api.stations.PostNextSongResponse_V0_4;
 import views.api.stations.PostStationsResponse_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
@@ -62,21 +66,23 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be created by a user that represents one of the userIds
 	@AppDeveloperAuthenticated
 	public static Result postStations() {
-		Form<RadioStationDTO_V0_4> radioStationForm = Form.form(
-				RadioStationDTO_V0_4.class).bindFromRequest();
-		if (radioStationForm.hasErrors()) {
+		Form<NewRadioStationDTO_V0_4> newRadioStationForm = Form.form(
+				NewRadioStationDTO_V0_4.class).bindFromRequest();
+		if (newRadioStationForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(radioStationForm.errors()));
+					DataTransferObject.errorsAsString(newRadioStationForm
+							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			RadioStationDTO_V0_4 radioStationDTO = radioStationForm.get();
+			NewRadioStationDTO_V0_4 newRadioStationDTO = newRadioStationForm
+					.get();
 
 			// process the request
 			StationsUseCases stationsUseCases = new StationsUseCases(
 					getContext());
 			try {
-				stationsUseCases.postStations(radioStationDTO);
+				stationsUseCases.postStations(newRadioStationDTO);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -92,8 +98,24 @@ public class StationsController_V0_4 extends APIController {
 
 			// return the response
 			PostStationsResponse_V0_4 response = new PostStationsResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
+					APIStatus_V0_4.SUCCESS, "Success", newRadioStationDTO);
+			
+			MyLogger.debug(response.toString());
 			return ok(Json.toJson(response));
 		}
 	}
+
+	@AppDeveloperAuthenticated
+	public static Result getStations() {
+		// process the request
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		List<RadioStationDTO_V0_4> radioStationsDTO = stationsUseCases
+				.getStations();
+
+		// return the response
+		GetStationsResponse_V0_4 response = new GetStationsResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", radioStationsDTO);
+		return ok(Json.toJson(response));
+	}
+
 }

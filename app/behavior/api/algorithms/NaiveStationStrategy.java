@@ -33,6 +33,7 @@ public class NaiveStationStrategy implements StationStrategy {
 		List<Scrobble> scrobbles = scrobbleDao.findByUserIds(scrobblersIds,
 				false);
 
+		// make sure we don't compare a Track to a Song nor have a NullPointerException
 		Song previousNowPlaying = (radioStation.getNowPlaying() == null) ? null
 				: radioStation.getNowPlaying().getSong();
 		Song previousLookAhead = (radioStation.getLookAhead() == null) ? null

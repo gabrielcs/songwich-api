@@ -1,27 +1,33 @@
 package views.api.stations;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
 
-public class PostStationsResponse_V0_4 extends APIResponse_V0_4 {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	@JsonProperty("station")
-	private RadioStationDTO_V0_4 radioStationDTO;
+public class PostStationsResponse_V0_4 extends APIResponse_V0_4 {
+	// TODO: find out why this is duplicating the output
+	@JsonProperty("station2")
+	private NewRadioStationDTO_V0_4 newRadioStationDTO;
 
 	public PostStationsResponse_V0_4(APIStatus status, String message,
-			RadioStationDTO_V0_4 radioStationDTO) {
+			NewRadioStationDTO_V0_4 newRadioStationDTO) {
 		super(status, message);
-		setRadioStationDTO(radioStationDTO);
+		setRadioStationDTO(newRadioStationDTO);
 	}
 
-	public RadioStationDTO_V0_4 getRadioStationDTO() {
-		return radioStationDTO;
+	public NewRadioStationDTO_V0_4 getRadioStationDTO() {
+		return newRadioStationDTO;
 	}
 
-	public void setRadioStationDTO(RadioStationDTO_V0_4 radioStationDTO) {
-		this.radioStationDTO = radioStationDTO;
+	public void setRadioStationDTO(NewRadioStationDTO_V0_4 newRadioStationDTO) {
+		this.newRadioStationDTO = newRadioStationDTO;
+	}
+
+	@Override
+	public String toString() {
+		return "PostStationsResponse_V0_4 [newRadioStationDTO="
+				+ newRadioStationDTO + "]";
 	}
 
 }

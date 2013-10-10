@@ -16,13 +16,12 @@ object ApplicationBuild extends Build {
     "com.google.code.morphia" % "morphia" % "0.101.0",
     "com.google.code.morphia" % "morphia-logging-slf4j" % "0.101.0",
     //"com.google.code.morphia" % "morphia-validation" % "0.101.0"
-    "org.slf4j" % "slf4j-api" % "1.7.2"  // versioning for Play 2.1.3
+    "org.slf4j" % "slf4j-api" % "1.7.2",  // versioning for Play 2.1.3
     
-    /*
     "com.fasterxml.jackson.core" % "jackson-core" % "2.2.2",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.2.2",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.2.2"
-    */
+    
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
