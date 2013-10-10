@@ -3,11 +3,13 @@ package views.api.stations;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// there was a mysterious "radioStationDTO" property duplicating the output
+@JsonIgnoreProperties({"radioStationDTO"})
 public class PostStationsResponse_V0_4 extends APIResponse_V0_4 {
-	// TODO: find out why this is duplicating the output
-	@JsonProperty("station2")
+	@JsonProperty("station")
 	private NewRadioStationDTO_V0_4 newRadioStationDTO;
 
 	public PostStationsResponse_V0_4(APIStatus status, String message,
