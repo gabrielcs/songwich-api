@@ -1,16 +1,18 @@
 package behavior.api.usecases.scrobbles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.AuthToken;
 import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
+import views.api.scrobbles.UserDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
-
-import util.api.MyLogger;
-import views.api.scrobbles.UsersDTO_V0_4;
 import database.api.scrobbles.UserDAO;
 import database.api.scrobbles.UserDAOMongo;
 
@@ -20,7 +22,7 @@ public class UsersUseCases extends UseCase {
 		super(context);
 	}
 
-	public void postUsers(UsersDTO_V0_4 userDTO) {
+	public void postUsers(UserDTO_V0_4 userDTO) {
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findByEmailAddress(userDTO.getUserEmail());
 		if (user != null) {
@@ -71,8 +73,30 @@ public class UsersUseCases extends UseCase {
 		return newAppUser;
 	}
 
-	private void updateDTO(User user, AppUser newAppUser, UsersDTO_V0_4 userDTO) {
+	private void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
 		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
 		userDTO.setUserId(user.getId().toString());
+	}
+
+	public List<UserDTO_V0_4> getUsers() {
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		// TODO: limit the number of results
+		List<User> users = userDAO.find().asList();
+
+		return createDTOForGetUsers(users);
+	}
+
+	private List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
+		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
+		UserDTO_V0_4 userDTO;
+		for (User user : users) {
+			userDTO = new UserDTO_V0_4();
+			userDTO.setName(user.getName());
+			userDTO.setUserEmail(user.getEmailAddress());
+			userDTO.setUserId(user.getId().toString());
+			
+			usersDTO.add(userDTO);
+		}
+		return usersDTO;
 	}
 }

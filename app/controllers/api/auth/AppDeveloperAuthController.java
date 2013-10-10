@@ -115,7 +115,6 @@ public class AppDeveloperAuthController extends
 	 * Creates an AppDeveloper associated to an App.
 	 */
 	public static String createTestAppWithDeveloper(String devAuthToken) {
-		MyLogger.debug("About to create a test AppDeveloper");
 		String homeDevEmail = "developers@songwich.com";
 
 		AuthToken authToken = AuthToken.createDevAuthToken();

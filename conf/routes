@@ -9,10 +9,11 @@ GET     /*path/                      controllers.web.Application.untrail(path: S
 POST   /v0.4/scrobbles               controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()
 GET    /v0.4/scrobbles/:user         controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(user, daysOffset: Int ?= -1, results: Int ?= -1)
 POST   /v0.4/users                   controllers.api.scrobbles.UsersController_V0_4.postUsers()
+GET    /v0.4/users                   controllers.api.scrobbles.UsersController_V0_4.getUsers()
 
 # Stations API
 POST /v0.4/stations                  controllers.api.stations.StationsController_V0_4.postStations()
-GET /v0.4/stations                  controllers.api.stations.StationsController_V0_4.getStations()
+GET /v0.4/stations                   controllers.api.stations.StationsController_V0_4.getStations()
 POST /v0.4/nextSong	                 controllers.api.stations.StationsController_V0_4.postNextSong()
 
 # Web App

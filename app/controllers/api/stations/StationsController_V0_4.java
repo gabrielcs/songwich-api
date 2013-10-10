@@ -99,8 +99,6 @@ public class StationsController_V0_4 extends APIController {
 			// return the response
 			PostStationsResponse_V0_4 response = new PostStationsResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", newRadioStationDTO);
-			
-			MyLogger.debug(response.toString());
 			return ok(Json.toJson(response));
 		}
 	}

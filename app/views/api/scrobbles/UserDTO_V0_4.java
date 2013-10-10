@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonInclude(Include.NON_EMPTY)
 //@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("user")
-public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String userEmail;
 
@@ -23,7 +23,7 @@ public class UsersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	// not used for input, only for output
 	private String userAuthToken;
 
-	public UsersDTO_V0_4() {
+	public UserDTO_V0_4() {
 	}
 
 	@Override
