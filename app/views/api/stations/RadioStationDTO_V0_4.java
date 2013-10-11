@@ -22,6 +22,8 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private StationSongListEntryDTO_V0_4 nowPlaying;
 	
+	private StationSongListEntryDTO_V0_4 lookAhead;
+	
 	private List<String> scrobblerIds;
 
 	public RadioStationDTO_V0_4() {
@@ -71,6 +73,15 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	public void setScrobblerIds(List<String> scrobblerIds) {
 		this.scrobblerIds = scrobblerIds;
+	}
+
+	
+	public void setLookAhead(StationSongListEntryDTO_V0_4 lookAhead) {
+		this.lookAhead = lookAhead;
+	}
+
+	public StationSongListEntryDTO_V0_4 getLookAhead() {
+		return lookAhead;
 	}
 
 }

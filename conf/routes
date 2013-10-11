@@ -13,8 +13,7 @@ GET    /v0.4/users                   controllers.api.scrobbles.UsersController_V
 
 # Stations API
 POST /v0.4/stations                  controllers.api.stations.StationsController_V0_4.postStations()
-GET /v0.4/stations/                  controllers.api.stations.StationsController_V0_4.getStations()
-#GET /v0.4/stations/:stationId        controllers.api.stations.StationsController_V0_4.getStations(stationId)
+GET /v0.4/stations                   controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null)
 POST /v0.4/nextSong	                 controllers.api.stations.StationsController_V0_4.postNextSong()
 
 # Web App
