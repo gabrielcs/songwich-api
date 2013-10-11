@@ -7,10 +7,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import play.data.validation.ValidationError;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /*
  * http://martinfowler.com/eaaCatalog/dataTransferObject.html

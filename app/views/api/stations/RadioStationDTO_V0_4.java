@@ -3,14 +3,14 @@ package views.api.stations;
 import java.util.List;
 
 import models.api.scrobbles.Scrobble;
+
+import org.codehaus.jackson.annotate.JsonTypeName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import views.api.DataTransferObject;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonInclude(Include.NON_EMPTY)
-//@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+//@JsonInclude(Include.NON_EMPTY)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("station")
 public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
