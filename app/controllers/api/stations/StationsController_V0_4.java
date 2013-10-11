@@ -13,6 +13,7 @@ import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
 import views.api.stations.GetStationsResponse_V0_4;
+import views.api.stations.GetStationsUniqueResponse_V0_4;
 import views.api.stations.NewRadioStationDTO_V0_4;
 import views.api.stations.PostNextSongResponse_V0_4;
 import views.api.stations.PostStationsResponse_V0_4;
@@ -105,6 +106,7 @@ public class StationsController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	public static Result getStations() {
+		MyLogger.debug("entrei sem stationId");
 		// process the request
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		List<RadioStationDTO_V0_4> radioStationsDTO = stationsUseCases
@@ -115,18 +117,32 @@ public class StationsController_V0_4 extends APIController {
 				APIStatus_V0_4.SUCCESS, "Success", radioStationsDTO);
 		return ok(Json.toJson(response));
 	}
-	/*
+
 	@AppDeveloperAuthenticated
 	public static Result getStations(String stationId) {
+		if (stationId == null) {
+			// this is a call for all available stations
+			return getStations();
+		}
+
 		// process the request
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
-		RadioStationDTO_V0_4 radioStationDTO = stationsUseCases
-				.getStations(stationId);
+		RadioStationDTO_V0_4 radioStationDTO;
+		try {
+			radioStationDTO = stationsUseCases.getStations(stationId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception
+					.getStatus().toString(), exception.getMessage(),
+					Http.Context.current().request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
 
 		// return the response
-		GetStationsResponse_V0_4 response = new GetStationsResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", radioStationsDTO);
+		GetStationsUniqueResponse_V0_4 response = new GetStationsUniqueResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
 		return ok(Json.toJson(response));
 	}
-*/
+
 }
