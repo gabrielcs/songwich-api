@@ -4,12 +4,11 @@ import models.api.scrobbles.User;
 
 import org.bson.types.ObjectId;
 
-import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.mvc.Results;
-import play.mvc.SimpleResult;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
@@ -25,7 +24,8 @@ public class UserAuthController extends Action<UserAuthenticated> {
 	public final static String USER = "user";
 
 	@Override
-	public F.Promise<SimpleResult> call(Http.Context context) throws Throwable {
+	//public F.Promise<SimpleResult> call(Http.Context context) throws Throwable {
+	public Result call(Http.Context context) throws Throwable {
 		try {
 			authenticateUser(context);
 		} catch (SongwichAPIException e) {
@@ -33,8 +33,8 @@ public class UserAuthController extends Action<UserAuthenticated> {
 					e.getStatus().toString(), e.getMessage(), context.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
 					e.getMessage());
-			return F.Promise.<SimpleResult> pure(Results.unauthorized(Json
-					.toJson(response)));
+			//return F.Promise.<SimpleResult> pure(Results.unauthorized(Json.toJson(response)));
+			return Results.unauthorized(Json.toJson(response));
 		}
 
 		// user successfully authenticated

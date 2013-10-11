@@ -115,5 +115,18 @@ public class StationsController_V0_4 extends APIController {
 				APIStatus_V0_4.SUCCESS, "Success", radioStationsDTO);
 		return ok(Json.toJson(response));
 	}
+	/*
+	@AppDeveloperAuthenticated
+	public static Result getStations(String stationId) {
+		// process the request
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		RadioStationDTO_V0_4 radioStationDTO = stationsUseCases
+				.getStations(stationId);
 
+		// return the response
+		GetStationsResponse_V0_4 response = new GetStationsResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", radioStationsDTO);
+		return ok(Json.toJson(response));
+	}
+*/
 }
