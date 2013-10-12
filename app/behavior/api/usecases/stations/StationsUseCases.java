@@ -42,6 +42,8 @@ public class StationsUseCases extends UseCase {
 	public void postStations(NewRadioStationDTO_V0_4 newRadioStationDTO)
 			throws SongwichAPIException {
 
+		authenticatePostStations(newRadioStationDTO);
+
 		// creates either a User RadioStation or a Group RadioStation
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		ScrobblerBridge scrobblerBridge;
@@ -110,6 +112,17 @@ public class StationsUseCases extends UseCase {
 		lookAheadDTO.setTrackTitle(lookAheadSong.getSongTitle());
 		lookAheadDTO.setFeedbackId(lookAheadHistoryEntry.getId().toString());
 		newRadioStationDTO.setLookAhead(lookAheadDTO);
+	}
+
+	private void authenticatePostStations(
+			NewRadioStationDTO_V0_4 newRadioStationDTO)
+			throws SongwichAPIException {
+		if (!newRadioStationDTO.getScrobblerIds().contains(
+				getContext().getUser().getId().toString())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
 	}
 
 	public void postNextSong(StationSongListDTO_V0_4 stationSongListDTO)
@@ -208,7 +221,7 @@ public class StationsUseCases extends UseCase {
 		return createDTOForGetStations(station, true);
 	}
 
-	private List<RadioStationDTO_V0_4> createDTOForGetStations(
+	public static List<RadioStationDTO_V0_4> createDTOForGetStations(
 			List<RadioStation> stations) {
 
 		List<RadioStationDTO_V0_4> stationsDTO = new ArrayList<RadioStationDTO_V0_4>();
@@ -220,8 +233,8 @@ public class StationsUseCases extends UseCase {
 		return stationsDTO;
 	}
 
-	private RadioStationDTO_V0_4 createDTOForGetStations(RadioStation station,
-			boolean showSongs) {
+	private static RadioStationDTO_V0_4 createDTOForGetStations(
+			RadioStation station, boolean showSongs) {
 		RadioStationDTO_V0_4 stationDTO = new RadioStationDTO_V0_4();
 		stationDTO.setStationId(station.getId().toString());
 		stationDTO.setStationName(station.getName());
@@ -241,7 +254,7 @@ public class StationsUseCases extends UseCase {
 			songListEntryDTO.setArtistName(station.getNowPlaying().getSong()
 					.getArtistsNames().toString());
 			stationDTO.setNowPlaying(songListEntryDTO);
-			
+
 			songListEntryDTO = new StationSongListEntryDTO_V0_4();
 			songListEntryDTO.setTrackTitle(station.getLookAhead().getSong()
 					.getSongTitle());

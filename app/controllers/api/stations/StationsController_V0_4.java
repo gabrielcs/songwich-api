@@ -22,6 +22,7 @@ import views.api.stations.StationSongListDTO_V0_4;
 import behavior.api.usecases.stations.StationsUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.UserAuthenticated;
 
 public class StationsController_V0_4 extends APIController {
 
@@ -64,8 +65,8 @@ public class StationsController_V0_4 extends APIController {
 	}
 
 	// TODO: this should be accessible only from the Songwich Radio app
-	// TODO: this should be created by a user that represents one of the userIds
 	@AppDeveloperAuthenticated
+	@UserAuthenticated
 	public static Result postStations() {
 		Form<NewRadioStationDTO_V0_4> newRadioStationForm = Form.form(
 				NewRadioStationDTO_V0_4.class).bindFromRequest();

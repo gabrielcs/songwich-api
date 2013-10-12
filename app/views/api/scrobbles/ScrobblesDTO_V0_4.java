@@ -15,6 +15,17 @@ import views.api.DataTransferObject;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
 public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
+	// used only for output
+	private String userId;
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	private String trackTitle;
 
 	/*

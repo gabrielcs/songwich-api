@@ -37,6 +37,9 @@ public class ScrobblesUseCases extends UseCase {
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
 				.getEmailAddress());
+		
+		// updates scrobbleDTO
+		scrobbleDTO.setUserId(getContext().getUser().getId().toString());
 	}
 
 	public List<ScrobblesDTO_V0_4> getScrobbles(ObjectId userId)

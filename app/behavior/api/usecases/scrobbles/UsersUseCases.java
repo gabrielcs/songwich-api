@@ -6,15 +6,22 @@ import java.util.List;
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.AuthToken;
 import models.api.scrobbles.User;
+import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 
 import util.api.MyLogger;
+import util.api.SongwichAPIException;
+import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
+import views.api.stations.RadioStationDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
+import behavior.api.usecases.stations.StationsUseCases;
 import database.api.scrobbles.UserDAO;
 import database.api.scrobbles.UserDAOMongo;
+import database.api.stations.RadioStationDAO;
+import database.api.stations.RadioStationDAOMongo;
 
 public class UsersUseCases extends UseCase {
 
@@ -86,17 +93,52 @@ public class UsersUseCases extends UseCase {
 		return createDTOForGetUsers(users);
 	}
 
+	public UserDTO_V0_4 getUsers(String userId) throws SongwichAPIException {
+		if (!ObjectId.isValid(userId)) {
+			throw new SongwichAPIException("Invalid userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		ObjectId userIdObject = new ObjectId(userId);
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		User user = userDAO.findById(userIdObject);
+		if (user == null) {
+			throw new SongwichAPIException("Non-existent userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		} else if (!user.equals(getContext().getUser())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
+		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+		List<RadioStation> scrobblerStations = stationDAO
+				.findByScrobblerId(userIdObject);
+
+		return createDTOForGetUsers(user, scrobblerStations);
+	}
+
 	private List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
 		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
-		UserDTO_V0_4 userDTO;
 		for (User user : users) {
-			userDTO = new UserDTO_V0_4();
-			userDTO.setName(user.getName());
-			userDTO.setUserEmail(user.getEmailAddress());
-			userDTO.setUserId(user.getId().toString());
-			
-			usersDTO.add(userDTO);
+			usersDTO.add(createDTOForGetUsers(user, null));
 		}
 		return usersDTO;
+	}
+
+	private UserDTO_V0_4 createDTOForGetUsers(User user,
+			List<RadioStation> scrobblerStations) {
+		UserDTO_V0_4 userDTO = new UserDTO_V0_4();
+		userDTO.setName(user.getName());
+		userDTO.setUserEmail(user.getEmailAddress());
+		userDTO.setUserId(user.getId().toString());
+
+		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
+			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+					.createDTOForGetStations(scrobblerStations);
+			userDTO.setScrobblerStations(scrobblerStationsDTO);
+		}
+
+		return userDTO;
 	}
 }
