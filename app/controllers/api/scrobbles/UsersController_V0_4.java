@@ -4,16 +4,22 @@ import java.util.List;
 
 import play.data.Form;
 import play.libs.Json;
+import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Results;
+import util.api.MyLogger;
+import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
 import views.api.scrobbles.GetUsersResponse_V0_4;
+import views.api.scrobbles.GetUsersUniqueResponse_V0_4;
 import views.api.scrobbles.PostUsersResponse_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.UserAuthenticated;
 
 public class UsersController_V0_4 extends APIController {
 
@@ -50,6 +56,34 @@ public class UsersController_V0_4 extends APIController {
 		// return the response
 		GetUsersResponse_V0_4 response = new GetUsersResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", usersDTO);
+		return ok(Json.toJson(response));
+	}
+	
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result getUsers(String userId) {
+		if (userId == null) {
+			// this is a call for all registered users
+			return getUsers();
+		}
+
+		// process the request
+		UsersUseCases usersUseCases = new UsersUseCases(getContext());
+		UserDTO_V0_4 userDTO;
+		try {
+			userDTO = usersUseCases.getUsers(userId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception
+					.getStatus().toString(), exception.getMessage(),
+					Http.Context.current().request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
+
+		// return the response
+		GetUsersUniqueResponse_V0_4 response = new GetUsersUniqueResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", userDTO);
 		return ok(Json.toJson(response));
 	}
 }
