@@ -24,7 +24,8 @@ public class UserAuthController extends Action<UserAuthenticated> {
 	public final static String USER = "user";
 
 	@Override
-	//public F.Promise<SimpleResult> call(Http.Context context) throws Throwable {
+	// public F.Promise<SimpleResult> call(Http.Context context) throws
+	// Throwable {
 	public Result call(Http.Context context) throws Throwable {
 		try {
 			authenticateUser(context);
@@ -33,7 +34,8 @@ public class UserAuthController extends Action<UserAuthenticated> {
 					e.getStatus().toString(), e.getMessage(), context.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
 					e.getMessage());
-			//return F.Promise.<SimpleResult> pure(Results.unauthorized(Json.toJson(response)));
+			// return F.Promise.<SimpleResult>
+			// pure(Results.unauthorized(Json.toJson(response)));
 			return Results.unauthorized(Json.toJson(response));
 		}
 
@@ -52,13 +54,12 @@ public class UserAuthController extends Action<UserAuthenticated> {
 		}
 
 		if ((userAuthTokenHeaderValues != null)
-				&& (userAuthTokenHeaderValues.length == 1)
 				&& (userAuthTokenHeaderValues[0] != null)) {
 
-			// there's 1 and only 1 auth token
 			UserDAO<ObjectId> userDAO = new UserDAOMongo();
 			User user;
 			try {
+				// it currently only considers the first userAuthToken
 				user = userDAO
 						.findByUserAuthToken(userAuthTokenHeaderValues[0]);
 			} catch (IllegalArgumentException e) {
@@ -82,11 +83,8 @@ public class UserAuthController extends Action<UserAuthenticated> {
 			}
 
 		} else {
-			// there's a number of userAuthTokens different than 1
-			throw new SongwichAPIException(
-					"There's a number of X-Songwich.userAuthToken headers different than 1: "
-							+ userAuthTokenHeaderValues,
-					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
+			// there's no userAuthToken
+			context.args.put(USER, null);
 		}
 	}
 }

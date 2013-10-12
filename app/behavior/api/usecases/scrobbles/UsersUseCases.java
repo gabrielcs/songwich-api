@@ -97,6 +97,10 @@ public class UsersUseCases extends UseCase {
 		if (!ObjectId.isValid(userId)) {
 			throw new SongwichAPIException("Invalid userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
+		} else if (getContext().getUser() == null) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
 		}
 
 		ObjectId userIdObject = new ObjectId(userId);

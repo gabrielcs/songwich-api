@@ -45,20 +45,19 @@ public class UsersController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
-	
+
 	@AppDeveloperAuthenticated
 	public static Result getUsers() {
 		// process the request
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
-		List<UserDTO_V0_4> usersDTO = usersUseCases
-				.getUsers();
+		List<UserDTO_V0_4> usersDTO = usersUseCases.getUsers();
 
 		// return the response
 		GetUsersResponse_V0_4 response = new GetUsersResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", usersDTO);
 		return ok(Json.toJson(response));
 	}
-	
+
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result getUsers(String userId) {
@@ -73,12 +72,16 @@ public class UsersController_V0_4 extends APIController {
 		try {
 			userDTO = usersUseCases.getUsers(userId);
 		} catch (SongwichAPIException exception) {
-			MyLogger.warn(String.format("%s [%s]: %s", exception
-					.getStatus().toString(), exception.getMessage(),
-					Http.Context.current().request()));
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(
 					exception.getStatus(), exception.getMessage());
-			return Results.badRequest(Json.toJson(response));
+			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+				return Results.unauthorized(Json.toJson(response));
+			} else {
+				return Results.badRequest(Json.toJson(response));
+			}
 		}
 
 		// return the response

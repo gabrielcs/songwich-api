@@ -117,7 +117,11 @@ public class StationsUseCases extends UseCase {
 	private void authenticatePostStations(
 			NewRadioStationDTO_V0_4 newRadioStationDTO)
 			throws SongwichAPIException {
-		if (!newRadioStationDTO.getScrobblerIds().contains(
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
+					APIStatus_V0_4.UNAUTHORIZED);
+		} else if (!newRadioStationDTO.getScrobblerIds().contains(
 				getContext().getUser().getId().toString())) {
 			throw new SongwichAPIException(
 					APIStatus_V0_4.UNAUTHORIZED.toString(),

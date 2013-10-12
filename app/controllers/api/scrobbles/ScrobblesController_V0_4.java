@@ -42,7 +42,17 @@ public class ScrobblesController_V0_4 extends APIController {
 			// process the request
 			ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 					getContext());
-			scrobblesUseCases.postScrobbles(scrobbleDTO);
+			try {
+				scrobblesUseCases.postScrobbles(scrobbleDTO);
+			} catch (SongwichAPIException exception) {
+				// Missing X-Songwich.userAuthToken
+				MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+						.toString(), exception.getMessage(), Http.Context.current()
+						.request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				return Results.unauthorized(Json.toJson(response));
+			}
 
 			// return the response
 			PostScrobblesResponse_V0_4 response = new PostScrobblesResponse_V0_4(
