@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -15,9 +16,6 @@ import play.data.validation.ValidationError;
  * http://martinfowler.com/eaaCatalog/dataTransferObject.html
  */
 public abstract class DataTransferObject<T> {
-
-	private final static Pattern EMAIL_REGEX = Pattern
-			.compile("\\b[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*\\b");
 
 	// method called by Play!
 	public List<ValidationError> validate() {
@@ -78,15 +76,12 @@ public abstract class DataTransferObject<T> {
 		}
 	}
 
-	/*
-	 * https://github.com/playframework/playframework/blob/master/framework
-	 * /src/play-java/src/main/java/play/data/validation/Constraints.java
-	 */
 	protected static ValidationError validateEmailAddress(String propertyName,
 			String emailAddress) {
-		if (!EMAIL_REGEX.matcher(emailAddress).matches()) {
-			return new ValidationError(propertyName, propertyName
-					+ "is invalid");
+
+		EmailValidator emailValidator = EmailValidator.getInstance();
+		if (!emailValidator.isValid(emailAddress)) {
+			return new ValidationError(propertyName, "Invalid " + propertyName);
 		} else {
 			// validation successful
 			return null;
@@ -119,8 +114,7 @@ public abstract class DataTransferObject<T> {
 	protected static ValidationError validateObjectId(String propertyName,
 			String objectId) {
 		if (!ObjectId.isValid(objectId)) {
-			return new ValidationError(propertyName, propertyName
-					+ " is invalid");
+			return new ValidationError(propertyName, "Invalid " + propertyName);
 		} else {
 			// validation successful
 			return null;
@@ -152,27 +146,31 @@ public abstract class DataTransferObject<T> {
 			return new ValidationError(arrayName, arrayName + " is required");
 		}
 	}
-	
+
 	protected static ValidationError validateRequiredNonEmptyObjectIdArray(
 			String arrayName, String arrayItemName, List<String> array) {
 		// TODO
 		return null;
 	}
-	
-	protected static ValidationError validateUrl(
-			String propertyName, String url) {
-		// TODO: validate URL
-		return null;
+
+	protected static ValidationError validateUrl(String propertyName, String url) {
+		UrlValidator urlValidator = UrlValidator.getInstance();
+		if (!urlValidator.isValid(url)) {
+			return new ValidationError(propertyName, "Invalid " + propertyName);
+		} else {
+			// validation successful
+			return null;
+		}
 	}
-	
-	protected static ValidationError validateImageUrl(
-			String propertyName, String imageUrl) {
+
+	protected static ValidationError validateImageUrl(String propertyName,
+			String imageUrl) {
 		ValidationError validationError = validateUrl(propertyName, imageUrl);
 		if (validationError != null) {
 			return validationError;
 		}
-		
-		// TODO: validate it's the URL of an accepted image format
+
+		// TODO: should we validate it's the URL of an accepted image format?
 		return null;
 	}
 }
