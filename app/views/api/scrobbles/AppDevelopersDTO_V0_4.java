@@ -15,7 +15,7 @@ public class AppDevelopersDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String devEmail;
 
-	private String name;
+	private String devName;
 
 	private String appName;
 
@@ -24,15 +24,15 @@ public class AppDevelopersDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	@Override
 	public void addValidation() {
-		addValidation(validateDevEmail(), validateName(), validateAppName());
+		addValidation(validateDevEmail(), validateDevName(), validateAppName());
 	}
 
 	private ValidationError validateDevEmail() {
 		return validateRequiredEmailAddress("devEmail", devEmail);
 	}
 	
-	private ValidationError validateName() {
-		return validateRequiredProperty("name", name);
+	private ValidationError validateDevName() {
+		return validateRequiredProperty("devName", devName);
 	}
 	
 	private ValidationError validateAppName() {
@@ -69,11 +69,11 @@ public class AppDevelopersDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.appName = appName;
 	}
 
-	public String getName() {
-		return name;
+	public String getDevName() {
+		return devName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setDevName(String devName) {
+		this.devName = devName;
 	}
 }

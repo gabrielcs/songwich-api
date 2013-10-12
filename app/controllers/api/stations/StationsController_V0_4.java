@@ -107,7 +107,6 @@ public class StationsController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	public static Result getStations() {
-		MyLogger.debug("entrei sem stationId");
 		// process the request
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		List<RadioStationDTO_V0_4> radioStationsDTO = stationsUseCases

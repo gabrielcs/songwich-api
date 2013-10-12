@@ -39,7 +39,7 @@ public class AppDevelopersUseCases extends UseCase {
 
 		// creates the AppDeveloper
 		AppDeveloper appDeveloper = new AppDeveloper(
-				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getName(),
+				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getDevName(),
 				AuthToken.createDevAuthToken());
 		app.addAppDeveloper(appDeveloper);
 		appDao.cascadeSave(app, appDevelopersDTO.getDevEmail());

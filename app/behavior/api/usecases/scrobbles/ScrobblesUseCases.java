@@ -26,7 +26,14 @@ public class ScrobblesUseCases extends UseCase {
 		super(context);
 	}
 
-	public void postScrobbles(ScrobblesDTO_V0_4 scrobbleDTO) {
+	public void postScrobbles(ScrobblesDTO_V0_4 scrobbleDTO)
+			throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
+					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
+		}
+
 		Song song = new Song(scrobbleDTO.getTrackTitle(),
 				scrobbleDTO.getArtistsNames());
 		Scrobble scrobble = new Scrobble(getContext().getUser().getId(), song,
@@ -37,7 +44,7 @@ public class ScrobblesUseCases extends UseCase {
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
 				.getEmailAddress());
-		
+
 		// updates scrobbleDTO
 		scrobbleDTO.setUserId(getContext().getUser().getId().toString());
 	}
@@ -96,6 +103,13 @@ public class ScrobblesUseCases extends UseCase {
 
 	private void authorizeUserGetScrobbles(ObjectId userId)
 			throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
 		// check if the User the scrobbles were asked for is the same as the
 		// authenticated one
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
