@@ -47,7 +47,7 @@ public class StationsUseCases extends UseCase {
 		// creates either a User RadioStation or a Group RadioStation
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		ScrobblerBridge scrobblerBridge;
-		if (newRadioStationDTO.getScrobblerIds().size() == 1) {
+		if (newRadioStationDTO.getGroupName() == null) {
 			ObjectId userId = new ObjectId(newRadioStationDTO.getScrobblerIds()
 					.get(0));
 			// TODO: check if the user exists

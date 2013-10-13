@@ -11,6 +11,8 @@ public class Song {
 	private String songTitle;
 
 	private List<String> artistsNames = new ArrayList<String>();
+	
+	private String albumTitle;
 
 	protected Song() {
 		super();
@@ -21,11 +23,33 @@ public class Song {
 		setSongTitle(songTitle);
 		setArtistsNames(artistsNames);
 	}
+	
+	public Song(String songTitle, String albumTitle, List<String> artistsNames) {
+		super();
+		setSongTitle(songTitle);
+		setAlbumTitle(albumTitle);
+		setArtistsNames(artistsNames);
+	}
 
 	public Song(String songTitle, String artistName) {
 		super();
 		setSongTitle(songTitle);
 		addArtistName(artistName);
+	}
+	
+	public Song(String songTitle, String albumTitle, String artistName) {
+		super();
+		setSongTitle(songTitle);
+		setAlbumTitle(albumTitle);
+		addArtistName(artistName);
+	}
+	
+	public String getAlbumTitle() {
+		return albumTitle;
+	}
+
+	public void setAlbumTitle(String albumTitle) {
+		this.albumTitle = albumTitle;
 	}
 
 	public String getSongTitle() {
@@ -52,17 +76,19 @@ public class Song {
 	public boolean addArtistName(String artistName) {
 		return artistsNames.add(artistName);
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Song [songTitle=" + songTitle + ", artistsNames="
-				+ artistsNames + "]";
+				+ artistsNames + ", albumTitle=" + albumTitle + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((albumTitle == null) ? 0 : albumTitle.hashCode());
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result
@@ -79,6 +105,11 @@ public class Song {
 		if (getClass() != obj.getClass())
 			return false;
 		Song other = (Song) obj;
+		if (albumTitle == null) {
+			if (other.albumTitle != null)
+				return false;
+		} else if (!albumTitle.equals(other.albumTitle))
+			return false;
 		if (artistsNames == null) {
 			if (other.artistsNames != null)
 				return false;

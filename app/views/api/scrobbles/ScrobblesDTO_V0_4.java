@@ -17,14 +17,6 @@ import views.api.DataTransferObject;
 public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	// used only for output
 	private String userId;
-	
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
 	private String trackTitle;
 
@@ -35,6 +27,8 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	 * "artistsNames": ["Daft Punk", "Pharrell Williams"]
 	 */
 	private List<String> artistsNames;
+	
+	private String albumTitle;
 
 	private String chosenByUser;
 
@@ -51,6 +45,22 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void addValidation() {
 		addValidation(validateTrackTitle(), validateArtistsNames(),
 				validateTimestamp(), validateChosenByUser());
+	}
+	
+	public String getAlbumTitle() {
+		return albumTitle;
+	}
+
+	public void setAlbumTitle(String albumTitle) {
+		this.albumTitle = albumTitle;
+	}
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getTrackTitle() {

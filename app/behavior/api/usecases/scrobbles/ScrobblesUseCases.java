@@ -35,7 +35,7 @@ public class ScrobblesUseCases extends UseCase {
 		}
 
 		Song song = new Song(scrobbleDTO.getTrackTitle(),
-				scrobbleDTO.getArtistsNames());
+				scrobbleDTO.getAlbumTitle(), scrobbleDTO.getArtistsNames());
 		Scrobble scrobble = new Scrobble(getContext().getUser().getId(), song,
 				Long.parseLong(scrobbleDTO.getTimestamp()),
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
