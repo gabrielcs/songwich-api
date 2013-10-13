@@ -18,7 +18,6 @@ import org.bson.types.ObjectId;
 
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
-import views.api.stations.NewRadioStationDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
@@ -39,7 +38,7 @@ public class StationsUseCases extends UseCase {
 		super(context);
 	}
 
-	public void postStations(NewRadioStationDTO_V0_4 newRadioStationDTO)
+	public void postStations(RadioStationDTO_V0_4 newRadioStationDTO)
 			throws SongwichAPIException {
 
 		authenticatePostStations(newRadioStationDTO);
@@ -115,7 +114,7 @@ public class StationsUseCases extends UseCase {
 	}
 
 	private void authenticatePostStations(
-			NewRadioStationDTO_V0_4 newRadioStationDTO)
+			RadioStationDTO_V0_4 newRadioStationDTO)
 			throws SongwichAPIException {
 
 		if (getContext().getUser() == null) {

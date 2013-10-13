@@ -60,6 +60,46 @@ public class ScrobblesController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
+	
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result deleteScrobbles(String scrobbleId) {
+		/*
+		Form<ScrobblesDTO_V0_4> scrobblesForm = Form.form(
+				ScrobblesDTO_V0_4.class).bindFromRequest();
+		if (scrobblesForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(scrobblesForm.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			ScrobblesDTO_V0_4 scrobbleDTO = scrobblesForm.get();
+
+			// process the request
+			ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
+					getContext());
+			try {
+				scrobblesUseCases.postScrobbles(scrobbleDTO);
+			} catch (SongwichAPIException exception) {
+				// Missing X-Songwich.userAuthToken
+				MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+						.toString(), exception.getMessage(), Http.Context.current()
+						.request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				return Results.unauthorized(Json.toJson(response));
+			}
+
+			// return the response
+			PostScrobblesResponse_V0_4 response = new PostScrobblesResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
+			return ok(Json.toJson(response));
+		}
+		*/
+		
+		// TODO: implement
+		return Results.TODO;
+	}
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated

@@ -45,6 +45,35 @@ public class UsersController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
+	
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result putUsers(String userId) {
+		/*
+		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
+				.bindFromRequest();
+		if (form.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(form.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			UserDTO_V0_4 userDTO = form.get();
+
+			// process the request
+			UsersUseCases usersUseCases = new UsersUseCases(getContext());
+			usersUseCases.postUsers(userDTO);
+
+			// return the response
+			PostUsersResponse_V0_4 response = new PostUsersResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", userDTO);
+			return ok(Json.toJson(response));
+		}
+		*/
+		
+		// TODO: implement
+		return Results.TODO;
+	}
 
 	@AppDeveloperAuthenticated
 	public static Result getUsers() {
