@@ -16,7 +16,9 @@ import views.api.stations.GetStationsResponse_V0_4;
 import views.api.stations.GetStationsUniqueResponse_V0_4;
 import views.api.stations.PostNextSongResponse_V0_4;
 import views.api.stations.PostStationsResponse_V0_4;
+import views.api.stations.PutStationsResponse_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
+import views.api.stations.RadioStationUpdateDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import behavior.api.usecases.stations.StationsUseCases;
 import controllers.api.APIController;
@@ -24,44 +26,6 @@ import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 
 public class StationsController_V0_4 extends APIController {
-
-	// TODO: this should be accessible only from the Songwich Radio app
-	@AppDeveloperAuthenticated
-	public static Result postNextSong() {
-		Form<StationSongListDTO_V0_4> stationEntryForm = Form.form(
-				StationSongListDTO_V0_4.class).bindFromRequest();
-		if (stationEntryForm.hasErrors()) {
-			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
-					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(stationEntryForm.errors()));
-			return badRequest(Json.toJson(apiResponse));
-		} else {
-			StationSongListDTO_V0_4 stationSongListDTO = stationEntryForm.get();
-
-			// process the request
-			StationsUseCases stationsUseCases = new StationsUseCases(
-					getContext());
-			try {
-				stationsUseCases.postNextSong(stationSongListDTO);
-			} catch (SongwichAPIException exception) {
-				MyLogger.warn(String.format("%s [%s]: %s", exception
-						.getStatus().toString(), exception.getMessage(),
-						Http.Context.current().request()));
-				APIResponse_V0_4 response = new APIResponse_V0_4(
-						exception.getStatus(), exception.getMessage());
-				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
-					return Results.unauthorized(Json.toJson(response));
-				} else {
-					return Results.badRequest(Json.toJson(response));
-				}
-			}
-
-			// return the response
-			PostNextSongResponse_V0_4 response = new PostNextSongResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", stationSongListDTO);
-			return ok(Json.toJson(response));
-		}
-	}
 
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
@@ -76,8 +40,7 @@ public class StationsController_V0_4 extends APIController {
 							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			RadioStationDTO_V0_4 newRadioStationDTO = newRadioStationForm
-					.get();
+			RadioStationDTO_V0_4 newRadioStationDTO = newRadioStationForm.get();
 
 			// process the request
 			StationsUseCases stationsUseCases = new StationsUseCases(
@@ -102,52 +65,6 @@ public class StationsController_V0_4 extends APIController {
 					APIStatus_V0_4.SUCCESS, "Success", newRadioStationDTO);
 			return ok(Json.toJson(response));
 		}
-	}
-
-	// TODO: this should be accessible only from the Songwich Radio app
-	@AppDeveloperAuthenticated
-	@UserAuthenticated
-	public static Result putStations(String stationId) {
-		/*
-		Form<NewRadioStationDTO_V0_4> newRadioStationForm = Form.form(
-				NewRadioStationDTO_V0_4.class).bindFromRequest();
-		if (newRadioStationForm.hasErrors()) {
-			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
-					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(newRadioStationForm
-							.errors()));
-			return badRequest(Json.toJson(apiResponse));
-		} else {
-			NewRadioStationDTO_V0_4 newRadioStationDTO = newRadioStationForm
-					.get();
-
-			// process the request
-			StationsUseCases stationsUseCases = new StationsUseCases(
-					getContext());
-			try {
-				stationsUseCases.postStations(newRadioStationDTO);
-			} catch (SongwichAPIException exception) {
-				MyLogger.warn(String.format("%s [%s]: %s", exception
-						.getStatus().toString(), exception.getMessage(),
-						Http.Context.current().request()));
-				APIResponse_V0_4 response = new APIResponse_V0_4(
-						exception.getStatus(), exception.getMessage());
-				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
-					return Results.unauthorized(Json.toJson(response));
-				} else {
-					return Results.badRequest(Json.toJson(response));
-				}
-			}
-
-			// return the response
-			PostStationsResponse_V0_4 response = new PostStationsResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", newRadioStationDTO);
-			return ok(Json.toJson(response));
-		}
-		*/
-		
-		// TODO: implement
-		return Results.TODO;
 	}
 
 	@AppDeveloperAuthenticated
@@ -188,6 +105,170 @@ public class StationsController_V0_4 extends APIController {
 		GetStationsUniqueResponse_V0_4 response = new GetStationsUniqueResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
 		return ok(Json.toJson(response));
+	}
+
+	// TODO: this should be accessible only from the Songwich Radio app
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result putStations(String stationId) {
+
+		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
+				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
+		if (radioStationUpdateForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(radioStationUpdateForm
+							.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = radioStationUpdateForm
+					.get();
+
+			// process the request
+			StationsUseCases stationsUseCases = new StationsUseCases(
+					getContext());
+			try {
+				stationsUseCases.putStations(stationId, radioStationUpdateDTO);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+
+			// return the response
+			PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+
+	// TODO: this should be accessible only from the Songwich Radio app
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result putStationsAddScrobblers(String stationId) {
+		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
+				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
+		if (radioStationUpdateForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(radioStationUpdateForm
+							.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = radioStationUpdateForm
+					.get();
+
+			// process the request
+			StationsUseCases stationsUseCases = new StationsUseCases(
+					getContext());
+			try {
+				stationsUseCases.putStationsAddScrobblers(stationId,
+						radioStationUpdateDTO);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+
+			// return the response
+			PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+
+	// TODO: this should be accessible only from the Songwich Radio app
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result putStationsRemoveScrobblers(String stationId) {
+		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
+				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
+		if (radioStationUpdateForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(radioStationUpdateForm
+							.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = radioStationUpdateForm
+					.get();
+
+			// process the request
+			StationsUseCases stationsUseCases = new StationsUseCases(
+					getContext());
+			try {
+				stationsUseCases.putStationsRemoveScrobblers(stationId,
+						radioStationUpdateDTO);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+
+			// return the response
+			PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+
+	// TODO: this should be accessible only from the Songwich Radio app
+	@AppDeveloperAuthenticated
+	public static Result postNextSong() {
+		Form<StationSongListDTO_V0_4> stationEntryForm = Form.form(
+				StationSongListDTO_V0_4.class).bindFromRequest();
+		if (stationEntryForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(stationEntryForm.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			StationSongListDTO_V0_4 stationSongListDTO = stationEntryForm.get();
+
+			// process the request
+			StationsUseCases stationsUseCases = new StationsUseCases(
+					getContext());
+			try {
+				stationsUseCases.postNextSong(stationSongListDTO);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+
+			// return the response
+			PostNextSongResponse_V0_4 response = new PostNextSongResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", stationSongListDTO);
+			return ok(Json.toJson(response));
+		}
 	}
 
 }

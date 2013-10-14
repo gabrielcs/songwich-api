@@ -44,7 +44,7 @@ public class ScrobblerBridge {
 	 * would have null ID's.
 	 */
 	@PrePersist
-	private void loadActiveScrobblersUserIds() {
+	public void loadActiveScrobblersUserIds() {
 		activeScrobblersUserIds.clear();
 
 		if (groupScrobbler) {

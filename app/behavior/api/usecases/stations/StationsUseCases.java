@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
+import views.api.stations.RadioStationUpdateDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.algorithms.NaiveStationStrategy;
@@ -38,22 +39,48 @@ public class StationsUseCases extends UseCase {
 		super(context);
 	}
 
-	public void postStations(RadioStationDTO_V0_4 newRadioStationDTO)
+	public List<RadioStationDTO_V0_4> getStations() {
+		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
+		// TODO: limit the number of results
+		List<RadioStation> stations = radioStationDAO.find().asList();
+
+		return createDTOForGetStations(stations);
+	}
+
+	public RadioStationDTO_V0_4 getStations(String stationId)
+			throws SongwichAPIException {
+		if (!ObjectId.isValid(stationId)) {
+			throw new SongwichAPIException("Invalid stationId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
+		RadioStation station = radioStationDAO
+				.findById(new ObjectId(stationId));
+		if (station == null) {
+			throw new SongwichAPIException("Non-existent stationId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		return createDTOForGetStations(station, true);
+	}
+
+	public void postStations(RadioStationDTO_V0_4 radioStationDTO)
 			throws SongwichAPIException {
 
-		authenticatePostStations(newRadioStationDTO);
+		authenticatePostStations(radioStationDTO);
 
 		// creates either a User RadioStation or a Group RadioStation
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		ScrobblerBridge scrobblerBridge;
-		if (newRadioStationDTO.getGroupName() == null) {
-			ObjectId userId = new ObjectId(newRadioStationDTO.getScrobblerIds()
+		if (radioStationDTO.getGroupName() == null) {
+			ObjectId userId = new ObjectId(radioStationDTO.getScrobblerIds()
 					.get(0));
 			// TODO: check if the user exists
 			scrobblerBridge = new ScrobblerBridge(userDAO.findById(userId));
 		} else {
 			// validation guarantees there will be multiple scrobblerIds
-			List<String> userIds = newRadioStationDTO.getScrobblerIds();
+			List<String> userIds = radioStationDTO.getScrobblerIds();
 			Set<GroupMember> groupMembers = new HashSet<GroupMember>(
 					userIds.size());
 			User user;
@@ -65,11 +92,11 @@ public class StationsUseCases extends UseCase {
 			}
 			// add Group name to DTO
 			scrobblerBridge = new ScrobblerBridge(new Group(
-					newRadioStationDTO.getGroupName(), groupMembers));
+					radioStationDTO.getGroupName(), groupMembers));
 		}
-		String imageUrl = newRadioStationDTO.getImageUrl();
+		String imageUrl = radioStationDTO.getImageUrl();
 		RadioStation radioStation = new RadioStation(
-				newRadioStationDTO.getStationName(), scrobblerBridge, imageUrl);
+				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// set nowPlaying
 		StationStrategy stationStrategy = new NaiveStationStrategy();
@@ -91,41 +118,96 @@ public class StationsUseCases extends UseCase {
 		radioStation.setLookAhead(new Track(lookAheadHistoryEntry,
 				lookAheadSong));
 
-		// save RadioStation
-		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(radioStation, getContext()
-				.getAppDeveloper().getEmailAddress());
-
-		// update the DataTransferObject
-		newRadioStationDTO.setStationId(radioStation.getId().toString());
-		// nowPlaying
-		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
-		nowPlayingDTO
-				.setArtistName(nowPlayingSong.getArtistsNames().toString());
-		nowPlayingDTO.setTrackTitle(nowPlayingSong.getSongTitle());
-		nowPlayingDTO.setFeedbackId(nowPlayingHistoryEntry.getId().toString());
-		newRadioStationDTO.setNowPlaying(nowPlayingDTO);
-		// lookAhead
-		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
-		lookAheadDTO.setArtistName(lookAheadSong.getArtistsNames().toString());
-		lookAheadDTO.setTrackTitle(lookAheadSong.getSongTitle());
-		lookAheadDTO.setFeedbackId(lookAheadHistoryEntry.getId().toString());
-		newRadioStationDTO.setLookAhead(lookAheadDTO);
+		// save it and update the DTO
+		savePostStations(radioStation, radioStationDTO, nowPlayingSong,
+				nowPlayingHistoryEntry, lookAheadSong, lookAheadHistoryEntry);
 	}
 
-	private void authenticatePostStations(
-			RadioStationDTO_V0_4 newRadioStationDTO)
+	public void putStations(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
 			throws SongwichAPIException {
 
-		if (getContext().getUser() == null) {
-			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
-					APIStatus_V0_4.UNAUTHORIZED);
-		} else if (!newRadioStationDTO.getScrobblerIds().contains(
-				getContext().getUser().getId().toString())) {
-			throw new SongwichAPIException(
-					APIStatus_V0_4.UNAUTHORIZED.toString(),
-					APIStatus_V0_4.UNAUTHORIZED);
+		RadioStation station = authorizePutStations(stationId,
+				radioStationUpdateDTO);
+
+		// update imageUrl
+		if (radioStationUpdateDTO.getImageUrl() != null) {
+			station.setImageUrl(radioStationUpdateDTO.getImageUrl());
 		}
+
+		// update station name
+		if (radioStationUpdateDTO.getStationName() != null) {
+			station.setName(radioStationUpdateDTO.getStationName());
+		}
+
+		savePutStationsScrobblers(station, radioStationUpdateDTO);
+	}
+
+	public void putStationsAddScrobblers(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+			throws SongwichAPIException {
+		RadioStation station = authorizePutStationsScrobblers(stationId,
+				radioStationUpdateDTO);
+
+		// add new scrobblers
+		for (String scrobblerId : radioStationUpdateDTO.getScrobblerIds()) {
+			if (!ObjectId.isValid(scrobblerId)) {
+				throw new SongwichAPIException("Invalid scrobblerId: "
+						+ scrobblerId, APIStatus_V0_4.INVALID_PARAMETER);
+			}
+
+			UserDAO<ObjectId> userDAO = new UserDAOMongo();
+			User user = userDAO.findById(new ObjectId(scrobblerId));
+			if (user == null) {
+				throw new SongwichAPIException("Non-existent scrobblerId",
+						APIStatus_V0_4.INVALID_PARAMETER);
+			}
+
+			// add new scrobbler
+			if (!station.getScrobbler().getActiveScrobblersUserIds()
+					.contains(new ObjectId(scrobblerId))) {
+
+				station.getScrobbler().getGroup().addGroupMember(user);
+			}
+		}
+
+		savePutStationsScrobblers(station, radioStationUpdateDTO);
+	}
+
+	public void putStationsRemoveScrobblers(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+			throws SongwichAPIException {
+		RadioStation station = authorizePutStationsScrobblers(stationId,
+				radioStationUpdateDTO);
+
+		// remove scrobblers
+		for (String scrobblerId : radioStationUpdateDTO.getScrobblerIds()) {
+			if (!ObjectId.isValid(scrobblerId)) {
+				throw new SongwichAPIException("Invalid scrobblerId: "
+						+ scrobblerId, APIStatus_V0_4.INVALID_PARAMETER);
+			}
+
+			UserDAO<ObjectId> userDAO = new UserDAOMongo();
+			User user = userDAO.findById(new ObjectId(scrobblerId));
+			if (user == null) {
+				throw new SongwichAPIException("Non-existent scrobblerId",
+						APIStatus_V0_4.INVALID_PARAMETER);
+			}
+
+			// remove scrobbler
+			if (station.getScrobbler().getActiveScrobblersUserIds()
+					.contains(new ObjectId(scrobblerId))) {
+				station.getScrobbler().getGroup().deactivateGroupMember(user);
+			}
+		}
+
+		if (station.getScrobbler().getActiveScrobblersUserIds().size() < 1) {
+			throw new SongwichAPIException(
+					"Station has to have at least 1 active scrobbler",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		savePutStationsScrobblers(station, radioStationUpdateDTO);
 	}
 
 	public void postNextSong(StationSongListDTO_V0_4 stationSongListDTO)
@@ -172,42 +254,10 @@ public class StationsUseCases extends UseCase {
 				lookAheadHistoryEntry);
 	}
 
-	private void updateDTOForPostNextSong(
-			StationSongListDTO_V0_4 stationSongListDTO,
-			StationHistoryEntry nowPlayingHistoryEntry,
-			StationHistoryEntry lookAheadHistoryEntry) {
-
-		// sets StationSongListDTO's nowPlaying
-		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = new StationSongListEntryDTO_V0_4();
-		nowPlayingSongListEntryDTO.setArtistName(nowPlayingHistoryEntry
-				.getSong().getArtistsNames().toString());
-		nowPlayingSongListEntryDTO.setTrackTitle(nowPlayingHistoryEntry
-				.getSong().getSongTitle());
-		nowPlayingSongListEntryDTO.setFeedbackId(nowPlayingHistoryEntry.getId()
-				.toString());
-		stationSongListDTO.setNowPlaying(nowPlayingSongListEntryDTO);
-
-		// sets StationSongListDTO's lookAhead
-		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = new StationSongListEntryDTO_V0_4();
-		lookAheadSongListEntryDTO.setArtistName(lookAheadHistoryEntry.getSong()
-				.getArtistsNames().toString());
-		lookAheadSongListEntryDTO.setTrackTitle(lookAheadHistoryEntry.getSong()
-				.getSongTitle());
-		lookAheadSongListEntryDTO.setFeedbackId(lookAheadHistoryEntry.getId()
-				.toString());
-		stationSongListDTO.setLookAhead(lookAheadSongListEntryDTO);
-	}
-
-	public List<RadioStationDTO_V0_4> getStations() {
-		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
-		// TODO: limit the number of results
-		List<RadioStation> stations = radioStationDAO.find().asList();
-
-		return createDTOForGetStations(stations);
-	}
-
-	public RadioStationDTO_V0_4 getStations(String stationId)
+	private RadioStation authorizePutStations(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
 			throws SongwichAPIException {
+
 		if (!ObjectId.isValid(stationId)) {
 			throw new SongwichAPIException("Invalid stationId",
 					APIStatus_V0_4.INVALID_PARAMETER);
@@ -221,7 +271,105 @@ public class StationsUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		return createDTOForGetStations(station, true);
+		// check if the user is already one of the stations's scrobbler and will
+		// continue to be
+		authenticatePutStations(station, radioStationUpdateDTO);
+
+		return station;
+	}
+
+	private RadioStation authorizePutStationsScrobblers(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+			throws SongwichAPIException {
+
+		RadioStation station = authorizePutStations(stationId,
+				radioStationUpdateDTO);
+
+		if (radioStationUpdateDTO.getScrobblerIds() == null
+				|| radioStationUpdateDTO.getScrobblerIds().isEmpty()) {
+
+			throw new SongwichAPIException("Missing scrobblerId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		if (station.getScrobbler().isUserScrobbler()) {
+			throw new SongwichAPIException(
+					"Not allowed to change scrobblers on a user station",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		return station;
+	}
+
+	private void authenticatePostStations(RadioStationDTO_V0_4 radioStationDTO)
+			throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
+		if (!radioStationDTO.getScrobblerIds().contains(
+				getContext().getUser().getId().toString())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+	}
+
+	private void authenticatePutStations(RadioStation station,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+			throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
+		// check if the user is already one of the stations's scrobblers
+		if (!station.getScrobbler().getActiveScrobblersUserIds()
+				.contains(getContext().getUser().getId())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+	}
+
+	private void savePostStations(RadioStation radioStation,
+			RadioStationDTO_V0_4 radioStationDTO, Song nowPlayingSong,
+			StationHistoryEntry nowPlayingHistoryEntry, Song lookAheadSong,
+			StationHistoryEntry lookAheadHistoryEntry) {
+
+		// save RadioStation
+		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
+		radioStationDAO.cascadeSave(radioStation, getContext()
+				.getAppDeveloper().getEmailAddress());
+
+		// update the DataTransferObject
+		radioStationDTO.setStationId(radioStation.getId().toString());
+		// nowPlaying
+		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
+		nowPlayingDTO
+				.setArtistName(nowPlayingSong.getArtistsNames().toString());
+		nowPlayingDTO.setTrackTitle(nowPlayingSong.getSongTitle());
+		nowPlayingDTO.setFeedbackId(nowPlayingHistoryEntry.getId().toString());
+		radioStationDTO.setNowPlaying(nowPlayingDTO);
+		// lookAhead
+		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
+		lookAheadDTO.setArtistName(lookAheadSong.getArtistsNames().toString());
+		lookAheadDTO.setTrackTitle(lookAheadSong.getSongTitle());
+		lookAheadDTO.setFeedbackId(lookAheadHistoryEntry.getId().toString());
+		radioStationDTO.setLookAhead(lookAheadDTO);
+	}
+
+	private void savePutStationsScrobblers(RadioStation station,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
+		// saves it
+		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
+		radioStationDAO.save(station, getContext().getAppDeveloper()
+				.getEmailAddress());
+		// updates the user output
+		updateDTOForPutStations(radioStationUpdateDTO, station);
 	}
 
 	public static List<RadioStationDTO_V0_4> createDTOForGetStations(
@@ -267,6 +415,49 @@ public class StationsUseCases extends UseCase {
 		}
 
 		return stationDTO;
+	}
+
+	private void updateDTOForPostNextSong(
+			StationSongListDTO_V0_4 stationSongListDTO,
+			StationHistoryEntry nowPlayingHistoryEntry,
+			StationHistoryEntry lookAheadHistoryEntry) {
+
+		// sets StationSongListDTO's nowPlaying
+		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = new StationSongListEntryDTO_V0_4();
+		nowPlayingSongListEntryDTO.setArtistName(nowPlayingHistoryEntry
+				.getSong().getArtistsNames().toString());
+		nowPlayingSongListEntryDTO.setTrackTitle(nowPlayingHistoryEntry
+				.getSong().getSongTitle());
+		nowPlayingSongListEntryDTO.setFeedbackId(nowPlayingHistoryEntry.getId()
+				.toString());
+		stationSongListDTO.setNowPlaying(nowPlayingSongListEntryDTO);
+
+		// sets StationSongListDTO's lookAhead
+		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = new StationSongListEntryDTO_V0_4();
+		lookAheadSongListEntryDTO.setArtistName(lookAheadHistoryEntry.getSong()
+				.getArtistsNames().toString());
+		lookAheadSongListEntryDTO.setTrackTitle(lookAheadHistoryEntry.getSong()
+				.getSongTitle());
+		lookAheadSongListEntryDTO.setFeedbackId(lookAheadHistoryEntry.getId()
+				.toString());
+		stationSongListDTO.setLookAhead(lookAheadSongListEntryDTO);
+	}
+
+	private RadioStationUpdateDTO_V0_4 updateDTOForPutStations(
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO,
+			RadioStation station) {
+		radioStationUpdateDTO.setStationId(station.getId().toString());
+		radioStationUpdateDTO.setStationName(station.getName());
+		radioStationUpdateDTO.setImageUrl(station.getImageUrl());
+
+		List<String> scrobblerIds = new ArrayList<String>();
+		for (ObjectId scrobblerId : station.getScrobbler()
+				.getActiveScrobblersUserIds()) {
+			scrobblerIds.add(scrobblerId.toString());
+		}
+		radioStationUpdateDTO.setScrobblerIds(scrobblerIds);
+
+		return radioStationUpdateDTO;
 	}
 
 	/*

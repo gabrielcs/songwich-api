@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import models.api.MongoModelImpl;
+import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
 
@@ -46,10 +47,25 @@ public class Group extends MongoModelImpl {
 	 * @param groupMember
 	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
 	 */
-	public boolean addGroupMember(GroupMember groupMember) {
-		boolean result = this.groupMembers.add(groupMember);
+	public boolean addGroupMember(User user) {
+		boolean result = this.groupMembers.add(new GroupMember(user, System.currentTimeMillis()));
 		fireModelUpdated();
 		return result;
+	}
+	
+	/**
+	 * 
+	 * @param groupMember
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#remove})
+	 */
+	public boolean deactivateGroupMember(User user) {
+		for (GroupMember groupMember : groupMembers) {
+			if (groupMember.getUser().getId().equals(user.getId())) {
+				groupMember.setEndDate(System.currentTimeMillis());
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

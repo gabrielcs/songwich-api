@@ -149,7 +149,24 @@ public abstract class DataTransferObject<T> {
 
 	protected static ValidationError validateRequiredNonEmptyObjectIdArray(
 			String arrayName, String arrayItemName, List<String> array) {
-		// TODO
+		ValidationError result = validateRequiredNonEmptyArray(arrayName, array);
+		if (result != null) {
+			return result;
+		}
+
+		return validateObjectIdArray(arrayName, arrayItemName, array);
+	}
+
+	protected static ValidationError validateObjectIdArray(String arrayName,
+			String arrayItemName, List<String> array) {
+		if (array != null) {
+			for (String id : array) {
+				if (!ObjectId.isValid(id)) {
+					return new ValidationError(arrayName, String.format(
+							"Invalid %s: %s", arrayItemName, id));
+				}
+			}
+		}
 		return null;
 	}
 
@@ -165,6 +182,10 @@ public abstract class DataTransferObject<T> {
 
 	protected static ValidationError validateImageUrl(String propertyName,
 			String imageUrl) {
+		if (imageUrl == null) {
+			return null;
+		}
+		
 		ValidationError validationError = validateUrl(propertyName, imageUrl);
 		if (validationError != null) {
 			return validationError;
