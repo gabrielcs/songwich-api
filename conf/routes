@@ -4,7 +4,8 @@
 
 # Untrail GET URLs (http://stackoverflow.com/questions/13189095/play-framework2-remove-trailing-slash-from-urls)
 GET     /*path/                                     controllers.web.Application.untrail(path)
-OPTIONS /*path                                      controllers.api.APIController.cors(path)
+# Authorize custom headers
+OPTIONS /*path                                      controllers.api.auth.CorsController.allowHeaders(path)
 
 # Scrobbles API
 POST    /v0.4/scrobbles                             controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()

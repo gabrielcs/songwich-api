@@ -7,8 +7,9 @@ import java.lang.annotation.Target;
 
 import play.mvc.With;
 import controllers.api.auth.AppDeveloperAuthController;
+import controllers.api.auth.CorsController;
 
-@With(AppDeveloperAuthController.class)
+@With({CorsController.class, AppDeveloperAuthController.class})
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AppDeveloperAuthenticated {

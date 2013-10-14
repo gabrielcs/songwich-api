@@ -6,9 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import play.mvc.With;
+import controllers.api.auth.CorsController;
 import controllers.api.auth.UserAuthController;
 
-@With(UserAuthController.class)
+@With({CorsController.class, UserAuthController.class})
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserAuthenticated {
