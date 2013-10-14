@@ -31,22 +31,22 @@ public class StationsController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result postStations() {
-		Form<RadioStationDTO_V0_4> newRadioStationForm = Form.form(
+		Form<RadioStationDTO_V0_4> radioStationForm = Form.form(
 				RadioStationDTO_V0_4.class).bindFromRequest();
-		if (newRadioStationForm.hasErrors()) {
+		if (radioStationForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(newRadioStationForm
+					DataTransferObject.errorsAsString(radioStationForm
 							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			RadioStationDTO_V0_4 newRadioStationDTO = newRadioStationForm.get();
+			RadioStationDTO_V0_4 radioStationDTO = radioStationForm.get();
 
 			// process the request
 			StationsUseCases stationsUseCases = new StationsUseCases(
 					getContext());
 			try {
-				stationsUseCases.postStations(newRadioStationDTO);
+				stationsUseCases.postStations(radioStationDTO);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -62,7 +62,7 @@ public class StationsController_V0_4 extends APIController {
 
 			// return the response
 			PostStationsResponse_V0_4 response = new PostStationsResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", newRadioStationDTO);
+					APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
 			return ok(Json.toJson(response));
 		}
 	}
