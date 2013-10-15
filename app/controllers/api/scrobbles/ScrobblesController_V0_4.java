@@ -2,14 +2,9 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
-import behavior.api.usecases.scrobbles.ScrobblesUseCases;
-
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
-import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.Results;
 import util.api.MyLogger;
@@ -20,6 +15,7 @@ import views.api.DataTransferObject;
 import views.api.scrobbles.GetScrobblesResponse_V0_4;
 import views.api.scrobbles.PostScrobblesResponse_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
+import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
@@ -46,9 +42,9 @@ public class ScrobblesController_V0_4 extends APIController {
 				scrobblesUseCases.postScrobbles(scrobbleDTO);
 			} catch (SongwichAPIException exception) {
 				// Missing X-Songwich.userAuthToken
-				MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
-						.toString(), exception.getMessage(), Http.Context.current()
-						.request()));
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
 				APIResponse_V0_4 response = new APIResponse_V0_4(
 						exception.getStatus(), exception.getMessage());
 				return Results.unauthorized(Json.toJson(response));
@@ -60,83 +56,51 @@ public class ScrobblesController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
-	
+
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result deleteScrobbles(String scrobbleId) {
-		/*
-		Form<ScrobblesDTO_V0_4> scrobblesForm = Form.form(
-				ScrobblesDTO_V0_4.class).bindFromRequest();
-		if (scrobblesForm.hasErrors()) {
-			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
-					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(scrobblesForm.errors()));
-			return badRequest(Json.toJson(apiResponse));
-		} else {
-			ScrobblesDTO_V0_4 scrobbleDTO = scrobblesForm.get();
-
-			// process the request
-			ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
-					getContext());
-			try {
-				scrobblesUseCases.postScrobbles(scrobbleDTO);
-			} catch (SongwichAPIException exception) {
-				// Missing X-Songwich.userAuthToken
-				MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
-						.toString(), exception.getMessage(), Http.Context.current()
-						.request()));
-				APIResponse_V0_4 response = new APIResponse_V0_4(
-						exception.getStatus(), exception.getMessage());
-				return Results.unauthorized(Json.toJson(response));
-			}
-
-			// return the response
-			PostScrobblesResponse_V0_4 response = new PostScrobblesResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
-			return ok(Json.toJson(response));
+		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
+				getContext());
+		try {
+			scrobblesUseCases.deleteScrobbles(scrobbleId);
+		} catch (SongwichAPIException exception) {
+			// user unauthorized for getting scrobbles from another user
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
 		}
-		*/
-		
-		// TODO: implement
-		return Results.TODO;
+
+		// return the response
+		APIResponse_V0_4 response = new APIResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success");
+		return ok(Json.toJson(response));
 	}
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result getScrobbles(String userId, int daysOffset, int results) {
-		ObjectId objectId;
-		try {
-			objectId = new ObjectId(userId);
-		} catch (IllegalArgumentException illegalArgumentEx) {
-			SongwichAPIException apiEx = new SongwichAPIException(
-					"Invalid userId: " + userId,
-					APIStatus_V0_4.INVALID_PARAMETER);
-			MyLogger.warn(String.format("%s [%s]: %s", apiEx.getStatus()
-					.toString(), apiEx.getMessage(), Context.current()
-					.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(apiEx.getStatus(),
-					apiEx.getMessage());
-			return Results.badRequest(Json.toJson(response));
-		}
-
-		// process the request
-		ScrobblesUseCases scroblesUseCases = new ScrobblesUseCases(getContext());
+		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
+				getContext());
 		List<ScrobblesDTO_V0_4> scrobbleDTOs;
 		try {
 			if (daysOffset < 0) {
 				if (results < 0) {
-					scrobbleDTOs = scroblesUseCases.getScrobbles(objectId);
+					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId);
 				} else {
-					scrobbleDTOs = scroblesUseCases.getScrobbles(objectId,
+					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
 							results);
 				}
 			} else {
 				if (results < 0) {
-					scrobbleDTOs = scroblesUseCases.getScrobblesDaysOffset(
-							objectId, daysOffset);
+					scrobbleDTOs = scrobblesUseCases.getScrobblesDaysOffset(
+							userId, daysOffset);
 				} else {
-					scrobbleDTOs = scroblesUseCases.getScrobblesDaysOffset(
-							objectId, daysOffset, results);
+					scrobbleDTOs = scrobblesUseCases.getScrobblesDaysOffset(
+							userId, daysOffset, results);
 				}
 			}
 		} catch (SongwichAPIException exception) {
