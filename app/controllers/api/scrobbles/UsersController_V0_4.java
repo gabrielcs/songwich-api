@@ -15,7 +15,9 @@ import views.api.DataTransferObject;
 import views.api.scrobbles.GetUsersResponse_V0_4;
 import views.api.scrobbles.GetUsersUniqueResponse_V0_4;
 import views.api.scrobbles.PostUsersResponse_V0_4;
+import views.api.scrobbles.PutUsersResponse_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
+import views.api.scrobbles.UserUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -45,12 +47,11 @@ public class UsersController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
-	
+
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result putUsers(String userId) {
-		/*
-		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
+		Form<UserUpdateDTO_V0_4> form = Form.form(UserUpdateDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
@@ -58,21 +59,29 @@ public class UsersController_V0_4 extends APIController {
 					DataTransferObject.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			UserDTO_V0_4 userDTO = form.get();
-
+			UserUpdateDTO_V0_4 userUpdateDTO = form.get();
 			// process the request
 			UsersUseCases usersUseCases = new UsersUseCases(getContext());
-			usersUseCases.postUsers(userDTO);
+			try {
+				usersUseCases.putUsers(userId, userUpdateDTO);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
 
 			// return the response
-			PostUsersResponse_V0_4 response = new PostUsersResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", userDTO);
+			PutUsersResponse_V0_4 response = new PutUsersResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", userUpdateDTO);
 			return ok(Json.toJson(response));
 		}
-		*/
-		
-		// TODO: implement
-		return Results.TODO;
 	}
 
 	@AppDeveloperAuthenticated
