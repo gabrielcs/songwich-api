@@ -95,6 +95,7 @@ public class ScrobblesUseCases extends UseCase {
 		ScrobblesDTO_V0_4 scrobblesDTO;
 		for (Scrobble scrobble : scrobbles) {
 			scrobblesDTO = new ScrobblesDTO_V0_4();
+			scrobblesDTO.setScrobbleId(scrobble.getId().toString());
 			scrobblesDTO.setTrackTitle(scrobble.getSong().getSongTitle());
 			scrobblesDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
 			scrobblesDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
