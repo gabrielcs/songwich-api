@@ -5,6 +5,7 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.mvc.Result;
 import play.mvc.Results;
+import util.api.MyLogger;
 
 // http://daniel.reuterwall.com/blog/2013/04/15/play-with-cors
 public class CorsController extends Action.Simple {
@@ -22,6 +23,11 @@ public class CorsController extends Action.Simple {
 	}
 
 	private static void allowCustomHeaders() {
+		MyLogger.debug(String.format("%s %s with headers: %s", Http.Context
+				.current().request().method().toString(), Http.Context
+				.current().request().path(), Http.Context.current().request()
+				.headers().toString()));
+
 		Response response = Http.Context.current().response();
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods",
