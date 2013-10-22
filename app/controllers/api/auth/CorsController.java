@@ -23,11 +23,6 @@ public class CorsController extends Action.Simple {
 	}
 
 	private static void allowCustomHeaders() {
-		MyLogger.debug(String.format("%s %s with headers: %s", Http.Context
-				.current().request().method().toString(), Http.Context
-				.current().request().path(), Http.Context.current().request()
-				.headers().toString()));
-
 		Response response = Http.Context.current().response();
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods",
