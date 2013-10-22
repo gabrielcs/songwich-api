@@ -26,14 +26,17 @@ public class NaiveStationStrategy implements StationStrategy {
 
 	@Override
 	public Song next(RadioStation radioStation) {
+		fixScrobbles();
+
 		Set<ObjectId> scrobblersIds = radioStation.getScrobbler()
 				.getActiveScrobblersUserIds();
 
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		List<Scrobble> scrobbles = scrobbleDao.findByUserIds(scrobblersIds,
-				false);
+				true);
 
-		// make sure we don't compare a Track to a Song nor have a NullPointerException
+		// make sure we don't compare a Track to a Song nor have a
+		// NullPointerException
 		Song previousNowPlaying = (radioStation.getNowPlaying() == null) ? null
 				: radioStation.getNowPlaying().getSong();
 		Song previousLookAhead = (radioStation.getLookAhead() == null) ? null
@@ -48,6 +51,24 @@ public class NaiveStationStrategy implements StationStrategy {
 				|| next.equals(previousLookAhead));
 
 		return next;
+	}
+
+	private void fixScrobbles() {
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
+		List<Scrobble> allScrobbles = scrobbleDao.find().asList();
+		for (Scrobble scrobble : allScrobbles) {
+			switch (scrobble.getPlayer()) {
+			case "Spotify":
+				scrobble.setChosenByUser(true);
+			case "Deezer":
+				scrobble.setChosenByUser(true);
+			case "Youtube":
+				scrobble.setChosenByUser(true);
+			case "Songwich":
+				scrobble.setChosenByUser(false);
+			}
+			scrobbleDao.save(scrobble, "gabrielcs@gmail.com");
+		}
 	}
 
 	@Override
