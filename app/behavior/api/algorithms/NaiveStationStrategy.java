@@ -57,14 +57,13 @@ public class NaiveStationStrategy implements StationStrategy {
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
 		List<Scrobble> allScrobbles = scrobbleDao.find().asList();
 		for (Scrobble scrobble : allScrobbles) {
-			switch (scrobble.getPlayer()) {
-			case "Spotify":
+			if (scrobble.getPlayer().equals("Spotify")) {
 				scrobble.setChosenByUser(true);
-			case "Deezer":
+			} else if (scrobble.getPlayer().equals("Youtube")) {
 				scrobble.setChosenByUser(true);
-			case "Youtube":
+			} else if (scrobble.getPlayer().equals("Deezer")) {
 				scrobble.setChosenByUser(true);
-			case "Songwich":
+			}  else if (scrobble.getPlayer().equals("Songwich")) {
 				scrobble.setChosenByUser(false);
 			}
 			scrobbleDao.save(scrobble, "gabrielcs@gmail.com");
