@@ -71,8 +71,8 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 		nofxRadioStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxRadioStation.setNowPlaying(new Track(null, doWhatYouWant));
-		nofxRadioStation.setLookAhead(new Track(null, linoleum));
+		nofxRadioStation.setNowPlaying(new Track(null, doWhatYouWant, null));
+		nofxRadioStation.setLookAhead(new Track(null, linoleum, null));
 
 		radioStationDao.cascadeSave(nofxRadioStation, DEV_EMAIL);
 	}

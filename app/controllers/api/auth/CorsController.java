@@ -5,7 +5,6 @@ import play.mvc.Http;
 import play.mvc.Http.Response;
 import play.mvc.Result;
 import play.mvc.Results;
-import util.api.MyLogger;
 
 // http://daniel.reuterwall.com/blog/2013/04/15/play-with-cors
 public class CorsController extends Action.Simple {

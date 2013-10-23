@@ -116,8 +116,8 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, DEV_EMAIL);
 
 		// sets nofxStation's nowPlaying and lookAhead
-		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, doWhatYouWant));
-		nofxStation.setLookAhead(new Track(linoleumEntry, linoleum));
+		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, doWhatYouWant, null));
+		nofxStation.setLookAhead(new Track(linoleumEntry, linoleum, null));
 		radioStationDao.save(nofxStation, DEV_EMAIL);
 
 		// adds feedback

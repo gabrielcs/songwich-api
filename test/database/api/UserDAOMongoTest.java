@@ -1,11 +1,18 @@
 package database.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import models.api.scrobbles.App;
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.AuthToken;
 import models.api.scrobbles.User;
 
+import org.bson.types.ObjectId;
 import org.junit.Test;
 
 import database.api.scrobbles.UserDAOMongo;
@@ -40,6 +47,25 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 
 		assertTrue(userDao.findById(user1.getId()).equals(user1));
 		assertTrue(userDao.findById(user2.getId()).equals(user2));
+	}
+	
+	@Test
+	public void testFindByUsersIds() {
+		User user1 = new User("gabriel@example.com", "Gabriel Example");
+		User user2 = new User("daniel@example.com", "Daniel Example");
+
+		UserDAOMongo userDao = new UserDAOMongo();
+		userDao.cascadeSave(user1, DEV_EMAIL);
+		userDao.cascadeSave(user2, DEV_EMAIL);
+
+		Set<ObjectId> usersIds = new HashSet<ObjectId>(2);
+		usersIds.add(user1.getId());
+		usersIds.add(user2.getId());
+		
+		List<User> users = userDao.findUsersByIds(usersIds);
+		assertEquals(2, users.size());
+		assertTrue(users.contains(user1));
+		assertTrue(users.contains(user2));
 	}
 
 	@Test

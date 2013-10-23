@@ -127,6 +127,17 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 				true);
 		assertEquals(scrobblesUser1.size(), 1);
 		assertTrue(scrobblesUser1.contains(scrobble3));
+		
+		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId(),
+				true);
+		assertEquals(scrobblesUser2.size(), 2);
+		assertTrue(scrobblesUser2.contains(scrobble2));
+		assertTrue(scrobblesUser2.contains(scrobble4));
+		
+		List<Scrobble> scrobblesUser3 = scrobbleDao.findByUserId(user3.getId(),
+				true);
+		assertEquals(scrobblesUser3.size(), 1);
+		assertTrue(scrobblesUser3.contains(scrobble5));
 	}
 
 	@Test
