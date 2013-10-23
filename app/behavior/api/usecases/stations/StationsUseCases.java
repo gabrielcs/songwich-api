@@ -432,7 +432,7 @@ public class StationsUseCases extends UseCase {
 		radioStationDTO.setLookAhead(lookAheadDTO);
 	}
 
-	private List<UserDTO_V0_4> createScrobblersDTO(List<User> scrobblers) {
+	private static List<UserDTO_V0_4> createScrobblersDTO(List<User> scrobblers) {
 		List<UserDTO_V0_4> scrobblersDTO = new ArrayList<UserDTO_V0_4>();
 		UserDTO_V0_4 userDTO;
 		for (User scrobbler : scrobblers) {
@@ -486,6 +486,10 @@ public class StationsUseCases extends UseCase {
 					.getSongTitle());
 			songListEntryDTO.setArtistName(station.getNowPlaying().getSong()
 					.getArtistsNames().toString());
+			songListEntryDTO.setFeedbackId(station.getNowPlaying()
+					.getStationHistoryEntry().getId().toString());
+			songListEntryDTO.setRecentScrobblers(createScrobblersDTO(station
+					.getNowPlaying().getSongScrobblers()));
 			stationDTO.setNowPlaying(songListEntryDTO);
 
 			songListEntryDTO = new StationSongListEntryDTO_V0_4();
@@ -493,6 +497,10 @@ public class StationsUseCases extends UseCase {
 					.getSongTitle());
 			songListEntryDTO.setArtistName(station.getLookAhead().getSong()
 					.getArtistsNames().toString());
+			songListEntryDTO.setFeedbackId(station.getLookAhead()
+					.getStationHistoryEntry().getId().toString());
+			songListEntryDTO.setRecentScrobblers(createScrobblersDTO(station
+					.getLookAhead().getSongScrobblers()));
 			stationDTO.setLookAhead(songListEntryDTO);
 		}
 
