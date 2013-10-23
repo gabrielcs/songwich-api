@@ -1,6 +1,10 @@
 package models.api.stations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Reference;
@@ -15,14 +19,30 @@ public class Track {
 	
 	private Song song;
 	
+	// this will be an empty list if it is not a group station
+	@Reference
+	private List<User> songScrobblers = new ArrayList<User>();
+
 	protected Track() {
 		super();
 	}
 
-	public Track(StationHistoryEntry stationHistoryEntry, Song song) {
+	public Track(StationHistoryEntry stationHistoryEntry, Song song, List<User> songScrobblers) {
 		super();
 		setStationHistoryEntry(stationHistoryEntry);
 		setSong(song);
+		setSongScrobblers(songScrobblers);
+	}
+	
+	public List<User> getSongScrobblers() {
+		return songScrobblers;
+	}
+
+	public void setSongScrobblers(List<User> songScrobblers) {
+		// it will be null if it is not a group station
+		if (songScrobblers != null) {
+			this.songScrobblers = songScrobblers;
+		}
 	}
 
 	public StationHistoryEntry getStationHistoryEntry() {
@@ -43,8 +63,8 @@ public class Track {
 
 	@Override
 	public String toString() {
-		return "Track [song=" + song + ", stationHistoryEntry="
-				+ stationHistoryEntry + "]";
+		return "Track [stationHistoryEntry=" + stationHistoryEntry + ", song="
+				+ song + ", songScrobblers=" + songScrobblers + "]";
 	}
 
 	@Override
@@ -52,6 +72,8 @@ public class Track {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((song == null) ? 0 : song.hashCode());
+		result = prime * result
+				+ ((songScrobblers == null) ? 0 : songScrobblers.hashCode());
 		result = prime
 				* result
 				+ ((stationHistoryEntry == null) ? 0 : stationHistoryEntry
@@ -73,6 +95,11 @@ public class Track {
 				return false;
 		} else if (!song.equals(other.song))
 			return false;
+		if (songScrobblers == null) {
+			if (other.songScrobblers != null)
+				return false;
+		} else if (!songScrobblers.equals(other.songScrobblers))
+			return false;
 		if (stationHistoryEntry == null) {
 			if (other.stationHistoryEntry != null)
 				return false;
@@ -80,5 +107,4 @@ public class Track {
 			return false;
 		return true;
 	}
-
 }

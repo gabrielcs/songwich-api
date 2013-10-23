@@ -1,5 +1,7 @@
 package database.api.scrobbles;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import models.api.scrobbles.App;
@@ -22,6 +24,11 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	@Override
 	public User findById(ObjectId id) {
 		return ds.find(User.class).filter("id", id).get();
+	}
+	
+	@Override
+	public List<User> findUsersByIds(Collection<ObjectId> ids) {
+		return ds.find(User.class).filter("id in", ids).asList();
 	}
 
 	@Override

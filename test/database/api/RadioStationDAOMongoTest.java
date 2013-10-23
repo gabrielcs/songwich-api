@@ -67,12 +67,12 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		nofxStation = new RadioStation("NOFX FM", nofx);
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxStation.setNowPlaying(new Track(null, doWhatYouWant));
-		nofxStation.setLookAhead(new Track(null, linoleum));
+		nofxStation.setNowPlaying(new Track(null, doWhatYouWant, null));
+		nofxStation.setLookAhead(new Track(null, linoleum, null));
 
 		fatMikeStation = new RadioStation("Fat Mike", fatMike);
-		fatMikeStation.setNowPlaying(new Track(null, linoleum));
-		fatMikeStation.setLookAhead(new Track(null, doWhatYouWant));
+		fatMikeStation.setNowPlaying(new Track(null, linoleum, null));
+		fatMikeStation.setLookAhead(new Track(null, doWhatYouWant, null));
 
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
 		radioStationDAO.cascadeSave(nofxStation, DEV_EMAIL);

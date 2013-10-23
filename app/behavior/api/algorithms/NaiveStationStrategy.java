@@ -1,5 +1,6 @@
 package behavior.api.algorithms;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 
@@ -20,35 +22,63 @@ import database.api.scrobbles.ScrobbleDAOMongo;
  */
 public class NaiveStationStrategy implements StationStrategy {
 
-	public NaiveStationStrategy() {
+	private RadioStation radioStation;
+	private Song previousNowPlaying, previousLookAhead, nextSong;
+	List<Scrobble> scrobbles;
+	private Set<ObjectId> recentScrobblers;
+
+	public NaiveStationStrategy(RadioStation radioStation) {
 		super();
-	}
-
-	@Override
-	public Song next(RadioStation radioStation) {
-		Set<ObjectId> scrobblersIds = radioStation.getScrobbler()
-				.getActiveScrobblersUserIds();
-
-		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
-		List<Scrobble> scrobbles = scrobbleDao.findByUserIds(scrobblersIds,
-				true);
+		this.radioStation = radioStation;
 
 		// make sure we don't compare a Track to a Song nor have a
 		// NullPointerException
-		Song previousNowPlaying = (radioStation.getNowPlaying() == null) ? null
+		previousNowPlaying = (radioStation.getNowPlaying() == null) ? null
 				: radioStation.getNowPlaying().getSong();
-		Song previousLookAhead = (radioStation.getLookAhead() == null) ? null
+		previousLookAhead = (radioStation.getLookAhead() == null) ? null
 				: radioStation.getLookAhead().getSong();
+	}
 
-		Song next;
+	@Override
+	public Song getNextSong() {
+		if (nextSong != null) {
+			// the algorithm has already been invoked
+			return nextSong;
+		}
+
+		Set<ObjectId> scrobblersIds = radioStation.getScrobbler()
+				.getActiveScrobblersUserIds();
+		MyLogger.debug("radioStation: " + radioStation);
+		MyLogger.debug("scrobblersIds: " + scrobblersIds);
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
+		scrobbles = scrobbleDao.findByUserIds(scrobblersIds, true);
+		MyLogger.debug("scrobbles: " + scrobbles);
+				
 		int index;
 		do {
 			index = (int) (Math.random() * scrobbles.size());
-			next = scrobbles.get(index).getSong();
-		} while (next.equals(previousNowPlaying)
-				|| next.equals(previousLookAhead));
+			MyLogger.debug(String.format("index = %s); scrobbles.size = %s", index, scrobbles.size()));
+			nextSong = scrobbles.get(index).getSong();
+		} while (nextSong.equals(previousNowPlaying)
+				|| nextSong.equals(previousLookAhead));
 
-		return next;
+		return nextSong;
+	}
+
+	@Override
+	public Set<ObjectId> getRecentScrobblers() {
+		if (recentScrobblers != null) {
+			// scrobblers have already been identified
+			return recentScrobblers;
+		}
+
+		recentScrobblers = new HashSet<ObjectId>();
+		for (Scrobble scrobble : scrobbles) {
+			if (scrobble.getSong().equals(nextSong)) {
+				recentScrobblers.add(scrobble.getUserId());
+			}
+		}
+		return recentScrobblers;
 	}
 
 	@Override
