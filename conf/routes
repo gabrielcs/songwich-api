@@ -25,6 +25,8 @@ PUT     /v0.4/stations/:stationId                   controllers.api.stations.Sta
 PUT     /v0.4/stations/:stationId/addScrobblers     controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId)
 PUT     /v0.4/stations/:stationId/removeScrobblers  controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)
 POST    /v0.4/nextSong	                            controllers.api.stations.StationsController_V0_4.postNextSong()
+#POST    /v0.4/songFeedback                          controllers.api.stations.StationsController_V0_4.postSongFeedback()
+#GET     /v0.4/starredSongs/:userId                  controllers.api.stations.StationsController_V0_4.getStarredSongs(userId)
 
 # Web App
 GET     /dev                                        controllers.web.Application.index()

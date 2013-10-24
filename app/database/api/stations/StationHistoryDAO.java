@@ -33,4 +33,6 @@ public interface StationHistoryDAO<I> extends SongwichDAO<StationHistoryEntry, I
 
 	public List<StationHistoryEntry> findByStationIdAndArtistWithHourOffset(
 			I stationId, String artistName, int hourOffset);
+	
+	public List<StationHistoryEntry> findStarredByUserId(I userId);
 }

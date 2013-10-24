@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import models.api.scrobbles.Song;
+import models.api.stations.SongFeedback;
 import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
@@ -26,7 +27,7 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 
 	@Override
 	public List<StationHistoryEntry> findByStationId(ObjectId stationId) {
-		Query<StationHistoryEntry> query = queryByStationId(stationId); 
+		Query<StationHistoryEntry> query = queryByStationId(stationId);
 		return order(query).asList();
 	}
 
@@ -119,5 +120,18 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		long hourOffsetMillis = calendar.getTimeInMillis();
 
 		return query.filter("timestamp >", hourOffsetMillis);
+	}
+
+	@Override
+	public List<StationHistoryEntry> findStarredByUserId(ObjectId userId) {
+		Query<StationHistoryEntry> query = ds
+				.createQuery(StationHistoryEntry.class);
+
+		query.and(
+				query.criteria("songFeedback.userId").equal(userId),
+				query.criteria("songFeedback.feedbackType").equal(
+						SongFeedback.FeedbackType.STAR));
+
+		return query.asList();
 	}
 }

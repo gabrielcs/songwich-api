@@ -35,7 +35,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 
 	private StationHistoryDAO<ObjectId> stationHistoryDao;
 
-	private User fatMike, elHefe;
+	private User fatMike, elHefe, gabriel, daniel;
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
 	private HashSet<GroupMember> nofxGroupMembers;
 	private Group nofx;
@@ -121,8 +121,8 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		radioStationDao.save(nofxStation, DEV_EMAIL);
 
 		// adds feedback
-		User gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
-		User daniel = new User("daniel@example.com", "Daniel Caon");
+		gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
+		daniel = new User("daniel@example.com", "Daniel Caon");
 		AppUser gabrielOnSpotify = new AppUser(spotify, "fatmike@nofx.com",
 				AuthToken.createUserAuthToken());
 		AppUser danielOnRdio = new AppUser(rdio, "daniel@example.com",
@@ -136,9 +136,12 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 
 		SongFeedback linoleumFeedbackGabriel = new SongFeedback(
 				FeedbackType.THUMBS_UP, gabriel.getId());
+		SongFeedback linoleumFeedback2Gabriel = new SongFeedback(
+				FeedbackType.STAR, gabriel.getId());
 		SongFeedback linoleumFeedbackDaniel = new SongFeedback(
 				FeedbackType.THUMBS_DOWN, daniel.getId());
 		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel);
+		linoleumEntry.addSongFeedback(linoleumFeedback2Gabriel);
 		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel);
 		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
 
@@ -257,6 +260,18 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 				nofxStation.getId(), 1);
 		assertEquals(1, entries.size());
 		assertTrue(entries.contains(doWhatYouWantEntry));
+	}
+	
+	@Test
+	public void testFindStarredByUserId() {
+		List<StationHistoryEntry> entriesGabriel = stationHistoryDao
+				.findStarredByUserId(gabriel.getId());
+		assertEquals(1, entriesGabriel.size());
+		assertTrue(entriesGabriel.contains(linoleumEntry));
+		
+		List<StationHistoryEntry> entriesDaniel = stationHistoryDao
+				.findStarredByUserId(daniel.getId());
+		assertEquals(1, entriesDaniel.size());
 	}
 
 }
