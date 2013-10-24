@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
+import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 import database.api.scrobbles.ScrobbleDAO;
@@ -86,6 +87,83 @@ public class ScrobblesUseCases extends UseCase {
 		ObjectId scrobbleIdObject = authorizeDeleteScrobbles(scrobbleId);
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		scrobbleDAO.deleteById(scrobbleIdObject);
+	}
+
+	public void putScrobbles(String scrobbleId,
+			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO)
+			throws SongwichAPIException {
+		Scrobble scrobble = authorizePutScrobbles(scrobbleId,
+				scrobblesUpdateDTO);
+
+		// process the request
+		if (scrobblesUpdateDTO.getChosenByUser() == null
+				|| (!scrobblesUpdateDTO.getChosenByUser().equalsIgnoreCase(
+						"true") && !scrobblesUpdateDTO.getChosenByUser()
+						.equalsIgnoreCase("false"))) {
+			
+			throw new SongwichAPIException(
+					"chosenByUser should be either true or false",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		} else {
+			scrobble.setChosenByUser(new Boolean(scrobblesUpdateDTO.getChosenByUser()));
+		}
+
+		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
+		scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+				.getEmailAddress());
+
+		// update output
+		updateDTOPutScrobbles(scrobble, scrobblesUpdateDTO);
+	}
+
+	private void updateDTOPutScrobbles(Scrobble scrobble,
+			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO) {
+		
+		scrobblesUpdateDTO.setScrobbleId(scrobble.getId().toString());
+		scrobblesUpdateDTO.setUserId(scrobble.getUserId().toString());
+		scrobblesUpdateDTO.setTrackTitle(scrobble.getSong().getSongTitle());
+		scrobblesUpdateDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
+		scrobblesUpdateDTO.setAlbumTitle(scrobble.getSong().getAlbumTitle());
+		scrobblesUpdateDTO.setChosenByUser(scrobble.isChosenByUser().toString());
+		scrobblesUpdateDTO.setPlayer(scrobble.getPlayer());
+		scrobblesUpdateDTO.setTimestamp(scrobble.getTimestamp().toString());
+	}
+
+	private Scrobble authorizePutScrobbles(String scrobbleId,
+			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO)
+			throws SongwichAPIException {
+
+		if (!ObjectId.isValid(scrobbleId)) {
+			throw new SongwichAPIException("Invalid scrobbleId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
+		Scrobble scrobble = scrobbleDAO.findById(new ObjectId(scrobbleId));
+		if (scrobble == null) {
+			throw new SongwichAPIException("Non-existent scrobbleId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		authenticatePutScrobbles(scrobble, scrobblesUpdateDTO);
+		return scrobble;
+	}
+
+	private void authenticatePutScrobbles(Scrobble scrobble,
+			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO)
+			throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
+		// check if the user is the one who made the scrobble
+		if (!scrobble.getUserId().equals(getContext().getUser().getId())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
 	}
 
 	private List<ScrobblesDTO_V0_4> createGetScrobblesResponse(
