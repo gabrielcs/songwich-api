@@ -10,6 +10,7 @@ OPTIONS /*path                                      controllers.api.auth.CorsCon
 # Scrobbles API
 POST    /v0.4/scrobbles                             controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()
 GET     /v0.4/scrobbles/:userId                     controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(userId, daysOffset: Int ?= -1, results: Int ?= -1)
+PUT     /v0.4/scrobbles/:scrobbleId                 controllers.api.scrobbles.ScrobblesController_V0_4.putScrobbles(scrobbleId)
 DELETE  /v0.4/scrobbles/:scrobbleId                 controllers.api.scrobbles.ScrobblesController_V0_4.deleteScrobbles(scrobbleId)
 
 # Users API

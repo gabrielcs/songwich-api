@@ -14,7 +14,9 @@ import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
 import views.api.scrobbles.GetScrobblesResponse_V0_4;
 import views.api.scrobbles.PostScrobblesResponse_V0_4;
+import views.api.scrobbles.PutScrobblesResponse_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
+import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -53,6 +55,43 @@ public class ScrobblesController_V0_4 extends APIController {
 			// return the response
 			PostScrobblesResponse_V0_4 response = new PostScrobblesResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", scrobbleDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result putScrobbles(String scrobbleId) {
+		Form<ScrobblesUpdateDTO_V0_4> scrobblesUpdateForm = Form.form(
+				ScrobblesUpdateDTO_V0_4.class).bindFromRequest();
+		if (scrobblesUpdateForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(scrobblesUpdateForm
+							.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO = scrobblesUpdateForm
+					.get();
+
+			// process the request
+			ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
+					getContext());
+			try {
+				scrobblesUseCases.putScrobbles(scrobbleId, scrobblesUpdateDTO);
+			} catch (SongwichAPIException exception) {
+				// Missing X-Songwich.userAuthToken
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				return Results.unauthorized(Json.toJson(response));
+			}
+
+			// return the response
+			PutScrobblesResponse_V0_4 response = new PutScrobblesResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", scrobblesUpdateDTO);
 			return ok(Json.toJson(response));
 		}
 	}
