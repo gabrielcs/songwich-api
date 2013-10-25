@@ -6,6 +6,7 @@ import java.util.List;
 
 import models.api.scrobbles.Song;
 import models.api.stations.SongFeedback;
+import models.api.stations.SongFeedback.FeedbackType;
 import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
@@ -87,6 +88,21 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return order(query).asList();
 	}
 
+	@Override
+	public List<StationHistoryEntry> findStarredByUserId(ObjectId userId) {
+		/*
+		 * Query<StationHistoryEntry> query = ds
+		 * .createQuery(StationHistoryEntry.class); query.and(
+		 * query.criteria("songFeedback.userId").equal(userId),
+		 * query.criteria("songFeedback.feedbackType").equal(
+		 * SongFeedback.FeedbackType.STAR)); return query.asList();
+		 */
+
+		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
+		return ds.find(StationHistoryEntry.class)
+				.filter("songFeedback", songFeedback).asList();
+	}
+
 	private Query<StationHistoryEntry> order(Query<StationHistoryEntry> query) {
 		return query.order("-timestamp");
 	}
@@ -120,18 +136,5 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		long hourOffsetMillis = calendar.getTimeInMillis();
 
 		return query.filter("timestamp >", hourOffsetMillis);
-	}
-
-	@Override
-	public List<StationHistoryEntry> findStarredByUserId(ObjectId userId) {
-		Query<StationHistoryEntry> query = ds
-				.createQuery(StationHistoryEntry.class);
-
-		query.and(
-				query.criteria("songFeedback.userId").equal(userId),
-				query.criteria("songFeedback.feedbackType").equal(
-						SongFeedback.FeedbackType.STAR));
-
-		return query.asList();
 	}
 }

@@ -28,7 +28,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String artistName;
 
 	// only for output
-	private String feedbackId;
+	private String idForFeedback;
 	
 	// only for output
 	private List<UserDTO_V0_4> recentScrobblers = new ArrayList<UserDTO_V0_4>();
@@ -69,12 +69,12 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.artistName = artistName;
 	}
 
-	public String getFeedbackId() {
-		return feedbackId;
+	public String getIdForFeedback() {
+		return idForFeedback;
 	}
 
-	public void setFeedbackId(String feedbackId) {
-		this.feedbackId = feedbackId;
+	public void setIdForFeedback(String idForFeedback) {
+		this.idForFeedback = idForFeedback;
 	}
 
 }

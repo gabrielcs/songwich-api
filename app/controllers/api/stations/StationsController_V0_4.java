@@ -12,13 +12,17 @@ import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
+import views.api.stations.GetStarredSongsResponse_V0_4;
 import views.api.stations.GetStationsResponse_V0_4;
 import views.api.stations.GetStationsUniqueResponse_V0_4;
 import views.api.stations.PostNextSongResponse_V0_4;
+import views.api.stations.PostSongFeedback_V0_4;
 import views.api.stations.PostStationsResponse_V0_4;
 import views.api.stations.PutStationsResponse_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
+import views.api.stations.SongFeedbackDTO_V0_4;
+import views.api.stations.StarredSongSetDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import behavior.api.usecases.stations.StationsUseCases;
 import controllers.api.APIController;
@@ -104,6 +108,28 @@ public class StationsController_V0_4 extends APIController {
 		// return the response
 		GetStationsUniqueResponse_V0_4 response = new GetStationsUniqueResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
+		return ok(Json.toJson(response));
+	}
+	
+	@AppDeveloperAuthenticated
+	// TODO: decide if it should be @UserAuthenticated
+	public static Result getStarredSongs(String userId) {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		StarredSongSetDTO_V0_4 starredSongSetDTO;
+		try {
+			starredSongSetDTO = stationsUseCases.getStarredSongs(userId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
+
+		// return the response
+		GetStarredSongsResponse_V0_4 response = new GetStarredSongsResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO);
 		return ok(Json.toJson(response));
 	}
 
@@ -267,6 +293,44 @@ public class StationsController_V0_4 extends APIController {
 			// return the response
 			PostNextSongResponse_V0_4 response = new PostNextSongResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", stationSongListDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+	
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result postSongFeedback() {
+		Form<SongFeedbackDTO_V0_4> songFeedbackForm = Form.form(
+				SongFeedbackDTO_V0_4.class).bindFromRequest();
+		if (songFeedbackForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DataTransferObject.errorsAsString(songFeedbackForm.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			SongFeedbackDTO_V0_4 songFeedbackDTO = songFeedbackForm.get();
+
+			// process the request
+			StationsUseCases stationsUseCases = new StationsUseCases(
+					getContext());
+			try {
+				stationsUseCases.postSongFeedback(songFeedbackDTO);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+
+			// return the response
+			PostSongFeedback_V0_4 response = new PostSongFeedback_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", songFeedbackDTO);
 			return ok(Json.toJson(response));
 		}
 	}

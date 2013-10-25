@@ -57,8 +57,23 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((feedbackType == null) ? 0 : feedbackType.hashCode());
+		
+		// custom hashCode for the FeedbackType enum
+		switch (feedbackType) {
+		case STAR:
+			result = prime * result + 1;
+			break;
+		case THUMBS_DOWN:
+			result = prime * result + 2;
+			break;
+		case THUMBS_UP:
+			result = prime * result + 3;
+			break;
+		default:
+			result = prime * result + 0;
+			break;
+		}
+		
 		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}

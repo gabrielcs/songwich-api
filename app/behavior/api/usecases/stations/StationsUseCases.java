@@ -11,16 +11,22 @@ import models.api.stations.Group;
 import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
 import models.api.stations.ScrobblerBridge;
+import models.api.stations.SongFeedback;
+import models.api.stations.SongFeedback.FeedbackType;
 import models.api.stations.StationHistoryEntry;
 import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
+import views.api.stations.SongDTO_V0_4;
+import views.api.stations.SongFeedbackDTO_V0_4;
+import views.api.stations.StarredSongSetDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.algorithms.NaiveStationStrategy;
@@ -299,6 +305,66 @@ public class StationsUseCases extends UseCase {
 		}
 	}
 
+	public void postSongFeedback(SongFeedbackDTO_V0_4 songFeedbackDTO)
+			throws SongwichAPIException {
+
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		StationHistoryEntry stationHistoryEntry = stationHistoryDAO
+				.findById(new ObjectId(songFeedbackDTO.getIdForFeedback()));
+
+		if (stationHistoryEntry == null) {
+			throw new SongwichAPIException("Invalid idForFeedback",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		// process request
+		FeedbackType feedbackType;
+		if (songFeedbackDTO.getFeedbackType().equals("thumbs-up")) {
+			feedbackType = FeedbackType.THUMBS_UP;
+		} else if (songFeedbackDTO.getFeedbackType().equals("thumbs-down")) {
+			feedbackType = FeedbackType.THUMBS_DOWN;
+		} else if (songFeedbackDTO.getFeedbackType().equals("star")) {
+			feedbackType = FeedbackType.STAR;
+		} else {
+			throw new SongwichAPIException("Invalid feedbackType",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		// set it and save it
+		SongFeedback songFeedback = new SongFeedback(feedbackType,
+				new ObjectId(songFeedbackDTO.getIdForFeedback()));
+		stationHistoryEntry.addSongFeedback(songFeedback);
+		stationHistoryDAO.save(stationHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
+
+		// update DTO
+		updateDTOForPostSongFeedback(songFeedbackDTO, stationHistoryEntry);
+	}
+
+	public StarredSongSetDTO_V0_4 getStarredSongs(String userId)
+			throws SongwichAPIException {
+		
+		authorizeGetStarredSongs(userId);
+
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		List<StationHistoryEntry> stationHistoryEntries = stationHistoryDAO
+				.findStarredByUserId(new ObjectId(userId));
+		MyLogger.debug("stationHistoryEntries: " + stationHistoryEntries);
+
+		return createDTOForGetStarredSongs(stationHistoryEntries);
+	}
+
+	private void updateDTOForPostSongFeedback(
+			SongFeedbackDTO_V0_4 songFeedbackDTO,
+			StationHistoryEntry stationHistoryEntry) {
+
+		songFeedbackDTO.setUserId(getContext().getUser().getId().toString());
+		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
+		songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
+		songDTO.setArtistsNames(stationHistoryEntry.getSong().getArtistsNames());
+		songFeedbackDTO.setSong(songDTO);
+	}
+
 	private RadioStation authorizePutStations(String stationId,
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
 			throws SongwichAPIException {
@@ -346,6 +412,14 @@ public class StationsUseCases extends UseCase {
 		return station;
 	}
 
+	private void authorizeGetStarredSongs(String userId)
+			throws SongwichAPIException {
+		if (!ObjectId.isValid(userId)) {
+			throw new SongwichAPIException("Invalid userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+	}
+
 	private void authenticatePostStations(RadioStationDTO_V0_4 radioStationDTO)
 			throws SongwichAPIException {
 
@@ -386,6 +460,20 @@ public class StationsUseCases extends UseCase {
 		radioStationDAO.cascadeSave(radioStation, getContext()
 				.getAppDeveloper().getEmailAddress());
 	}
+	
+	private StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
+			List<StationHistoryEntry> stationHistoryEntries) {
+		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
+		SongDTO_V0_4 songDTO;
+		for (StationHistoryEntry stationHistoryEntry : stationHistoryEntries) {
+			songDTO = new SongDTO_V0_4();
+			songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
+			songDTO.setArtistsNames(stationHistoryEntry.getSong()
+					.getArtistsNames());
+			starredSongList.add(songDTO);
+		}
+		return starredSongList;
+	}
 
 	private void createDTOForPostStations(RadioStation radioStation,
 			RadioStationDTO_V0_4 radioStationDTO, Song nowPlayingSong,
@@ -421,14 +509,15 @@ public class StationsUseCases extends UseCase {
 		nowPlayingDTO
 				.setArtistName(nowPlayingSong.getArtistsNames().toString());
 		nowPlayingDTO.setTrackTitle(nowPlayingSong.getSongTitle());
-		nowPlayingDTO.setFeedbackId(nowPlayingHistoryEntry.getId().toString());
+		nowPlayingDTO.setIdForFeedback(nowPlayingHistoryEntry.getId()
+				.toString());
 		radioStationDTO.setNowPlaying(nowPlayingDTO);
 
 		// lookAhead
 		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
 		lookAheadDTO.setArtistName(lookAheadSong.getArtistsNames().toString());
 		lookAheadDTO.setTrackTitle(lookAheadSong.getSongTitle());
-		lookAheadDTO.setFeedbackId(lookAheadHistoryEntry.getId().toString());
+		lookAheadDTO.setIdForFeedback(lookAheadHistoryEntry.getId().toString());
 		radioStationDTO.setLookAhead(lookAheadDTO);
 	}
 
@@ -486,7 +575,7 @@ public class StationsUseCases extends UseCase {
 					.getSongTitle());
 			songListEntryDTO.setArtistName(station.getNowPlaying().getSong()
 					.getArtistsNames().toString());
-			songListEntryDTO.setFeedbackId(station.getNowPlaying()
+			songListEntryDTO.setIdForFeedback(station.getNowPlaying()
 					.getStationHistoryEntry().getId().toString());
 			songListEntryDTO.setRecentScrobblers(createScrobblersDTO(station
 					.getNowPlaying().getSongScrobblers()));
@@ -497,7 +586,7 @@ public class StationsUseCases extends UseCase {
 					.getSongTitle());
 			songListEntryDTO.setArtistName(station.getLookAhead().getSong()
 					.getArtistsNames().toString());
-			songListEntryDTO.setFeedbackId(station.getLookAhead()
+			songListEntryDTO.setIdForFeedback(station.getLookAhead()
 					.getStationHistoryEntry().getId().toString());
 			songListEntryDTO.setRecentScrobblers(createScrobblersDTO(station
 					.getLookAhead().getSongScrobblers()));
@@ -539,8 +628,8 @@ public class StationsUseCases extends UseCase {
 				.getSong().getArtistsNames().toString());
 		nowPlayingSongListEntryDTO.setTrackTitle(nowPlayingHistoryEntry
 				.getSong().getSongTitle());
-		nowPlayingSongListEntryDTO.setFeedbackId(nowPlayingHistoryEntry.getId()
-				.toString());
+		nowPlayingSongListEntryDTO.setIdForFeedback(nowPlayingHistoryEntry
+				.getId().toString());
 		stationSongListDTO.setNowPlaying(nowPlayingSongListEntryDTO);
 
 		// sets StationSongListDTO's lookAhead
@@ -549,8 +638,8 @@ public class StationsUseCases extends UseCase {
 				.getArtistsNames().toString());
 		lookAheadSongListEntryDTO.setTrackTitle(lookAheadHistoryEntry.getSong()
 				.getSongTitle());
-		lookAheadSongListEntryDTO.setFeedbackId(lookAheadHistoryEntry.getId()
-				.toString());
+		lookAheadSongListEntryDTO.setIdForFeedback(lookAheadHistoryEntry
+				.getId().toString());
 		stationSongListDTO.setLookAhead(lookAheadSongListEntryDTO);
 	}
 

@@ -146,7 +146,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
 
 		SongFeedback dontCallMeWhiteFeedbackGabriel = new SongFeedback(
-				FeedbackType.THUMBS_DOWN, gabriel.getId());
+				FeedbackType.STAR, gabriel.getId());
 		dontCallMeWhiteNofx4HoursOldEntry
 				.addSongFeedback(dontCallMeWhiteFeedbackGabriel);
 		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV_EMAIL);
@@ -266,12 +266,13 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 	public void testFindStarredByUserId() {
 		List<StationHistoryEntry> entriesGabriel = stationHistoryDao
 				.findStarredByUserId(gabriel.getId());
-		assertEquals(1, entriesGabriel.size());
+		assertEquals(2, entriesGabriel.size());
 		assertTrue(entriesGabriel.contains(linoleumEntry));
+		assertTrue(entriesGabriel.contains(dontCallMeWhiteNofx4HoursOldEntry));
 		
 		List<StationHistoryEntry> entriesDaniel = stationHistoryDao
 				.findStarredByUserId(daniel.getId());
-		assertEquals(1, entriesDaniel.size());
+		assertEquals(0, entriesDaniel.size());
 	}
 
 }
