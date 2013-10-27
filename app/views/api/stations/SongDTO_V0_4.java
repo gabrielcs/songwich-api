@@ -13,7 +13,6 @@ import views.api.DataTransferObject;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("song")
 public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
-
 	private String trackTitle;
 
 	private List<String> artistsNames;
@@ -42,4 +41,36 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.artistsNames = artistsNames;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
+		result = prime * result
+				+ ((trackTitle == null) ? 0 : trackTitle.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SongDTO_V0_4 other = (SongDTO_V0_4) obj;
+		if (artistsNames == null) {
+			if (other.artistsNames != null)
+				return false;
+		} else if (!artistsNames.equals(other.artistsNames))
+			return false;
+		if (trackTitle == null) {
+			if (other.trackTitle != null)
+				return false;
+		} else if (!trackTitle.equals(other.trackTitle))
+			return false;
+		return true;
+	}
 }
