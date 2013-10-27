@@ -1,5 +1,8 @@
 package models.api.stations;
 
+import models.api.MongoModel;
+import models.api.MongoModelImpl;
+
 import org.bson.types.ObjectId;
 
 import util.api.MyLogger;
@@ -7,11 +10,8 @@ import util.api.MyLogger;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
 
-// TODO: it cannot be a MongoModel as long as we don't fix the Morphia query
-// http://stackoverflow.com/questions/19596949
 @Embedded
-public class SongFeedback // extends MongoModelImpl implements MongoModel 
-{
+public class SongFeedback extends MongoModelImpl implements MongoModel {
 	@Indexed
 	@Embedded
 	private FeedbackType feedbackType;
@@ -38,7 +38,7 @@ public class SongFeedback // extends MongoModelImpl implements MongoModel
 
 	public void setFeedbackType(FeedbackType feedback) {
 		this.feedbackType = feedback;
-		//fireModelUpdated();
+		fireModelUpdated();
 	}
 
 	public ObjectId getUserId() {
@@ -47,7 +47,7 @@ public class SongFeedback // extends MongoModelImpl implements MongoModel
 
 	public void setUserId(ObjectId userId) {
 		this.userId = userId;
-		//fireModelUpdated();
+		fireModelUpdated();
 	}
 
 	@Override
