@@ -14,6 +14,16 @@ import views.api.DataTransferObject;
 @JsonTypeName("song")
 public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String trackTitle;
+	
+	private String albumTitle;
+
+	public String getAlbumTitle() {
+		return albumTitle;
+	}
+
+	public void setAlbumTitle(String albumTitle) {
+		this.albumTitle = albumTitle;
+	}
 
 	private List<String> artistsNames;
 
@@ -41,6 +51,7 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.artistsNames = artistsNames;
 	}
 	
+	// doesn't take into account 'albumTitle'
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -52,6 +63,7 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 		return result;
 	}
 
+	// doesn't take into account 'albumTitle'
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

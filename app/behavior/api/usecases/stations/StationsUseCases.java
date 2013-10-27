@@ -351,7 +351,7 @@ public class StationsUseCases extends UseCase {
 				.findStarredByUserId(new ObjectId(userId));
 		MyLogger.debug("stationHistoryEntries: " + stationHistoryEntries);
 
-		return createDTOForGetStarredSongs(stationHistoryEntries);
+		return createDTOForGetStarredSongs(stationHistoryEntries, userId);
 	}
 
 	private void updateDTOForPostSongFeedback(
@@ -462,8 +462,10 @@ public class StationsUseCases extends UseCase {
 	}
 
 	private StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
-			List<StationHistoryEntry> stationHistoryEntries) {
+			List<StationHistoryEntry> stationHistoryEntries, String userId) {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
+		starredSongList.setUserId(userId);
+		
 		SongDTO_V0_4 songDTO;
 		for (StationHistoryEntry stationHistoryEntry : stationHistoryEntries) {
 			songDTO = new SongDTO_V0_4();

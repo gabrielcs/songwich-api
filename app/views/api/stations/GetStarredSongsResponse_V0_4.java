@@ -10,7 +10,7 @@ import views.api.APIStatus;
 @JsonIgnoreProperties({"radioStationsDTO"})
 public class GetStarredSongsResponse_V0_4 extends APIResponse_V0_4 {
 
-	@JsonProperty("starredSongs")
+	@JsonProperty("starredSongsResult")
 	private StarredSongSetDTO_V0_4 starredSongListDTO;
 
 	public GetStarredSongsResponse_V0_4(APIStatus status, String message,

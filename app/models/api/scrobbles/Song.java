@@ -83,12 +83,11 @@ public class Song {
 				+ artistsNames + ", albumTitle=" + albumTitle + "]";
 	}
 
+	// doesn't take into account 'albumTitle'
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((albumTitle == null) ? 0 : albumTitle.hashCode());
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result
@@ -96,6 +95,7 @@ public class Song {
 		return result;
 	}
 
+	// doesn't take into account 'albumTitle'
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -105,11 +105,6 @@ public class Song {
 		if (getClass() != obj.getClass())
 			return false;
 		Song other = (Song) obj;
-		if (albumTitle == null) {
-			if (other.albumTitle != null)
-				return false;
-		} else if (!albumTitle.equals(other.albumTitle))
-			return false;
 		if (artistsNames == null) {
 			if (other.artistsNames != null)
 				return false;
@@ -122,5 +117,4 @@ public class Song {
 			return false;
 		return true;
 	}
-
 }
