@@ -5,8 +5,6 @@ import models.api.MongoModelImpl;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
-import com.google.code.morphia.annotations.NotSaved;
-import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.annotations.Reference;
 
 @Embedded
@@ -20,9 +18,11 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 	@Embedded
 	private AuthToken statefulUserAuthToken;
 
+	/*
 	@Deprecated
 	@NotSaved
 	private String userAuthToken;
+	*/
 
 	protected AppUser() {
 		super();
@@ -69,13 +69,14 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 
 	/*
 	 * Handle deprecated stateless auth token
-	 */
+	 *
 	@PostLoad
 	protected void handleDeprecatedAuthToken() {
 		if (statefulUserAuthToken == null && userAuthToken != null) {
 			statefulUserAuthToken = new AuthToken(userAuthToken.toString());
 		}
 	}
+	*/
 
 	@Override
 	public String toString() {

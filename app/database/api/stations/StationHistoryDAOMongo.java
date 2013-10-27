@@ -88,19 +88,20 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return order(query).asList();
 	}
 
+	// http://stackoverflow.com/questions/19596949/how-to-build-a-morphia-query-on-a-subset-of-the-properties-of-a-java-collection
 	@Override
 	public List<StationHistoryEntry> findStarredByUserId(ObjectId userId) {
 		/*
 		 * Query<StationHistoryEntry> query = ds
 		 * .createQuery(StationHistoryEntry.class); query.and(
 		 * query.criteria("songFeedback.userId").equal(userId),
-		 * query.criteria("songFeedback.feedbackType").equal(
-		 * SongFeedback.FeedbackType.STAR)); return query.asList();
+		 * query.criteria("songFeedback.feedbackType"
+		 * ).equal(FeedbackType.STAR)); return query.asList();
 		 */
 
 		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
 		return ds.find(StationHistoryEntry.class)
-				.filter("songFeedback", songFeedback).asList();
+				.filter("songFeedback elem", songFeedback).asList();
 	}
 
 	private Query<StationHistoryEntry> order(Query<StationHistoryEntry> query) {

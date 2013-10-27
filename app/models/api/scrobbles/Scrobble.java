@@ -1,8 +1,6 @@
 package models.api.scrobbles;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import models.api.MongoEntity;
 import models.api.MongoModelImpl;
@@ -12,8 +10,6 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
-import com.google.code.morphia.annotations.NotSaved;
-import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
@@ -25,7 +21,16 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 	private ObjectId userId;
 
 	private Song song;
+	
+	@Indexed(IndexDirection.DESC)
+	private Long timestamp;
+	
+	@Indexed
+	private Boolean chosenByUser;
 
+	private String player;
+	
+	/*
 	@Deprecated
 	@NotSaved
 	private String songTitle;
@@ -33,18 +38,11 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 	@Deprecated
 	@NotSaved
 	private List<String> artistsNames = new ArrayList<String>();
-
-	@Indexed(IndexDirection.DESC)
-	private Long timestamp;
-
+	
 	@Deprecated
 	@NotSaved
-	private Boolean choosenByUser;
-	
-	@Indexed
-	private Boolean chosenByUser;
-
-	private String player;
+	private boolean choosenByUser;
+	*/
 
 	protected Scrobble() {
 		super();
@@ -156,7 +154,7 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 
 	/*
 	 * Handle deprecated properties
-	 */
+	 *
 	@PostLoad
 	protected void handleDeprecatedProperties() {
 		if (song == null && songTitle != null && artistsNames != null) {
@@ -167,6 +165,7 @@ public class Scrobble extends MongoModelImpl implements MongoEntity {
 			chosenByUser = new Boolean(choosenByUser);
 		}
 	}
+	*/
 
 	@Override
 	public String toString() {

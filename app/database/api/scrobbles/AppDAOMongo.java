@@ -37,18 +37,15 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 
 	@Override
 	public App findByDevAuthToken(String devAuthToken) {
-		App app = ds
+		return ds
 				.find(App.class)
 				.filter("appDevelopers.statefulDevAuthToken.token",
 						devAuthToken).get();
-		if (app != null) {
-			return app;
-		}
 
-		// search for it in the deprecated field
-		return ds.find(App.class)
-				.filter("appDevelopers.devAuthToken", devAuthToken).get();
-
+		/*
+		 * // search for it in the deprecated field return ds.find(App.class)
+		 * .filter("appDevelopers.devAuthToken", devAuthToken).get();
+		 */
 	}
 
 	@Override

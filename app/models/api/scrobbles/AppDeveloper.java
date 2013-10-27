@@ -5,8 +5,6 @@ import models.api.MongoModelImpl;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
-import com.google.code.morphia.annotations.NotSaved;
-import com.google.code.morphia.annotations.PostLoad;
 
 @Embedded
 public class AppDeveloper extends MongoModelImpl implements MongoModel {
@@ -18,9 +16,11 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	@Embedded
 	private AuthToken statefulDevAuthToken;
 
+	/*
 	@Deprecated
 	@NotSaved
 	private String devAuthToken;
+	*/
 
 	protected AppDeveloper() {
 	}
@@ -60,13 +60,14 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 
 	/*
 	 * Handle deprecated stateless auth token
-	 */
+	 *
 	@PostLoad
 	protected void handleDeprecatedAuthToken() {
 		if (statefulDevAuthToken == null && devAuthToken != null) {
 			this.statefulDevAuthToken = new AuthToken(devAuthToken.toString());
 		}
 	}
+	*/
 
 	@Override
 	public String toString() {

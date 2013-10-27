@@ -1,19 +1,22 @@
 package models.api.stations;
 
-import models.api.MongoModel;
-import models.api.MongoModelImpl;
-
 import org.bson.types.ObjectId;
+
+import util.api.MyLogger;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
 
+// TODO: it cannot be a MongoModel as long as we don't fix the Morphia query
+// http://stackoverflow.com/questions/19596949
 @Embedded
-public class SongFeedback extends MongoModelImpl implements MongoModel {
+public class SongFeedback // extends MongoModelImpl implements MongoModel 
+{
 	@Indexed
 	@Embedded
 	private FeedbackType feedbackType;
 
+	@Indexed
 	private ObjectId userId;
 
 	public enum FeedbackType {
@@ -35,7 +38,7 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 
 	public void setFeedbackType(FeedbackType feedback) {
 		this.feedbackType = feedback;
-		fireModelUpdated();
+		//fireModelUpdated();
 	}
 
 	public ObjectId getUserId() {
@@ -44,7 +47,7 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 
 	public void setUserId(ObjectId userId) {
 		this.userId = userId;
-		fireModelUpdated();
+		//fireModelUpdated();
 	}
 
 	@Override
@@ -57,33 +60,20 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		
-		// custom hashCode for the FeedbackType enum
-		switch (feedbackType) {
-		case STAR:
-			result = prime * result + 1;
-			break;
-		case THUMBS_DOWN:
-			result = prime * result + 2;
-			break;
-		case THUMBS_UP:
-			result = prime * result + 3;
-			break;
-		default:
-			result = prime * result + 0;
-			break;
-		}
-		
+		result = prime * result
+				+ ((feedbackType == null) ? 0 : feedbackType.hashCode());
 		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		MyLogger.debug(String.format("Comparing %s to %s", this, obj));
+		
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
+		//if (!super.equals(obj))
+		//	return false;
 		if (getClass() != obj.getClass())
 			return false;
 		SongFeedback other = (SongFeedback) obj;

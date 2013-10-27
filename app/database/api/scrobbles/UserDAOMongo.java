@@ -25,7 +25,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	public User findById(ObjectId id) {
 		return ds.find(User.class).filter("id", id).get();
 	}
-	
+
 	@Override
 	public List<User> findUsersByIds(Collection<ObjectId> ids) {
 		return ds.find(User.class).filter("id in", ids).asList();
@@ -71,16 +71,14 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	@Override
 	public User findByUserAuthToken(String userAuthToken) {
-		User user = ds.find(User.class)
+		return ds.find(User.class)
 				.filter("appUsers.statefulUserAuthToken.token", userAuthToken)
 				.get();
-		if (user != null) {
-			return user;
-		}
 
-		// search for it in the deprecated field
-		return ds.find(User.class)
-				.filter("appUsers.userAuthToken", userAuthToken).get();
+		/*
+		 * // search for it in the deprecated field return ds.find(User.class)
+		 * .filter("appUsers.userAuthToken", userAuthToken).get();
+		 */
 	}
 
 	/*
@@ -96,7 +94,8 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 		}
 
 		for (AppUser appUser : user.getAppUsers()) {
-			if (appUser.getUserAuthToken().getToken().equals(userAuthToken)) {
+			if (appUser.getUserAuthToken().getToken()
+					.equals(userAuthToken)) {
 				return appUser;
 			}
 		}

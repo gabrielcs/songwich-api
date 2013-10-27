@@ -116,7 +116,8 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, DEV_EMAIL);
 
 		// sets nofxStation's nowPlaying and lookAhead
-		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, doWhatYouWant, null));
+		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, doWhatYouWant,
+				null));
 		nofxStation.setLookAhead(new Track(linoleumEntry, linoleum, null));
 		radioStationDao.save(nofxStation, DEV_EMAIL);
 
@@ -146,9 +147,13 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
 
 		SongFeedback dontCallMeWhiteFeedbackGabriel = new SongFeedback(
-				FeedbackType.STAR, gabriel.getId());
+				FeedbackType.THUMBS_UP, gabriel.getId());
+		SongFeedback dontCallMeWhiteFeedbackDaniel = new SongFeedback(
+				FeedbackType.STAR, daniel.getId());
 		dontCallMeWhiteNofx4HoursOldEntry
 				.addSongFeedback(dontCallMeWhiteFeedbackGabriel);
+		dontCallMeWhiteNofx4HoursOldEntry
+				.addSongFeedback(dontCallMeWhiteFeedbackDaniel);
 		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV_EMAIL);
 	}
 
@@ -261,18 +266,17 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		assertEquals(1, entries.size());
 		assertTrue(entries.contains(doWhatYouWantEntry));
 	}
-	
+
 	@Test
 	public void testFindStarredByUserId() {
 		List<StationHistoryEntry> entriesGabriel = stationHistoryDao
 				.findStarredByUserId(gabriel.getId());
-		assertEquals(2, entriesGabriel.size());
+		assertEquals(1, entriesGabriel.size());
 		assertTrue(entriesGabriel.contains(linoleumEntry));
-		assertTrue(entriesGabriel.contains(dontCallMeWhiteNofx4HoursOldEntry));
-		
+
 		List<StationHistoryEntry> entriesDaniel = stationHistoryDao
 				.findStarredByUserId(daniel.getId());
-		assertEquals(0, entriesDaniel.size());
+		assertEquals(1, entriesDaniel.size());
+		assertTrue(entriesDaniel.contains(dontCallMeWhiteNofx4HoursOldEntry));
 	}
-
 }

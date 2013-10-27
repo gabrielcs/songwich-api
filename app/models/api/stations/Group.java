@@ -3,13 +3,14 @@ package models.api.stations;
 import java.util.HashSet;
 import java.util.Set;
 
+import models.api.MongoModel;
 import models.api.MongoModelImpl;
 import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
-public class Group extends MongoModelImpl {
+public class Group extends MongoModelImpl implements MongoModel {
 	
 	private String name;
 
@@ -31,6 +32,7 @@ public class Group extends MongoModelImpl {
 
 	public void setName(String name) {
 		this.name = name;
+		fireModelUpdated();
 	}
 
 	public Set<GroupMember> getGroupMembers() {
@@ -62,6 +64,7 @@ public class Group extends MongoModelImpl {
 		for (GroupMember groupMember : groupMembers) {
 			if (groupMember.getUser().getId().equals(user.getId())) {
 				groupMember.setEndDate(System.currentTimeMillis());
+				fireModelUpdated();
 				return true;
 			}
 		}
