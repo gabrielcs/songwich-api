@@ -331,8 +331,8 @@ public class StationsUseCases extends UseCase {
 		}
 
 		// set it and save it
-		SongFeedback songFeedback = new SongFeedback(feedbackType,
-				new ObjectId(songFeedbackDTO.getIdForFeedback()));
+		SongFeedback songFeedback = new SongFeedback(feedbackType, getContext()
+				.getUser().getId());
 		stationHistoryEntry.addSongFeedback(songFeedback);
 		stationHistoryDAO.save(stationHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
@@ -343,7 +343,7 @@ public class StationsUseCases extends UseCase {
 
 	public StarredSongSetDTO_V0_4 getStarredSongs(String userId)
 			throws SongwichAPIException {
-		
+
 		authorizeGetStarredSongs(userId);
 
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
@@ -460,7 +460,7 @@ public class StationsUseCases extends UseCase {
 		radioStationDAO.cascadeSave(radioStation, getContext()
 				.getAppDeveloper().getEmailAddress());
 	}
-	
+
 	private StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
 			List<StationHistoryEntry> stationHistoryEntries) {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
