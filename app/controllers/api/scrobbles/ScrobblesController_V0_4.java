@@ -104,13 +104,16 @@ public class ScrobblesController_V0_4 extends APIController {
 		try {
 			scrobblesUseCases.deleteScrobbles(scrobbleId);
 		} catch (SongwichAPIException exception) {
-			// user unauthorized for getting scrobbles from another user
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
 					.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(
 					exception.getStatus(), exception.getMessage());
-			return Results.badRequest(Json.toJson(response));
+			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+				return Results.unauthorized(Json.toJson(response));
+			} else {
+				return Results.badRequest(Json.toJson(response));
+			}
 		}
 
 		// return the response

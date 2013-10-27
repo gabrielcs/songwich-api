@@ -110,28 +110,6 @@ public class StationsController_V0_4 extends APIController {
 				APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
 		return ok(Json.toJson(response));
 	}
-	
-	@AppDeveloperAuthenticated
-	// TODO: decide if it should be @UserAuthenticated
-	public static Result getStarredSongs(String userId) {
-		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
-		StarredSongSetDTO_V0_4 starredSongSetDTO;
-		try {
-			starredSongSetDTO = stationsUseCases.getStarredSongs(userId);
-		} catch (SongwichAPIException exception) {
-			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
-					.toString(), exception.getMessage(), Http.Context.current()
-					.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(
-					exception.getStatus(), exception.getMessage());
-			return Results.badRequest(Json.toJson(response));
-		}
-
-		// return the response
-		GetStarredSongsResponse_V0_4 response = new GetStarredSongsResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO);
-		return ok(Json.toJson(response));
-	}
 
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
@@ -333,6 +311,55 @@ public class StationsController_V0_4 extends APIController {
 					APIStatus_V0_4.SUCCESS, "Success", songFeedbackDTO);
 			return ok(Json.toJson(response));
 		}
+	}
+	
+	@AppDeveloperAuthenticated
+	// TODO: decide if it should be @UserAuthenticated
+	public static Result getStarredSongs(String userId) {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		StarredSongSetDTO_V0_4 starredSongSetDTO;
+		try {
+			starredSongSetDTO = stationsUseCases.getStarredSongs(userId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
+
+		// return the response
+		GetStarredSongsResponse_V0_4 response = new GetStarredSongsResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO);
+		return ok(Json.toJson(response));
+	}
+	
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	public static Result deleteSongFeedback(String idForFeedback, String feedbackType) {
+		StationsUseCases stationsUseCases = new StationsUseCases(
+				getContext());
+		try {
+			stationsUseCases.deleteSongFeedback(idForFeedback, feedbackType);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+				return Results.unauthorized(Json.toJson(response));
+			} else {
+				return Results.badRequest(Json.toJson(response));
+			}
+			
+		}
+
+		// return the response
+		APIResponse_V0_4 response = new APIResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success");
+		return ok(Json.toJson(response));
 	}
 
 }

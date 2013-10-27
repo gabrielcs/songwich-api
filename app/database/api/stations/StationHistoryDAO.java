@@ -6,8 +6,9 @@ import models.api.scrobbles.Song;
 import models.api.stations.StationHistoryEntry;
 import database.api.SongwichDAO;
 
-public interface StationHistoryDAO<I> extends SongwichDAO<StationHistoryEntry, I> {
-	
+public interface StationHistoryDAO<I> extends
+		SongwichDAO<StationHistoryEntry, I> {
+
 	public StationHistoryEntry findById(I id);
 
 	public long countByStationId(I stationId);
@@ -33,6 +34,6 @@ public interface StationHistoryDAO<I> extends SongwichDAO<StationHistoryEntry, I
 
 	public List<StationHistoryEntry> findByStationIdAndArtistWithHourOffset(
 			I stationId, String artistName, int hourOffset);
-	
+
 	public List<StationHistoryEntry> findStarredByUserId(I userId);
 }

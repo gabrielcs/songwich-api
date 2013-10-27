@@ -80,6 +80,12 @@ public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
 		fireModelUpdated();
 		return result;
 	}
+	
+	public boolean removeSongFeedback(SongFeedback songFeedback) {
+		boolean result = this.songFeedback.remove(songFeedback);
+		fireModelUpdated();
+		return result;
+	}
 
 	@Override
 	public ObjectId getId() {

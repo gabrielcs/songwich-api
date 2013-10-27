@@ -6,12 +6,10 @@ import java.util.Set;
 import models.api.scrobbles.Scrobble;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import views.api.DataTransferObject;
 
-//@JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+// let starredSongs be serialized even if it's empty
 @JsonTypeName("starredSongs")
 public class StarredSongSetDTO_V0_4 extends DataTransferObject<Scrobble> {
 	

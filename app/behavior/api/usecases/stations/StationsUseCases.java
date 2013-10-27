@@ -354,15 +354,67 @@ public class StationsUseCases extends UseCase {
 		return createDTOForGetStarredSongs(stationHistoryEntries, userId);
 	}
 
-	private void updateDTOForPostSongFeedback(
-			SongFeedbackDTO_V0_4 songFeedbackDTO,
-			StationHistoryEntry stationHistoryEntry) {
+	public void deleteSongFeedback(String idForFeedback, String feedbackType)
+			throws SongwichAPIException {
+		
+		SongFeedback songFeedback = buildSongFeedback(feedbackType);
+		// authorize
+		StationHistoryEntry stationHistoryEntry = authorizeForDeleteSongFeedback(
+				idForFeedback, songFeedback);
+		// process request
+		stationHistoryEntry.removeSongFeedback(songFeedback);
+		// save
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		stationHistoryDAO.save(stationHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
+	}
 
-		songFeedbackDTO.setUserId(getContext().getUser().getId().toString());
-		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
-		songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
-		songDTO.setArtistsNames(stationHistoryEntry.getSong().getArtistsNames());
-		songFeedbackDTO.setSong(songDTO);
+	private SongFeedback buildSongFeedback(String feedbackType)
+			throws SongwichAPIException {
+		FeedbackType feedbackTypeEnum;
+		
+		switch (feedbackType) {
+		case "thumbs-up":
+			feedbackTypeEnum = FeedbackType.THUMBS_UP;
+			break;
+		case "thumbs-down":
+			feedbackTypeEnum = FeedbackType.THUMBS_DOWN;
+			break;
+		case "star":
+			feedbackTypeEnum = FeedbackType.STAR;
+			break;
+		default:
+			throw new SongwichAPIException("Invalid feedbackType",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+		
+		return new SongFeedback(feedbackTypeEnum, getContext().getUser()
+				.getId());
+	}
+
+	private StationHistoryEntry authorizeForDeleteSongFeedback(
+			String idForFeedback, SongFeedback songFeedback)
+			throws SongwichAPIException {
+		
+		if (!ObjectId.isValid(idForFeedback)) {
+			throw new SongwichAPIException("Invalid idForFeedback",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+		ObjectId idForFeedbackObject = new ObjectId(idForFeedback);
+		
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		StationHistoryEntry stationHistoryEntry = stationHistoryDAO
+				.findById(idForFeedbackObject);
+		if (stationHistoryEntry == null) {
+			throw new SongwichAPIException("Non-existent idForFeedback",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+		if (!stationHistoryEntry.getSongFeedback().contains(songFeedback)) {
+			throw new SongwichAPIException("Non-existent song feedback",
+					APIStatus_V0_4.BAD_REQUEST);
+		}
+
+		return stationHistoryEntry;
 	}
 
 	private RadioStation authorizePutStations(String stationId,
@@ -460,12 +512,23 @@ public class StationsUseCases extends UseCase {
 		radioStationDAO.cascadeSave(radioStation, getContext()
 				.getAppDeveloper().getEmailAddress());
 	}
+	
+	private void updateDTOForPostSongFeedback(
+			SongFeedbackDTO_V0_4 songFeedbackDTO,
+			StationHistoryEntry stationHistoryEntry) {
+
+		songFeedbackDTO.setUserId(getContext().getUser().getId().toString());
+		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
+		songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
+		songDTO.setArtistsNames(stationHistoryEntry.getSong().getArtistsNames());
+		songFeedbackDTO.setSong(songDTO);
+	}
 
 	private StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
 			List<StationHistoryEntry> stationHistoryEntries, String userId) {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
 		starredSongList.setUserId(userId);
-		
+
 		SongDTO_V0_4 songDTO;
 		for (StationHistoryEntry stationHistoryEntry : stationHistoryEntries) {
 			songDTO = new SongDTO_V0_4();
