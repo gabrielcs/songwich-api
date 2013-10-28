@@ -72,7 +72,7 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	@Override
 	public String toString() {
 		return "AppDeveloper [emailAddress=" + emailAddress + ", name=" + name
-				+ ", statefulDevAuthToken=" + devAuthToken + "]";
+				+ ", devAuthToken=" + devAuthToken + "]";
 	}
 
 	@Override
