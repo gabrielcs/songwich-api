@@ -21,6 +21,8 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 
 	@Embedded
 	private ScrobblerBridge scrobbler;
+	
+	// private Boolean active;
 
 	@Embedded
 	private Track nowPlaying;

@@ -106,7 +106,7 @@ public class StationsUseCases extends UseCase {
 		Set<ObjectId> nowPlayingSongScrobblersIds = stationStrategyNowPlaying
 				.getRecentScrobblers();
 		List<User> nowPlayingSongScrobblers = new ArrayList<User>();
-		if (radioStation.getScrobbler().isGroupScrobbler()) {
+		if (radioStation.getScrobbler().isGroupStation()) {
 			nowPlayingSongScrobblers = userDAO
 					.findUsersByIds(nowPlayingSongScrobblersIds);
 		}
@@ -139,7 +139,7 @@ public class StationsUseCases extends UseCase {
 		savePostStations(radioStation);
 
 		// update the DTO
-		if (radioStation.getScrobbler().isGroupScrobbler()) {
+		if (radioStation.getScrobbler().isGroupStation()) {
 			createDTOForPostStations(radioStation, radioStationDTO,
 					nowPlayingSong, nowPlayingHistoryEntry,
 					nowPlayingSongScrobblers, lookAheadSong,
@@ -257,7 +257,7 @@ public class StationsUseCases extends UseCase {
 
 		// find out who the lookAhead scrobblers are if it's a group station
 		List<User> lookAheadScrobblers = new ArrayList<User>();
-		if (radioStation.getScrobbler().isGroupScrobbler()) {
+		if (radioStation.getScrobbler().isGroupStation()) {
 			Set<ObjectId> lookAheadScrobblersIds = stationStrategy
 					.getRecentScrobblers();
 			UserDAO<ObjectId> userDao = new UserDAOMongo();
@@ -288,7 +288,7 @@ public class StationsUseCases extends UseCase {
 				.getEmailAddress());
 
 		// update the DataTransferObject
-		if (radioStation.getScrobbler().isGroupScrobbler()) {
+		if (radioStation.getScrobbler().isGroupStation()) {
 			updateDTOForPostNextSong(stationSongListDTO,
 					nowPlayingHistoryEntry, radioStation.getNowPlaying()
 							.getSongScrobblers(), lookAheadHistoryEntry,
@@ -337,7 +337,7 @@ public class StationsUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		if (station.getScrobbler().isUserScrobbler()) {
+		if (station.getScrobbler().isIndividualStation()) {
 			throw new SongwichAPIException(
 					"Not allowed to change scrobblers on a user station",
 					APIStatus_V0_4.INVALID_PARAMETER);
@@ -473,6 +473,9 @@ public class StationsUseCases extends UseCase {
 		stationDTO.setStationId(station.getId().toString());
 		stationDTO.setStationName(station.getName());
 		stationDTO.setImageUrl(station.getImageUrl());
+		if (station.getScrobbler().isGroupStation()) {
+			stationDTO.setGroupName(station.getScrobbler().getGroup().getName());
+		}
 
 		List<String> scrobblerIds = new ArrayList<String>();
 		for (ObjectId scrobblerId : station.getScrobbler()

@@ -10,11 +10,12 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.PrePersist;
+import com.google.code.morphia.annotations.Reference;
 
 @Embedded
 public class ScrobblerBridge {
 
-	boolean groupScrobbler, userScrobbler = false;
+	boolean groupStation = false;
 
 	@Indexed
 	private Set<ObjectId> activeScrobblersUserIds = new HashSet<ObjectId>();
@@ -22,7 +23,7 @@ public class ScrobblerBridge {
 	@Embedded
 	private Group group;
 
-	@Embedded
+	@Reference
 	private User user;
 
 	protected ScrobblerBridge() {
@@ -30,13 +31,13 @@ public class ScrobblerBridge {
 
 	public ScrobblerBridge(Group group) {
 		this.group = group;
-		groupScrobbler = true;
+		groupStation = true;
 	}
 
 	public ScrobblerBridge(User user) {
 		activeScrobblersUserIds.add(user.getId());
 		this.user = user;
-		userScrobbler = true;
+		groupStation = false;
 	}
 
 	/*
@@ -47,7 +48,7 @@ public class ScrobblerBridge {
 	public void loadActiveScrobblersUserIds() {
 		activeScrobblersUserIds.clear();
 
-		if (groupScrobbler) {
+		if (groupStation) {
 			for (GroupMember groupMember : group.getGroupMembers()) {
 				if (groupMember.getEndDate() == null) {
 					ObjectId userId = groupMember.getUser().getId();
@@ -56,7 +57,8 @@ public class ScrobblerBridge {
 					}
 				}
 			}
-		} else if (userScrobbler) {
+		} else {
+			// individual station
 			if (user.getId() != null) {
 				activeScrobblersUserIds.add(user.getId());
 			}
@@ -68,12 +70,12 @@ public class ScrobblerBridge {
 		return activeScrobblersUserIds;
 	}
 
-	public boolean isGroupScrobbler() {
-		return groupScrobbler;
+	public boolean isGroupStation() {
+		return groupStation;
 	}
 
-	public boolean isUserScrobbler() {
-		return userScrobbler;
+	public boolean isIndividualStation() {
+		return groupStation;
 	}
 
 	public Group getGroup() {
@@ -85,28 +87,27 @@ public class ScrobblerBridge {
 	}
 
 	public void setGroup(Group group) {
-		if (isGroupScrobbler()) {
+		if (isGroupStation()) {
 			this.group = group;
 		} else {
 			throw new IllegalStateException(
-					"Cannot call setGroup() for a User Scrobbler");
+					"Cannot call setGroup() for an Individual Station");
 		}
 
 	}
 
 	public void setUser(User user) {
-		if (isUserScrobbler()) {
+		if (isIndividualStation()) {
 			this.user = user;
 		} else {
 			throw new IllegalStateException(
-					"Cannot call setGroup() for a User Scrobbler");
+					"Cannot call setGroup() for a Individual Station");
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "ScrobblerBridge [groupScrobbler=" + groupScrobbler
-				+ ", userScrobbler=" + userScrobbler
+		return "ScrobblerBridge [groupStation=" + groupStation
 				+ ", activeScrobblersUserIds=" + activeScrobblersUserIds
 				+ ", group=" + group + ", user=" + user + "]";
 	}
@@ -116,9 +117,8 @@ public class ScrobblerBridge {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((group == null) ? 0 : group.hashCode());
-		result = prime * result + (groupScrobbler ? 1231 : 1237);
+		result = prime * result + (groupStation ? 1231 : 1237);
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		result = prime * result + (userScrobbler ? 1231 : 1237);
 		return result;
 	}
 
@@ -136,15 +136,14 @@ public class ScrobblerBridge {
 				return false;
 		} else if (!group.equals(other.group))
 			return false;
-		if (groupScrobbler != other.groupScrobbler)
+		if (groupStation != other.groupStation)
 			return false;
 		if (user == null) {
 			if (other.user != null)
 				return false;
 		} else if (!user.equals(other.user))
 			return false;
-		if (userScrobbler != other.userScrobbler)
-			return false;
 		return true;
 	}
+
 }

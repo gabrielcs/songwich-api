@@ -1,14 +1,15 @@
 package models.api.stations;
 
-import models.api.MongoModelImpl;
 import models.api.MongoModel;
+import models.api.MongoModelImpl;
 import models.api.scrobbles.User;
 
 import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Reference;
 
 @Embedded
 public class GroupMember extends MongoModelImpl implements MongoModel {
-	@Embedded
+	@Reference
 	private User user;
 
 	private Long startDate;

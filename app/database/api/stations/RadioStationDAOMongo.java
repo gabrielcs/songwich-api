@@ -30,12 +30,12 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 
 	private void cascadeSaveScrobbler(RadioStation radioStation, String devEmail) {
 		ScrobblerBridge scrobbler = radioStation.getScrobbler();
-		if (scrobbler.isGroupScrobbler()) {
+		if (scrobbler.isGroupStation()) {
 			for (GroupMember groupMember : scrobbler.getGroup()
 					.getGroupMembers()) {
 				cascadeSaveUser(groupMember.getUser(), devEmail);
 			}
-		} else if (scrobbler.isUserScrobbler()) {
+		} else if (scrobbler.isIndividualStation()) {
 			cascadeSaveUser(scrobbler.getUser(), devEmail);
 		}
 	}
