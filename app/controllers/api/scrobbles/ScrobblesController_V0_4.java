@@ -166,23 +166,17 @@ public class ScrobblesController_V0_4 extends APIController {
 	
 	/*
 	public static Result postFixScrobbles() {
-		String gabrielEmail = "gabrielcs@gmail.com";
+		String devEmail = "gabrielcs@gmail.com";
 		
-		ObjectId caonOldId = new ObjectId("5259e18092e667731a1bd6d9");
-		ObjectId caonNewId = new ObjectId("526edc0ae4b0f1d3696d955b");
-		
-		ObjectId gabrielOldId = new ObjectId("5259e16d92e667731a1bd6d8");
-		ObjectId gabrielNewId = new ObjectId("526edb56e4b0f1d3696d955a");
+		ObjectId oldId = new ObjectId("5259e18092e667731a1bd6d9");
+		ObjectId newId = new ObjectId("526edc0ae4b0f1d3696d955b");
 		
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		List<Scrobble> scrobbles = scrobbleDAO.find().asList();
 		for (Scrobble scrobble : scrobbles) {
-			if (scrobble.getUserId().equals(caonOldId)) {
-				scrobble.setUserId(caonNewId);
-				scrobbleDAO.save(scrobble, gabrielEmail);
-			} else if (scrobble.getUserId().equals(gabrielOldId)) {
-				scrobble.setUserId(gabrielNewId);
-				scrobbleDAO.save(scrobble, gabrielEmail);
+			if (scrobble.getUserId().equals(oldId)) {
+				scrobble.setUserId(newId);
+				scrobbleDAO.save(scrobble, devEmail);
 			}
 		}
 		
