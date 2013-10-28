@@ -2,6 +2,10 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
+import models.api.scrobbles.User;
+
+import org.bson.types.ObjectId;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -22,6 +26,8 @@ import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
+import database.api.scrobbles.UserDAO;
+import database.api.scrobbles.UserDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
 
@@ -127,4 +133,34 @@ public class UsersController_V0_4 extends APIController {
 				APIStatus_V0_4.SUCCESS, "Success", userDTO);
 		return ok(Json.toJson(response));
 	}
+
+	public static Result postFixUserNames() {
+		String devEmail = "gabrielcs@gmail.com";
+
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		User userGabriel = userDAO.findByEmailAddress("gabrielcs@gmail.com");
+		userGabriel.setName("Gabriel Cypriano");
+		userDAO.save(userGabriel, devEmail);
+
+		User userDaniel = userDAO.findByEmailAddress("drscaon@gmail.com");
+		userGabriel.setName("Daniel Caon");
+		userDAO.save(userDaniel, devEmail);
+
+		return Results.ok();
+	}
+
+	/*
+	 * public static Result postFixTestUser() { String gabrielEmail =
+	 * "gabrielcs@gmail.com";
+	 * 
+	 * ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d"); ObjectId newId
+	 * = new ObjectId("5267d52792e6bf54e1b5047d");
+	 * 
+	 * UserDAO<ObjectId> userDAO = new UserDAOMongo(); List<User> users =
+	 * userDAO.find().asList(); for (User user : users) { if
+	 * (user.getId().equals(oldId)) { user.setId(newId); userDAO.save(user,
+	 * gabrielEmail); } }
+	 * 
+	 * return Results.ok(); }
+	 */
 }
