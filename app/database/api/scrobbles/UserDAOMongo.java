@@ -72,7 +72,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 	@Override
 	public User findByUserAuthToken(String userAuthToken) {
 		return ds.find(User.class)
-				.filter("appUsers.statefulUserAuthToken.token", userAuthToken)
+				.filter("appUsers.userAuthToken.token", userAuthToken)
 				.get();
 
 		/*

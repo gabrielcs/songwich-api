@@ -14,7 +14,7 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	private String name;
 
 	@Embedded
-	private AuthToken statefulDevAuthToken;
+	private AuthToken devAuthToken;
 
 	/*
 	@Deprecated
@@ -28,7 +28,7 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	public AppDeveloper(String emailAddress, String name, AuthToken devAuthToken) {
 		this.emailAddress = emailAddress;
 		this.name = name;
-		this.statefulDevAuthToken = devAuthToken;
+		this.devAuthToken = devAuthToken;
 	}
 
 	public String getEmailAddress() {
@@ -50,11 +50,11 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	}
 
 	public AuthToken getDevAuthToken() {
-		return statefulDevAuthToken;
+		return devAuthToken;
 	}
 
 	public void setDevAuthToken(AuthToken devAuthToken) {
-		this.statefulDevAuthToken = devAuthToken;
+		this.devAuthToken = devAuthToken;
 		fireModelUpdated();
 	}
 
@@ -72,7 +72,7 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 	@Override
 	public String toString() {
 		return "AppDeveloper [emailAddress=" + emailAddress + ", name=" + name
-				+ ", statefulDevAuthToken=" + statefulDevAuthToken + "]";
+				+ ", statefulDevAuthToken=" + devAuthToken + "]";
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 		int result = super.hashCode();
 		result = prime
 				* result
-				+ ((statefulDevAuthToken == null) ? 0 : statefulDevAuthToken
+				+ ((devAuthToken == null) ? 0 : devAuthToken
 						.hashCode());
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
@@ -98,10 +98,10 @@ public class AppDeveloper extends MongoModelImpl implements MongoModel {
 		if (getClass() != obj.getClass())
 			return false;
 		AppDeveloper other = (AppDeveloper) obj;
-		if (statefulDevAuthToken == null) {
-			if (other.statefulDevAuthToken != null)
+		if (devAuthToken == null) {
+			if (other.devAuthToken != null)
 				return false;
-		} else if (!statefulDevAuthToken.equals(other.statefulDevAuthToken))
+		} else if (!devAuthToken.equals(other.devAuthToken))
 			return false;
 		if (emailAddress == null) {
 			if (other.emailAddress != null)

@@ -16,7 +16,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 	private String userEmailAddress;
 
 	@Embedded
-	private AuthToken statefulUserAuthToken;
+	private AuthToken userAuthToken;
 
 	/*
 	@Deprecated
@@ -31,7 +31,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 	public AppUser(App app, String emailAddress, AuthToken userAuthToken) {
 		this.app = app;
 		this.userEmailAddress = emailAddress;
-		this.statefulUserAuthToken = userAuthToken;
+		this.userAuthToken = userAuthToken;
 	}
 
 	/**
@@ -59,11 +59,11 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 	}
 
 	public AuthToken getUserAuthToken() {
-		return statefulUserAuthToken;
+		return userAuthToken;
 	}
 
 	public void setUserAuthToken(AuthToken userAuthToken) {
-		this.statefulUserAuthToken = userAuthToken;
+		this.userAuthToken = userAuthToken;
 		fireModelUpdated();
 	}
 
@@ -81,7 +81,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 	@Override
 	public String toString() {
 		return "AppUser [app=" + app + ", userEmailAddress=" + userEmailAddress
-				+ ", statefulUserAuthToken=" + statefulUserAuthToken + "]";
+				+ ", userAuthToken=" + userAuthToken + "]";
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 		result = prime * result + ((app == null) ? 0 : app.hashCode());
 		result = prime
 				* result
-				+ ((statefulUserAuthToken == null) ? 0 : statefulUserAuthToken
+				+ ((userAuthToken == null) ? 0 : userAuthToken
 						.hashCode());
 		result = prime
 				* result
@@ -113,10 +113,10 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 				return false;
 		} else if (!app.equals(other.app))
 			return false;
-		if (statefulUserAuthToken == null) {
-			if (other.statefulUserAuthToken != null)
+		if (userAuthToken == null) {
+			if (other.userAuthToken != null)
 				return false;
-		} else if (!statefulUserAuthToken.equals(other.statefulUserAuthToken))
+		} else if (!userAuthToken.equals(other.userAuthToken))
 			return false;
 		if (userEmailAddress == null) {
 			if (other.userEmailAddress != null)

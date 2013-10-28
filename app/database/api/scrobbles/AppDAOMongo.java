@@ -39,7 +39,7 @@ public class AppDAOMongo extends BasicDAOMongo<App> implements
 	public App findByDevAuthToken(String devAuthToken) {
 		return ds
 				.find(App.class)
-				.filter("appDevelopers.statefulDevAuthToken.token",
+				.filter("appDevelopers.devAuthToken.token",
 						devAuthToken).get();
 
 		/*
