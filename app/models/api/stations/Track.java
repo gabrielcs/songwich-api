@@ -17,8 +17,6 @@ public class Track {
 	@Reference
 	private StationHistoryEntry stationHistoryEntry;
 	
-	private Song song;
-	
 	// this will be an empty list if it is not a group station
 	@Reference
 	private List<User> songScrobblers = new ArrayList<User>();
@@ -54,24 +52,23 @@ public class Track {
 	}
 
 	public Song getSong() {
-		return song;
+		return stationHistoryEntry.getSong();
 	}
 
 	public void setSong(Song song) {
-		this.song = song;
+		stationHistoryEntry.setSong(song);
 	}
 
 	@Override
 	public String toString() {
-		return "Track [stationHistoryEntry=" + stationHistoryEntry + ", song="
-				+ song + ", songScrobblers=" + songScrobblers + "]";
+		return "Track [stationHistoryEntry=" + stationHistoryEntry
+				+ ", songScrobblers=" + songScrobblers + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((song == null) ? 0 : song.hashCode());
 		result = prime * result
 				+ ((songScrobblers == null) ? 0 : songScrobblers.hashCode());
 		result = prime
@@ -90,11 +87,6 @@ public class Track {
 		if (getClass() != obj.getClass())
 			return false;
 		Track other = (Track) obj;
-		if (song == null) {
-			if (other.song != null)
-				return false;
-		} else if (!song.equals(other.song))
-			return false;
 		if (songScrobblers == null) {
 			if (other.songScrobblers != null)
 				return false;
@@ -107,4 +99,5 @@ public class Track {
 			return false;
 		return true;
 	}
+
 }
