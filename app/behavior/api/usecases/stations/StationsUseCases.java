@@ -16,6 +16,7 @@ import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
@@ -260,9 +261,12 @@ public class StationsUseCases extends UseCase {
 		if (radioStation.getScrobbler().isGroupStation()) {
 			Set<ObjectId> lookAheadScrobblersIds = stationStrategy
 					.getRecentScrobblers();
+			MyLogger.debug("lookAheadScrobblersIds: " + lookAheadScrobblersIds);
 			UserDAO<ObjectId> userDao = new UserDAOMongo();
 			lookAheadScrobblers = userDao
 					.findUsersByIds(lookAheadScrobblersIds);
+
+			MyLogger.debug("lookAheadScrobblers: " + lookAheadScrobblers);
 		}
 
 		// turn the lookAhead Track into next and set the new lookAhead

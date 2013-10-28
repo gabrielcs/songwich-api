@@ -2,10 +2,6 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
-import models.api.scrobbles.User;
-
-import org.bson.types.ObjectId;
-
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -25,55 +21,8 @@ import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
 
 public class ScrobblesController_V0_4 extends APIController {
-	
-	/*
-	public static Result postFixScrobbles() {
-		String gabrielEmail = "gabrielcs@gmail.com";
-		
-		ObjectId caonOldId = new ObjectId("5259e18092e667731a1bd6d9");
-		ObjectId caonNewId = new ObjectId("526edc0ae4b0f1d3696d955b");
-		
-		ObjectId gabrielOldId = new ObjectId("5259e16d92e667731a1bd6d8");
-		ObjectId gabrielNewId = new ObjectId("526edb56e4b0f1d3696d955a");
-		
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		List<Scrobble> scrobbles = scrobbleDAO.find().asList();
-		for (Scrobble scrobble : scrobbles) {
-			if (scrobble.getUserId().equals(caonOldId)) {
-				scrobble.setUserId(caonNewId);
-				scrobbleDAO.save(scrobble, gabrielEmail);
-			} else if (scrobble.getUserId().equals(gabrielOldId)) {
-				scrobble.setUserId(gabrielNewId);
-				scrobbleDAO.save(scrobble, gabrielEmail);
-			}
-		}
-		
-		return Results.ok();
-	}
-	*/
-	
-	public static Result postFixTestUser() {
-		String gabrielEmail = "gabrielcs@gmail.com";
-		
-		ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d");
-		ObjectId newId = new ObjectId("5267d52792e6bf54e1b5047d");
-		
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		List<User> users = userDAO.find().asList();
-		for (User user : users) {
-			if (user.getId().equals(oldId)) {
-				user.setId(newId);
-				userDAO.save(user, gabrielEmail);
-			}
-		}
-		
-		return Results.ok();
-	}
-
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result postScrobbles() {
@@ -214,4 +163,49 @@ public class ScrobblesController_V0_4 extends APIController {
 						.getDevAuthToken().getToken()));
 		return ok(Json.toJson(response));
 	}
+	
+	/*
+	public static Result postFixScrobbles() {
+		String gabrielEmail = "gabrielcs@gmail.com";
+		
+		ObjectId caonOldId = new ObjectId("5259e18092e667731a1bd6d9");
+		ObjectId caonNewId = new ObjectId("526edc0ae4b0f1d3696d955b");
+		
+		ObjectId gabrielOldId = new ObjectId("5259e16d92e667731a1bd6d8");
+		ObjectId gabrielNewId = new ObjectId("526edb56e4b0f1d3696d955a");
+		
+		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
+		List<Scrobble> scrobbles = scrobbleDAO.find().asList();
+		for (Scrobble scrobble : scrobbles) {
+			if (scrobble.getUserId().equals(caonOldId)) {
+				scrobble.setUserId(caonNewId);
+				scrobbleDAO.save(scrobble, gabrielEmail);
+			} else if (scrobble.getUserId().equals(gabrielOldId)) {
+				scrobble.setUserId(gabrielNewId);
+				scrobbleDAO.save(scrobble, gabrielEmail);
+			}
+		}
+		
+		return Results.ok();
+	}
+	
+	
+	public static Result postFixTestUser() {
+		String gabrielEmail = "gabrielcs@gmail.com";
+		
+		ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d");
+		ObjectId newId = new ObjectId("5267d52792e6bf54e1b5047d");
+		
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		List<User> users = userDAO.find().asList();
+		for (User user : users) {
+			if (user.getId().equals(oldId)) {
+				user.setId(newId);
+				userDAO.save(user, gabrielEmail);
+			}
+		}
+		
+		return Results.ok();
+	}
+	*/
 }
