@@ -75,7 +75,7 @@ public class ScrobblerBridge {
 	}
 
 	public boolean isIndividualStation() {
-		return groupStation;
+		return !groupStation;
 	}
 
 	public Group getGroup() {
