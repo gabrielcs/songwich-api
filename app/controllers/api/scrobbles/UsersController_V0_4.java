@@ -143,24 +143,31 @@ public class UsersController_V0_4 extends APIController {
 		userDAO.save(userGabriel, devEmail);
 
 		User userDaniel = userDAO.findByEmailAddress("drscaon@gmail.com");
-		userGabriel.setName("Daniel Caon");
+		userDaniel.setName("Daniel Caon");
 		userDAO.save(userDaniel, devEmail);
 
 		return Results.ok();
 	}
 
 	/*
-	 * public static Result postFixTestUser() { String gabrielEmail =
-	 * "gabrielcs@gmail.com";
-	 * 
-	 * ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d"); ObjectId newId
-	 * = new ObjectId("5267d52792e6bf54e1b5047d");
-	 * 
-	 * UserDAO<ObjectId> userDAO = new UserDAOMongo(); List<User> users =
-	 * userDAO.find().asList(); for (User user : users) { if
-	 * (user.getId().equals(oldId)) { user.setId(newId); userDAO.save(user,
-	 * gabrielEmail); } }
-	 * 
-	 * return Results.ok(); }
-	 */
+	public static Result postFixTestUser() {
+		String gabrielEmail = "gabrielcs@gmail.com";
+
+		ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d");
+		ObjectId newId = new ObjectId("5267d52792e6bf54e1b5047d");
+
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		List<User> users = userDAO.find().asList();
+		for (User user : users) {
+			if (user.getId().equals(oldId)) {
+				userDAO.delete(user);
+				user.setId(newId);
+				userDAO.save(user, gabrielEmail);
+			}
+		}
+
+		return Results.ok();
+	}
+	*/
+
 }
