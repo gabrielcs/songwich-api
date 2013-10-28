@@ -97,6 +97,11 @@ public class User extends MongoModelImpl implements MongoEntity {
 	public ObjectId getId() {
 		return id;
 	}
+	
+	// TODO: comment
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
 
 	@Override
 	public String toString() {

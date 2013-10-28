@@ -17,7 +17,8 @@ DELETE  /v0.4/scrobbles/:scrobbleId                      controllers.api.scrobbl
 POST    /v0.4/users                                      controllers.api.scrobbles.UsersController_V0_4.postUsers()
 GET     /v0.4/users                                      controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null)
 PUT     /v0.4/users/:userId                              controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
-POST    /v0.4/fixScrobbles                               controllers.api.scrobbles.ScrobblesController_V0_4.postFixScrobbles()
+#POST    /v0.4/fixScrobbles                               controllers.api.scrobbles.ScrobblesController_V0_4.postFixScrobbles()
+POST    /v0.4/fixTestUser                                controllers.api.scrobbles.ScrobblesController_V0_4.postTestUser()
 
 # Stations API
 POST    /v0.4/stations                                   controllers.api.stations.StationsController_V0_4.postStations()
