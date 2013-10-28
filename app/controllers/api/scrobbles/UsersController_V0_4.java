@@ -134,6 +134,7 @@ public class UsersController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 	}
 
+	/*
 	public static Result postFixUserNames() {
 		String devEmail = "gabrielcs@gmail.com";
 
@@ -148,8 +149,7 @@ public class UsersController_V0_4 extends APIController {
 
 		return Results.ok();
 	}
-
-	/*
+	
 	public static Result postFixTestUser() {
 		String gabrielEmail = "gabrielcs@gmail.com";
 

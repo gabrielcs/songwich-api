@@ -35,7 +35,7 @@ DELETE  /v0.4/songFeedback/:idForFeedback/:feedbackType  controllers.api.station
 
 # Database Fixes
 #POST    /v0.4/fixScrobbles                               controllers.api.scrobbles.ScrobblesController_V0_4.postFixScrobbles()
-POST    /v0.4/fixUserNames                               controllers.api.scrobbles.UsersController_V0_4.postFixUserNames()
+#POST    /v0.4/fixUserNames                               controllers.api.scrobbles.UsersController_V0_4.postFixUserNames()
 #POST    /v0.4/fixTestUser                               controllers.api.scrobbles.UsersController_V0_4.postFixTestUser()
 
 # Web App
