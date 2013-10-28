@@ -77,6 +77,7 @@ public class AppUser extends MongoModelImpl implements MongoModel {
 		}
 	}
 	*/
+	
 
 	@Override
 	public String toString() {
