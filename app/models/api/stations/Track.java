@@ -25,10 +25,9 @@ public class Track {
 		super();
 	}
 
-	public Track(StationHistoryEntry stationHistoryEntry, Song song, List<User> songScrobblers) {
+	public Track(StationHistoryEntry stationHistoryEntry, List<User> songScrobblers) {
 		super();
 		setStationHistoryEntry(stationHistoryEntry);
-		setSong(song);
 		setSongScrobblers(songScrobblers);
 	}
 	
@@ -50,13 +49,21 @@ public class Track {
 	public void setStationHistoryEntry(StationHistoryEntry stationHistoryEntry) {
 		this.stationHistoryEntry = stationHistoryEntry;
 	}
-
+	
 	public Song getSong() {
-		return stationHistoryEntry.getSong();
+		return this.stationHistoryEntry.getSong();
+	}
+	
+	public String getAlbumTitle() {
+		return this.stationHistoryEntry.getSong().getAlbumTitle();
 	}
 
-	public void setSong(Song song) {
-		stationHistoryEntry.setSong(song);
+	public String getSongTitle() {
+		return this.stationHistoryEntry.getSong().getSongTitle();
+	}
+
+	public List<String> getArtistsNames() {
+		return this.stationHistoryEntry.getSong().getArtistsNames();
 	}
 
 	@Override

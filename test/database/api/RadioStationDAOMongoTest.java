@@ -14,6 +14,7 @@ import models.api.scrobbles.User;
 import models.api.stations.Group;
 import models.api.stations.GroupMember;
 import models.api.stations.RadioStation;
+import models.api.stations.StationHistoryEntry;
 import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
@@ -22,6 +23,8 @@ import org.junit.Test;
 
 import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
+import database.api.stations.StationHistoryDAO;
+import database.api.stations.StationHistoryDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
 public class RadioStationDAOMongoTest extends CleanDatabaseTest {
@@ -65,18 +68,36 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		elHefe.addAppUser(elHefeOnRdio);
 
 		nofxStation = new RadioStation("NOFX FM", nofx);
-		linoleum = new Song("Linoleum", "NOFX");
-		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
-		nofxStation.setNowPlaying(new Track(null, doWhatYouWant, null));
-		nofxStation.setLookAhead(new Track(null, linoleum, null));
-
 		fatMikeStation = new RadioStation("Fat Mike", fatMike);
-		fatMikeStation.setNowPlaying(new Track(null, linoleum, null));
-		fatMikeStation.setLookAhead(new Track(null, doWhatYouWant, null));
-
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
 		radioStationDAO.cascadeSave(nofxStation, DEV_EMAIL);
 		radioStationDAO.cascadeSave(fatMikeStation, DEV_EMAIL);
+		
+		linoleum = new Song("Linoleum", "NOFX");
+		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		
+		// set nowPlaying and lookAhead for nofxStation
+		StationHistoryEntry doWhatYouWantNofxStationHistoryEntry = new StationHistoryEntry(
+				nofxStation.getId(), doWhatYouWant, null);
+		stationHistoryDAO.save(doWhatYouWantNofxStationHistoryEntry, DEV_EMAIL);
+		nofxStation.setNowPlaying(new Track(doWhatYouWantNofxStationHistoryEntry, null));
+		StationHistoryEntry linoleumNofxStationHistoryEntry = new StationHistoryEntry(
+				nofxStation.getId(), linoleum, System.currentTimeMillis());
+		stationHistoryDAO.save(linoleumNofxStationHistoryEntry, DEV_EMAIL);
+		nofxStation.setLookAhead(new Track(linoleumNofxStationHistoryEntry, null));
+		radioStationDAO.save(nofxStation, DEV_EMAIL);
+		
+		// set nowPlaying and lookAhead for fatMikeStation
+		StationHistoryEntry linoleumFatMikeStationHistoryEntry = new StationHistoryEntry(
+				fatMikeStation.getId(), linoleum, System.currentTimeMillis());
+		stationHistoryDAO.save(linoleumFatMikeStationHistoryEntry, DEV_EMAIL);
+		fatMikeStation.setNowPlaying(new Track(linoleumFatMikeStationHistoryEntry, null));
+		StationHistoryEntry doWhatYouWantFatMikeStationHistoryEntry = new StationHistoryEntry(
+				fatMikeStation.getId(), doWhatYouWant, null);
+		stationHistoryDAO.save(doWhatYouWantFatMikeStationHistoryEntry, DEV_EMAIL);
+		fatMikeStation.setLookAhead(new Track(doWhatYouWantFatMikeStationHistoryEntry, null));
+		radioStationDAO.save(fatMikeStation, DEV_EMAIL);
 	}
 
 	@Test
@@ -113,11 +134,11 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		assertTrue(mikeStations.size() == 2);
 		assertTrue(mikeStations.contains(fatMikeStation));
 		assertTrue(mikeStations.contains(nofxStation));
-		
+
 		List<RadioStation> hefeStations = radioStationDao
 				.findByScrobblerId(elHefe.getId());
 		assertTrue(hefeStations.size() == 1);
 		assertTrue(hefeStations.contains(nofxStation));
-		
+
 	}
 }

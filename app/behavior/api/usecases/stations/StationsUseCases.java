@@ -112,12 +112,12 @@ public class StationsUseCases extends UseCase {
 		}
 
 		StationHistoryEntry nowPlayingHistoryEntry = new StationHistoryEntry(
-				radioStation.getId(), nowPlayingSong, null);
+				radioStation.getId(), nowPlayingSong, System.currentTimeMillis());
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
 		stationHistoryDAO.save(nowPlayingHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
 		radioStation.setNowPlaying(new Track(nowPlayingHistoryEntry,
-				nowPlayingSong, nowPlayingSongScrobblers));
+				nowPlayingSongScrobblers));
 
 		// set lookAhead
 		StationStrategy stationStrategyLookAhead = new NaiveStationStrategy(
@@ -133,7 +133,7 @@ public class StationsUseCases extends UseCase {
 		stationHistoryDAO.save(lookAheadHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
 		radioStation.setLookAhead(new Track(lookAheadHistoryEntry,
-				lookAheadSong, lookAheadSongScrobblers));
+				lookAheadSongScrobblers));
 
 		// save it
 		savePostStations(radioStation);
@@ -281,7 +281,7 @@ public class StationsUseCases extends UseCase {
 		stationHistoryDAO.save(lookAheadHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
 		radioStation.setLookAhead(new Track(lookAheadHistoryEntry,
-				lookAheadSong, lookAheadScrobblers));
+				lookAheadScrobblers));
 
 		// update radioStation
 		radioStationDAO.save(radioStation, getContext().getAppDeveloper()
@@ -474,7 +474,8 @@ public class StationsUseCases extends UseCase {
 		stationDTO.setStationName(station.getName());
 		stationDTO.setImageUrl(station.getImageUrl());
 		if (station.getScrobbler().isGroupStation()) {
-			stationDTO.setGroupName(station.getScrobbler().getGroup().getName());
+			stationDTO
+					.setGroupName(station.getScrobbler().getGroup().getName());
 		}
 
 		List<String> scrobblerIds = new ArrayList<String>();
@@ -486,9 +487,9 @@ public class StationsUseCases extends UseCase {
 
 		if (showSongs) {
 			StationSongListEntryDTO_V0_4 songListEntryDTO = new StationSongListEntryDTO_V0_4();
-			songListEntryDTO.setTrackTitle(station.getNowPlaying().getSong()
+			songListEntryDTO.setTrackTitle(station.getNowPlaying()
 					.getSongTitle());
-			songListEntryDTO.setArtistName(station.getNowPlaying().getSong()
+			songListEntryDTO.setArtistName(station.getNowPlaying()
 					.getArtistsNames().toString());
 			songListEntryDTO.setIdForFeedback(station.getNowPlaying()
 					.getStationHistoryEntry().getId().toString());
@@ -497,9 +498,9 @@ public class StationsUseCases extends UseCase {
 			stationDTO.setNowPlaying(songListEntryDTO);
 
 			songListEntryDTO = new StationSongListEntryDTO_V0_4();
-			songListEntryDTO.setTrackTitle(station.getLookAhead().getSong()
+			songListEntryDTO.setTrackTitle(station.getLookAhead()
 					.getSongTitle());
-			songListEntryDTO.setArtistName(station.getLookAhead().getSong()
+			songListEntryDTO.setArtistName(station.getLookAhead()
 					.getArtistsNames().toString());
 			songListEntryDTO.setIdForFeedback(station.getLookAhead()
 					.getStationHistoryEntry().getId().toString());
