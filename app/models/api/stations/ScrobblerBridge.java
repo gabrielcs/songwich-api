@@ -23,7 +23,7 @@ public class ScrobblerBridge {
 	@Embedded
 	private Group group;
 
-	@Reference
+	@Reference(lazy = true)
 	private User user;
 
 	protected ScrobblerBridge() {

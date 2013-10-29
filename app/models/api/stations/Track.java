@@ -14,11 +14,11 @@ import com.google.code.morphia.annotations.Reference;
  */
 @Embedded
 public class Track {
-	@Reference
+	@Reference(lazy = true)
 	private StationHistoryEntry stationHistoryEntry;
 	
 	// this will be an empty list if it is not a group station
-	@Reference
+	@Reference(lazy = true)
 	private List<User> songScrobblers = new ArrayList<User>();
 
 	protected Track() {

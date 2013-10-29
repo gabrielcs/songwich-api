@@ -113,7 +113,8 @@ public class StationsUseCases extends UseCase {
 		}
 
 		StationHistoryEntry nowPlayingHistoryEntry = new StationHistoryEntry(
-				radioStation.getId(), nowPlayingSong, System.currentTimeMillis());
+				radioStation.getId(), nowPlayingSong,
+				System.currentTimeMillis());
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
 		stationHistoryDAO.save(nowPlayingHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
@@ -441,11 +442,19 @@ public class StationsUseCases extends UseCase {
 		List<UserDTO_V0_4> scrobblersDTO = new ArrayList<UserDTO_V0_4>();
 		UserDTO_V0_4 userDTO;
 		for (User scrobbler : scrobblers) {
-			userDTO = new UserDTO_V0_4();
-			userDTO.setUserId(scrobbler.getId().toString());
-			userDTO.setName(scrobbler.getName());
-			scrobblersDTO.add(userDTO);
+			if (scrobbler.getName() != null && !scrobbler.getName().isEmpty()) {
+				userDTO = new UserDTO_V0_4();
+				userDTO.setUserId(scrobbler.getId().toString());
+				userDTO.setName(scrobbler.getName());
+				scrobblersDTO.add(userDTO);
+			}
 		}
+		
+		// don't show anything if the user(s) hasn't set up his name
+		if (scrobblersDTO.isEmpty()) {
+			return null;
+		}
+
 		return scrobblersDTO;
 	}
 

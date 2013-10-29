@@ -2,10 +2,6 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
-import models.api.scrobbles.User;
-
-import org.bson.types.ObjectId;
-
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -26,8 +22,6 @@ import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
 
