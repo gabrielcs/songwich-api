@@ -2,6 +2,10 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
+import models.api.scrobbles.Scrobble;
+
+import org.bson.types.ObjectId;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -21,6 +25,8 @@ import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
+import database.api.scrobbles.ScrobbleDAO;
+import database.api.scrobbles.ScrobbleDAOMongo;
 
 public class ScrobblesController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
@@ -164,12 +170,12 @@ public class ScrobblesController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 	}
 	
-	/*
+	
 	public static Result postFixScrobbles() {
 		String devEmail = "gabrielcs@gmail.com";
 		
-		ObjectId oldId = new ObjectId("5259e18092e667731a1bd6d9");
-		ObjectId newId = new ObjectId("526edc0ae4b0f1d3696d955b");
+		ObjectId oldId = new ObjectId("525db27d92e69e28dca31ca6");
+		ObjectId newId = new ObjectId("5272bf5ce4b065f24467b51d");
 		
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		List<Scrobble> scrobbles = scrobbleDAO.find().asList();
@@ -182,5 +188,5 @@ public class ScrobblesController_V0_4 extends APIController {
 		
 		return Results.ok();
 	}
-	*/
+	
 }
