@@ -32,7 +32,7 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 
 	private RadioStation radioStation;
 	private List<Scrobble> scrobbles, originalScrobblesList;
-	private Set<ObjectId> activeScrobblersIds;
+	private Set<ObjectId> activeScrobblersIds, recentScrobblersIds;
 	private List<Song> last59PlayedSongs;
 	private List<List<String>> last2PlayedArtists;
 	private Set<List<String>> artistsPlayed3TimesInLast59Songs;
@@ -97,18 +97,18 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 
 	@Override
 	public Set<ObjectId> getRecentScrobblers() {
-		if (activeScrobblersIds != null) {
+		if (recentScrobblersIds != null) {
 			// scrobblers have already been identified
-			return activeScrobblersIds;
+			return recentScrobblersIds;
 		}
 
-		activeScrobblersIds = new HashSet<ObjectId>();
+		recentScrobblersIds = new HashSet<ObjectId>();
 		for (Scrobble scrobble : originalScrobblesList) {
 			if (scrobble.getSong().equals(nextSong)) {
-				activeScrobblersIds.add(scrobble.getUserId());
+				recentScrobblersIds.add(scrobble.getUserId());
 			}
 		}
-		return activeScrobblersIds;
+		return recentScrobblersIds;
 	}
 
 	private Set<ObjectId> extractActiveScrobblers() {
