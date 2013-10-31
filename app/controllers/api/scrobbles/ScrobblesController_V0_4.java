@@ -2,10 +2,6 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
-import org.bson.types.ObjectId;
-
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -25,8 +21,6 @@ import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
-import database.api.scrobbles.ScrobbleDAO;
-import database.api.scrobbles.ScrobbleDAOMongo;
 
 public class ScrobblesController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
@@ -170,7 +164,7 @@ public class ScrobblesController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 	}
 	
-	
+	/*
 	public static Result postFixScrobbles() {
 		String devEmail = "gabrielcs@gmail.com";
 		
@@ -188,5 +182,5 @@ public class ScrobblesController_V0_4 extends APIController {
 		
 		return Results.ok();
 	}
-	
+	*/
 }
