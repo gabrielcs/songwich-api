@@ -22,22 +22,16 @@ import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
 
 /*
- * It doesn't play an artist that has been played in the last 20 songs 
- * (and therefore no more than 3 times during 60 songs).
- * 
+ * It doesn't play an artist more than 3 times during 60 songs nor twice in a 3-song span.
  * It doesn't play the same song if it was one of the last 60 to be played.
  * 
- * 
  * This only works if stations are activated only after they get to at least 
- * 60 scrobbles by at least 20 different artists.
- * 
- * It also builds on the premise that both the station's currentSong
- * and lookAhead are already saved as StationHistoryEntries on the database.
+ * 60 scrobbles only counting a maximum of 3 per artist.
  */
 public class PseudoDMCAStationStrategy implements StationStrategy {
 
 	private RadioStation radioStation;
-	private List<Scrobble> scrobbles;
+	private List<Scrobble> scrobbles, originalScrobblesList;
 	private Set<ObjectId> activeScrobblersIds;
 	private List<Song> last59PlayedSongs;
 	private List<List<String>> last2PlayedArtists;
@@ -49,6 +43,7 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		this.radioStation = radioStation;
 		activeScrobblersIds = extractActiveScrobblers();
 		scrobbles = extractScrobbles();
+		originalScrobblesList = new ArrayList<Scrobble>(scrobbles);
 		saveRelevantHistory();
 	}
 
@@ -80,6 +75,8 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 				return nextSong;
 			}
 		}
+		// the Behavior layer should maybe switch to another StationStrategy in
+		// this case
 		throw new SongwichAPIException(
 				"There are not sufficient scrobbles to calculate the next song to be played",
 				APIStatus_V0_4.UNKNOWN_ERROR);
@@ -87,7 +84,7 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 
 	private void removeArtistFromPotentialSelection(List<Scrobble> scrobbles,
 			List<String> artistsNames) {
-		// remove al scrobbles from the same artist to make random
+		// remove all scrobbles from the same artist to make random
 		// selection a bit more efficient
 		for (int i = 0; i < scrobbles.size(); i++) {
 			Scrobble scrobble = scrobbles.get(i);
@@ -106,7 +103,7 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		}
 
 		activeScrobblersIds = new HashSet<ObjectId>();
-		for (Scrobble scrobble : scrobbles) {
+		for (Scrobble scrobble : originalScrobblesList) {
 			if (scrobble.getSong().equals(nextSong)) {
 				activeScrobblersIds.add(scrobble.getUserId());
 			}
