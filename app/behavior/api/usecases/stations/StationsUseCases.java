@@ -24,7 +24,7 @@ import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
 import views.api.stations.StationSongListDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
-import behavior.api.algorithms.NaiveStationStrategy;
+import behavior.api.algorithms.PseudoDMCAStationStrategy;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -101,7 +101,7 @@ public class StationsUseCases extends UseCase {
 				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// set nowPlaying
-		StationStrategy stationStrategyNowPlaying = new NaiveStationStrategy(
+		StationStrategy stationStrategyNowPlaying = new PseudoDMCAStationStrategy(
 				radioStation);
 		Song nowPlayingSong = stationStrategyNowPlaying.getNextSong();
 		Set<ObjectId> nowPlayingSongScrobblersIds = stationStrategyNowPlaying
@@ -122,7 +122,7 @@ public class StationsUseCases extends UseCase {
 				nowPlayingSongScrobblers));
 
 		// set lookAhead
-		StationStrategy stationStrategyLookAhead = new NaiveStationStrategy(
+		StationStrategy stationStrategyLookAhead = new PseudoDMCAStationStrategy(
 				radioStation);
 		Song lookAheadSong = stationStrategyLookAhead.getNextSong();
 		Set<ObjectId> lookAheadSongScrobblersIds = stationStrategyLookAhead
@@ -254,7 +254,7 @@ public class StationsUseCases extends UseCase {
 		}
 
 		// run the algorithm to decide what the lookAhead Song will be
-		StationStrategy stationStrategy = new NaiveStationStrategy(radioStation);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(radioStation);
 		Song lookAheadSong = stationStrategy.getNextSong();
 
 		// find out who the lookAhead scrobblers are if it's a group station

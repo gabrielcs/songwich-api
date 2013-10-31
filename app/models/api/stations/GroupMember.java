@@ -9,7 +9,7 @@ import com.google.code.morphia.annotations.Reference;
 
 @Embedded
 public class GroupMember extends MongoModelImpl implements MongoModel {
-	@Reference
+	@Reference(lazy = true)
 	private User user;
 
 	private Long startDate;
