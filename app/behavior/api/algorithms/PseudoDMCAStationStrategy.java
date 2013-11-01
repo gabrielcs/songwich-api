@@ -31,7 +31,7 @@ import database.api.stations.StationHistoryDAOMongo;
 public class PseudoDMCAStationStrategy implements StationStrategy {
 
 	private RadioStation radioStation;
-	private List<Scrobble> scrobbles, originalScrobblesList;
+	private List<Scrobble> scrobbles;
 	private Set<ObjectId> activeScrobblersIds, recentScrobblersIds;
 	private List<Song> last59PlayedSongs;
 	private List<List<String>> last2PlayedArtists;
@@ -43,7 +43,6 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		this.radioStation = radioStation;
 		activeScrobblersIds = extractActiveScrobblers();
 		scrobbles = extractScrobbles();
-		originalScrobblesList = new ArrayList<Scrobble>(scrobbles);
 		saveRelevantHistory();
 	}
 
@@ -103,7 +102,7 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		}
 
 		recentScrobblersIds = new HashSet<ObjectId>();
-		for (Scrobble scrobble : originalScrobblesList) {
+		for (Scrobble scrobble : scrobbles) {
 			if (scrobble.getSong().equals(nextSong)) {
 				recentScrobblersIds.add(scrobble.getUserId());
 			}
