@@ -8,15 +8,12 @@ import org.bson.types.ObjectId;
 import util.api.MyLogger;
 
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Indexed;
 
 @Embedded
 public class SongFeedback extends MongoModelImpl implements MongoModel {
-	@Indexed
 	@Embedded
 	private FeedbackType feedbackType;
 
-	@Indexed
 	private ObjectId userId;
 
 	public enum FeedbackType {

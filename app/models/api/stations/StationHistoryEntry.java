@@ -13,7 +13,6 @@ import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
-import com.google.code.morphia.utils.IndexDirection;
 
 @Entity
 public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
@@ -24,13 +23,12 @@ public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
 	private ObjectId stationId;
 
 	@Embedded
-	@Indexed
 	private Song song;
 
-	@Indexed(IndexDirection.DESC)
 	private Long timestamp;
 
 	@Embedded
+	@Indexed
 	private Set<SongFeedback> songFeedback = new HashSet<SongFeedback>();
 
 	protected StationHistoryEntry() {
