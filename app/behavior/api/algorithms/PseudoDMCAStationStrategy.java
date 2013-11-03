@@ -153,11 +153,13 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		return resultSet;
 	}
 
+	// TODO: check if it's not the opposite
 	private List<List<String>> extractLast2Artists(List<Song> songList) {
 		List<List<String>> artistList = new ArrayList<List<String>>();
 		int i = 0;
 		for (Song song : songList) {
 			artistList.add(song.getArtistsNames());
+			//System.out.println("Last 2 artists: " + artistList);
 			i++;
 			if (i == 2) {
 				break;

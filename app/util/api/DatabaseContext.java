@@ -50,6 +50,7 @@ public class DatabaseContext {
 			MongoClient mongoClient = new MongoClient(mongoClientURI);
 			datastore = new Morphia().createDatastore(mongoClient, dbName);
 
+			// TODO: print this out without user and password
 			MyLogger.info("Connected to database " + uri);
 			return getDatastore();
 		} catch (UnknownHostException e) {

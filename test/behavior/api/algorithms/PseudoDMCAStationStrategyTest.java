@@ -125,8 +125,8 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
 					gabrielFM);
 			song = stationStrategy.getNextSong();
-			// System.out.println(String.format("Next song: %s by %s",
-			// song.getSongTitle(), song.getArtistsNames().get(0)));
+			System.out.println(String.format("Next song: %s by %s",
+		    song.getSongTitle(), song.getArtistsNames().get(0)));
 			stationHistoryEntry = new StationHistoryEntry(gabrielFM.getId(),
 					song, System.currentTimeMillis());
 			stationHistoryDAO.save(stationHistoryEntry, DEV_EMAIL);

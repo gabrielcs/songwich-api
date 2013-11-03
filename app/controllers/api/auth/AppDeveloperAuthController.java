@@ -65,7 +65,9 @@ public class AppDeveloperAuthController extends Action<AppDeveloperAuthenticated
 			try {
 				String devAuthToken = devAuthTokenHeaderValues[0];
 				App app = findApp(devAuthToken);
+				MyLogger.debug("devAuthToken.app = " + app);
 				dev = findAppDeveloper(context, devAuthToken, app);
+				MyLogger.debug("devAuthToken.dev = " + dev);
 			} catch (IllegalArgumentException e) {
 				// auth token cannot be converted into a UUID
 				throw new SongwichAPIException("Invalid devAuthToken: "
@@ -100,6 +102,7 @@ public class AppDeveloperAuthController extends Action<AppDeveloperAuthenticated
 		if (app != null) {
 			ctx.args.put(APP, app);
 			for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
+				MyLogger.debug("app.dev = " + appDeveloper);
 				if (appDeveloper.getDevAuthToken().getToken()
 						.equals(devAuthToken)) {
 					ctx.args.put(DEV, appDeveloper);
