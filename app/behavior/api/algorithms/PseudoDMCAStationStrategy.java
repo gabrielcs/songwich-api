@@ -45,6 +45,10 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		scrobbles = extractScrobbles();
 		saveRelevantHistory();
 	}
+	
+	public static StationReadinessCalculator getStationReadinessCalculator() {
+		return new PseudoDMCAStationReadinessCalculator();
+	}
 
 	@Override
 	public Song getNextSong() throws SongwichAPIException {
@@ -180,5 +184,32 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 	@Override
 	public String toString() {
 		return "NaiveStationStrategy []";
+	}
+	
+	public static class PseudoDMCAStationReadinessCalculator implements StationReadinessCalculator {
+		@Override
+		public Float getStationReadiness(RadioStation station) {
+			// calculate station readiness
+			Set<ObjectId> scrobblersIds = station.getScrobbler().getActiveScrobblersUserIds();
+			ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
+			List<Scrobble> scrobbles = scrobbleDAO.findByUserIds(scrobblersIds, true);
+			Map<List<String>, Integer> artistCount = new HashMap<List<String>, Integer>();
+			Integer currentCount;
+			for (Scrobble scrobble : scrobbles) {
+				currentCount = artistCount.get(scrobble.getSong().getArtistsNames());
+				currentCount = (currentCount == null) ? 1 : currentCount + 1;
+				// only count 3 songs per artist
+				if (currentCount <= 3) {
+					artistCount.put(scrobble.getSong().getArtistsNames(), currentCount);
+				}
+			}
+			currentCount = 0;
+			for (Integer currentArtistCount : artistCount.values()) {
+				currentCount = currentCount + currentArtistCount;
+			}
+			
+			// ask for at least 61 songs (max 3 per artist)
+			return ((float) currentCount) / 61;
+		}
 	}
 }

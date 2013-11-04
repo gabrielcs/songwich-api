@@ -270,4 +270,26 @@ public class StationsController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
+	
+	@AppDeveloperAuthenticated
+	public static Result getStationReadiness(String stationId) {
+		// process the request
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		RadioStationDTO_V0_4 radioStationDTO;
+		try {
+			radioStationDTO = stationsUseCases.getStationReadiness(stationId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
+
+		// return the response
+		GetStationsUniqueResponse_V0_4 response = new GetStationsUniqueResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
+		return ok(Json.toJson(response));
+	}
 }

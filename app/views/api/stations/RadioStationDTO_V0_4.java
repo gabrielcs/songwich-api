@@ -23,6 +23,9 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String groupName;
 
 	private List<String> scrobblerIds;
+	
+	// only for output
+	private String stationReadiness;
 
 	// only for output
 	private StationSongListEntryDTO_V0_4 nowPlaying;
@@ -60,6 +63,14 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private ValidationError validateImageUrl() {
 		return validateImageUrl("imageUrl", imageUrl);
+	}
+	
+	public String getStationReadiness() {
+		return stationReadiness;
+	}
+
+	public void setStationReadiness(String stationReadiness) {
+		this.stationReadiness = stationReadiness;
 	}
 
 	public String getGroupName() {

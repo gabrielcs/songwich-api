@@ -254,7 +254,8 @@ public class StationsUseCases extends UseCase {
 		}
 
 		// run the algorithm to decide what the lookAhead Song will be
-		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(radioStation);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+				radioStation);
 		Song lookAheadSong = stationStrategy.getNextSong();
 
 		// find out who the lookAhead scrobblers are if it's a group station
@@ -302,6 +303,43 @@ public class StationsUseCases extends UseCase {
 			updateDTOForPostNextSong(stationSongListDTO,
 					nowPlayingHistoryEntry, lookAheadHistoryEntry);
 		}
+	}
+
+	public RadioStationDTO_V0_4 getStationReadiness(String stationId)
+			throws SongwichAPIException {
+
+		RadioStation station = authorizeGetStationReadiness(stationId);
+		Float stationReadiness = PseudoDMCAStationStrategy
+				.getStationReadinessCalculator().getStationReadiness(station);
+		return createDTOForGetStationReadiness(station, stationReadiness);
+	}
+
+	private RadioStationDTO_V0_4 createDTOForGetStationReadiness(
+			RadioStation station, Float stationReadiness) {
+		RadioStationDTO_V0_4 radioStationDTO = new RadioStationDTO_V0_4();
+		radioStationDTO.setStationId(station.getId().toString());
+		radioStationDTO.setStationName(station.getName());
+		radioStationDTO.setStationReadiness(String.format("%.2f", stationReadiness));
+		return radioStationDTO;
+	}
+
+	private RadioStation authorizeGetStationReadiness(String stationId)
+			throws SongwichAPIException {
+
+		if (!ObjectId.isValid(stationId)) {
+			throw new SongwichAPIException("Invalid stationId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
+		RadioStation station = radioStationDAO
+				.findById(new ObjectId(stationId));
+		if (station == null) {
+			throw new SongwichAPIException("Non-existent stationId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		return station;
 	}
 
 	private RadioStation authorizePutStations(String stationId,
@@ -449,7 +487,7 @@ public class StationsUseCases extends UseCase {
 				scrobblersDTO.add(userDTO);
 			}
 		}
-		
+
 		// don't show anything if the user(s) hasn't set up his name
 		if (scrobblersDTO.isEmpty()) {
 			return null;
