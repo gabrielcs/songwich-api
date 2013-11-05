@@ -101,8 +101,8 @@ public class StationsUseCases extends UseCase {
 				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// set nowPlaying
-		StationStrategy stationStrategyNowPlaying = new PseudoDMCAStationStrategy(
-				radioStation);
+		StationStrategy stationStrategyNowPlaying = new PseudoDMCAStationStrategy(radioStation);
+		//StationStrategy stationStrategyNowPlaying = new NaiveStationStrategy(radioStation);
 		Song nowPlayingSong = stationStrategyNowPlaying.getNextSong();
 		Set<ObjectId> nowPlayingSongScrobblersIds = stationStrategyNowPlaying
 				.getNextSongRecentScrobblers();
@@ -122,8 +122,8 @@ public class StationsUseCases extends UseCase {
 				nowPlayingSongScrobblers));
 
 		// set lookAhead
-		StationStrategy stationStrategyLookAhead = new PseudoDMCAStationStrategy(
-				radioStation);
+		StationStrategy stationStrategyLookAhead = new PseudoDMCAStationStrategy(radioStation);
+		//StationStrategy stationStrategyLookAhead = new NaiveStationStrategy(radioStation);
 		Song lookAheadSong = stationStrategyLookAhead.getNextSong();
 		Set<ObjectId> lookAheadSongScrobblersIds = stationStrategyLookAhead
 				.getNextSongRecentScrobblers();
@@ -254,8 +254,8 @@ public class StationsUseCases extends UseCase {
 		}
 
 		// run the algorithm to decide what the lookAhead Song will be
-		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
-				radioStation);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(radioStation);
+		//StationStrategy stationStrategy = new NaiveStationStrategy(radioStation);
 		Song lookAheadSong = stationStrategy.getNextSong();
 
 		// find out who the lookAhead scrobblers are if it's a group station
@@ -309,6 +309,7 @@ public class StationsUseCases extends UseCase {
 			throws SongwichAPIException {
 
 		RadioStation station = authorizeGetStationReadiness(stationId);
+		//StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
 		Float stationReadiness = stationStrategy.getStationReadiness();
 		return createDTOForGetStationReadiness(station, stationReadiness);

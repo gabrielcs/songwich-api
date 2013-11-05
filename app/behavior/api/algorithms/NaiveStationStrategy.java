@@ -1,6 +1,5 @@
 package behavior.api.algorithms;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,7 +9,6 @@ import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 
-import util.api.MyLogger;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 
@@ -20,70 +18,91 @@ import database.api.scrobbles.ScrobbleDAOMongo;
  * only check it does is that it doesn't play a song that's been playing in 
  * the previous 2 rounds.
  */
-public class NaiveStationStrategy //implements StationStrategy 
-{
+public class NaiveStationStrategy extends AbstractStationStrategy implements
+		StationStrategy {
 
-	private RadioStation radioStation;
-	private Song previousNowPlaying, previousLookAhead, nextSong;
-	List<Scrobble> scrobbles;
-	private Set<ObjectId> recentScrobblers;
+	private NaiveStationReadinessCalculator readinessCalculator;
+	private Song nextSong;
+	private List<Scrobble> relevantScrobbles;
 
-	public NaiveStationStrategy(RadioStation radioStation) {
-		super();
-		this.radioStation = radioStation;
-
-		// make sure we don't compare a Track to a Song nor have a
-		// NullPointerException
-		previousNowPlaying = (radioStation.getNowPlaying() == null) ? null
-				: radioStation.getNowPlaying().getSong();
-		previousLookAhead = (radioStation.getLookAhead() == null) ? null
-				: radioStation.getLookAhead().getSong();
+	public NaiveStationStrategy(RadioStation station) {
+		super(station);
 	}
 
-	//@Override
+	@Override
 	public Song getNextSong() {
 		if (nextSong != null) {
 			// the algorithm has already been invoked
 			return nextSong;
 		}
 
-		Set<ObjectId> scrobblersIds = radioStation.getScrobbler()
-				.getActiveScrobblersUserIds();
-		MyLogger.debug("radioStation: " + radioStation);
-		MyLogger.debug("scrobblersIds: " + scrobblersIds);
-		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
-		scrobbles = scrobbleDao.findByUserIds(scrobblersIds, true);
-		MyLogger.debug("scrobbles: " + scrobbles);
-				
+		// make sure we don't compare a Track to a Song nor have a
+		// NullPointerException
+		Song previousNowPlaying = (getStation().getNowPlaying() == null) ? null
+				: getStation().getNowPlaying().getSong();
+		Song previousLookAhead = (getStation().getLookAhead() == null) ? null
+				: getStation().getLookAhead().getSong();
+
 		int index;
 		do {
-			index = (int) (Math.random() * scrobbles.size());
-			MyLogger.debug(String.format("index = %s); scrobbles.size = %s", index, scrobbles.size()));
-			nextSong = scrobbles.get(index).getSong();
+			index = (int) (Math.random() * getRelevantScrobbles().size());
+			nextSong = getRelevantScrobbles().get(index).getSong();
 		} while (nextSong.equals(previousNowPlaying)
 				|| nextSong.equals(previousLookAhead));
 
 		return nextSong;
 	}
 
-	//@Override
-	public Set<ObjectId> getRecentScrobblers() {
-		if (recentScrobblers != null) {
-			// scrobblers have already been identified
-			return recentScrobblers;
+	@Override
+	protected List<Scrobble> getRelevantScrobbles() {
+		if (relevantScrobbles != null) {
+			return relevantScrobbles;
 		}
 
-		recentScrobblers = new HashSet<ObjectId>();
-		for (Scrobble scrobble : scrobbles) {
-			if (scrobble.getSong().equals(nextSong)) {
-				recentScrobblers.add(scrobble.getUserId());
-			}
+		// all scrobbles by the station's active scrobblers
+		Set<ObjectId> scrobblersIds = getStation().getScrobbler()
+				.getActiveScrobblersUserIds();
+		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
+		relevantScrobbles = scrobbleDao.findByUserIds(scrobblersIds, true);
+		return relevantScrobbles;
+	}
+
+	@Override
+	protected StationReadinessCalculator getStationReadinessCalculator() {
+		if (readinessCalculator == null) {
+			readinessCalculator = this.new NaiveStationReadinessCalculator();
 		}
-		return recentScrobblers;
+		return readinessCalculator;
 	}
 
 	@Override
 	public String toString() {
-		return "NaiveStationStrategy []";
+		return "NaiveStationStrategy [readinessCalculator="
+				+ readinessCalculator + ", nextSong=" + nextSong
+				+ ", relevantScrobbles=" + relevantScrobbles
+				+ ", super.toString()=" + super.toString() + "]";
 	}
+
+	public class NaiveStationReadinessCalculator extends
+			AbstractStationReadinessCalculator implements
+			StationReadinessCalculator {
+
+		protected NaiveStationReadinessCalculator() {
+		}
+
+		@Override
+		protected Float calculateStationReadiness() {
+			// minimum of 2 relevant scrobbles
+			final float MIN_SONGS = 2f;
+			return ((getRelevantScrobbles().size() / MIN_SONGS) > 1) ? 1f
+					: (getRelevantScrobbles().size() / MIN_SONGS);
+		}
+
+		@Override
+		public String toString() {
+			return "NaiveStationReadinessCalculator [super.toString()="
+					+ super.toString() + "]";
+		}
+	}
+
 }

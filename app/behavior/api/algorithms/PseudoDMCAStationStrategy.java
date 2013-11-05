@@ -211,8 +211,7 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 
 			// ask for at least 61 songs (max 3 per artist)
 			final float MIN_SONGS = 61f;
-			Float result = ((count / MIN_SONGS) > 1) ? 1f : (count / MIN_SONGS);
-			return result;
+			return ((count / MIN_SONGS) > 1) ? 1f : (count / MIN_SONGS);
 		}
 
 		@Override
