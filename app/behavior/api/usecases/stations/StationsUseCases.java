@@ -101,8 +101,10 @@ public class StationsUseCases extends UseCase {
 				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// set nowPlaying
-		StationStrategy stationStrategyNowPlaying = new PseudoDMCAStationStrategy(radioStation);
-		//StationStrategy stationStrategyNowPlaying = new NaiveStationStrategy(radioStation);
+		StationStrategy stationStrategyNowPlaying = new PseudoDMCAStationStrategy(
+				radioStation);
+		// StationStrategy stationStrategyNowPlaying = new
+		// NaiveStationStrategy(radioStation);
 		Song nowPlayingSong = stationStrategyNowPlaying.getNextSong();
 		Set<ObjectId> nowPlayingSongScrobblersIds = stationStrategyNowPlaying
 				.getNextSongRecentScrobblers();
@@ -122,8 +124,10 @@ public class StationsUseCases extends UseCase {
 				nowPlayingSongScrobblers));
 
 		// set lookAhead
-		StationStrategy stationStrategyLookAhead = new PseudoDMCAStationStrategy(radioStation);
-		//StationStrategy stationStrategyLookAhead = new NaiveStationStrategy(radioStation);
+		StationStrategy stationStrategyLookAhead = new PseudoDMCAStationStrategy(
+				radioStation);
+		// StationStrategy stationStrategyLookAhead = new
+		// NaiveStationStrategy(radioStation);
 		Song lookAheadSong = stationStrategyLookAhead.getNextSong();
 		Set<ObjectId> lookAheadSongScrobblersIds = stationStrategyLookAhead
 				.getNextSongRecentScrobblers();
@@ -254,8 +258,10 @@ public class StationsUseCases extends UseCase {
 		}
 
 		// run the algorithm to decide what the lookAhead Song will be
-		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(radioStation);
-		//StationStrategy stationStrategy = new NaiveStationStrategy(radioStation);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+				radioStation);
+		// StationStrategy stationStrategy = new
+		// NaiveStationStrategy(radioStation);
 		Song lookAheadSong = stationStrategy.getNextSong();
 
 		// find out who the lookAhead scrobblers are if it's a group station
@@ -309,10 +315,25 @@ public class StationsUseCases extends UseCase {
 			throws SongwichAPIException {
 
 		RadioStation station = authorizeGetStationReadiness(stationId);
-		//StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
 		Float stationReadiness = stationStrategy.getStationReadiness();
 		return createDTOForGetStationReadiness(station, stationReadiness);
+	}
+
+	public void putStationsActivate(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+			throws SongwichAPIException {
+		RadioStation station = authorizePutStationsActivate(stationId,
+				radioStationUpdateDTO);
+
+		// process request
+		station.setActive(true);
+		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
+		radioStationDAO.save(station, getContext().getAppDeveloper()
+				.getEmailAddress());
+
+		updateDTOForPutStationsActivate(radioStationUpdateDTO, station);
 	}
 
 	private RadioStationDTO_V0_4 createDTOForGetStationReadiness(
@@ -320,7 +341,8 @@ public class StationsUseCases extends UseCase {
 		RadioStationDTO_V0_4 radioStationDTO = new RadioStationDTO_V0_4();
 		radioStationDTO.setStationId(station.getId().toString());
 		radioStationDTO.setStationName(station.getName());
-		radioStationDTO.setStationReadiness(String.format("%.2f", stationReadiness));
+		radioStationDTO.setStationReadiness(String.format("%.2f",
+				stationReadiness));
 		return radioStationDTO;
 	}
 
@@ -364,6 +386,24 @@ public class StationsUseCases extends UseCase {
 		// continue to be
 		authenticatePutStations(station, radioStationUpdateDTO);
 
+		return station;
+	}
+
+	private RadioStation authorizePutStationsActivate(String stationId,
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) throws SongwichAPIException {
+
+		RadioStation station = authorizePutStations(stationId,
+				radioStationUpdateDTO);
+		
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		if (!stationStrategy.isStationReady()) {
+			throw new SongwichAPIException(
+					String.format(
+							"The station cannot be activated yet because it is only %.0f%% ready",
+							stationStrategy.getStationReadiness() * 100),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+		
 		return station;
 	}
 
@@ -626,6 +666,14 @@ public class StationsUseCases extends UseCase {
 		radioStationUpdateDTO.setScrobblerIds(scrobblerIds);
 
 		return radioStationUpdateDTO;
+	}
+	
+	private void updateDTOForPutStationsActivate(
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO,
+			RadioStation station) {
+		radioStationUpdateDTO.setStationId(station.getId().toString());
+		radioStationUpdateDTO.setStationName(station.getName());
+		radioStationUpdateDTO.setActive(station.isActive().toString());
 	}
 
 	/*

@@ -19,6 +19,9 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String stationId;
 
 	private String stationName;
+	
+	// only for output
+	private String active;
 
 	private String groupName;
 
@@ -82,6 +85,14 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+	
+	public void setActive(String active) {
+		this.active = active;
+	}
+	
+	public String getActive() {
+		return active;
+	}
 
 	@Override
 	public String toString() {
@@ -90,5 +101,4 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 				+ ", scrobblerIds=" + scrobblerIds + ", nowPlaying="
 				+ ", imageUrl=" + imageUrl + "]";
 	}
-
 }
