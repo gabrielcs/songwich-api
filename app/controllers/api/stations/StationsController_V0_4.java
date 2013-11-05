@@ -19,7 +19,6 @@ import views.api.stations.PostStationsResponse_V0_4;
 import views.api.stations.PutStationsResponse_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
-import views.api.stations.StationSongListDTO_V0_4;
 import behavior.api.usecases.stations.StationsUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -235,21 +234,21 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	public static Result postNextSong() {
-		Form<StationSongListDTO_V0_4> stationEntryForm = Form.form(
-				StationSongListDTO_V0_4.class).bindFromRequest();
+		Form<RadioStationUpdateDTO_V0_4> stationEntryForm = Form.form(
+				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
 		if (stationEntryForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
 					DataTransferObject.errorsAsString(stationEntryForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			StationSongListDTO_V0_4 stationSongListDTO = stationEntryForm.get();
+			RadioStationUpdateDTO_V0_4 radioStationDTO = stationEntryForm.get();
 
 			// process the request
 			StationsUseCases stationsUseCases = new StationsUseCases(
 					getContext());
 			try {
-				stationsUseCases.postNextSong(stationSongListDTO);
+				stationsUseCases.postNextSong(radioStationDTO);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -265,7 +264,7 @@ public class StationsController_V0_4 extends APIController {
 
 			// return the response
 			PostNextSongResponse_V0_4 response = new PostNextSongResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", stationSongListDTO);
+					APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
 			return ok(Json.toJson(response));
 		}
 	}

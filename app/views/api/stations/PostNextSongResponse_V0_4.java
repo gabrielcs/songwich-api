@@ -8,20 +8,20 @@ import views.api.APIStatus;
 public class PostNextSongResponse_V0_4 extends APIResponse_V0_4 {
 
 	@JsonProperty("station")
-	private StationSongListDTO_V0_4 stationSongListDTO;
+	private RadioStationUpdateDTO_V0_4 radioStationUpdateDTO;
 
 	public PostNextSongResponse_V0_4(APIStatus status, String message,
-			StationSongListDTO_V0_4 stationSongListDTO) {
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
 		super(status, message);
-		setStationSongList(stationSongListDTO);
+		setStationSongList(radioStationUpdateDTO);
 	}
 
-	public StationSongListDTO_V0_4 getStationSongListDTO() {
-		return stationSongListDTO;
+	public RadioStationUpdateDTO_V0_4 getStationSongListDTO() {
+		return radioStationUpdateDTO;
 	}
 
-	public void setStationSongList(StationSongListDTO_V0_4 stationSongListDTO) {
-		this.stationSongListDTO = stationSongListDTO;
+	public void setStationSongList(RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
+		this.radioStationUpdateDTO = radioStationUpdateDTO;
 	}
 
 }

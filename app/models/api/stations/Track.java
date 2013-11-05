@@ -24,6 +24,11 @@ public class Track {
 	protected Track() {
 		super();
 	}
+	
+	public Track(StationHistoryEntry stationHistoryEntry) {
+		super();
+		setStationHistoryEntry(stationHistoryEntry);
+	}
 
 	public Track(StationHistoryEntry stationHistoryEntry, List<User> songScrobblers) {
 		super();

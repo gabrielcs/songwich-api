@@ -19,9 +19,15 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String stationId;
 
 	private String stationName;
-	
+
 	// only for output
 	private String active;
+
+	// only for output
+	private StationSongListEntryDTO_V0_4 nowPlaying;
+
+	// only for output
+	private StationSongListEntryDTO_V0_4 lookAhead;
 
 	private String groupName;
 
@@ -44,6 +50,22 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private ValidationError validateImageUrl() {
 		return validateImageUrl("imageUrl", imageUrl);
+	}
+	
+	public StationSongListEntryDTO_V0_4 getNowPlaying() {
+		return nowPlaying;
+	}
+
+	public void setNowPlaying(StationSongListEntryDTO_V0_4 nowPlaying) {
+		this.nowPlaying = nowPlaying;
+	}
+
+	public StationSongListEntryDTO_V0_4 getLookAhead() {
+		return lookAhead;
+	}
+
+	public void setLookAhead(StationSongListEntryDTO_V0_4 lookAhead) {
+		this.lookAhead = lookAhead;
 	}
 
 	public String getGroupName() {
@@ -85,20 +107,21 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-	
+
 	public void setActive(String active) {
 		this.active = active;
 	}
-	
+
 	public String getActive() {
 		return active;
 	}
 
 	@Override
 	public String toString() {
-		return "NewRadioStationDTO_V0_4 [stationId=" + stationId
-				+ ", stationName=" + stationName + ", groupName=" + groupName
-				+ ", scrobblerIds=" + scrobblerIds + ", nowPlaying="
+		return "RadioStationUpdateDTO_V0_4 [stationId=" + stationId
+				+ ", stationName=" + stationName + ", active=" + active
+				+ ", nowPlaying=" + nowPlaying + ", lookAhead=" + lookAhead
+				+ ", groupName=" + groupName + ", scrobblerIds=" + scrobblerIds
 				+ ", imageUrl=" + imageUrl + "]";
 	}
 }
