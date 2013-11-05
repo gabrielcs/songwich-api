@@ -20,7 +20,8 @@ import database.api.scrobbles.ScrobbleDAOMongo;
  * only check it does is that it doesn't play a song that's been playing in 
  * the previous 2 rounds.
  */
-public class NaiveStationStrategy implements StationStrategy {
+public class NaiveStationStrategy //implements StationStrategy 
+{
 
 	private RadioStation radioStation;
 	private Song previousNowPlaying, previousLookAhead, nextSong;
@@ -39,7 +40,7 @@ public class NaiveStationStrategy implements StationStrategy {
 				: radioStation.getLookAhead().getSong();
 	}
 
-	@Override
+	//@Override
 	public Song getNextSong() {
 		if (nextSong != null) {
 			// the algorithm has already been invoked
@@ -65,7 +66,7 @@ public class NaiveStationStrategy implements StationStrategy {
 		return nextSong;
 	}
 
-	@Override
+	//@Override
 	public Set<ObjectId> getRecentScrobblers() {
 		if (recentScrobblers != null) {
 			// scrobblers have already been identified

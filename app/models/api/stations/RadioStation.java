@@ -9,6 +9,7 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.PostLoad;
 
 @Entity
 public class RadioStation extends MongoModelImpl implements MongoEntity {
@@ -16,13 +17,14 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	private ObjectId id;
 
 	private String name;
-	
+
+	// all newly created stations are inactive
+	private Boolean active = false;
+
 	private String imageUrl;
 
 	@Embedded
 	private ScrobblerBridge scrobbler;
-	
-	//private Boolean active;
 
 	@Embedded
 	private Track nowPlaying;
@@ -44,29 +46,45 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = scrobbler;
 		this.imageUrl = imageUrl;
 	}
-	
+
 	public RadioStation(String name, Group group) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(group);
 	}
-	
+
 	public RadioStation(String name, Group group, String imageUrl) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(group);
 		this.imageUrl = imageUrl;
 	}
-	
+
 	public RadioStation(String name, User user) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(user);
 	}
-	
+
 	public RadioStation(String name, User user, String imageUrl) {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(user);
 		this.imageUrl = imageUrl;
 	}
+
+	public Boolean isActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 	
+	// TODO: remove this after updating old stations
+	@PostLoad
+	private void makeOldStationsActive() {
+		if (active == null) {
+			this.active = true;
+		}
+	}
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -119,9 +137,10 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 
 	@Override
 	public String toString() {
-		return "RadioStation [id=" + id + ", name=" + name + ", imageUrl="
-				+ imageUrl + ", scrobbler=" + scrobbler + ", nowPlaying="
-				+ nowPlaying + ", lookAhead=" + lookAhead + "]";
+		return "RadioStation [id=" + id + ", name=" + name + ", active="
+				+ active + ", imageUrl=" + imageUrl + ", scrobbler="
+				+ scrobbler + ", nowPlaying=" + nowPlaying + ", lookAhead="
+				+ lookAhead + "]";
 	}
 
 	@Override
@@ -150,7 +169,6 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 			if (other.name != null) {
 				return false;
 			}
-
 		} else if (!name.equals(other.name)) {
 			return false;
 		}

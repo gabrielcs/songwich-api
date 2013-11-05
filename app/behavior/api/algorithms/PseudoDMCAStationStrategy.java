@@ -28,26 +28,36 @@ import database.api.stations.StationHistoryDAOMongo;
  * This only works if stations are activated only after they get to at least 
  * 60 scrobbles only counting a maximum of 3 per artist.
  */
-public class PseudoDMCAStationStrategy implements StationStrategy {
+public class PseudoDMCAStationStrategy extends AbstractStationStrategy
+		implements StationStrategy, StationReadinessCalculator {
 
-	private RadioStation radioStation;
-	private List<Scrobble> scrobbles;
-	private Set<ObjectId> activeScrobblersIds, recentScrobblersIds;
+	private StationReadinessCalculator readinessCalculator;
+	private List<Scrobble> relevantScrobbles;
 	private List<Song> last59PlayedSongs;
 	private List<List<String>> last2PlayedArtists;
 	private Set<List<String>> artistsPlayed3TimesInLast59Songs;
 	private Song nextSong;
 
-	public PseudoDMCAStationStrategy(RadioStation radioStation) {
-		super();
-		this.radioStation = radioStation;
-		activeScrobblersIds = extractActiveScrobblers();
-		scrobbles = extractScrobbles();
-		saveRelevantHistory();
+	public PseudoDMCAStationStrategy(RadioStation station) {
+		super(station);
 	}
-	
-	public static StationReadinessCalculator getStationReadinessCalculator() {
-		return new PseudoDMCAStationReadinessCalculator();
+
+	@Override
+	protected StationReadinessCalculator getStationReadinessCalculator() {
+		if (readinessCalculator == null) {
+			readinessCalculator = this.new PseudoDMCAStationReadinessCalculator();
+		}
+		return readinessCalculator;
+	}
+
+	// gets all scrobbles available
+	@Override
+	protected List<Scrobble> getRelevantScrobbles() {
+		if (relevantScrobbles != null) {
+			return relevantScrobbles;
+		}
+		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
+		return scrobbleDAO.findByUserIds(getActiveScrobblers(), true);
 	}
 
 	@Override
@@ -55,24 +65,27 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		if (nextSong != null) {
 			// the algorithm has already been invoked
 			return nextSong;
+		} else if (last59PlayedSongs == null) {
+			saveRelevantHistory();
 		}
 
 		int index;
 		Scrobble currentScrobble = null;
 		List<String> nextSongArtist;
 
-		while (!scrobbles.isEmpty()) {
-			index = (int) (Math.random() * scrobbles.size());
-			currentScrobble = scrobbles.get(index);
+		while (!relevantScrobbles.isEmpty()) {
+			index = (int) (Math.random() * relevantScrobbles.size());
+			currentScrobble = relevantScrobbles.get(index);
 			nextSong = currentScrobble.getSong();
 			nextSongArtist = nextSong.getArtistsNames();
 
 			if (last2PlayedArtists.contains(nextSongArtist)
 					|| artistsPlayed3TimesInLast59Songs
 							.contains(nextSongArtist)) {
-				removeArtistFromPotentialSelection(scrobbles, nextSongArtist);
+				removeArtistFromPotentialSelection(relevantScrobbles,
+						nextSongArtist);
 			} else if (last59PlayedSongs.contains(nextSong)) {
-				scrobbles.remove(currentScrobble);
+				relevantScrobbles.remove(currentScrobble);
 			} else {
 				// success
 				return nextSong;
@@ -98,36 +111,11 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		}
 	}
 
-	@Override
-	public Set<ObjectId> getRecentScrobblers() {
-		if (recentScrobblersIds != null) {
-			// scrobblers have already been identified
-			return recentScrobblersIds;
-		}
-
-		recentScrobblersIds = new HashSet<ObjectId>();
-		for (Scrobble scrobble : scrobbles) {
-			if (scrobble.getSong().equals(nextSong)) {
-				recentScrobblersIds.add(scrobble.getUserId());
-			}
-		}
-		return recentScrobblersIds;
-	}
-
-	private Set<ObjectId> extractActiveScrobblers() {
-		return radioStation.getScrobbler().getActiveScrobblersUserIds();
-	}
-
-	private List<Scrobble> extractScrobbles() {
-		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
-		return scrobbleDao.findByUserIds(activeScrobblersIds, true);
-	}
-
 	private void saveRelevantHistory() {
-		StationHistoryDAO<ObjectId> stationHistoryDao = new StationHistoryDAOMongo();
-		List<StationHistoryEntry> last60HistoryEntries = stationHistoryDao
-				.findLastEntriesByStationId(radioStation.getId(), 59);
-		last59PlayedSongs = extractSongs(last60HistoryEntries);
+		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
+		List<StationHistoryEntry> last59HistoryEntries = stationHistoryDAO
+				.findLastEntriesByStationId(getStation().getId(), 59);
+		last59PlayedSongs = extractSongs(last59HistoryEntries);
 		last2PlayedArtists = extractLast2Artists(last59PlayedSongs);
 		artistsPlayed3TimesInLast59Songs = extractArtistsPlayed3Times(last59PlayedSongs);
 	}
@@ -157,13 +145,12 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 		return resultSet;
 	}
 
-	// TODO: check if it's not the opposite
 	private List<List<String>> extractLast2Artists(List<Song> songList) {
 		List<List<String>> artistList = new ArrayList<List<String>>();
 		int i = 0;
 		for (Song song : songList) {
 			artistList.add(song.getArtistsNames());
-			//System.out.println("Last 2 artists: " + artistList);
+			// System.out.println("Last 2 artists: " + artistList);
 			i++;
 			if (i == 2) {
 				break;
@@ -183,33 +170,48 @@ public class PseudoDMCAStationStrategy implements StationStrategy {
 
 	@Override
 	public String toString() {
-		return "NaiveStationStrategy []";
+		return "PseudoDMCAStationStrategy [readinessCalculator="
+				+ readinessCalculator + ", nextSong=" + nextSong
+				+ ", super.toString()=" + super.toString() + "]";
 	}
-	
-	public static class PseudoDMCAStationReadinessCalculator implements StationReadinessCalculator {
+
+	public class PseudoDMCAStationReadinessCalculator extends
+			AbstractStationReadinessCalculator implements
+			StationReadinessCalculator {
+
+		protected PseudoDMCAStationReadinessCalculator() {
+		}
+
 		@Override
-		public Float getStationReadiness(RadioStation station) {
+		protected Float calculateStationReadiness() {
 			// calculate station readiness
-			Set<ObjectId> scrobblersIds = station.getScrobbler().getActiveScrobblersUserIds();
-			ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-			List<Scrobble> scrobbles = scrobbleDAO.findByUserIds(scrobblersIds, true);
-			Map<List<String>, Integer> artistCount = new HashMap<List<String>, Integer>();
-			Integer currentCount;
-			for (Scrobble scrobble : scrobbles) {
-				currentCount = artistCount.get(scrobble.getSong().getArtistsNames());
-				currentCount = (currentCount == null) ? 1 : currentCount + 1;
-				// only count 3 songs per artist
-				if (currentCount <= 3) {
-					artistCount.put(scrobble.getSong().getArtistsNames(), currentCount);
+			Map<List<String>, List<String>> artistSongsMap = new HashMap<List<String>, List<String>>();
+			List<String> currentArtistSongTitles;
+			for (Scrobble scrobble : getRelevantScrobbles()) {
+				currentArtistSongTitles = artistSongsMap.get(scrobble.getSong()
+						.getArtistsNames());
+				if (currentArtistSongTitles.size() < 3) {
+					if (!currentArtistSongTitles.contains(scrobble.getSong()
+							.getSongTitle())) {
+						currentArtistSongTitles.add(scrobble.getSong()
+								.getSongTitle());
+					}
 				}
 			}
-			currentCount = 0;
-			for (Integer currentArtistCount : artistCount.values()) {
-				currentCount = currentCount + currentArtistCount;
+			int count = 0;
+			for (List<String> currentArtistSongTitle : artistSongsMap.values()) {
+				count = count + currentArtistSongTitle.size();
 			}
-			
+
 			// ask for at least 61 songs (max 3 per artist)
-			return ((float) currentCount) / 61;
+			final float MIN_SONGS = 61f;
+			return ((count / MIN_SONGS) > 1) ? 1f : (count / MIN_SONGS);
+		}
+		
+		@Override
+		public String toString() {
+			return "PseudoDMCAStationReadinessCalculator [super.toString()="
+					+ super.toString() + "]";
 		}
 	}
 }

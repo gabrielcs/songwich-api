@@ -105,7 +105,7 @@ public class StationsUseCases extends UseCase {
 				radioStation);
 		Song nowPlayingSong = stationStrategyNowPlaying.getNextSong();
 		Set<ObjectId> nowPlayingSongScrobblersIds = stationStrategyNowPlaying
-				.getRecentScrobblers();
+				.getNextSongRecentScrobblers();
 		List<User> nowPlayingSongScrobblers = new ArrayList<User>();
 		if (radioStation.getScrobbler().isGroupStation()) {
 			nowPlayingSongScrobblers = userDAO
@@ -126,7 +126,7 @@ public class StationsUseCases extends UseCase {
 				radioStation);
 		Song lookAheadSong = stationStrategyLookAhead.getNextSong();
 		Set<ObjectId> lookAheadSongScrobblersIds = stationStrategyLookAhead
-				.getRecentScrobblers();
+				.getNextSongRecentScrobblers();
 		List<User> lookAheadSongScrobblers = userDAO
 				.findUsersByIds(lookAheadSongScrobblersIds);
 
@@ -262,7 +262,7 @@ public class StationsUseCases extends UseCase {
 		List<User> lookAheadScrobblers = new ArrayList<User>();
 		if (radioStation.getScrobbler().isGroupStation()) {
 			Set<ObjectId> lookAheadScrobblersIds = stationStrategy
-					.getRecentScrobblers();
+					.getNextSongRecentScrobblers();
 			MyLogger.debug("lookAheadScrobblersIds: " + lookAheadScrobblersIds);
 			UserDAO<ObjectId> userDao = new UserDAOMongo();
 			lookAheadScrobblers = userDao
@@ -309,8 +309,8 @@ public class StationsUseCases extends UseCase {
 			throws SongwichAPIException {
 
 		RadioStation station = authorizeGetStationReadiness(stationId);
-		Float stationReadiness = PseudoDMCAStationStrategy
-				.getStationReadinessCalculator().getStationReadiness(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		Float stationReadiness = stationStrategy.getStationReadiness();
 		return createDTOForGetStationReadiness(station, stationReadiness);
 	}
 

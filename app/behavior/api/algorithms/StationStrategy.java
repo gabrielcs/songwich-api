@@ -8,10 +8,10 @@ import org.bson.types.ObjectId;
 
 import util.api.SongwichAPIException;
 
-public interface StationStrategy {
+public interface StationStrategy extends StationReadinessCalculator {
 
 	public Song getNextSong() throws SongwichAPIException;
-	
-	public Set<ObjectId> getRecentScrobblers();
 
+	public Set<ObjectId> getNextSongRecentScrobblers()
+			throws SongwichAPIException;
 }
