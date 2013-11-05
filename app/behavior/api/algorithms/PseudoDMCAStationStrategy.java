@@ -14,7 +14,6 @@ import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
 
-import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import database.api.scrobbles.ScrobbleDAO;
@@ -193,15 +192,15 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 						.getArtistsNames());
 				if (currentArtistSongTitles == null) {
 					currentArtistSongTitles = new ArrayList<String>(1);
-				}
-				if (currentArtistSongTitles.size() < 3) {
+					currentArtistSongTitles.add(scrobble.getSong()
+							.getSongTitle());
+					artistSongsMap.put(scrobble.getSong().getArtistsNames(),
+							currentArtistSongTitles);
+				} else if (currentArtistSongTitles.size() < 3) {
 					if (!currentArtistSongTitles.contains(scrobble.getSong()
 							.getSongTitle())) {
 						currentArtistSongTitles.add(scrobble.getSong()
 								.getSongTitle());
-						artistSongsMap.put(
-								scrobble.getSong().getArtistsNames(),
-								currentArtistSongTitles);
 					}
 				}
 			}
