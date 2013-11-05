@@ -14,6 +14,7 @@ import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import database.api.scrobbles.ScrobbleDAO;
@@ -73,19 +74,19 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 		Scrobble currentScrobble = null;
 		List<String> nextSongArtist;
 
-		while (!relevantScrobbles.isEmpty()) {
-			index = (int) (Math.random() * relevantScrobbles.size());
-			currentScrobble = relevantScrobbles.get(index);
+		while (!getRelevantScrobbles().isEmpty()) {
+			index = (int) (Math.random() * getRelevantScrobbles().size());
+			currentScrobble = getRelevantScrobbles().get(index);
 			nextSong = currentScrobble.getSong();
 			nextSongArtist = nextSong.getArtistsNames();
 
 			if (last2PlayedArtists.contains(nextSongArtist)
 					|| artistsPlayed3TimesInLast59Songs
 							.contains(nextSongArtist)) {
-				removeArtistFromPotentialSelection(relevantScrobbles,
+				removeArtistFromPotentialSelection(getRelevantScrobbles(),
 						nextSongArtist);
 			} else if (last59PlayedSongs.contains(nextSong)) {
-				relevantScrobbles.remove(currentScrobble);
+				getRelevantScrobbles().remove(currentScrobble);
 			} else {
 				// success
 				return nextSong;
@@ -190,11 +191,17 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 			for (Scrobble scrobble : getRelevantScrobbles()) {
 				currentArtistSongTitles = artistSongsMap.get(scrobble.getSong()
 						.getArtistsNames());
+				if (currentArtistSongTitles == null) {
+					currentArtistSongTitles = new ArrayList<String>(1);
+				}
 				if (currentArtistSongTitles.size() < 3) {
 					if (!currentArtistSongTitles.contains(scrobble.getSong()
 							.getSongTitle())) {
 						currentArtistSongTitles.add(scrobble.getSong()
 								.getSongTitle());
+						artistSongsMap.put(
+								scrobble.getSong().getArtistsNames(),
+								currentArtistSongTitles);
 					}
 				}
 			}
@@ -205,9 +212,10 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 
 			// ask for at least 61 songs (max 3 per artist)
 			final float MIN_SONGS = 61f;
-			return ((count / MIN_SONGS) > 1) ? 1f : (count / MIN_SONGS);
+			Float result = ((count / MIN_SONGS) > 1) ? 1f : (count / MIN_SONGS);
+			return result;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "PseudoDMCAStationReadinessCalculator [super.toString()="

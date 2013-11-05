@@ -16,7 +16,7 @@ public abstract class AbstractStationReadinessCalculator implements
 
 	@Override
 	public Float getStationReadiness() {
-		if (stationReadiness != null) {
+		if (stationReadiness == null) {
 			stationReadiness = calculateStationReadiness();
 		}
 		return stationReadiness;
