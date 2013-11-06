@@ -23,7 +23,10 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String groupName;
 
 	private List<String> scrobblerIds;
-	
+
+	// only for output
+	private String isActive;
+
 	// only for output
 	private String stationReadiness;
 
@@ -63,6 +66,14 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private ValidationError validateImageUrl() {
 		return validateImageUrl("imageUrl", imageUrl);
+	}
+
+	public String getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
 	}
 	
 	public String getStationReadiness() {
@@ -128,7 +139,7 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "NewRadioStationDTO_V0_4 [stationId=" + stationId

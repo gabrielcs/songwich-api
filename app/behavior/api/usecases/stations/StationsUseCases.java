@@ -45,7 +45,7 @@ public class StationsUseCases extends UseCase {
 		// TODO: limit the number of results
 		List<RadioStation> stations = radioStationDAO.find().asList();
 
-		return createDTOForGetStations(stations);
+		return createDTOForGetMultipleStations(stations);
 	}
 
 	public RadioStationDTO_V0_4 getStations(String stationId)
@@ -63,7 +63,22 @@ public class StationsUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		return createDTOForGetStations(station, true);
+		// sets the station active if it can
+		Float stationReadiness = null;
+		if (!station.isActive()) {
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+					station);
+			if (stationStrategy.isStationReady()) {
+				station.setActive(true);
+				setNowPlaying(station);
+				setLookAhead(station);
+				// saves it
+				saveStation(station);
+			} else {
+				stationReadiness = stationStrategy.getStationReadiness();
+			}
+		}
+		return createStationDTO(station, stationReadiness);
 	}
 
 	public void postStations(RadioStationDTO_V0_4 radioStationDTO)
@@ -113,12 +128,15 @@ public class StationsUseCases extends UseCase {
 			setNowPlaying(station);
 			setLookAhead(station);
 		}
-
 		// save it
 		saveStation(station);
 
-		// update the DTO
-		updateDTOForPostStations(station, radioStationDTO);
+		if (station.isActive()) {
+			updateDTOForPostStations(station, null, radioStationDTO);
+		} else {
+			Float stationReadiness = stationStrategy.getStationReadiness();
+			updateDTOForPostStations(station, stationReadiness, radioStationDTO);
+		}
 	}
 
 	public void putStations(String stationId,
@@ -487,46 +505,6 @@ public class StationsUseCases extends UseCase {
 				.getAppDeveloper().getEmailAddress());
 	}
 
-	private void updateDTOForPostStations(RadioStation station,
-			RadioStationDTO_V0_4 radioStationDTO) {
-
-		// update the DataTransferObject
-		radioStationDTO.setStationId(station.getId().toString());
-
-		if (station.isActive()) {
-			// nowPlaying
-			StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
-			nowPlayingDTO.setArtistName(station.getNowPlaying()
-					.getStationHistoryEntry().getSong().getArtistsNames()
-					.toString());
-			nowPlayingDTO.setTrackTitle(station.getNowPlaying()
-					.getStationHistoryEntry().getSong().getSongTitle());
-			nowPlayingDTO.setIdForFeedback(station.getNowPlaying()
-					.getStationHistoryEntry().getId().toString());
-			radioStationDTO.setNowPlaying(nowPlayingDTO);
-
-			// lookAhead
-			StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
-			lookAheadDTO.setArtistName(station.getLookAhead()
-					.getStationHistoryEntry().getSong().getArtistsNames()
-					.toString());
-			lookAheadDTO.setTrackTitle(station.getLookAhead()
-					.getStationHistoryEntry().getSong().getSongTitle());
-			lookAheadDTO.setIdForFeedback(station.getLookAhead()
-					.getStationHistoryEntry().getId().toString());
-			radioStationDTO.setLookAhead(lookAheadDTO);
-
-			// recently scrobbled by
-			if (station.getScrobbler().isGroupStation()) {
-				nowPlayingDTO.setRecentScrobblers(createScrobblersDTO(station
-						.getNowPlaying().getSongScrobblers()));
-
-				lookAheadDTO.setRecentScrobblers(createScrobblersDTO(station
-						.getLookAhead().getSongScrobblers()));
-			}
-		}
-	}
-
 	private static List<UserDTO_V0_4> createScrobblersDTO(List<User> scrobblers) {
 		List<UserDTO_V0_4> scrobblersDTO = new ArrayList<UserDTO_V0_4>();
 		UserDTO_V0_4 userDTO;
@@ -557,20 +535,48 @@ public class StationsUseCases extends UseCase {
 		updateDTOForPutStations(radioStationUpdateDTO, station);
 	}
 
-	public static List<RadioStationDTO_V0_4> createDTOForGetStations(
+	private void updateDTOForPostStations(RadioStation station,
+			Float stationReadiness, RadioStationDTO_V0_4 radioStationDTO) {
+
+		radioStationDTO.setStationId(station.getId().toString());
+		updateStationDTOWithReadinessOrSongs(station, stationReadiness, radioStationDTO);
+	}
+
+	private static RadioStationDTO_V0_4 createStationDTO(RadioStation station,
+			Float stationReadiness) {
+
+		RadioStationDTO_V0_4 stationDTO = createBasicDTOForStations(station);
+		updateStationDTOWithReadinessOrSongs(station, stationReadiness, stationDTO);
+		return stationDTO;
+	}
+	
+	private static void updateStationDTOWithReadinessOrSongs(RadioStation station,
+			Float stationReadiness, RadioStationDTO_V0_4 radioStationDTO) {
+
+		if (station.isActive()) {
+			updateDTOForGetActiveStation(station, radioStationDTO);
+		} else {
+			updateDTOForGetInactiveStation(station, stationReadiness,
+					radioStationDTO);
+		}
+	}
+
+	public static List<RadioStationDTO_V0_4> createDTOForGetMultipleStations(
 			List<RadioStation> stations) {
 
 		List<RadioStationDTO_V0_4> stationsDTO = new ArrayList<RadioStationDTO_V0_4>();
 		RadioStationDTO_V0_4 stationDTO;
 		for (RadioStation station : stations) {
-			stationDTO = createDTOForGetStations(station, false);
+			stationDTO = createBasicDTOForStations(station);
+			stationDTO.setIsActive(station.isActive().toString());
 			stationsDTO.add(stationDTO);
 		}
 		return stationsDTO;
 	}
 
-	private static RadioStationDTO_V0_4 createDTOForGetStations(
-			RadioStation station, boolean showSongs) {
+	// id, name, url, scrobblers (no songs, no activeness, no readiness)
+	private static RadioStationDTO_V0_4 createBasicDTOForStations(
+			RadioStation station) {
 		RadioStationDTO_V0_4 stationDTO = new RadioStationDTO_V0_4();
 		stationDTO.setStationId(station.getId().toString());
 		stationDTO.setStationName(station.getName());
@@ -587,31 +593,47 @@ public class StationsUseCases extends UseCase {
 		}
 		stationDTO.setScrobblerIds(scrobblerIds);
 
-		if (showSongs) {
-			StationSongListEntryDTO_V0_4 songListEntryDTO = new StationSongListEntryDTO_V0_4();
-			songListEntryDTO.setTrackTitle(station.getNowPlaying()
-					.getSongTitle());
-			songListEntryDTO.setArtistName(station.getNowPlaying()
-					.getArtistsNames().toString());
-			songListEntryDTO.setIdForFeedback(station.getNowPlaying()
-					.getStationHistoryEntry().getId().toString());
-			songListEntryDTO.setRecentScrobblers(createScrobblersDTO(station
-					.getNowPlaying().getSongScrobblers()));
-			stationDTO.setNowPlaying(songListEntryDTO);
-
-			songListEntryDTO = new StationSongListEntryDTO_V0_4();
-			songListEntryDTO.setTrackTitle(station.getLookAhead()
-					.getSongTitle());
-			songListEntryDTO.setArtistName(station.getLookAhead()
-					.getArtistsNames().toString());
-			songListEntryDTO.setIdForFeedback(station.getLookAhead()
-					.getStationHistoryEntry().getId().toString());
-			songListEntryDTO.setRecentScrobblers(createScrobblersDTO(station
-					.getLookAhead().getSongScrobblers()));
-			stationDTO.setLookAhead(songListEntryDTO);
-		}
-
 		return stationDTO;
+	}
+
+	private static void updateDTOForGetInactiveStation(RadioStation station,
+			Float stationReadiness, RadioStationDTO_V0_4 stationDTO) {
+
+		stationDTO.setStationReadiness(String.format("%.2f", stationReadiness));
+	}
+
+	private static void updateDTOForGetActiveStation(RadioStation station,
+			RadioStationDTO_V0_4 stationDTO) {
+		// nowPlaying
+		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
+		nowPlayingDTO.setArtistName(station.getNowPlaying()
+				.getStationHistoryEntry().getSong().getArtistsNames()
+				.toString());
+		nowPlayingDTO.setTrackTitle(station.getNowPlaying()
+				.getStationHistoryEntry().getSong().getSongTitle());
+		nowPlayingDTO.setIdForFeedback(station.getNowPlaying()
+				.getStationHistoryEntry().getId().toString());
+		stationDTO.setNowPlaying(nowPlayingDTO);
+
+		// lookAhead
+		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
+		lookAheadDTO.setArtistName(station.getLookAhead()
+				.getStationHistoryEntry().getSong().getArtistsNames()
+				.toString());
+		lookAheadDTO.setTrackTitle(station.getLookAhead()
+				.getStationHistoryEntry().getSong().getSongTitle());
+		lookAheadDTO.setIdForFeedback(station.getLookAhead()
+				.getStationHistoryEntry().getId().toString());
+		stationDTO.setLookAhead(lookAheadDTO);
+
+		// recently scrobbled by
+		if (station.getScrobbler().isGroupStation()) {
+			nowPlayingDTO.setRecentScrobblers(createScrobblersDTO(station
+					.getNowPlaying().getSongScrobblers()));
+
+			lookAheadDTO.setRecentScrobblers(createScrobblersDTO(station
+					.getLookAhead().getSongScrobblers()));
+		}
 	}
 
 	private void updateDTOForPostNextSong(

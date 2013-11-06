@@ -194,7 +194,7 @@ public class UsersUseCases extends UseCase {
 
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
 			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
-					.createDTOForGetStations(scrobblerStations);
+					.createDTOForGetMultipleStations(scrobblerStations);
 			userDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
 
@@ -211,7 +211,7 @@ public class UsersUseCases extends UseCase {
 				.findByScrobblerId(user.getId());
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
 			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
-					.createDTOForGetStations(scrobblerStations);
+					.createDTOForGetMultipleStations(scrobblerStations);
 			userUpdateDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
 	}
