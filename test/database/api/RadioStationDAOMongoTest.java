@@ -70,8 +70,8 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		nofxStation = new RadioStation("NOFX FM", nofx);
 		fatMikeStation = new RadioStation("Fat Mike", fatMike);
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(nofxStation, DEV_EMAIL);
-		radioStationDAO.cascadeSave(fatMikeStation, DEV_EMAIL);
+		radioStationDAO.cascadeSave(nofxStation, DEV.getEmailAddress());
+		radioStationDAO.cascadeSave(fatMikeStation, DEV.getEmailAddress());
 		
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
@@ -80,24 +80,24 @@ public class RadioStationDAOMongoTest extends CleanDatabaseTest {
 		// set nowPlaying and lookAhead for nofxStation
 		StationHistoryEntry doWhatYouWantNofxStationHistoryEntry = new StationHistoryEntry(
 				nofxStation.getId(), doWhatYouWant, null);
-		stationHistoryDAO.save(doWhatYouWantNofxStationHistoryEntry, DEV_EMAIL);
+		stationHistoryDAO.save(doWhatYouWantNofxStationHistoryEntry, DEV.getEmailAddress());
 		nofxStation.setNowPlaying(new Track(doWhatYouWantNofxStationHistoryEntry, null));
 		StationHistoryEntry linoleumNofxStationHistoryEntry = new StationHistoryEntry(
 				nofxStation.getId(), linoleum, System.currentTimeMillis());
-		stationHistoryDAO.save(linoleumNofxStationHistoryEntry, DEV_EMAIL);
+		stationHistoryDAO.save(linoleumNofxStationHistoryEntry, DEV.getEmailAddress());
 		nofxStation.setLookAhead(new Track(linoleumNofxStationHistoryEntry, null));
-		radioStationDAO.save(nofxStation, DEV_EMAIL);
+		radioStationDAO.save(nofxStation, DEV.getEmailAddress());
 		
 		// set nowPlaying and lookAhead for fatMikeStation
 		StationHistoryEntry linoleumFatMikeStationHistoryEntry = new StationHistoryEntry(
 				fatMikeStation.getId(), linoleum, System.currentTimeMillis());
-		stationHistoryDAO.save(linoleumFatMikeStationHistoryEntry, DEV_EMAIL);
+		stationHistoryDAO.save(linoleumFatMikeStationHistoryEntry, DEV.getEmailAddress());
 		fatMikeStation.setNowPlaying(new Track(linoleumFatMikeStationHistoryEntry, null));
 		StationHistoryEntry doWhatYouWantFatMikeStationHistoryEntry = new StationHistoryEntry(
 				fatMikeStation.getId(), doWhatYouWant, null);
-		stationHistoryDAO.save(doWhatYouWantFatMikeStationHistoryEntry, DEV_EMAIL);
+		stationHistoryDAO.save(doWhatYouWantFatMikeStationHistoryEntry, DEV.getEmailAddress());
 		fatMikeStation.setLookAhead(new Track(doWhatYouWantFatMikeStationHistoryEntry, null));
-		radioStationDAO.save(fatMikeStation, DEV_EMAIL);
+		radioStationDAO.save(fatMikeStation, DEV.getEmailAddress());
 	}
 
 	@Test

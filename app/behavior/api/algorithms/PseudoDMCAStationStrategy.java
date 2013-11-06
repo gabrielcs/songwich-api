@@ -150,7 +150,6 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 		int i = 0;
 		for (Song song : songList) {
 			artistList.add(song.getArtistsNames());
-			// System.out.println("Last 2 artists: " + artistList);
 			i++;
 			if (i == 2) {
 				break;

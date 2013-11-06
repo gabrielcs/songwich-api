@@ -48,6 +48,10 @@ public abstract class AbstractStationStrategy implements StationStrategy {
 	}
 
 	protected Set<ObjectId> getActiveScrobblers() {
+		System.out
+				.println(String.format("%s active scrobblers = %s", station
+						.getName(), station.getScrobbler()
+						.getActiveScrobblersUserIds()));
 		return station.getScrobbler().getActiveScrobblersUserIds();
 	}
 
@@ -60,7 +64,7 @@ public abstract class AbstractStationStrategy implements StationStrategy {
 	public Boolean isStationReady() {
 		return getStationReadinessCalculator().isStationReady();
 	}
-	
+
 	protected RadioStation getStation() {
 		return station;
 	}

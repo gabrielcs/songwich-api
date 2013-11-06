@@ -23,7 +23,7 @@ import views.api.scrobbles.UserDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
-import behavior.api.algorithms.NaiveStationStrategy;
+import behavior.api.algorithms.PseudoDMCAStationStrategy;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -70,6 +70,12 @@ public class StationsUseCases extends UseCase {
 			throws SongwichAPIException {
 
 		authenticatePostStations(radioStationDTO);
+		postStationsAuthorized(radioStationDTO);
+	}
+
+	// package-visibility method without authentication so it's testable
+	void postStationsAuthorized(RadioStationDTO_V0_4 radioStationDTO)
+			throws SongwichAPIException {
 
 		// creates either a User RadioStation or a Group RadioStation
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
@@ -100,10 +106,8 @@ public class StationsUseCases extends UseCase {
 				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// checks if station can be activated and activates it
-		// StationStrategy stationStrategyNowPlaying = new
-		// PseudoDMCAStationStrategy(
-		// radioStation);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		if (stationStrategy.isStationReady()) {
 			station.setActive(true);
 			setNowPlaying(station);
@@ -114,7 +118,7 @@ public class StationsUseCases extends UseCase {
 		saveStation(station);
 
 		// update the DTO
-		createDTOForPostStations(station, radioStationDTO);
+		updateDTOForPostStations(station, radioStationDTO);
 	}
 
 	public void putStations(String stationId,
@@ -218,9 +222,10 @@ public class StationsUseCases extends UseCase {
 		}
 
 		// run the algorithm to decide what the lookAhead Song will be
-		// StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
-		// radioStation);
-		StationStrategy stationStrategy = new NaiveStationStrategy(radioStation);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+				radioStation);
+		// StationStrategy stationStrategy = new
+		// NaiveStationStrategy(radioStation);
 		Song lookAheadSong = stationStrategy.getNextSong();
 
 		// find out who the lookAhead scrobblers are if it's a group station
@@ -274,9 +279,8 @@ public class StationsUseCases extends UseCase {
 			throws SongwichAPIException {
 
 		RadioStation station = authorizeGetStationReadiness(stationId);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
-		// StationStrategy stationStrategy = new
-		// PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
 		Float stationReadiness = stationStrategy.getStationReadiness();
 		return createDTOForGetStationReadiness(station, stationReadiness);
 	}
@@ -322,9 +326,8 @@ public class StationsUseCases extends UseCase {
 	private Track saveHistoryEntryAndGetTrack(RadioStation station)
 			throws SongwichAPIException {
 
-		// StationStrategy stationStrategy = new
-		// PseudoDMCAStationStrategy(station);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		Song song = stationStrategy.getNextSong();
 		StationHistoryEntry historyEntry = new StationHistoryEntry(
 				station.getId(), song, System.currentTimeMillis());
@@ -407,9 +410,8 @@ public class StationsUseCases extends UseCase {
 		RadioStation station = authorizePutStations(stationId,
 				radioStationUpdateDTO);
 
-		// StationStrategy stationStrategy = new
-		// PseudoDMCAStationStrategy(station);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		if (!stationStrategy.isStationReady()) {
 			throw new SongwichAPIException(
 					String.format(
@@ -485,14 +487,14 @@ public class StationsUseCases extends UseCase {
 				.getAppDeveloper().getEmailAddress());
 	}
 
-	private void createDTOForPostStations(RadioStation station,
+	private void updateDTOForPostStations(RadioStation station,
 			RadioStationDTO_V0_4 radioStationDTO) {
 
 		// update the DataTransferObject
 		radioStationDTO.setStationId(station.getId().toString());
 
-		// nowPlaying
-		if (station.getNowPlaying() != null) {
+		if (station.isActive()) {
+			// nowPlaying
 			StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
 			nowPlayingDTO.setArtistName(station.getNowPlaying()
 					.getStationHistoryEntry().getSong().getArtistsNames()
@@ -502,10 +504,8 @@ public class StationsUseCases extends UseCase {
 			nowPlayingDTO.setIdForFeedback(station.getNowPlaying()
 					.getStationHistoryEntry().getId().toString());
 			radioStationDTO.setNowPlaying(nowPlayingDTO);
-		}
 
-		// lookAhead
-		if (station.getLookAhead() != null) {
+			// lookAhead
 			StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
 			lookAheadDTO.setArtistName(station.getLookAhead()
 					.getStationHistoryEntry().getSong().getArtistsNames()
@@ -515,19 +515,15 @@ public class StationsUseCases extends UseCase {
 			lookAheadDTO.setIdForFeedback(station.getLookAhead()
 					.getStationHistoryEntry().getId().toString());
 			radioStationDTO.setLookAhead(lookAheadDTO);
-		}
 
-		// recently scrobbled by
-		if (station.getScrobbler().isGroupStation()) {
-			StationSongListEntryDTO_V0_4 nowPlayingDTO = radioStationDTO
-					.getNowPlaying();
-			nowPlayingDTO.setRecentScrobblers(createScrobblersDTO(station
-					.getNowPlaying().getSongScrobblers()));
+			// recently scrobbled by
+			if (station.getScrobbler().isGroupStation()) {
+				nowPlayingDTO.setRecentScrobblers(createScrobblersDTO(station
+						.getNowPlaying().getSongScrobblers()));
 
-			StationSongListEntryDTO_V0_4 lookAheadDTO = radioStationDTO
-					.getLookAhead();
-			lookAheadDTO.setRecentScrobblers(createScrobblersDTO(station
-					.getLookAhead().getSongScrobblers()));
+				lookAheadDTO.setRecentScrobblers(createScrobblersDTO(station
+						.getLookAhead().getSongScrobblers()));
+			}
 		}
 	}
 

@@ -30,12 +30,12 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		App app2 = new App("Deezer");
 
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
-		Key<App> keySave = appDao.save(app1, DEV_EMAIL);
-		appDao.save(app2, DEV_EMAIL);
+		Key<App> keySave = appDao.save(app1, DEV.getEmailAddress());
+		appDao.save(app2, DEV.getEmailAddress());
 
 		// updates a document using save()
 		app1.setName("Rdio");
-		Key<App> keySaveAgain = appDao.save(app1, DEV_EMAIL);
+		Key<App> keySaveAgain = appDao.save(app1, DEV.getEmailAddress());
 		// checks that it doesn't save twice
 		assertEquals(keySave.getId(), keySaveAgain.getId());
 
@@ -63,8 +63,8 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		App app2 = new App("Deezer");
 
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
-		appDao.save(app1, DEV_EMAIL);
-		appDao.save(app2, DEV_EMAIL);
+		appDao.save(app1, DEV.getEmailAddress());
+		appDao.save(app2, DEV.getEmailAddress());
 
 		assertTrue(appDao.findById(app1.getId()).equals(app1));
 		assertTrue(appDao.findById(app2.getId()).equals(app2));
@@ -76,8 +76,8 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		App app2 = new App("Deezer");
 
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
-		appDao.save(app1, DEV_EMAIL);
-		appDao.save(app2, DEV_EMAIL);
+		appDao.save(app1, DEV.getEmailAddress());
+		appDao.save(app2, DEV.getEmailAddress());
 
 		assertTrue(appDao.findByName(app1.getName()).equals(app1));
 		assertTrue(appDao.findByName(app2.getName()).equals(app2));
@@ -92,7 +92,7 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		app.addAppDeveloper(appDev);
 
 		AppDAOMongo appDao = new AppDAOMongo();
-		appDao.cascadeSave(app, DEV_EMAIL);
+		appDao.cascadeSave(app, DEV.getEmailAddress());
 
 		assertTrue(appDao.findByDevAuthToken(authToken.getToken()).equals(app));
 	}
@@ -106,7 +106,7 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		app.addAppDeveloper(appDev);
 
 		AppDAOMongo appDao = new AppDAOMongo();
-		appDao.cascadeSave(app, DEV_EMAIL);
+		appDao.cascadeSave(app, DEV.getEmailAddress());
 
 		assertTrue(appDao.findAppDevByAuthToken(authToken.getToken()).equals(
 				appDev));
@@ -121,7 +121,7 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		app.addAppDeveloper(appDev);
 
 		AppDAOMongo appDao = new AppDAOMongo();
-		appDao.cascadeSave(app, DEV_EMAIL);
+		appDao.cascadeSave(app, DEV.getEmailAddress());
 
 		List<App> appsDatabase = appDao.findByDevEmail("gabriel@example.com");
 		assertEquals(appsDatabase.size(), 1);
@@ -137,7 +137,7 @@ public class AppDAOMongoTest extends CleanDatabaseTest {
 		app.addAppDeveloper(appDev);
 
 		AppDAOMongo appDao = new AppDAOMongo();
-		appDao.cascadeSave(app, DEV_EMAIL);
+		appDao.cascadeSave(app, DEV.getEmailAddress());
 
 		List<AppDeveloper> appDevsDatabase = appDao
 				.findAppDevByEmail("gabriel@example.com");

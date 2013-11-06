@@ -22,7 +22,6 @@ import database.api.stations.StationHistoryDAOMongo;
 import database.api.util.CleanDatabaseTest;
 
 public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
-	private String DEV_EMAIL = "gabriel@example.com";
 	User gabriel;
 	private RadioStation gabrielFM;
 
@@ -35,11 +34,11 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 	private void initData() {
 		gabriel = new User("gabriel@example.com");
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(gabriel, DEV_EMAIL);
+		userDAO.save(gabriel, DEV.getEmailAddress());
 
 		gabrielFM = new RadioStation("Gabriel FM", gabriel);
 		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.save(gabrielFM, DEV_EMAIL);
+		radioStationDAO.save(gabrielFM, DEV.getEmailAddress());
 	}
 
 	@Test
@@ -109,8 +108,7 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 						+ String.valueOf(i + registeredArtists + 1));
 				scrobble = new Scrobble(userId, song,
 						System.currentTimeMillis(), true, null);
-				// System.out.println("New scrobble: " + scrobble);
-				scrobbleDAO.save(scrobble, DEV_EMAIL);
+				scrobbleDAO.save(scrobble, DEV.getEmailAddress());
 			}
 		}
 	}
@@ -125,11 +123,9 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
 					gabrielFM);
 			song = stationStrategy.getNextSong();
-			System.out.println(String.format("Next song: %s by %s",
-		    song.getSongTitle(), song.getArtistsNames().get(0)));
 			stationHistoryEntry = new StationHistoryEntry(gabrielFM.getId(),
 					song, System.currentTimeMillis());
-			stationHistoryDAO.save(stationHistoryEntry, DEV_EMAIL);
+			stationHistoryDAO.save(stationHistoryEntry, DEV.getEmailAddress());
 		}
 	}
 }

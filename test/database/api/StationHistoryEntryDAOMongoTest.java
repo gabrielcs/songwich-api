@@ -83,13 +83,13 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 
 		// saves the radio station
 		RadioStationDAOMongo radioStationDao = new RadioStationDAOMongo();
-		radioStationDao.cascadeSave(nofxStation, DEV_EMAIL);
-		radioStationDao.cascadeSave(fatMikeStation, DEV_EMAIL);
+		radioStationDao.cascadeSave(nofxStation, DEV.getEmailAddress());
+		radioStationDao.cascadeSave(fatMikeStation, DEV.getEmailAddress());
 
 		linoleumEntry = new StationHistoryEntry(nofxStation.getId(), linoleum,
 				System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
+		stationHistoryDao.save(linoleumEntry, DEV.getEmailAddress());
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.HOUR, -4);
@@ -97,28 +97,28 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 				nofxStation.getId(), dontCallMeWhite,
 				calendar.getTimeInMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV_EMAIL);
+		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV.getEmailAddress());
 
 		dontCallMeWhiteFatMikeEntry = new StationHistoryEntry(
 				fatMikeStation.getId(), dontCallMeWhite,
 				System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(dontCallMeWhiteFatMikeEntry, DEV_EMAIL);
+		stationHistoryDao.save(dontCallMeWhiteFatMikeEntry, DEV.getEmailAddress());
 
 		doWhatYouWantEntry = new StationHistoryEntry(nofxStation.getId(),
 				doWhatYouWant, System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(doWhatYouWantEntry, DEV_EMAIL);
+		stationHistoryDao.save(doWhatYouWantEntry, DEV.getEmailAddress());
 
 		doWhatYouWantEntry4HoursOldEntry = new StationHistoryEntry(
 				nofxStation.getId(), doWhatYouWant, calendar.getTimeInMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, DEV_EMAIL);
+		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, DEV.getEmailAddress());
 
 		// sets nofxStation's nowPlaying and lookAhead
 		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, null));
 		nofxStation.setLookAhead(new Track(linoleumEntry, null));
-		radioStationDao.save(nofxStation, DEV_EMAIL);
+		radioStationDao.save(nofxStation, DEV.getEmailAddress());
 
 		// adds feedback
 		gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
@@ -131,8 +131,8 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		daniel.addAppUser(danielOnRdio);
 		// saves the users so they have an id
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(gabriel, DEV_EMAIL);
-		userDao.cascadeSave(daniel, DEV_EMAIL);
+		userDao.cascadeSave(gabriel, DEV.getEmailAddress());
+		userDao.cascadeSave(daniel, DEV.getEmailAddress());
 
 		SongFeedback linoleumFeedbackGabriel = new SongFeedback(
 				FeedbackType.THUMBS_UP, gabriel.getId());
@@ -143,7 +143,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel);
 		linoleumEntry.addSongFeedback(linoleumFeedback2Gabriel);
 		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel);
-		stationHistoryDao.save(linoleumEntry, DEV_EMAIL);
+		stationHistoryDao.save(linoleumEntry, DEV.getEmailAddress());
 
 		SongFeedback dontCallMeWhiteFeedbackGabriel = new SongFeedback(
 				FeedbackType.THUMBS_UP, gabriel.getId());
@@ -153,7 +153,7 @@ public class StationHistoryEntryDAOMongoTest extends CleanDatabaseTest {
 				.addSongFeedback(dontCallMeWhiteFeedbackGabriel);
 		dontCallMeWhiteNofx4HoursOldEntry
 				.addSongFeedback(dontCallMeWhiteFeedbackDaniel);
-		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV_EMAIL);
+		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, DEV.getEmailAddress());
 	}
 
 	@Test
