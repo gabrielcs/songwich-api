@@ -1,10 +1,13 @@
 package behavior.api.usecases.stations;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import models.api.scrobbles.Scrobble;
@@ -24,31 +27,33 @@ import database.api.scrobbles.UserDAO;
 import database.api.scrobbles.UserDAOMongo;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
-import database.api.util.CleanDatabaseTest;
+import database.api.util.WithRequestContextTest;
 
-public class StationsUseCasesTest extends CleanDatabaseTest {
-	User gabriel, daniel, john;
+public class StationsUseCasesTest extends WithRequestContextTest {
+	private User gabriel, daniel, john;
+	private RadioStationDTO_V0_4 gabrielStationDTO, danielStationDTO,
+			danielAndJohnStationDTO;
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		initData();
-
+		createUsers();
+		createScrobbles();
+		createStationDTOs();
 	}
 
-	private void initData() {
-		gabriel = new User("gabriel@example.com");
-		daniel = new User("daniel@example.com");
-		john = new User("john@example.com");
+	private void createUsers() {
+		gabriel = new User("gabriel@example.com", "Gabriel");
+		daniel = new User("daniel@example.com", "Daniel");
+		john = new User("john@example.com", "John");
 
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(gabriel, DEV.getEmailAddress());
-		userDAO.save(daniel, DEV.getEmailAddress());
-		userDAO.save(john, DEV.getEmailAddress());
+		userDAO.save(gabriel, getContext().getAppDeveloper().getEmailAddress());
+		userDAO.save(daniel, getContext().getAppDeveloper().getEmailAddress());
+		userDAO.save(john, getContext().getAppDeveloper().getEmailAddress());
 	}
 
-	@Test
-	public void postStationsAuthorizedTest() throws SongwichAPIException {
+	private void createScrobbles() {
 		// gabriel's scrobbles
 		Map<Integer, Integer> scrobblesArtistsGenerationMap = new LinkedHashMap<Integer, Integer>(
 				10);
@@ -79,45 +84,150 @@ public class StationsUseCasesTest extends CleanDatabaseTest {
 		// total: 36 countable scrobbles (not more than 3 songs per artist)
 		// the 9 first ones are ignored in the group station
 		generateScrobbles(scrobblesArtistsGenerationMap, john.getId());
+	}
 
-		RadioStationDTO_V0_4 gabrielStationDTO = new RadioStationDTO_V0_4();
+	private void createStationDTOs() {
+		gabrielStationDTO = new RadioStationDTO_V0_4();
 		gabrielStationDTO.setStationName("Gabriel FM");
 		gabrielStationDTO.setScrobblerIds(Arrays.asList(gabriel.getId()
 				.toString()));
 
-		RadioStationDTO_V0_4 danielStationDTO = new RadioStationDTO_V0_4();
+		danielStationDTO = new RadioStationDTO_V0_4();
 		danielStationDTO.setStationName("Daniel FM");
 		danielStationDTO.setScrobblerIds(Arrays.asList(daniel.getId()
 				.toString()));
 
-		RadioStationDTO_V0_4 groupStationDTO = new RadioStationDTO_V0_4();
-		groupStationDTO.setStationName("Daniel and John FM");
-		groupStationDTO.setGroupName("Daniel and John");
-		groupStationDTO.setScrobblerIds(Arrays.asList(
-				daniel.getId().toString(), john.getId().toString()));
-		
-		StationsUseCases stationsUseCases = new StationsUseCases(
-				REQUEST_CONTEXT);
+		danielAndJohnStationDTO = new RadioStationDTO_V0_4();
+		danielAndJohnStationDTO.setStationName("Daniel and John FM");
+		danielAndJohnStationDTO.setGroupName("Daniel and John");
+		danielAndJohnStationDTO.setScrobblerIds(Arrays.asList(daniel.getId()
+				.toString(), john.getId().toString()));
+	}
+
+	@Test
+	public void postStationsTest() throws SongwichAPIException {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
 		RadioStation station;
 
 		// Gabriel FM should be active
-		stationsUseCases.postStationsAuthorized(gabrielStationDTO);
+		setRequestContextUser(gabriel);
+		stationsUseCases.postStations(gabrielStationDTO);
 		station = radioStationDAO.findById(new ObjectId(gabrielStationDTO
 				.getStationId()));
+		System.out.println(gabrielStationDTO);
+
 		assertTrue(station.isActive());
+		assertNull(gabrielStationDTO.getStationReadiness());
+
+		assertNotNull(station.getNowPlaying());
+		assertNotNull(station.getLookAhead());
+		assertNotNull(gabrielStationDTO.getNowPlaying());
+		assertNotNull(gabrielStationDTO.getLookAhead());
 
 		// Daniel FM should be inactive
-		stationsUseCases.postStationsAuthorized(danielStationDTO);
+		setRequestContextUser(daniel);
+		stationsUseCases.postStations(danielStationDTO);
 		station = radioStationDAO.findById(new ObjectId(danielStationDTO
 				.getStationId()));
-		assertFalse(station.isActive());
+		System.out.println(danielStationDTO);
 
-		// Daniel and John FM should be active
-		stationsUseCases.postStationsAuthorized(groupStationDTO);
-		station = radioStationDAO.findById(new ObjectId(groupStationDTO
+		assertFalse(station.isActive());
+		assertNotNull(danielStationDTO.getStationReadiness());
+
+		assertNull(station.getNowPlaying());
+		assertNull(station.getLookAhead());
+		assertNull(danielStationDTO.getNowPlaying());
+		assertNull(danielStationDTO.getLookAhead());
+
+		// Daniel and John FM should be active and have "recent scrobblers"
+		setRequestContextUser(john);
+		stationsUseCases.postStations(danielAndJohnStationDTO);
+		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
+		System.out.println(danielAndJohnStationDTO);
+
 		assertTrue(station.isActive());
+		assertNull(danielAndJohnStationDTO.getStationReadiness());
+
+		assertNotNull(station.getNowPlaying());
+		assertNotNull(station.getLookAhead());
+		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
+		assertNotNull(danielAndJohnStationDTO.getLookAhead());
+
+		// it won't work if we don't setup the users' names
+		assertNotNull(station.getNowPlaying().getSongScrobblers());
+		assertNotNull(station.getLookAhead().getSongScrobblers());
+		assertNotNull(danielAndJohnStationDTO.getNowPlaying()
+				.getRecentScrobblers());
+		assertNotNull(danielAndJohnStationDTO.getLookAhead()
+				.getRecentScrobblers());
+	}
+
+	@Test
+	public void getStationsTest() throws SongwichAPIException {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+
+		// Gabriel FM should be active
+		setRequestContextUser(gabriel);
+		stationsUseCases.postStations(gabrielStationDTO);
+		gabrielStationDTO = stationsUseCases.getStations(gabrielStationDTO
+				.getStationId());
+		System.out.println(gabrielStationDTO);
+
+		assertNull(gabrielStationDTO.getStationReadiness());
+		assertNotNull(gabrielStationDTO.getNowPlaying());
+		assertNotNull(gabrielStationDTO.getLookAhead());
+
+		// Daniel FM should be inactive
+		setRequestContextUser(daniel);
+		stationsUseCases.postStations(danielStationDTO);
+		danielStationDTO = stationsUseCases.getStations(danielStationDTO
+				.getStationId());
+		System.out.println(danielStationDTO);
+
+		assertNotNull(danielStationDTO.getStationReadiness());
+		assertNull(danielStationDTO.getNowPlaying());
+		assertNull(danielStationDTO.getLookAhead());
+
+		// Daniel and John FM should be active and have "recent scrobblers"
+		setRequestContextUser(john);
+		stationsUseCases.postStations(danielAndJohnStationDTO);
+		danielAndJohnStationDTO = stationsUseCases
+				.getStations(danielAndJohnStationDTO.getStationId());
+		System.out.println(danielAndJohnStationDTO);
+
+		assertNull(danielAndJohnStationDTO.getStationReadiness());
+		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
+		assertNotNull(danielAndJohnStationDTO.getLookAhead());
+
+		// it won't work if we don't setup the users' names
+		assertNotNull(danielAndJohnStationDTO.getNowPlaying()
+				.getRecentScrobblers());
+		assertNotNull(danielAndJohnStationDTO.getLookAhead()
+				.getRecentScrobblers());
+	}
+	
+	@Test
+	public void getMultipleStationsTest() throws SongwichAPIException {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+
+		setRequestContextUser(gabriel);
+		stationsUseCases.postStations(gabrielStationDTO);
+		setRequestContextUser(daniel);
+		stationsUseCases.postStations(danielStationDTO);
+		setRequestContextUser(john);
+		stationsUseCases.postStations(danielAndJohnStationDTO);
+		
+		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations();
+		System.out.println(stationsDTO);
+		
+		for (RadioStationDTO_V0_4 stationDTO : stationsDTO) {
+			assertNotNull(stationDTO.getIsActive());
+			assertNull(stationDTO.getStationReadiness());
+			assertNull(stationDTO.getNowPlaying());
+			assertNull(stationDTO.getLookAhead());
+		}
 	}
 
 	private void generateScrobbles(
@@ -129,7 +239,8 @@ public class StationsUseCasesTest extends CleanDatabaseTest {
 		int registeredArtists = 0;
 
 		for (int scrobblesPerArtist : scrobblesArtistsGenerationMap.keySet()) {
-			int nArtists = scrobblesArtistsGenerationMap.get(scrobblesPerArtist);
+			int nArtists = scrobblesArtistsGenerationMap
+					.get(scrobblesPerArtist);
 			for (int i = 0; i < nArtists; i++) {
 				for (int j = 0; j < scrobblesPerArtist; j++) {
 					song = new Song("Title "
@@ -138,7 +249,8 @@ public class StationsUseCasesTest extends CleanDatabaseTest {
 							+ String.valueOf(i + registeredArtists + 1));
 					scrobble = new Scrobble(userId, song,
 							System.currentTimeMillis(), true, null);
-					scrobbleDAO.save(scrobble, DEV.getEmailAddress());
+					scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+							.getEmailAddress());
 				}
 			}
 			registeredScrobbles = registeredScrobbles + nArtists

@@ -142,9 +142,10 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	@Override
 	public String toString() {
-		return "NewRadioStationDTO_V0_4 [stationId=" + stationId
+		return "RadioStationDTO_V0_4 [stationId=" + stationId
 				+ ", stationName=" + stationName + ", groupName=" + groupName
-				+ ", scrobblerIds=" + scrobblerIds + ", nowPlaying="
+				+ ", scrobblerIds=" + scrobblerIds + ", isActive=" + isActive
+				+ ", stationReadiness=" + stationReadiness + ", nowPlaying="
 				+ nowPlaying + ", lookAhead=" + lookAhead + ", imageUrl="
 				+ imageUrl + "]";
 	}

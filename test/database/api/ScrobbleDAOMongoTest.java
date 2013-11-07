@@ -21,9 +21,9 @@ import org.junit.Test;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 import database.api.scrobbles.UserDAOMongo;
-import database.api.util.CleanDatabaseTest;
+import database.api.util.WithRequestContextTest;
 
-public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
+public class ScrobbleDAOMongoTest extends WithRequestContextTest {
 
 	private ScrobbleDAO<ObjectId> scrobbleDao;
 	private Scrobble scrobble1, scrobble2, scrobble3, scrobble4, scrobble5,
@@ -44,9 +44,9 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
 		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, DEV.getEmailAddress());
-		userDao.cascadeSave(user2, DEV.getEmailAddress());
-		userDao.cascadeSave(user3, DEV.getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user3, getContext().getAppDeveloper().getEmailAddress());
 
 		List<String> artists1 = new ArrayList<String>();
 		artists1.add("Passion Pit");
@@ -58,30 +58,30 @@ public class ScrobbleDAOMongoTest extends CleanDatabaseTest {
 		fiveDaysAgo.add(Calendar.DATE, -5);
 		scrobble1 = new Scrobble(user1.getId(), new Song("Take a Walk",
 				artists1), fiveDaysAgo.getTimeInMillis(), false, "Spotify");
-		scrobbleDao.save(scrobble1, DEV.getEmailAddress());
+		scrobbleDao.save(scrobble1, getContext().getAppDeveloper().getEmailAddress());
 
 		Calendar threeDaysAgo = new GregorianCalendar();
 		threeDaysAgo.add(Calendar.DATE, -3);
 		scrobble2 = new Scrobble(user2.getId(),
 				new Song("Get Lucky", artists2),
 				threeDaysAgo.getTimeInMillis(), true, "Deezer");
-		scrobbleDao.save(scrobble2, DEV.getEmailAddress());
+		scrobbleDao.save(scrobble2, getContext().getAppDeveloper().getEmailAddress());
 
 		scrobble3 = new Scrobble(user1.getId(), new Song("Take a Walk 2",
 				artists1), System.currentTimeMillis(), true, "Spotify");
-		scrobbleDao.save(scrobble3, DEV.getEmailAddress());
+		scrobbleDao.save(scrobble3, getContext().getAppDeveloper().getEmailAddress());
 
 		scrobble4 = new Scrobble(user2.getId(), new Song("Get Lucky 2",
 				artists2), System.currentTimeMillis(), true, "Deezer");
-		scrobbleDao.save(scrobble4, DEV.getEmailAddress());
+		scrobbleDao.save(scrobble4, getContext().getAppDeveloper().getEmailAddress());
 
 		scrobble5 = new Scrobble(user3.getId(), new Song("Get Lucky 3",
 				artists2), System.currentTimeMillis(), true, "Deezer");
-		scrobbleDao.save(scrobble5, DEV.getEmailAddress());
+		scrobbleDao.save(scrobble5, getContext().getAppDeveloper().getEmailAddress());
 
 		scrobble6 = new Scrobble(user1.getId(), new Song("Take a Walk 3",
 				artists1), System.currentTimeMillis(), false, "Spotify");
-		scrobbleDao.save(scrobble6, DEV.getEmailAddress());
+		scrobbleDao.save(scrobble6, getContext().getAppDeveloper().getEmailAddress());
 	}
 
 	@Test

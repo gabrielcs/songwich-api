@@ -76,5 +76,13 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setIdForFeedback(String idForFeedback) {
 		this.idForFeedback = idForFeedback;
 	}
+	
+	@Override
+	public String toString() {
+		return "StationSongListEntryDTO_V0_4 [trackTitle=" + trackTitle
+				+ ", artistName=" + artistName + ", idForFeedback="
+				+ idForFeedback + ", recentScrobblers=" + recentScrobblers
+				+ "]";
+	}
 
 }

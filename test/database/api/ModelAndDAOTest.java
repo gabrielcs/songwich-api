@@ -27,9 +27,9 @@ import database.api.scrobbles.AppDAOMongo;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
-import database.api.util.CleanDatabaseTest;
+import database.api.util.WithRequestContextTest;
 
-public class ModelAndDAOTest extends CleanDatabaseTest {
+public class ModelAndDAOTest extends WithRequestContextTest {
 	private RadioStationDAOMongo radioStationDao;
 	private AppDAOMongo appDao;
 
@@ -74,7 +74,7 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 		elHefe.addAppUser(elHefeOnRdio);
 
 		nofxRadioStation = new RadioStation("NOFX FM", nofx);
-		radioStationDao.cascadeSave(nofxRadioStation, DEV.getEmailAddress());
+		radioStationDao.cascadeSave(nofxRadioStation, getContext().getAppDeveloper().getEmailAddress());
 
 		// set nowPlaying and lookAhead for nofxRadioStation
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
@@ -83,7 +83,7 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 		StationHistoryEntry linoleumNofxStationHistoryEntry = new StationHistoryEntry(
 				nofxRadioStation.getId(), linoleum, System.currentTimeMillis());
 		stationHistoryDAO.save(linoleumNofxStationHistoryEntry,
-				DEV.getEmailAddress());
+				getContext().getAppDeveloper().getEmailAddress());
 		nofxRadioStation.setNowPlaying(new Track(
 				linoleumNofxStationHistoryEntry, null));
 
@@ -91,17 +91,17 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 		StationHistoryEntry doWhatYouWantNofxStationHistoryEntry = new StationHistoryEntry(
 				nofxRadioStation.getId(), doWhatYouWant, null);
 		stationHistoryDAO.save(doWhatYouWantNofxStationHistoryEntry,
-				DEV.getEmailAddress());
+				getContext().getAppDeveloper().getEmailAddress());
 		nofxRadioStation.setLookAhead(new Track(
 				doWhatYouWantNofxStationHistoryEntry, null));
 
-		radioStationDao.save(nofxRadioStation, DEV.getEmailAddress());
+		radioStationDao.save(nofxRadioStation, getContext().getAppDeveloper().getEmailAddress());
 	}
 
 	@Test
 	public void testModelSave() {
 		spotify = appDao.findById(spotify.getId());
-		assertEquals(DEV.getEmailAddress(), spotify.getCreatedBy());
+		assertEquals(getContext().getAppDeveloper().getEmailAddress(), spotify.getCreatedBy());
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 		appDao.save(spotify, UPDATE_DEV.getEmailAddress());
 
 		spotify = appDao.findById(spotify.getId());
-		assertEquals(DEV.getEmailAddress(), spotify.getCreatedBy());
+		assertEquals(getContext().getAppDeveloper().getEmailAddress(), spotify.getCreatedBy());
 		assertEquals(UPDATE_DEV.getEmailAddress(), spotify.getLastModifiedBy());
 		assertTrue(spotify.getCreatedAt() < spotify.getLastModifiedAt());
 	}
@@ -130,7 +130,7 @@ public class ModelAndDAOTest extends CleanDatabaseTest {
 	private void testEmbeddedModelsCreate(Set<MongoModel> models)
 			throws IllegalArgumentException, IllegalAccessException {
 		for (MongoModel model : models) {
-			assertTrue(model.getCreatedBy().equals(DEV.getEmailAddress()));
+			assertTrue(model.getCreatedBy().equals(getContext().getAppDeveloper().getEmailAddress()));
 			assertTrue(model.getCreatedAt() < System.currentTimeMillis());
 			testEmbeddedModelsCreate(model.getEmbeddedModels());
 		}

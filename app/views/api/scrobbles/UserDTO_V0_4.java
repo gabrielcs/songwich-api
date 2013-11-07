@@ -94,4 +94,11 @@ public class UserDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+	@Override
+	public String toString() {
+		return "UserDTO_V0_4 [userEmail=" + userEmail + ", name=" + name
+				+ ", userId=" + userId + ", userAuthToken=" + userAuthToken
+				+ ", scrobblerStations=" + scrobblerStations + "]";
+	}
 }

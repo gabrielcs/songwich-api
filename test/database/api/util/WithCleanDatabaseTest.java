@@ -1,21 +1,14 @@
 package database.api.util;
 
-import models.api.scrobbles.AppDeveloper;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import behavior.api.usecases.RequestContext;
 import util.api.DatabaseContext;
 
-public class CleanDatabaseTest {
+public class WithCleanDatabaseTest {
 	private static final String DB_NAME = "songwich-api-test";
-	protected static final AppDeveloper DEV = new AppDeveloper(
-			"gabriel@tests.com", "Test Dev", null);
-	protected static final RequestContext REQUEST_CONTEXT = new RequestContext(
-			null, DEV, null);
 
 	@Before
 	public void setUp() throws Exception {

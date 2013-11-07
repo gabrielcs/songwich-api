@@ -16,17 +16,17 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 
 import database.api.scrobbles.UserDAOMongo;
-import database.api.util.CleanDatabaseTest;
+import database.api.util.WithRequestContextTest;
 
-public class UserDAOMongoTest extends CleanDatabaseTest {
+public class UserDAOMongoTest extends WithRequestContextTest {
 	@Test
 	public void testSaveAndDelete() {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, DEV.getEmailAddress());
-		userDao.cascadeSave(user2, DEV.getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
 
 		assertTrue(userDao.count() == 2);
 
@@ -42,8 +42,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, DEV.getEmailAddress());
-		userDao.cascadeSave(user2, DEV.getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
 
 		assertTrue(userDao.findById(user1.getId()).equals(user1));
 		assertTrue(userDao.findById(user2.getId()).equals(user2));
@@ -55,8 +55,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, DEV.getEmailAddress());
-		userDao.cascadeSave(user2, DEV.getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
 
 		Set<ObjectId> usersIds = new HashSet<ObjectId>(2);
 		usersIds.add(user1.getId());
@@ -74,8 +74,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		User user2 = new User("daniel@example.com", "Daniel Example");
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, DEV.getEmailAddress());
-		userDao.cascadeSave(user2, DEV.getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
 
 		assertTrue(userDao.findByEmailAddress("gabriel@example.com").equals(
 				user1));
@@ -101,8 +101,8 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		user2.addAppUser(service2User2);
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, DEV.getEmailAddress());
-		userDao.cascadeSave(user2, DEV.getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
 
 		assertTrue(userDao.findByEmailAddress("gabriel@user.com").equals(user1));
 		assertTrue(userDao.findByEmailAddress("daniel@user.com").equals(user2));
@@ -117,7 +117,7 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		user.addAppUser(appUser);
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user, DEV.getEmailAddress());
+		userDao.cascadeSave(user, getContext().getAppDeveloper().getEmailAddress());
 		User userDatabase = userDao.findByUserAuthToken(authToken.getToken());
 
 		assertTrue(userDatabase.equals(user));
@@ -132,7 +132,7 @@ public class UserDAOMongoTest extends CleanDatabaseTest {
 		user.addAppUser(appUser);
 
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(user, DEV.getEmailAddress());
+		userDao.cascadeSave(user, getContext().getAppDeveloper().getEmailAddress());
 		AppUser appUserDatabase = userDao.findAppUserByAuthToken(authToken
 				.getToken());
 

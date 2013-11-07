@@ -16,7 +16,6 @@ import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 
-import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
@@ -85,12 +84,6 @@ public class StationsUseCases extends UseCase {
 			throws SongwichAPIException {
 
 		authenticatePostStations(radioStationDTO);
-		postStationsAuthorized(radioStationDTO);
-	}
-
-	// package-visibility method without authentication so it's testable
-	void postStationsAuthorized(RadioStationDTO_V0_4 radioStationDTO)
-			throws SongwichAPIException {
 
 		// creates either a User RadioStation or a Group RadioStation
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
@@ -124,9 +117,7 @@ public class StationsUseCases extends UseCase {
 		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
 		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		if (stationStrategy.isStationReady()) {
-			station.setActive(true);
-			setNowPlaying(station);
-			setLookAhead(station);
+			activateStation(station);
 		}
 		// save it
 		saveStation(station);
@@ -251,12 +242,9 @@ public class StationsUseCases extends UseCase {
 		if (radioStation.getScrobbler().isGroupStation()) {
 			Set<ObjectId> lookAheadScrobblersIds = stationStrategy
 					.getNextSongRecentScrobblers();
-			MyLogger.debug("lookAheadScrobblersIds: " + lookAheadScrobblersIds);
 			UserDAO<ObjectId> userDao = new UserDAOMongo();
 			lookAheadScrobblers = userDao
 					.findUsersByIds(lookAheadScrobblersIds);
-
-			MyLogger.debug("lookAheadScrobblers: " + lookAheadScrobblers);
 		}
 
 		// turn the lookAhead Track into next and set the new lookAhead
@@ -293,36 +281,12 @@ public class StationsUseCases extends UseCase {
 		}
 	}
 
-	public RadioStationDTO_V0_4 getStationReadiness(String stationId)
+	// it doesn't save it
+	private void activateStation(RadioStation station)
 			throws SongwichAPIException {
-
-		RadioStation station = authorizeGetStationReadiness(stationId);
-		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
-		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
-		Float stationReadiness = stationStrategy.getStationReadiness();
-		return createDTOForGetStationReadiness(station, stationReadiness);
-	}
-
-	public void putStationsActivate(String stationId,
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
-			throws SongwichAPIException {
-		// authorize request
-		RadioStation station = authorizePutStationsActivate(stationId,
-				radioStationUpdateDTO);
-
-		// process request
 		station.setActive(true);
-		StationHistoryEntry nowPlayingHistoryEntry = setNowPlaying(station)
-				.getStationHistoryEntry();
-		StationHistoryEntry lookAheadHistoryEntry = setLookAhead(station)
-				.getStationHistoryEntry();
-
-		// save it
-		saveStation(station);
-
-		// update the DTO
-		updateDTOForPutStationsActive(radioStationUpdateDTO, station,
-				nowPlayingHistoryEntry, lookAheadHistoryEntry);
+		setNowPlaying(station).getStationHistoryEntry();
+		setLookAhead(station).getStationHistoryEntry();
 	}
 
 	private Track setLookAhead(RadioStation station)
@@ -368,35 +332,6 @@ public class StationsUseCases extends UseCase {
 		return track;
 	}
 
-	private RadioStationDTO_V0_4 createDTOForGetStationReadiness(
-			RadioStation station, Float stationReadiness) {
-		RadioStationDTO_V0_4 radioStationDTO = new RadioStationDTO_V0_4();
-		radioStationDTO.setStationId(station.getId().toString());
-		radioStationDTO.setStationName(station.getName());
-		radioStationDTO.setStationReadiness(String.format("%.2f",
-				stationReadiness));
-		return radioStationDTO;
-	}
-
-	private RadioStation authorizeGetStationReadiness(String stationId)
-			throws SongwichAPIException {
-
-		if (!ObjectId.isValid(stationId)) {
-			throw new SongwichAPIException("Invalid stationId",
-					APIStatus_V0_4.INVALID_PARAMETER);
-		}
-
-		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
-		RadioStation station = radioStationDAO
-				.findById(new ObjectId(stationId));
-		if (station == null) {
-			throw new SongwichAPIException("Non-existent stationId",
-					APIStatus_V0_4.INVALID_PARAMETER);
-		}
-
-		return station;
-	}
-
 	private RadioStation authorizePutStations(String stationId,
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
 			throws SongwichAPIException {
@@ -417,26 +352,6 @@ public class StationsUseCases extends UseCase {
 		// check if the user is already one of the stations's scrobbler and will
 		// continue to be
 		authenticatePutStations(station, radioStationUpdateDTO);
-
-		return station;
-	}
-
-	private RadioStation authorizePutStationsActivate(String stationId,
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
-			throws SongwichAPIException {
-
-		RadioStation station = authorizePutStations(stationId,
-				radioStationUpdateDTO);
-
-		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
-		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
-		if (!stationStrategy.isStationReady()) {
-			throw new SongwichAPIException(
-					String.format(
-							"The station cannot be activated yet because it is only %.0f%% ready",
-							stationStrategy.getStationReadiness() * 100),
-					APIStatus_V0_4.UNAUTHORIZED);
-		}
 
 		return station;
 	}
@@ -505,26 +420,6 @@ public class StationsUseCases extends UseCase {
 				.getAppDeveloper().getEmailAddress());
 	}
 
-	private static List<UserDTO_V0_4> createScrobblersDTO(List<User> scrobblers) {
-		List<UserDTO_V0_4> scrobblersDTO = new ArrayList<UserDTO_V0_4>();
-		UserDTO_V0_4 userDTO;
-		for (User scrobbler : scrobblers) {
-			if (scrobbler.getName() != null && !scrobbler.getName().isEmpty()) {
-				userDTO = new UserDTO_V0_4();
-				userDTO.setUserId(scrobbler.getId().toString());
-				userDTO.setName(scrobbler.getName());
-				scrobblersDTO.add(userDTO);
-			}
-		}
-
-		// don't show anything if the user(s) hasn't set up his name
-		if (scrobblersDTO.isEmpty()) {
-			return null;
-		}
-
-		return scrobblersDTO;
-	}
-
 	private void savePutStationsScrobblers(RadioStation station,
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
 		// saves it
@@ -539,19 +434,22 @@ public class StationsUseCases extends UseCase {
 			Float stationReadiness, RadioStationDTO_V0_4 radioStationDTO) {
 
 		radioStationDTO.setStationId(station.getId().toString());
-		updateStationDTOWithReadinessOrSongs(station, stationReadiness, radioStationDTO);
+		updateStationDTOWithReadinessOrSongs(station, stationReadiness,
+				radioStationDTO);
 	}
 
 	private static RadioStationDTO_V0_4 createStationDTO(RadioStation station,
 			Float stationReadiness) {
 
 		RadioStationDTO_V0_4 stationDTO = createBasicDTOForStations(station);
-		updateStationDTOWithReadinessOrSongs(station, stationReadiness, stationDTO);
+		updateStationDTOWithReadinessOrSongs(station, stationReadiness,
+				stationDTO);
 		return stationDTO;
 	}
-	
-	private static void updateStationDTOWithReadinessOrSongs(RadioStation station,
-			Float stationReadiness, RadioStationDTO_V0_4 radioStationDTO) {
+
+	private static void updateStationDTOWithReadinessOrSongs(
+			RadioStation station, Float stationReadiness,
+			RadioStationDTO_V0_4 radioStationDTO) {
 
 		if (station.isActive()) {
 			updateDTOForGetActiveStation(station, radioStationDTO);
@@ -628,6 +526,7 @@ public class StationsUseCases extends UseCase {
 
 		// recently scrobbled by
 		if (station.getScrobbler().isGroupStation()) {
+			// TODO: fix
 			nowPlayingDTO.setRecentScrobblers(createScrobblersDTO(station
 					.getNowPlaying().getSongScrobblers()));
 
@@ -655,6 +554,26 @@ public class StationsUseCases extends UseCase {
 				.getLookAhead();
 		lookAheadSongListEntryDTO
 				.setRecentScrobblers(createScrobblersDTO(lookAheadScrobblers));
+	}
+	
+	private static List<UserDTO_V0_4> createScrobblersDTO(List<User> scrobblers) {
+		List<UserDTO_V0_4> scrobblersDTO = new ArrayList<UserDTO_V0_4>();
+		UserDTO_V0_4 userDTO;
+		for (User scrobbler : scrobblers) {
+			if (scrobbler.getName() != null && !scrobbler.getName().isEmpty()) {
+				userDTO = new UserDTO_V0_4();
+				userDTO.setUserId(scrobbler.getId().toString());
+				userDTO.setName(scrobbler.getName());
+				scrobblersDTO.add(userDTO);
+			}
+		}
+
+		// don't show anything if the user(s) hasn't set up his name
+		if (scrobblersDTO.isEmpty()) {
+			return null;
+		}
+
+		return scrobblersDTO;
 	}
 
 	private void updateDTOForPostNextSong(
@@ -699,38 +618,4 @@ public class StationsUseCases extends UseCase {
 
 		return radioStationUpdateDTO;
 	}
-
-	private void updateDTOForPutStationsActive(
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO,
-			RadioStation station, StationHistoryEntry nowPlayingHistoryEntry,
-			StationHistoryEntry lookAheadHistoryEntry) {
-
-		radioStationUpdateDTO.setStationId(station.getId().toString());
-		radioStationUpdateDTO.setStationName(station.getName());
-		radioStationUpdateDTO.setActive(station.isActive().toString());
-
-		updateDTOForPostNextSong(radioStationUpdateDTO, nowPlayingHistoryEntry,
-				lookAheadHistoryEntry);
-	}
-
-	/*
-	 * public StationHistoryEntry getNowPlaying(StationSongListDTO_V0_4
-	 * stationEntryDTO) { // TODO: REDESIGN StationHistoryDAO<ObjectId>
-	 * stationHistoryDAO = new StationHistoryDAOMongo();
-	 * List<StationHistoryEntry> stationHistoryList = stationHistoryDAO
-	 * .findLastEntriesByStationId(stationEntryDTO.get, 1); // TODO: make sure
-	 * it's not a brand new station return stationHistoryList.get(0); }
-	 * 
-	 * public void postSongFeedback(ObjectId stationHistoryEntryId, FeedbackType
-	 * feedback) {
-	 * 
-	 * StationHistoryDAO<ObjectId> stationHistoryDAO = new
-	 * StationHistoryDAOMongo(); StationHistoryEntry stationHistoryEntry =
-	 * stationHistoryDAO .findById(stationHistoryEntryId); SongFeedback
-	 * songFeedback = new SongFeedback(feedback, getContext()
-	 * .getUser().getId()); stationHistoryEntry.addSongFeedback(songFeedback);
-	 * 
-	 * // execute the update stationHistoryDAO.save(stationHistoryEntry,
-	 * getContext() .getAppDeveloper().getEmailAddress()); }
-	 */
 }

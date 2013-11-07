@@ -19,9 +19,9 @@ import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
-import database.api.util.CleanDatabaseTest;
+import database.api.util.WithRequestContextTest;
 
-public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
+public class PseudoDMCAStationStrategyTest extends WithRequestContextTest {
 	User gabriel;
 	private RadioStation gabrielFM;
 
@@ -34,11 +34,12 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 	private void initData() {
 		gabriel = new User("gabriel@example.com");
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(gabriel, DEV.getEmailAddress());
+		userDAO.save(gabriel, getContext().getAppDeveloper().getEmailAddress());
 
 		gabrielFM = new RadioStation("Gabriel FM", gabriel);
 		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.save(gabrielFM, DEV.getEmailAddress());
+		radioStationDAO.save(gabrielFM, getContext().getAppDeveloper()
+				.getEmailAddress());
 	}
 
 	@Test
@@ -108,7 +109,8 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 						+ String.valueOf(i + registeredArtists + 1));
 				scrobble = new Scrobble(userId, song,
 						System.currentTimeMillis(), true, null);
-				scrobbleDAO.save(scrobble, DEV.getEmailAddress());
+				scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+						.getEmailAddress());
 			}
 		}
 	}
@@ -125,7 +127,8 @@ public class PseudoDMCAStationStrategyTest extends CleanDatabaseTest {
 			song = stationStrategy.getNextSong();
 			stationHistoryEntry = new StationHistoryEntry(gabrielFM.getId(),
 					song, System.currentTimeMillis());
-			stationHistoryDAO.save(stationHistoryEntry, DEV.getEmailAddress());
+			stationHistoryDAO.save(stationHistoryEntry, getContext()
+					.getAppDeveloper().getEmailAddress());
 		}
 	}
 }
