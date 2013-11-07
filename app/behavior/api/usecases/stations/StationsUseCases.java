@@ -178,6 +178,15 @@ public class StationsUseCases extends UseCase {
 			}
 		}
 
+		// checks if it can activate the station
+		if (!station.isActive()) {
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+					station);
+			if (stationStrategy.isStationReady()) {
+				station.setActive(true);
+			}
+		}
+
 		savePutStationsScrobblers(station, radioStationUpdateDTO);
 	}
 
@@ -212,6 +221,15 @@ public class StationsUseCases extends UseCase {
 			throw new SongwichAPIException(
 					"Station has to have at least 1 active scrobbler",
 					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		// checks if it needs to deactivate station
+		if (station.isActive()) {
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+					station);
+			if (!stationStrategy.isStationReady()) {
+				station.setActive(false);
+			}
 		}
 
 		savePutStationsScrobblers(station, radioStationUpdateDTO);
@@ -422,6 +440,7 @@ public class StationsUseCases extends UseCase {
 
 	private void savePutStationsScrobblers(RadioStation station,
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
+
 		// saves it
 		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
 		radioStationDAO.save(station, getContext().getAppDeveloper()
@@ -555,7 +574,7 @@ public class StationsUseCases extends UseCase {
 		lookAheadSongListEntryDTO
 				.setRecentScrobblers(createScrobblersDTO(lookAheadScrobblers));
 	}
-	
+
 	private static List<UserDTO_V0_4> createScrobblersDTO(List<User> scrobblers) {
 		List<UserDTO_V0_4> scrobblersDTO = new ArrayList<UserDTO_V0_4>();
 		UserDTO_V0_4 userDTO;
@@ -605,8 +624,10 @@ public class StationsUseCases extends UseCase {
 	private RadioStationUpdateDTO_V0_4 updateDTOForPutStations(
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO,
 			RadioStation station) {
+		
 		radioStationUpdateDTO.setStationId(station.getId().toString());
 		radioStationUpdateDTO.setStationName(station.getName());
+		radioStationUpdateDTO.setActive(station.isActive().toString());
 		radioStationUpdateDTO.setImageUrl(station.getImageUrl());
 
 		List<String> scrobblerIds = new ArrayList<String>();

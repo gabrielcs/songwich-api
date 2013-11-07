@@ -68,7 +68,7 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 		return validateImageUrl("imageUrl", imageUrl);
 	}
 
-	public String getIsActive() {
+	public String getActive() {
 		return isActive;
 	}
 

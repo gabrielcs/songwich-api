@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import util.api.SongwichAPIException;
 import views.api.stations.RadioStationDTO_V0_4;
+import views.api.stations.RadioStationUpdateDTO_V0_4;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 import database.api.scrobbles.UserDAO;
@@ -207,7 +208,41 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 		assertNotNull(danielAndJohnStationDTO.getLookAhead()
 				.getRecentScrobblers());
 	}
-	
+
+	@Test
+	public void putStationsTest() throws SongwichAPIException {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
+		RadioStation station;
+
+		// Daniel and John FM should be active
+		setRequestContextUser(john);
+		stationsUseCases.postStations(danielAndJohnStationDTO);
+		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
+
+		// remove a scrobbler and checks if it deactivates the station
+		RadioStationUpdateDTO_V0_4 stationUpdateDTO = new RadioStationUpdateDTO_V0_4();
+		stationUpdateDTO.setScrobblerIds(Arrays.asList(daniel.getId()
+				.toString()));
+		stationsUseCases.putStationsRemoveScrobblers(
+				danielAndJohnStationDTO.getStationId(), stationUpdateDTO);
+		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
+				.getStationId()));
+		assertFalse(station.isActive());
+		assertFalse(new Boolean(stationUpdateDTO.getActive()));
+
+		// add a scrobbler and checks if it reactivates the station
+		stationUpdateDTO = new RadioStationUpdateDTO_V0_4();
+		stationUpdateDTO.setScrobblerIds(Arrays.asList(daniel.getId()
+				.toString()));
+		stationsUseCases.putStationsAddScrobblers(
+				danielAndJohnStationDTO.getStationId(), stationUpdateDTO);
+		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
+				.getStationId()));
+		assertTrue(station.isActive());
+		assertTrue(new Boolean(stationUpdateDTO.getActive()));
+	}
+
 	@Test
 	public void getMultipleStationsTest() throws SongwichAPIException {
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
@@ -218,12 +253,12 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 		stationsUseCases.postStations(danielStationDTO);
 		setRequestContextUser(john);
 		stationsUseCases.postStations(danielAndJohnStationDTO);
-		
+
 		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations();
 		System.out.println(stationsDTO);
-		
+
 		for (RadioStationDTO_V0_4 stationDTO : stationsDTO) {
-			assertNotNull(stationDTO.getIsActive());
+			assertNotNull(stationDTO.getActive());
 			assertNull(stationDTO.getStationReadiness());
 			assertNull(stationDTO.getNowPlaying());
 			assertNull(stationDTO.getLookAhead());
