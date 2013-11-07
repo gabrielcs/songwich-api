@@ -172,12 +172,12 @@ public class UsersUseCases extends UseCase {
 		return newAppUser;
 	}
 
-	private void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
+	private static void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
 		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
 		userDTO.setUserId(user.getId().toString());
 	}
 
-	private List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
+	private static List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
 		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
 		for (User user : users) {
 			usersDTO.add(createDTOForGetUsers(user, null));
@@ -185,7 +185,7 @@ public class UsersUseCases extends UseCase {
 		return usersDTO;
 	}
 
-	private UserDTO_V0_4 createDTOForGetUsers(User user,
+	private static UserDTO_V0_4 createDTOForGetUsers(User user,
 			List<RadioStation> scrobblerStations) {
 		UserDTO_V0_4 userDTO = new UserDTO_V0_4();
 		userDTO.setName(user.getName());
@@ -201,7 +201,7 @@ public class UsersUseCases extends UseCase {
 		return userDTO;
 	}
 
-	private void updateDTOPutUsers(User user, UserUpdateDTO_V0_4 userUpdateDTO) {
+	private static void updateDTOPutUsers(User user, UserUpdateDTO_V0_4 userUpdateDTO) {
 		userUpdateDTO.setUserId(user.getId().toString());
 		userUpdateDTO.setName(user.getName());
 		userUpdateDTO.setUserEmail(user.getEmailAddress());

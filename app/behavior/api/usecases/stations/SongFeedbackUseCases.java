@@ -58,7 +58,8 @@ public class SongFeedbackUseCases extends UseCase {
 				.getAppDeveloper().getEmailAddress());
 
 		// update DTO
-		updateDTOForPostSongFeedback(songFeedbackDTO, stationHistoryEntry);
+		updateDTOForPostSongFeedback(songFeedbackDTO, stationHistoryEntry,
+				getContext().getUser().getId().toString());
 	}
 
 	public StarredSongSetDTO_V0_4 getStarredSongs(String userId)
@@ -76,7 +77,7 @@ public class SongFeedbackUseCases extends UseCase {
 
 	public void deleteSongFeedback(String idForFeedback, String feedbackType)
 			throws SongwichAPIException {
-		
+
 		SongFeedback songFeedback = buildSongFeedback(feedbackType);
 		// authorize
 		StationHistoryEntry stationHistoryEntry = authorizeForDeleteSongFeedback(
@@ -92,7 +93,7 @@ public class SongFeedbackUseCases extends UseCase {
 	private SongFeedback buildSongFeedback(String feedbackType)
 			throws SongwichAPIException {
 		FeedbackType feedbackTypeEnum;
-		
+
 		switch (feedbackType) {
 		case "thumbs-up":
 			feedbackTypeEnum = FeedbackType.THUMBS_UP;
@@ -107,7 +108,7 @@ public class SongFeedbackUseCases extends UseCase {
 			throw new SongwichAPIException("Invalid feedbackType",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
-		
+
 		return new SongFeedback(feedbackTypeEnum, getContext().getUser()
 				.getId());
 	}
@@ -115,13 +116,13 @@ public class SongFeedbackUseCases extends UseCase {
 	private StationHistoryEntry authorizeForDeleteSongFeedback(
 			String idForFeedback, SongFeedback songFeedback)
 			throws SongwichAPIException {
-		
+
 		if (!ObjectId.isValid(idForFeedback)) {
 			throw new SongwichAPIException("Invalid idForFeedback",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 		ObjectId idForFeedbackObject = new ObjectId(idForFeedback);
-		
+
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
 		StationHistoryEntry stationHistoryEntry = stationHistoryDAO
 				.findById(idForFeedbackObject);
@@ -136,7 +137,7 @@ public class SongFeedbackUseCases extends UseCase {
 
 		return stationHistoryEntry;
 	}
-	
+
 	private void authorizeGetStarredSongs(String userId)
 			throws SongwichAPIException {
 		if (!ObjectId.isValid(userId)) {
@@ -145,19 +146,18 @@ public class SongFeedbackUseCases extends UseCase {
 		}
 	}
 
-	
-	private void updateDTOForPostSongFeedback(
+	private static void updateDTOForPostSongFeedback(
 			SongFeedbackDTO_V0_4 songFeedbackDTO,
-			StationHistoryEntry stationHistoryEntry) {
+			StationHistoryEntry stationHistoryEntry, String userId) {
 
-		songFeedbackDTO.setUserId(getContext().getUser().getId().toString());
+		songFeedbackDTO.setUserId(userId);
 		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
 		songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
 		songDTO.setArtistsNames(stationHistoryEntry.getSong().getArtistsNames());
 		songFeedbackDTO.setSong(songDTO);
 	}
 
-	private StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
+	private static StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
 			List<StationHistoryEntry> stationHistoryEntries, String userId) {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
 		starredSongList.setUserId(userId);

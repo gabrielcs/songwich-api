@@ -116,19 +116,6 @@ public class ScrobblesUseCases extends UseCase {
 		updateDTOPutScrobbles(scrobble, scrobblesUpdateDTO);
 	}
 
-	private void updateDTOPutScrobbles(Scrobble scrobble,
-			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO) {
-		
-		scrobblesUpdateDTO.setScrobbleId(scrobble.getId().toString());
-		scrobblesUpdateDTO.setUserId(scrobble.getUserId().toString());
-		scrobblesUpdateDTO.setTrackTitle(scrobble.getSong().getSongTitle());
-		scrobblesUpdateDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
-		scrobblesUpdateDTO.setAlbumTitle(scrobble.getSong().getAlbumTitle());
-		scrobblesUpdateDTO.setChosenByUser(scrobble.isChosenByUser().toString());
-		scrobblesUpdateDTO.setPlayer(scrobble.getPlayer());
-		scrobblesUpdateDTO.setTimestamp(scrobble.getTimestamp().toString());
-	}
-
 	private Scrobble authorizePutScrobbles(String scrobbleId,
 			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO)
 			throws SongwichAPIException {
@@ -164,26 +151,6 @@ public class ScrobblesUseCases extends UseCase {
 					APIStatus_V0_4.UNAUTHORIZED.toString(),
 					APIStatus_V0_4.UNAUTHORIZED);
 		}
-	}
-
-	private List<ScrobblesDTO_V0_4> createGetScrobblesResponse(
-			List<Scrobble> scrobbles) {
-		List<ScrobblesDTO_V0_4> scrobbleDTOs = new ArrayList<ScrobblesDTO_V0_4>(
-				scrobbles.size());
-		ScrobblesDTO_V0_4 scrobblesDTO;
-		for (Scrobble scrobble : scrobbles) {
-			scrobblesDTO = new ScrobblesDTO_V0_4();
-			scrobblesDTO.setScrobbleId(scrobble.getId().toString());
-			scrobblesDTO.setTrackTitle(scrobble.getSong().getSongTitle());
-			scrobblesDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
-			scrobblesDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
-			scrobblesDTO.setChosenByUser(Boolean.toString(scrobble
-					.isChosenByUser()));
-			scrobblesDTO.setPlayer(scrobble.getPlayer());
-
-			scrobbleDTOs.add(scrobblesDTO);
-		}
-		return scrobbleDTOs;
 	}
 
 	private ObjectId authorizeUserGetScrobbles(String userId)
@@ -246,5 +213,38 @@ public class ScrobblesUseCases extends UseCase {
 		}
 
 		return scrobbleIdObject;
+	}
+	
+	private static void updateDTOPutScrobbles(Scrobble scrobble,
+			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO) {
+		
+		scrobblesUpdateDTO.setScrobbleId(scrobble.getId().toString());
+		scrobblesUpdateDTO.setUserId(scrobble.getUserId().toString());
+		scrobblesUpdateDTO.setTrackTitle(scrobble.getSong().getSongTitle());
+		scrobblesUpdateDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
+		scrobblesUpdateDTO.setAlbumTitle(scrobble.getSong().getAlbumTitle());
+		scrobblesUpdateDTO.setChosenByUser(scrobble.isChosenByUser().toString());
+		scrobblesUpdateDTO.setPlayer(scrobble.getPlayer());
+		scrobblesUpdateDTO.setTimestamp(scrobble.getTimestamp().toString());
+	}
+
+	private static List<ScrobblesDTO_V0_4> createGetScrobblesResponse(
+			List<Scrobble> scrobbles) {
+		List<ScrobblesDTO_V0_4> scrobbleDTOs = new ArrayList<ScrobblesDTO_V0_4>(
+				scrobbles.size());
+		ScrobblesDTO_V0_4 scrobblesDTO;
+		for (Scrobble scrobble : scrobbles) {
+			scrobblesDTO = new ScrobblesDTO_V0_4();
+			scrobblesDTO.setScrobbleId(scrobble.getId().toString());
+			scrobblesDTO.setTrackTitle(scrobble.getSong().getSongTitle());
+			scrobblesDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
+			scrobblesDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
+			scrobblesDTO.setChosenByUser(Boolean.toString(scrobble
+					.isChosenByUser()));
+			scrobblesDTO.setPlayer(scrobble.getPlayer());
+
+			scrobbleDTOs.add(scrobblesDTO);
+		}
+		return scrobbleDTOs;
 	}
 }

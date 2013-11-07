@@ -467,7 +467,7 @@ public class StationsUseCases extends UseCase {
 		updateDTOForPutStations(radioStationUpdateDTO, station);
 	}
 
-	private void updateDTOForPostStations(RadioStation station,
+	private static void updateDTOForPostStations(RadioStation station,
 			Float stationReadiness, RadioStationDTO_V0_4 radioStationDTO) {
 
 		radioStationDTO.setStationId(station.getId().toString());
@@ -563,7 +563,6 @@ public class StationsUseCases extends UseCase {
 
 		// recently scrobbled by
 		if (station.getScrobbler().isGroupStation()) {
-			// TODO: fix
 			nowPlayingDTO.setRecentScrobblers(createScrobblersDTO(station
 					.getNowPlaying().getSongScrobblers()));
 
@@ -572,7 +571,7 @@ public class StationsUseCases extends UseCase {
 		}
 	}
 
-	private void updateDTOForPostNextSong(
+	private static void updateDTOForPostNextSong(
 			RadioStationUpdateDTO_V0_4 radioStationDTO,
 			StationHistoryEntry nowPlayingHistoryEntry,
 			List<User> nowPlayingScrobblers,
@@ -613,7 +612,7 @@ public class StationsUseCases extends UseCase {
 		return scrobblersDTO;
 	}
 
-	private void updateDTOForPostNextSong(
+	private static void updateDTOForPostNextSong(
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO,
 			StationHistoryEntry nowPlayingHistoryEntry,
 			StationHistoryEntry lookAheadHistoryEntry) {
@@ -639,7 +638,7 @@ public class StationsUseCases extends UseCase {
 		radioStationUpdateDTO.setLookAhead(lookAheadSongListEntryDTO);
 	}
 
-	private RadioStationUpdateDTO_V0_4 updateDTOForPutStations(
+	private static RadioStationUpdateDTO_V0_4 updateDTOForPutStations(
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO,
 			RadioStation station) {
 
