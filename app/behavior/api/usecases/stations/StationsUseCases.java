@@ -22,7 +22,7 @@ import views.api.scrobbles.UserDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
-import behavior.api.algorithms.NaiveStationStrategy;
+import behavior.api.algorithms.PseudoDMCAStationStrategy;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -65,9 +65,10 @@ public class StationsUseCases extends UseCase {
 		// sets the station active if it can
 		Float stationReadiness = null;
 		if (!station.isActive()) {
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+					station);
 			// StationStrategy stationStrategy = new
-			// PseudoDMCAStationStrategy(station);
-			StationStrategy stationStrategy = new NaiveStationStrategy(station);
+			// NaiveStationStrategy(station);
 			if (stationStrategy.isStationReady()) {
 				station.setActive(true);
 				setNowPlaying(station);
@@ -115,9 +116,8 @@ public class StationsUseCases extends UseCase {
 				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
 
 		// checks if station can be activated and activates it
-		// StationStrategy stationStrategy = new
-		// PseudoDMCAStationStrategy(station);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		if (stationStrategy.isStationReady()) {
 			activateStation(station);
 		}
@@ -182,9 +182,10 @@ public class StationsUseCases extends UseCase {
 
 		// checks if it can activate the station
 		if (!station.isActive()) {
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+					station);
 			// StationStrategy stationStrategy = new
-			// PseudoDMCAStationStrategy(station);
-			StationStrategy stationStrategy = new NaiveStationStrategy(station);
+			// NaiveStationStrategy(station);
 			if (stationStrategy.isStationReady()) {
 				station.setActive(true);
 			}
@@ -228,9 +229,10 @@ public class StationsUseCases extends UseCase {
 
 		// checks if it needs to deactivate station
 		if (station.isActive()) {
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
+					station);
 			// StationStrategy stationStrategy = new
-			// PseudoDMCAStationStrategy(station);
-			StationStrategy stationStrategy = new NaiveStationStrategy(station);
+			// NaiveStationStrategy(station);
 			if (!stationStrategy.isStationReady()) {
 				station.setActive(false);
 			}
@@ -245,9 +247,8 @@ public class StationsUseCases extends UseCase {
 		RadioStation station = authorizePostNextSong(radioStationUpdateDTO);
 
 		// run the algorithm to decide what the lookAhead Song will be
-		// StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
-		// radioStation);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		Song lookAheadSong = stationStrategy.getNextSong();
 
 		// find out who the lookAhead scrobblers are if it's a group station
@@ -259,7 +260,7 @@ public class StationsUseCases extends UseCase {
 			lookAheadScrobblers = userDao
 					.findUsersByIds(lookAheadScrobblersIds);
 		}
-		
+
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
 
 		// turn the lookAhead Track into next and set the new lookAhead
@@ -312,7 +313,7 @@ public class StationsUseCases extends UseCase {
 			throw new SongwichAPIException("This station is not active yet.",
 					APIStatus_V0_4.BAD_REQUEST);
 		}
-		
+
 		return station;
 	}
 
@@ -343,9 +344,8 @@ public class StationsUseCases extends UseCase {
 	private Track saveHistoryEntryAndGetTrack(RadioStation station)
 			throws SongwichAPIException {
 
-		// StationStrategy stationStrategy = new
-		// PseudoDMCAStationStrategy(station);
-		StationStrategy stationStrategy = new NaiveStationStrategy(station);
+		StationStrategy stationStrategy = new PseudoDMCAStationStrategy(station);
+		// StationStrategy stationStrategy = new NaiveStationStrategy(station);
 		Song song = stationStrategy.getNextSong();
 		StationHistoryEntry historyEntry = new StationHistoryEntry(
 				station.getId(), song, System.currentTimeMillis());
