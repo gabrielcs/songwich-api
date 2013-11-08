@@ -19,10 +19,6 @@ import views.api.stations.RadioStationDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 import behavior.api.usecases.stations.StationsUseCases;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
-import database.api.stations.RadioStationDAO;
-import database.api.stations.RadioStationDAOMongo;
 
 public class UsersUseCases extends UseCase {
 
@@ -31,8 +27,7 @@ public class UsersUseCases extends UseCase {
 	}
 
 	public void postUsers(UserDTO_V0_4 userDTO) {
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findByEmailAddress(userDTO.getUserEmail());
+		User user = getUserDAO().findByEmailAddress(userDTO.getUserEmail());
 		if (user != null) {
 
 			// user was already in the database
@@ -67,9 +62,8 @@ public class UsersUseCases extends UseCase {
 	}
 
 	public List<UserDTO_V0_4> getUsers() {
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		// TODO: limit the number of results
-		List<User> users = userDAO.find().asList();
+		List<User> users = getUserDAO().find().asList();
 
 		return createDTOForGetUsers(users);
 	}
@@ -85,8 +79,7 @@ public class UsersUseCases extends UseCase {
 		}
 
 		ObjectId userIdObject = new ObjectId(userId);
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findById(userIdObject);
+		User user = getUserDAO().findById(userIdObject);
 		if (user == null) {
 			throw new SongwichAPIException("Non-existent userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
@@ -96,8 +89,7 @@ public class UsersUseCases extends UseCase {
 					APIStatus_V0_4.UNAUTHORIZED);
 		}
 
-		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
-		List<RadioStation> scrobblerStations = stationDAO
+		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(userIdObject);
 
 		return createDTOForGetUsers(user, scrobblerStations);
@@ -109,29 +101,32 @@ public class UsersUseCases extends UseCase {
 		User user = authorizePutUsers(userId, userUpdateDTO);
 
 		// process the request
-		if (userUpdateDTO.getName() != null && !userUpdateDTO.getName().isEmpty()) {
+		if (userUpdateDTO.getName() != null
+				&& !userUpdateDTO.getName().isEmpty()) {
 			user.setName(userUpdateDTO.getName());
 		}
-		if (userUpdateDTO.getUserEmail() != null && !userUpdateDTO.getUserEmail().isEmpty()) {
+		if (userUpdateDTO.getUserEmail() != null
+				&& !userUpdateDTO.getUserEmail().isEmpty()) {
 			user.setEmailAddress(userUpdateDTO.getUserEmail());
 		}
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(user, getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(user,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		// update output
-		updateDTOPutUsers(user, userUpdateDTO);
+		List<RadioStation> scrobblerStations = getRadioStationDAO()
+				.findByScrobblerId(user.getId());
+		updateDTOPutUsers(user, userUpdateDTO, scrobblerStations);
 	}
 
-	private User authorizePutUsers(String userId, UserUpdateDTO_V0_4 userUpdateDTO)
-			throws SongwichAPIException {
+	private User authorizePutUsers(String userId,
+			UserUpdateDTO_V0_4 userUpdateDTO) throws SongwichAPIException {
 
 		if (!ObjectId.isValid(userId)) {
 			throw new SongwichAPIException("Invalid userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findById(new ObjectId(userId));
+		User user = getUserDAO().findById(new ObjectId(userId));
 		if (user == null) {
 			throw new SongwichAPIException("Non-existent userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
@@ -141,8 +136,8 @@ public class UsersUseCases extends UseCase {
 		return user;
 	}
 
-	private void authenticatePutUsers(User user, UserUpdateDTO_V0_4 userUpdateDTO)
-			throws SongwichAPIException {
+	private void authenticatePutUsers(User user,
+			UserUpdateDTO_V0_4 userUpdateDTO) throws SongwichAPIException {
 
 		if (getContext().getUser() == null) {
 			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",
@@ -166,13 +161,14 @@ public class UsersUseCases extends UseCase {
 				userAuthToken);
 		user.addAppUser(newAppUser);
 
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(user, getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(user,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		return newAppUser;
 	}
 
-	private static void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
+	private static void updateDTO(User user, AppUser newAppUser,
+			UserDTO_V0_4 userDTO) {
 		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
 		userDTO.setUserId(user.getId().toString());
 	}
@@ -201,14 +197,14 @@ public class UsersUseCases extends UseCase {
 		return userDTO;
 	}
 
-	private static void updateDTOPutUsers(User user, UserUpdateDTO_V0_4 userUpdateDTO) {
+	private static void updateDTOPutUsers(User user,
+			UserUpdateDTO_V0_4 userUpdateDTO,
+			List<RadioStation> scrobblerStations) {
+		
 		userUpdateDTO.setUserId(user.getId().toString());
 		userUpdateDTO.setName(user.getName());
 		userUpdateDTO.setUserEmail(user.getEmailAddress());
 
-		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
-		List<RadioStation> scrobblerStations = stationDAO
-				.findByScrobblerId(user.getId());
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
 			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
 					.createDTOForGetMultipleStations(scrobblerStations);

@@ -10,6 +10,9 @@ import controllers.api.auth.AppDeveloperAuthController;
 import controllers.api.auth.UserAuthController;
 
 public class APIController extends Controller {
+	
+	public APIController() {
+	}
 
 	protected static RequestContext getContext() {
 		return new RequestContext(

@@ -3,8 +3,10 @@ import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
+import util.api.DAOProvider;
 import util.api.DatabaseContext;
 import util.api.DevelopmentDependencyInjectionModule;
+import util.api.MongoDependencyInjectionModule;
 import util.api.MyLogger;
 import util.api.ProductionDependencyInjectionModule;
 import views.api.APIResponse_V0_4;
@@ -31,8 +33,11 @@ public class Global extends GlobalSettings {
 			DatabaseContext.createDatastore(uri, dbName);
 
 			// dependency injection
-			INJECTOR = Guice
-					.createInjector(new ProductionDependencyInjectionModule());
+			INJECTOR = Guice.createInjector(
+					new ProductionDependencyInjectionModule(),
+					new MongoDependencyInjectionModule());
+			
+			DAOProvider.setInjector(INJECTOR);
 		}
 
 		if (app.isDev()) {
@@ -46,8 +51,11 @@ public class Global extends GlobalSettings {
 					.configuration().getString("dev.auth.token"));
 
 			// dependency injection
-			INJECTOR = Guice
-					.createInjector(new DevelopmentDependencyInjectionModule());
+			INJECTOR = Guice.createInjector(
+					new DevelopmentDependencyInjectionModule(),
+					new MongoDependencyInjectionModule());
+			
+			DAOProvider.setInjector(INJECTOR);
 		}
 	}
 

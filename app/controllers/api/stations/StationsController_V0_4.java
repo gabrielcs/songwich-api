@@ -28,11 +28,12 @@ import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 
 public class StationsController_V0_4 extends APIController {
-	// this will be injected and so no method is static
+
 	private StationStrategy stationStrategy;
 
 	@Inject
 	public StationsController_V0_4(StationStrategy stationStrategy) {
+		super();
 		this.stationStrategy = stationStrategy;
 	}
 

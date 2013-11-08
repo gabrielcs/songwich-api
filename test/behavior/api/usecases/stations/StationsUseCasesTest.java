@@ -24,12 +24,6 @@ import util.api.WithProductionDependencyInjection;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
-import database.api.scrobbles.ScrobbleDAO;
-import database.api.scrobbles.ScrobbleDAOMongo;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
-import database.api.stations.RadioStationDAO;
-import database.api.stations.RadioStationDAOMongo;
 
 public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	private User gabriel, daniel, john;
@@ -49,10 +43,9 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		daniel = new User("daniel@example.com", "Daniel");
 		john = new User("john@example.com", "John");
 
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		userDAO.save(gabriel, getContext().getAppDeveloper().getEmailAddress());
-		userDAO.save(daniel, getContext().getAppDeveloper().getEmailAddress());
-		userDAO.save(john, getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(gabriel, getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(daniel, getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(john, getContext().getAppDeveloper().getEmailAddress());
 	}
 
 	private void createScrobbles() {
@@ -109,14 +102,13 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	@Test
 	public void postStationsTest() throws SongwichAPIException {
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
-		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
 		RadioStation station;
 
 		// Gabriel FM should be active
 		setRequestContextUser(gabriel);
 		stationsUseCases.postStations(gabrielStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
-		station = radioStationDAO.findById(new ObjectId(gabrielStationDTO
+		station = getRadioStationDAO().findById(new ObjectId(gabrielStationDTO
 				.getStationId()));
 		System.out.println(gabrielStationDTO);
 
@@ -132,7 +124,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		setRequestContextUser(daniel);
 		stationsUseCases.postStations(danielStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
-		station = radioStationDAO.findById(new ObjectId(danielStationDTO
+		station = getRadioStationDAO().findById(new ObjectId(danielStationDTO
 				.getStationId()));
 		System.out.println(danielStationDTO);
 
@@ -148,7 +140,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		setRequestContextUser(john);
 		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
-		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
+		station = getRadioStationDAO().findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
 		System.out.println(danielAndJohnStationDTO);
 
@@ -222,7 +214,6 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	@Test
 	public void putStationsTest() throws SongwichAPIException {
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
-		RadioStationDAO<ObjectId> radioStationDAO = new RadioStationDAOMongo();
 		RadioStation station;
 
 		// Daniel and John FM should be active
@@ -238,7 +229,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.putStationsRemoveScrobblers(
 				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
 				getInjector().getInstance(StationStrategy.class));
-		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
+		station = getRadioStationDAO().findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
 		assertFalse(station.isActive());
 		assertFalse(new Boolean(stationUpdateDTO.getActive()));
@@ -250,7 +241,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.putStationsAddScrobblers(
 				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
 				getInjector().getInstance(StationStrategy.class));
-		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
+		station = getRadioStationDAO().findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
 		assertTrue(station.isActive());
 		assertTrue(new Boolean(stationUpdateDTO.getActive()));
@@ -283,7 +274,6 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 
 	private void generateScrobbles(
 			Map<Integer, Integer> scrobblesArtistsGenerationMap, ObjectId userId) {
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
 		Song song;
 		Scrobble scrobble;
 		int registeredScrobbles = 0;
@@ -300,7 +290,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 							+ String.valueOf(i + registeredArtists + 1));
 					scrobble = new Scrobble(userId, song,
 							System.currentTimeMillis(), true, null);
-					scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+					getScrobbleDAO().save(scrobble, getContext().getAppDeveloper()
 							.getEmailAddress());
 				}
 			}

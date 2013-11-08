@@ -16,8 +16,6 @@ import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
-import database.api.stations.StationHistoryDAO;
-import database.api.stations.StationHistoryDAOMongo;
 
 public class SongFeedbackUseCases extends UseCase {
 
@@ -28,8 +26,7 @@ public class SongFeedbackUseCases extends UseCase {
 	public void postSongFeedback(SongFeedbackDTO_V0_4 songFeedbackDTO)
 			throws SongwichAPIException {
 
-		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
-		StationHistoryEntry stationHistoryEntry = stationHistoryDAO
+		StationHistoryEntry stationHistoryEntry = getStationHistoryDAO()
 				.findById(new ObjectId(songFeedbackDTO.getIdForFeedback()));
 
 		if (stationHistoryEntry == null) {
@@ -54,7 +51,7 @@ public class SongFeedbackUseCases extends UseCase {
 		SongFeedback songFeedback = new SongFeedback(feedbackType, getContext()
 				.getUser().getId());
 		stationHistoryEntry.addSongFeedback(songFeedback);
-		stationHistoryDAO.save(stationHistoryEntry, getContext()
+		getStationHistoryDAO().save(stationHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
 
 		// update DTO
@@ -67,8 +64,7 @@ public class SongFeedbackUseCases extends UseCase {
 
 		authorizeGetStarredSongs(userId);
 
-		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
-		List<StationHistoryEntry> stationHistoryEntries = stationHistoryDAO
+		List<StationHistoryEntry> stationHistoryEntries = getStationHistoryDAO()
 				.findStarredByUserId(new ObjectId(userId));
 		MyLogger.debug("stationHistoryEntries: " + stationHistoryEntries);
 
@@ -85,8 +81,7 @@ public class SongFeedbackUseCases extends UseCase {
 		// process request
 		stationHistoryEntry.removeSongFeedback(songFeedback);
 		// save
-		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
-		stationHistoryDAO.save(stationHistoryEntry, getContext()
+		getStationHistoryDAO().save(stationHistoryEntry, getContext()
 				.getAppDeveloper().getEmailAddress());
 	}
 
@@ -123,8 +118,7 @@ public class SongFeedbackUseCases extends UseCase {
 		}
 		ObjectId idForFeedbackObject = new ObjectId(idForFeedback);
 
-		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
-		StationHistoryEntry stationHistoryEntry = stationHistoryDAO
+		StationHistoryEntry stationHistoryEntry = getStationHistoryDAO()
 				.findById(idForFeedbackObject);
 		if (stationHistoryEntry == null) {
 			throw new SongwichAPIException("Non-existent idForFeedback",

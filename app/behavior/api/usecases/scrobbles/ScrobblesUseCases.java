@@ -15,10 +15,6 @@ import views.api.scrobbles.ScrobblesDTO_V0_4;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
-import database.api.scrobbles.ScrobbleDAO;
-import database.api.scrobbles.ScrobbleDAOMongo;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
 
 public class ScrobblesUseCases extends UseCase {
 
@@ -41,8 +37,7 @@ public class ScrobblesUseCases extends UseCase {
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
 				scrobbleDTO.getPlayer());
 
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+		getScrobbleDAO().save(scrobble, getContext().getAppDeveloper()
 				.getEmailAddress());
 
 		// updates scrobbleDTO
@@ -53,7 +48,7 @@ public class ScrobblesUseCases extends UseCase {
 	public List<ScrobblesDTO_V0_4> getScrobbles(String userId)
 			throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = new ScrobbleDAOMongo().findByUserId(
+		List<Scrobble> scrobbles = getScrobbleDAO().findByUserId(
 				userIdObject, false);
 		return createGetScrobblesResponse(scrobbles);
 	}
@@ -61,7 +56,7 @@ public class ScrobblesUseCases extends UseCase {
 	public List<ScrobblesDTO_V0_4> getScrobbles(String userId, int results)
 			throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
+		List<Scrobble> scrobbles = getScrobbleDAO()
 				.findLastScrobblesByUserId(userIdObject, results, false);
 		return createGetScrobblesResponse(scrobbles);
 	}
@@ -69,7 +64,7 @@ public class ScrobblesUseCases extends UseCase {
 	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
 			int daysOffset) throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
+		List<Scrobble> scrobbles = getScrobbleDAO()
 				.findByUserIdWithDaysOffset(userIdObject, daysOffset, false);
 		return createGetScrobblesResponse(scrobbles);
 	}
@@ -77,7 +72,7 @@ public class ScrobblesUseCases extends UseCase {
 	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
 			int daysOffset, int results) throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = new ScrobbleDAOMongo()
+		List<Scrobble> scrobbles = getScrobbleDAO()
 				.findLastScrobblesByUserIdWithDaysOffset(userIdObject,
 						daysOffset, results, false);
 		return createGetScrobblesResponse(scrobbles);
@@ -85,8 +80,7 @@ public class ScrobblesUseCases extends UseCase {
 
 	public void deleteScrobbles(String scrobbleId) throws SongwichAPIException {
 		ObjectId scrobbleIdObject = authorizeDeleteScrobbles(scrobbleId);
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		scrobbleDAO.deleteById(scrobbleIdObject);
+		getScrobbleDAO().deleteById(scrobbleIdObject);
 	}
 
 	public void putScrobbles(String scrobbleId,
@@ -108,8 +102,7 @@ public class ScrobblesUseCases extends UseCase {
 			scrobble.setChosenByUser(new Boolean(scrobblesUpdateDTO.getChosenByUser()));
 		}
 
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		scrobbleDAO.save(scrobble, getContext().getAppDeveloper()
+		getScrobbleDAO().save(scrobble, getContext().getAppDeveloper()
 				.getEmailAddress());
 
 		// update output
@@ -125,8 +118,7 @@ public class ScrobblesUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		Scrobble scrobble = scrobbleDAO.findById(new ObjectId(scrobbleId));
+		Scrobble scrobble = getScrobbleDAO().findById(new ObjectId(scrobbleId));
 		if (scrobble == null) {
 			throw new SongwichAPIException("Non-existent scrobbleId",
 					APIStatus_V0_4.INVALID_PARAMETER);
@@ -170,8 +162,7 @@ public class ScrobblesUseCases extends UseCase {
 
 		// check if the User the scrobbles were asked for is the same as the
 		// authenticated one
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User databaseUser = userDAO.findById(userIdObject);
+		User databaseUser = getUserDAO().findById(userIdObject);
 
 		if (databaseUser == null) {
 			throw new SongwichAPIException("Invalid userId: "
@@ -197,8 +188,7 @@ public class ScrobblesUseCases extends UseCase {
 		}
 		ObjectId scrobbleIdObject = new ObjectId(scrobbleId);
 
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		Scrobble scrobble = scrobbleDAO.findById(scrobbleIdObject);
+		Scrobble scrobble = getScrobbleDAO().findById(scrobbleIdObject);
 		if (scrobble == null) {
 			throw new SongwichAPIException("Invalid scrobbleId",
 					APIStatus_V0_4.INVALID_PARAMETER);

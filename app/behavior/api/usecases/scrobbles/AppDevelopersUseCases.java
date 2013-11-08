@@ -7,7 +7,6 @@ import models.api.scrobbles.AppDeveloper;
 import models.api.scrobbles.AuthToken;
 import util.api.MyLogger;
 import views.api.scrobbles.AppDevelopersDTO_V0_4;
-import database.api.scrobbles.AppDAOMongo;
 
 public class AppDevelopersUseCases extends UseCase {
 
@@ -18,8 +17,7 @@ public class AppDevelopersUseCases extends UseCase {
 
 	public AppDeveloper saveNewAppDeveloper(AppDevelopersDTO_V0_4 appDevelopersDTO) {
 		// search the app in the database
-		AppDAOMongo appDao = new AppDAOMongo();
-		App app = appDao.findByName(appDevelopersDTO.getAppName());
+		App app = getAppDAO().findByName(appDevelopersDTO.getAppName());
 		if (app == null) {
 			// app was not in the database
 			app = new App(appDevelopersDTO.getAppName());
@@ -42,7 +40,7 @@ public class AppDevelopersUseCases extends UseCase {
 				appDevelopersDTO.getDevEmail(), appDevelopersDTO.getDevName(),
 				AuthToken.createDevAuthToken());
 		app.addAppDeveloper(appDeveloper);
-		appDao.cascadeSave(app, appDevelopersDTO.getDevEmail());
+		getCascadeSaveAppDAO().cascadeSave(app, appDevelopersDTO.getDevEmail());
 
 		MyLogger.info(String.format(
 				"Created '%s' working at '%s' with devAuthToken=%s",
