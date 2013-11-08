@@ -76,6 +76,17 @@ public abstract class DataTransferObject<T> {
 		}
 	}
 
+	protected static ValidationError validateIfNonNullThenNonEmptyProperty(
+			String propertyName, String property) {
+		
+		if (property != null && property.isEmpty()) {
+			return new ValidationError(propertyName, propertyName
+					+ " cannot be empty");
+		} else {
+			return null;
+		}
+	}
+
 	protected static ValidationError validateEmailAddress(String propertyName,
 			String emailAddress) {
 
@@ -185,7 +196,7 @@ public abstract class DataTransferObject<T> {
 		if (imageUrl == null) {
 			return null;
 		}
-		
+
 		ValidationError validationError = validateUrl(propertyName, imageUrl);
 		if (validationError != null) {
 			return validationError;

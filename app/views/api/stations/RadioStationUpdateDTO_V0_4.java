@@ -40,7 +40,12 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	@Override
 	public void addValidation() {
-		addValidation(validateScrobblerIds(), validateImageUrl());
+		addValidation(validateStationName(), validateScrobblerIds(),
+				validateImageUrl());
+	}
+
+	private ValidationError validateStationName() {
+		return validateIfNonNullThenNonEmptyProperty("stationName", stationName);
 	}
 
 	private ValidationError validateScrobblerIds() {
@@ -51,7 +56,7 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private ValidationError validateImageUrl() {
 		return validateImageUrl("imageUrl", imageUrl);
 	}
-	
+
 	public StationSongListEntryDTO_V0_4 getNowPlaying() {
 		return nowPlaying;
 	}

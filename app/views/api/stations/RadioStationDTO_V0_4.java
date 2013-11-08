@@ -48,7 +48,6 @@ public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 	}
 
 	private ValidationError validateStationName() {
-		// TODO: required non empty
 		return validateRequiredProperty("stationName", stationName);
 	}
 
