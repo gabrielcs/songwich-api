@@ -10,6 +10,7 @@ import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 
 public abstract class AbstractStationStrategy implements StationStrategy {
@@ -19,6 +20,7 @@ public abstract class AbstractStationStrategy implements StationStrategy {
 	private Set<ObjectId> nextSongRecentScrobblersIds;
 
 	protected AbstractStationStrategy() {
+		MyLogger.debug("AbstractStationStrategy's instance random ID: " + Math.random());
 	}
 	
 	@Override

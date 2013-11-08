@@ -10,7 +10,9 @@ import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
+import views.api.stations.GetIsSongStarredResponse_V0_4;
 import views.api.stations.GetStarredSongsResponse_V0_4;
+import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.PostSongFeedback_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
@@ -20,7 +22,7 @@ import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 
 public class SongFeedbackController_V0_4 extends APIController {
-	
+
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	public static Result postSongFeedback() {
@@ -58,11 +60,12 @@ public class SongFeedbackController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
-	
+
 	@AppDeveloperAuthenticated
 	// TODO: decide if it should be @UserAuthenticated
 	public static Result getStarredSongs(String userId) {
-		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(getContext());
+		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
+				getContext());
 		StarredSongSetDTO_V0_4 starredSongSetDTO;
 		try {
 			starredSongSetDTO = songFeedbackUseCases.getStarredSongs(userId);
@@ -80,14 +83,42 @@ public class SongFeedbackController_V0_4 extends APIController {
 				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO);
 		return ok(Json.toJson(response));
 	}
-	
+
+	@AppDeveloperAuthenticated
+	// TODO: decide if it should be @UserAuthenticated
+	public static Result getIsSongStarred(String userId, String songTitle,
+			String artistsNames, String albumTitle) {
+
+		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
+				getContext());
+		IsSongStarredDTO_V0_4 isSongStarredDTO;
+		try {
+			isSongStarredDTO = songFeedbackUseCases.getIsSongStarred(userId,
+					songTitle, artistsNames, albumTitle);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			return Results.badRequest(Json.toJson(response));
+		}
+
+		// return the response
+		GetIsSongStarredResponse_V0_4 response = new GetIsSongStarredResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", isSongStarredDTO);
+		return ok(Json.toJson(response));
+	}
+
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result deleteSongFeedback(String idForFeedback, String feedbackType) {
+	public static Result deleteSongFeedback(String idForFeedback,
+			String feedbackType) {
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
 				getContext());
 		try {
-			songFeedbackUseCases.deleteSongFeedback(idForFeedback, feedbackType);
+			songFeedbackUseCases
+					.deleteSongFeedback(idForFeedback, feedbackType);
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
@@ -99,7 +130,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 			} else {
 				return Results.badRequest(Json.toJson(response));
 			}
-			
+
 		}
 
 		// return the response

@@ -104,6 +104,15 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 				.filter("songFeedback elem", songFeedback).asList();
 	}
 
+	// TODO: test
+	// this is case sensitive so far
+	@Override
+	public StationHistoryEntry isSongStarredByUser(ObjectId userId, Song song) {
+		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
+		return ds.find(StationHistoryEntry.class).filter("song", song)
+				.filter("songFeedback elem", songFeedback).get();
+	}
+
 	private Query<StationHistoryEntry> order(Query<StationHistoryEntry> query) {
 		return query.order("-timestamp");
 	}

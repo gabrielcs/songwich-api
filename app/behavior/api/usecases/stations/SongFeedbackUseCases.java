@@ -1,16 +1,18 @@
 package behavior.api.usecases.stations;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import models.api.scrobbles.Song;
 import models.api.stations.SongFeedback;
 import models.api.stations.SongFeedback.FeedbackType;
 import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
 
-import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
+import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
@@ -67,9 +69,31 @@ public class SongFeedbackUseCases extends UseCase {
 
 		List<StationHistoryEntry> stationHistoryEntries = getStationHistoryDAO()
 				.findStarredByUserId(new ObjectId(userId));
-		MyLogger.debug("stationHistoryEntries: " + stationHistoryEntries);
 
 		return createDTOForGetStarredSongs(stationHistoryEntries, userId);
+	}
+
+	public IsSongStarredDTO_V0_4 getIsSongStarred(String userId,
+			String songTitle, String artistsNames, String albumTitle)
+			throws SongwichAPIException {
+
+		authorizeIsSongStarred(userId, songTitle, artistsNames);
+
+		Song song = new Song(songTitle, albumTitle, splitArtistsNames(artistsNames));
+		StationHistoryEntry stationHistoryEntry = getStationHistoryDAO()
+				.isSongStarredByUser(new ObjectId(userId), song);
+
+		return createDTOForIsSongStarred(stationHistoryEntry, userId, song);
+	}
+	
+	private List<String> splitArtistsNames(String artistsNames) {
+		String[] artistsNamesArray = artistsNames.split(",");
+		List<String> result = new ArrayList<String>(artistsNamesArray.length);
+		for (String artistName : artistsNamesArray) {
+			result.add(artistName.trim());
+		}
+		System.out.println(result);
+		return result;
 	}
 
 	public void deleteSongFeedback(String idForFeedback, String feedbackType)
@@ -141,6 +165,23 @@ public class SongFeedbackUseCases extends UseCase {
 		}
 	}
 
+	private void authorizeIsSongStarred(String userId, String songTitle,
+			String artistsNames) throws SongwichAPIException {
+
+		if (!ObjectId.isValid(userId)) {
+			throw new SongwichAPIException("Invalid userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		if (songTitle.isEmpty()) {
+			throw new SongwichAPIException("Empty songTitle",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		} else if (artistsNames.isEmpty()) {
+			throw new SongwichAPIException("Empty artistsNames",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+	}
+
 	private static void updateDTOForPostSongFeedback(
 			SongFeedbackDTO_V0_4 songFeedbackDTO,
 			StationHistoryEntry stationHistoryEntry, String userId) {
@@ -169,5 +210,27 @@ public class SongFeedbackUseCases extends UseCase {
 			starredSongList.add(songListEntryDTO);
 		}
 		return starredSongList;
+	}
+
+	private static IsSongStarredDTO_V0_4 createDTOForIsSongStarred(
+			StationHistoryEntry stationHistoryEntry, String userId,
+			Song song) {
+		
+		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
+		songDTO.setTrackTitle(song.getSongTitle());
+		songDTO.setArtistsNames(song.getArtistsNames());
+		songDTO.setAlbumTitle(song.getAlbumTitle());
+
+		IsSongStarredDTO_V0_4 isSongStarredDTO = new IsSongStarredDTO_V0_4();
+		isSongStarredDTO.setUserId(userId);
+		isSongStarredDTO.setSong(songDTO);
+		if (stationHistoryEntry != null) {
+			isSongStarredDTO.setIsStarred(String.valueOf(true));
+			isSongStarredDTO.setIdForFeedback(stationHistoryEntry.getId().toString());
+		} else {
+			isSongStarredDTO.setIsStarred(String.valueOf(false));
+		}
+		
+		return isSongStarredDTO;
 	}
 }

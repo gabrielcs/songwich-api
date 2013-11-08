@@ -2,6 +2,8 @@ package database.api.stations;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import models.api.scrobbles.Song;
 import models.api.stations.StationHistoryEntry;
 import database.api.SongwichDAO;
@@ -36,4 +38,6 @@ public interface StationHistoryDAO<I> extends
 			I stationId, String artistName, int hourOffset);
 
 	public List<StationHistoryEntry> findStarredByUserId(I userId);
+
+	public StationHistoryEntry isSongStarredByUser(ObjectId objectId, Song song);
 }

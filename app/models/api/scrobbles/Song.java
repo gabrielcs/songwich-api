@@ -11,7 +11,7 @@ public class Song {
 	private String songTitle;
 
 	private List<String> artistsNames = new ArrayList<String>();
-	
+
 	private String albumTitle;
 
 	protected Song() {
@@ -23,7 +23,7 @@ public class Song {
 		setSongTitle(songTitle);
 		setArtistsNames(artistsNames);
 	}
-	
+
 	public Song(String songTitle, String albumTitle, List<String> artistsNames) {
 		super();
 		setSongTitle(songTitle);
@@ -36,14 +36,14 @@ public class Song {
 		setSongTitle(songTitle);
 		addArtistName(artistName);
 	}
-	
+
 	public Song(String songTitle, String albumTitle, String artistName) {
 		super();
 		setSongTitle(songTitle);
 		setAlbumTitle(albumTitle);
 		addArtistName(artistName);
 	}
-	
+
 	public String getAlbumTitle() {
 		return albumTitle;
 	}
@@ -76,7 +76,7 @@ public class Song {
 	public boolean addArtistName(String artistName) {
 		return artistsNames.add(artistName);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Song [songTitle=" + songTitle + ", artistsNames="
@@ -96,6 +96,7 @@ public class Song {
 	}
 
 	// doesn't take into account 'albumTitle'
+	// uses equalsIgnoreCase() instead of equals() for Strings
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -108,13 +109,39 @@ public class Song {
 		if (artistsNames == null) {
 			if (other.artistsNames != null)
 				return false;
-		} else if (!artistsNames.equals(other.artistsNames))
+		} else if (!equalsIgnoreCase(artistsNames, other.artistsNames))
 			return false;
 		if (songTitle == null) {
 			if (other.songTitle != null)
 				return false;
-		} else if (!songTitle.equals(other.songTitle))
+		} else if (!songTitle.equalsIgnoreCase(other.songTitle))
 			return false;
 		return true;
 	}
+
+	private boolean equalsIgnoreCase(List<String> artistsNames,
+			List<String> otherArtistsNames) {
+		if (artistsNames == otherArtistsNames) {
+			return true;
+		}
+		if (otherArtistsNames.size() != artistsNames.size()) {
+			return false;
+		}
+		for (String artistName : otherArtistsNames) {
+			if (!containsIgnoreCase(artistsNames, artistName)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean containsIgnoreCase(List<String> artistsNames, String artistName) {
+		for (String string : artistsNames) {
+			if (artistName.equalsIgnoreCase(string)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

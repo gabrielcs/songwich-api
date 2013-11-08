@@ -1,7 +1,6 @@
 package database.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -46,6 +45,8 @@ public class StationHistoryEntryDAOMongoTest extends WithRequestContext {
 	private StationHistoryEntry linoleumEntry, dontCallMeWhiteFatMikeEntry,
 			dontCallMeWhiteNofx4HoursOldEntry, doWhatYouWantEntry,
 			doWhatYouWantEntry4HoursOldEntry;
+	private SongFeedback linoleumFeedback2Gabriel,
+			dontCallMeWhiteFeedbackDaniel;
 
 	@Before
 	public void setUp() throws Exception {
@@ -83,13 +84,16 @@ public class StationHistoryEntryDAOMongoTest extends WithRequestContext {
 
 		// saves the radio station
 		RadioStationDAOMongo radioStationDao = new RadioStationDAOMongo();
-		radioStationDao.cascadeSave(nofxStation, getContext().getAppDeveloper().getEmailAddress());
-		radioStationDao.cascadeSave(fatMikeStation, getContext().getAppDeveloper().getEmailAddress());
+		radioStationDao.cascadeSave(nofxStation, getContext().getAppDeveloper()
+				.getEmailAddress());
+		radioStationDao.cascadeSave(fatMikeStation, getContext()
+				.getAppDeveloper().getEmailAddress());
 
 		linoleumEntry = new StationHistoryEntry(nofxStation.getId(), linoleum,
 				System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(linoleumEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(linoleumEntry, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.HOUR, -4);
@@ -97,28 +101,33 @@ public class StationHistoryEntryDAOMongoTest extends WithRequestContext {
 				nofxStation.getId(), dontCallMeWhite,
 				calendar.getTimeInMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 
 		dontCallMeWhiteFatMikeEntry = new StationHistoryEntry(
 				fatMikeStation.getId(), dontCallMeWhite,
 				System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(dontCallMeWhiteFatMikeEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(dontCallMeWhiteFatMikeEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 
 		doWhatYouWantEntry = new StationHistoryEntry(nofxStation.getId(),
 				doWhatYouWant, System.currentTimeMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(doWhatYouWantEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(doWhatYouWantEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 
 		doWhatYouWantEntry4HoursOldEntry = new StationHistoryEntry(
 				nofxStation.getId(), doWhatYouWant, calendar.getTimeInMillis());
 		// saves the radio station history entry
-		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(doWhatYouWantEntry4HoursOldEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 
 		// sets nofxStation's nowPlaying and lookAhead
 		nofxStation.setNowPlaying(new Track(doWhatYouWantEntry, null));
 		nofxStation.setLookAhead(new Track(linoleumEntry, null));
-		radioStationDao.save(nofxStation, getContext().getAppDeveloper().getEmailAddress());
+		radioStationDao.save(nofxStation, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		// adds feedback
 		gabriel = new User("gabriel@example.com", "Gabriel Cypriano");
@@ -131,29 +140,33 @@ public class StationHistoryEntryDAOMongoTest extends WithRequestContext {
 		daniel.addAppUser(danielOnRdio);
 		// saves the users so they have an id
 		UserDAOMongo userDao = new UserDAOMongo();
-		userDao.cascadeSave(gabriel, getContext().getAppDeveloper().getEmailAddress());
-		userDao.cascadeSave(daniel, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(gabriel, getContext().getAppDeveloper()
+				.getEmailAddress());
+		userDao.cascadeSave(daniel, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		SongFeedback linoleumFeedbackGabriel = new SongFeedback(
 				FeedbackType.THUMBS_UP, gabriel.getId());
-		SongFeedback linoleumFeedback2Gabriel = new SongFeedback(
-				FeedbackType.STAR, gabriel.getId());
+		linoleumFeedback2Gabriel = new SongFeedback(FeedbackType.STAR,
+				gabriel.getId());
 		SongFeedback linoleumFeedbackDaniel = new SongFeedback(
 				FeedbackType.THUMBS_DOWN, daniel.getId());
 		linoleumEntry.addSongFeedback(linoleumFeedbackGabriel);
 		linoleumEntry.addSongFeedback(linoleumFeedback2Gabriel);
 		linoleumEntry.addSongFeedback(linoleumFeedbackDaniel);
-		stationHistoryDao.save(linoleumEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(linoleumEntry, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		SongFeedback dontCallMeWhiteFeedbackGabriel = new SongFeedback(
 				FeedbackType.THUMBS_UP, gabriel.getId());
-		SongFeedback dontCallMeWhiteFeedbackDaniel = new SongFeedback(
-				FeedbackType.STAR, daniel.getId());
+		dontCallMeWhiteFeedbackDaniel = new SongFeedback(FeedbackType.STAR,
+				daniel.getId());
 		dontCallMeWhiteNofx4HoursOldEntry
 				.addSongFeedback(dontCallMeWhiteFeedbackGabriel);
 		dontCallMeWhiteNofx4HoursOldEntry
 				.addSongFeedback(dontCallMeWhiteFeedbackDaniel);
-		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDao.save(dontCallMeWhiteNofx4HoursOldEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
 	}
 
 	@Test
@@ -277,5 +290,29 @@ public class StationHistoryEntryDAOMongoTest extends WithRequestContext {
 				.findStarredByUserId(daniel.getId());
 		assertEquals(1, entriesDaniel.size());
 		assertTrue(entriesDaniel.contains(dontCallMeWhiteNofx4HoursOldEntry));
+	}
+
+	@Test
+	public void testIsSongStarred() {
+		StationHistoryEntry entryGabriel = stationHistoryDao
+				.isSongStarredByUser(gabriel.getId(), linoleum);
+		assertNotNull(entryGabriel);
+		assertEquals(linoleum, entryGabriel.getSong());
+		assertTrue(entryGabriel.getSongFeedback().contains(linoleumFeedback2Gabriel));
+
+		StationHistoryEntry entryDaniel = stationHistoryDao
+				.isSongStarredByUser(daniel.getId(), dontCallMeWhite);
+		assertNotNull(entryDaniel);
+		assertEquals(dontCallMeWhite, entryDaniel.getSong());
+		assertTrue(entryDaniel.getSongFeedback().contains(
+				dontCallMeWhiteFeedbackDaniel));
+		
+		entryGabriel = stationHistoryDao.isSongStarredByUser(gabriel.getId(),
+				dontCallMeWhite);
+		assertNull(entryGabriel);
+
+		entryDaniel = stationHistoryDao.isSongStarredByUser(daniel.getId(),
+				linoleum);
+		assertNull(entryDaniel);
 	}
 }
