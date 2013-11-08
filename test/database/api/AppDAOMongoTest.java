@@ -14,15 +14,16 @@ import models.api.scrobbles.AuthToken;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 
+import util.api.WithRequestContext;
+
 import com.google.code.morphia.Key;
 import com.mongodb.WriteResult;
 
 import database.api.scrobbles.AppDAO;
 import database.api.scrobbles.AppDAOMongo;
-import database.api.util.WithRequestContextTest;
 
 
-public class AppDAOMongoTest extends WithRequestContextTest {
+public class AppDAOMongoTest extends WithRequestContext {
 	@Test
 	public void testSaveAndDelete() {
 		App app1 = new App("Spotify");
@@ -38,7 +39,7 @@ public class AppDAOMongoTest extends WithRequestContextTest {
 		// checks that it doesn't save twice
 		assertEquals(keySave.getId(), keySaveAgain.getId());
 
-		assertTrue(appDao.count() == 2);
+		assertEquals(2, appDao.count());
 
 		// assert that it updates the object
 		App spotifyFromDatabase = appDao.findByName("Spotify");

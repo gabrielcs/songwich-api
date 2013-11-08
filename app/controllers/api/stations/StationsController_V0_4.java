@@ -2,6 +2,8 @@ package controllers.api.stations;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -19,17 +21,25 @@ import views.api.stations.PostStationsResponse_V0_4;
 import views.api.stations.PutStationsResponse_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
+import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.stations.StationsUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.UserAuthenticated;
 
 public class StationsController_V0_4 extends APIController {
+	// this will be injected and so no method is static
+	private StationStrategy stationStrategy;
+
+	@Inject
+	public StationsController_V0_4(StationStrategy stationStrategy) {
+		this.stationStrategy = stationStrategy;
+	}
 
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result postStations() {
+	public Result postStations() {
 		Form<RadioStationDTO_V0_4> radioStationForm = Form.form(
 				RadioStationDTO_V0_4.class).bindFromRequest();
 		if (radioStationForm.hasErrors()) {
@@ -44,7 +54,7 @@ public class StationsController_V0_4 extends APIController {
 			StationsUseCases stationsUseCases = new StationsUseCases(
 					getContext());
 			try {
-				stationsUseCases.postStations(radioStationDTO);
+				stationsUseCases.postStations(radioStationDTO, stationStrategy);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -66,7 +76,7 @@ public class StationsController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
-	public static Result getStations() {
+	public Result getStations() {
 		// process the request
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		List<RadioStationDTO_V0_4> radioStationsDTO = stationsUseCases
@@ -79,7 +89,7 @@ public class StationsController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
-	public static Result getStations(String stationId) {
+	public Result getStations(String stationId) {
 		if (stationId == null) {
 			// this is a call for all available stations
 			return getStations();
@@ -89,7 +99,8 @@ public class StationsController_V0_4 extends APIController {
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		RadioStationDTO_V0_4 radioStationDTO;
 		try {
-			radioStationDTO = stationsUseCases.getStations(stationId);
+			radioStationDTO = stationsUseCases.getStations(stationId,
+					stationStrategy);
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
@@ -108,7 +119,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result putStations(String stationId) {
+	public Result putStations(String stationId) {
 
 		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
@@ -150,7 +161,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result putStationsAddScrobblers(String stationId) {
+	public Result putStationsAddScrobblers(String stationId) {
 		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
 		if (radioStationUpdateForm.hasErrors()) {
@@ -168,7 +179,7 @@ public class StationsController_V0_4 extends APIController {
 					getContext());
 			try {
 				stationsUseCases.putStationsAddScrobblers(stationId,
-						radioStationUpdateDTO);
+						radioStationUpdateDTO, stationStrategy);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -192,7 +203,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
-	public static Result putStationsRemoveScrobblers(String stationId) {
+	public Result putStationsRemoveScrobblers(String stationId) {
 		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
 		if (radioStationUpdateForm.hasErrors()) {
@@ -210,7 +221,7 @@ public class StationsController_V0_4 extends APIController {
 					getContext());
 			try {
 				stationsUseCases.putStationsRemoveScrobblers(stationId,
-						radioStationUpdateDTO);
+						radioStationUpdateDTO, stationStrategy);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -233,7 +244,7 @@ public class StationsController_V0_4 extends APIController {
 
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
-	public static Result postNextSong() {
+	public Result postNextSong() {
 		Form<RadioStationUpdateDTO_V0_4> stationEntryForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
 		if (stationEntryForm.hasErrors()) {
@@ -248,7 +259,7 @@ public class StationsController_V0_4 extends APIController {
 			StationsUseCases stationsUseCases = new StationsUseCases(
 					getContext());
 			try {
-				stationsUseCases.postNextSong(radioStationDTO);
+				stationsUseCases.postNextSong(radioStationDTO, stationStrategy);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),

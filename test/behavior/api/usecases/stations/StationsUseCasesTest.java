@@ -20,17 +20,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import util.api.SongwichAPIException;
+import util.api.WithProductionDependencyInjection;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
+import behavior.api.algorithms.StationStrategy;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 import database.api.scrobbles.UserDAO;
 import database.api.scrobbles.UserDAOMongo;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
-import database.api.util.WithRequestContextTest;
 
-public class StationsUseCasesTest extends WithRequestContextTest {
+public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	private User gabriel, daniel, john;
 	private RadioStationDTO_V0_4 gabrielStationDTO, danielStationDTO,
 			danielAndJohnStationDTO;
@@ -113,7 +114,8 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Gabriel FM should be active
 		setRequestContextUser(gabriel);
-		stationsUseCases.postStations(gabrielStationDTO);
+		stationsUseCases.postStations(gabrielStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 		station = radioStationDAO.findById(new ObjectId(gabrielStationDTO
 				.getStationId()));
 		System.out.println(gabrielStationDTO);
@@ -128,7 +130,8 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Daniel FM should be inactive
 		setRequestContextUser(daniel);
-		stationsUseCases.postStations(danielStationDTO);
+		stationsUseCases.postStations(danielStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 		station = radioStationDAO.findById(new ObjectId(danielStationDTO
 				.getStationId()));
 		System.out.println(danielStationDTO);
@@ -143,7 +146,8 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Daniel and John FM should be active and have "recent scrobblers"
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO);
+		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
 		System.out.println(danielAndJohnStationDTO);
@@ -171,9 +175,11 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Gabriel FM should be active
 		setRequestContextUser(gabriel);
-		stationsUseCases.postStations(gabrielStationDTO);
-		gabrielStationDTO = stationsUseCases.getStations(gabrielStationDTO
-				.getStationId());
+		stationsUseCases.postStations(gabrielStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
+		gabrielStationDTO = stationsUseCases.getStations(
+				gabrielStationDTO.getStationId(),
+				getInjector().getInstance(StationStrategy.class));
 		System.out.println(gabrielStationDTO);
 
 		assertNull(gabrielStationDTO.getStationReadiness());
@@ -182,9 +188,11 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Daniel FM should be inactive
 		setRequestContextUser(daniel);
-		stationsUseCases.postStations(danielStationDTO);
-		danielStationDTO = stationsUseCases.getStations(danielStationDTO
-				.getStationId());
+		stationsUseCases.postStations(danielStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
+		danielStationDTO = stationsUseCases.getStations(
+				danielStationDTO.getStationId(),
+				getInjector().getInstance(StationStrategy.class));
 		System.out.println(danielStationDTO);
 
 		assertNotNull(danielStationDTO.getStationReadiness());
@@ -193,9 +201,11 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Daniel and John FM should be active and have "recent scrobblers"
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO);
-		danielAndJohnStationDTO = stationsUseCases
-				.getStations(danielAndJohnStationDTO.getStationId());
+		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
+		danielAndJohnStationDTO = stationsUseCases.getStations(
+				danielAndJohnStationDTO.getStationId(), getInjector()
+						.getInstance(StationStrategy.class));
 		System.out.println(danielAndJohnStationDTO);
 
 		assertNull(danielAndJohnStationDTO.getStationReadiness());
@@ -217,7 +227,8 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 
 		// Daniel and John FM should be active
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO);
+		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
 
 		// remove a scrobbler and checks if it deactivates the station
@@ -225,7 +236,8 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 		stationUpdateDTO.setScrobblerIds(Arrays.asList(daniel.getId()
 				.toString()));
 		stationsUseCases.putStationsRemoveScrobblers(
-				danielAndJohnStationDTO.getStationId(), stationUpdateDTO);
+				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
+				getInjector().getInstance(StationStrategy.class));
 		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
 		assertFalse(station.isActive());
@@ -236,7 +248,8 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 		stationUpdateDTO.setScrobblerIds(Arrays.asList(daniel.getId()
 				.toString()));
 		stationsUseCases.putStationsAddScrobblers(
-				danielAndJohnStationDTO.getStationId(), stationUpdateDTO);
+				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
+				getInjector().getInstance(StationStrategy.class));
 		station = radioStationDAO.findById(new ObjectId(danielAndJohnStationDTO
 				.getStationId()));
 		assertTrue(station.isActive());
@@ -248,11 +261,14 @@ public class StationsUseCasesTest extends WithRequestContextTest {
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 
 		setRequestContextUser(gabriel);
-		stationsUseCases.postStations(gabrielStationDTO);
+		stationsUseCases.postStations(gabrielStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 		setRequestContextUser(daniel);
-		stationsUseCases.postStations(danielStationDTO);
+		stationsUseCases.postStations(danielStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO);
+		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
+				.getInstance(StationStrategy.class));
 
 		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations();
 		System.out.println(stationsDTO);

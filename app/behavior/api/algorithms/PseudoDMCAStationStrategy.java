@@ -9,7 +9,6 @@ import java.util.Set;
 
 import models.api.scrobbles.Scrobble;
 import models.api.scrobbles.Song;
-import models.api.stations.RadioStation;
 import models.api.stations.StationHistoryEntry;
 
 import org.bson.types.ObjectId;
@@ -38,8 +37,7 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 	private Set<List<String>> artistsPlayed3TimesInLast59Songs;
 	private Song nextSong;
 
-	public PseudoDMCAStationStrategy(RadioStation station) {
-		super(station);
+	public PseudoDMCAStationStrategy() {
 	}
 
 	@Override
@@ -53,6 +51,10 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 	// gets all scrobbles available
 	@Override
 	protected List<Scrobble> getRelevantScrobbles() {
+		if (getStation() == null) {
+			throw new IllegalStateException("setStation() should be called first");
+		}
+		
 		if (relevantScrobbles != null) {
 			return relevantScrobbles;
 		}
@@ -62,6 +64,10 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 
 	@Override
 	public Song getNextSong() throws SongwichAPIException {
+		if (getStation() == null) {
+			throw new IllegalStateException("setStation() should be called first");
+		}
+		
 		if (nextSong != null) {
 			// the algorithm has already been invoked
 			return nextSong;

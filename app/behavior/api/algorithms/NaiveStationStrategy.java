@@ -5,7 +5,6 @@ import java.util.Set;
 
 import models.api.scrobbles.Scrobble;
 import models.api.scrobbles.Song;
-import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 
@@ -25,12 +24,15 @@ public class NaiveStationStrategy extends AbstractStationStrategy implements
 	private Song nextSong;
 	private List<Scrobble> relevantScrobbles;
 
-	public NaiveStationStrategy(RadioStation station) {
-		super(station);
+	public NaiveStationStrategy() {
 	}
 
 	@Override
 	public Song getNextSong() {
+		if (getStation() == null) {
+			throw new IllegalStateException("setStation() should be called first");
+		}
+		
 		if (nextSong != null) {
 			// the algorithm has already been invoked
 			return nextSong;
@@ -55,6 +57,10 @@ public class NaiveStationStrategy extends AbstractStationStrategy implements
 
 	@Override
 	protected List<Scrobble> getRelevantScrobbles() {
+		if (getStation() == null) {
+			throw new IllegalStateException("setStation() should be called first");
+		}
+		
 		if (relevantScrobbles != null) {
 			return relevantScrobbles;
 		}

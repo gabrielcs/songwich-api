@@ -15,10 +15,10 @@ import models.api.scrobbles.User;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 
+import util.api.WithRequestContext;
 import database.api.scrobbles.UserDAOMongo;
-import database.api.util.WithRequestContextTest;
 
-public class UserDAOMongoTest extends WithRequestContextTest {
+public class UserDAOMongoTest extends WithRequestContext {
 	@Test
 	public void testSaveAndDelete() {
 		User user1 = new User("gabriel@example.com", "Gabriel Example");

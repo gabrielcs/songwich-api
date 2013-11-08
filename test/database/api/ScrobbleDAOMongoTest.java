@@ -18,12 +18,12 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
+import util.api.WithRequestContext;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 import database.api.scrobbles.UserDAOMongo;
-import database.api.util.WithRequestContextTest;
 
-public class ScrobbleDAOMongoTest extends WithRequestContextTest {
+public class ScrobbleDAOMongoTest extends WithRequestContext {
 
 	private ScrobbleDAO<ObjectId> scrobbleDao;
 	private Scrobble scrobble1, scrobble2, scrobble3, scrobble4, scrobble5,

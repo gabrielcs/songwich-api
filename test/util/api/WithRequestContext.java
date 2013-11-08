@@ -1,4 +1,4 @@
-package database.api.util;
+package util.api;
 
 import models.api.scrobbles.App;
 import models.api.scrobbles.AppDeveloper;
@@ -13,7 +13,7 @@ import behavior.api.usecases.RequestContext;
 import database.api.CascadeSaveDAO;
 import database.api.scrobbles.AppDAOMongo;
 
-public class WithRequestContextTest extends WithCleanDatabaseTest {
+public class WithRequestContext extends WithCleanDatabase {
 	private RequestContext requestContext;
 
 	protected RequestContext getContext() {

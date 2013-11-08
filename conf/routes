@@ -18,13 +18,13 @@ POST    /v0.4/users                                      controllers.api.scrobbl
 GET     /v0.4/users                                      controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null)
 PUT     /v0.4/users/:userId                              controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
 
-# Stations API
-POST    /v0.4/stations                                   controllers.api.stations.StationsController_V0_4.postStations()
-GET     /v0.4/stations                                   controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null)
-PUT     /v0.4/stations/:stationId                        controllers.api.stations.StationsController_V0_4.putStations(stationId)
-PUT     /v0.4/stations/:stationId/addScrobblers          controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId)
-PUT     /v0.4/stations/:stationId/removeScrobblers       controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)
-POST    /v0.4/nextSong	                                 controllers.api.stations.StationsController_V0_4.postNextSong()
+# Stations API (@ indicates dependency injection)
+POST    /v0.4/stations                                   @controllers.api.stations.StationsController_V0_4.postStations()
+GET     /v0.4/stations                                   @controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null)
+PUT     /v0.4/stations/:stationId                        @controllers.api.stations.StationsController_V0_4.putStations(stationId)
+PUT     /v0.4/stations/:stationId/addScrobblers          @controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId)
+PUT     /v0.4/stations/:stationId/removeScrobblers       @controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)
+POST    /v0.4/nextSong	                                 @controllers.api.stations.StationsController_V0_4.postNextSong()
 
 # Feedback API
 POST    /v0.4/songFeedback                               controllers.api.stations.SongFeedbackController_V0_4.postSongFeedback()

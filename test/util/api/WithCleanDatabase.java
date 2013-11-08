@@ -1,4 +1,4 @@
-package database.api.util;
+package util.api;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 
 import util.api.DatabaseContext;
 
-public class WithCleanDatabaseTest {
+public class WithCleanDatabase {
 	private static final String DB_NAME = "songwich-api-test";
 
 	@Before

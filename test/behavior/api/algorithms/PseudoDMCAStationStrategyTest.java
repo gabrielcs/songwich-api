@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import util.api.SongwichAPIException;
+import util.api.WithRequestContext;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
 import database.api.scrobbles.UserDAO;
@@ -19,9 +20,8 @@ import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
-import database.api.util.WithRequestContextTest;
 
-public class PseudoDMCAStationStrategyTest extends WithRequestContextTest {
+public class PseudoDMCAStationStrategyTest extends WithRequestContext {
 	User gabriel;
 	private RadioStation gabrielFM;
 
@@ -122,8 +122,8 @@ public class PseudoDMCAStationStrategyTest extends WithRequestContextTest {
 		StationHistoryEntry stationHistoryEntry;
 
 		for (int i = 0; i < numberOfScrobbles * numberOfRounds; i++) {
-			StationStrategy stationStrategy = new PseudoDMCAStationStrategy(
-					gabrielFM);
+			StationStrategy stationStrategy = new PseudoDMCAStationStrategy();
+			stationStrategy.setStation(gabrielFM);
 			song = stationStrategy.getNextSong();
 			stationHistoryEntry = new StationHistoryEntry(gabrielFM.getId(),
 					song, System.currentTimeMillis());

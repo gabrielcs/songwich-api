@@ -21,13 +21,13 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
+import util.api.WithRequestContext;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
-import database.api.util.WithRequestContextTest;
 
-public class RadioStationDAOMongoTest extends WithRequestContextTest {
+public class RadioStationDAOMongoTest extends WithRequestContext {
 
 	private RadioStationDAO<ObjectId> radioStationDao;
 
