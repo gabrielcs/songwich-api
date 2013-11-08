@@ -17,14 +17,6 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String albumTitle;
 
-	public String getAlbumTitle() {
-		return albumTitle;
-	}
-
-	public void setAlbumTitle(String albumTitle) {
-		this.albumTitle = albumTitle;
-	}
-
 	private List<String> artistsNames;
 
 	public SongDTO_V0_4() {
@@ -33,6 +25,14 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@Override
 	public void addValidation() {
 		// nothing to validate
+	}
+	
+	public String getAlbumTitle() {
+		return albumTitle;
+	}
+
+	public void setAlbumTitle(String albumTitle) {
+		this.albumTitle = albumTitle;
 	}
 
 	public String getTrackTitle() {

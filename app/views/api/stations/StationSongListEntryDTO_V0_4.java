@@ -18,6 +18,8 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	// only for output
 	private String trackTitle;
+	
+	private String albumTitle;
 
 	/*
 	 * Multiple artist tracks will be separated by comma in a single string:
@@ -25,7 +27,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	 * 
 	 * Only for output
 	 */
-	private String artistName;
+	private List<String> artistsNames;
 
 	// only for output
 	private String idForFeedback;
@@ -52,6 +54,14 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public boolean addRecentScrobbler(UserDTO_V0_4 recentScrobbler) {
 		return recentScrobblers.add(recentScrobbler);
 	}
+	
+	public String getAlbumTitle() {
+		return albumTitle;
+	}
+
+	public void setAlbumTitle(String albumTitle) {
+		this.albumTitle = albumTitle;
+	}
 
 	public String getTrackTitle() {
 		return trackTitle;
@@ -61,12 +71,12 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.trackTitle = track_title;
 	}
 	
-	public String getArtistName() {
-		return artistName;
+	public List<String> getArtistsNames() {
+		return artistsNames;
 	}
 
-	public void setArtistName(String artistName) {
-		this.artistName = artistName;
+	public void setArtistsNames(List<String> artistsNames) {
+		this.artistsNames = artistsNames;
 	}
 
 	public String getIdForFeedback() {
@@ -80,7 +90,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	@Override
 	public String toString() {
 		return "StationSongListEntryDTO_V0_4 [trackTitle=" + trackTitle
-				+ ", artistName=" + artistName + ", idForFeedback="
+				+ ", artistsNames=" + artistsNames + ", idForFeedback="
 				+ idForFeedback + ", recentScrobblers=" + recentScrobblers
 				+ "]";
 	}

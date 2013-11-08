@@ -523,9 +523,8 @@ public class StationsUseCases extends UseCase {
 			RadioStationDTO_V0_4 stationDTO) {
 		// nowPlaying
 		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
-		nowPlayingDTO.setArtistName(station.getNowPlaying()
-				.getStationHistoryEntry().getSong().getArtistsNames()
-				.toString());
+		nowPlayingDTO.setArtistsNames(station.getNowPlaying()
+				.getStationHistoryEntry().getSong().getArtistsNames());
 		nowPlayingDTO.setTrackTitle(station.getNowPlaying()
 				.getStationHistoryEntry().getSong().getSongTitle());
 		nowPlayingDTO.setIdForFeedback(station.getNowPlaying()
@@ -534,9 +533,8 @@ public class StationsUseCases extends UseCase {
 
 		// lookAhead
 		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
-		lookAheadDTO.setArtistName(station.getLookAhead()
-				.getStationHistoryEntry().getSong().getArtistsNames()
-				.toString());
+		lookAheadDTO.setArtistsNames(station.getLookAhead()
+				.getStationHistoryEntry().getSong().getArtistsNames());
 		lookAheadDTO.setTrackTitle(station.getLookAhead()
 				.getStationHistoryEntry().getSong().getSongTitle());
 		lookAheadDTO.setIdForFeedback(station.getLookAhead()
@@ -601,8 +599,8 @@ public class StationsUseCases extends UseCase {
 
 		// sets StationSongListDTO's nowPlaying
 		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = new StationSongListEntryDTO_V0_4();
-		nowPlayingSongListEntryDTO.setArtistName(nowPlayingHistoryEntry
-				.getSong().getArtistsNames().toString());
+		nowPlayingSongListEntryDTO.setArtistsNames(nowPlayingHistoryEntry
+				.getSong().getArtistsNames());
 		nowPlayingSongListEntryDTO.setTrackTitle(nowPlayingHistoryEntry
 				.getSong().getSongTitle());
 		nowPlayingSongListEntryDTO.setIdForFeedback(nowPlayingHistoryEntry
@@ -611,8 +609,8 @@ public class StationsUseCases extends UseCase {
 
 		// sets StationSongListDTO's lookAhead
 		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = new StationSongListEntryDTO_V0_4();
-		lookAheadSongListEntryDTO.setArtistName(lookAheadHistoryEntry.getSong()
-				.getArtistsNames().toString());
+		lookAheadSongListEntryDTO.setArtistsNames(lookAheadHistoryEntry
+				.getSong().getArtistsNames());
 		lookAheadSongListEntryDTO.setTrackTitle(lookAheadHistoryEntry.getSong()
 				.getSongTitle());
 		lookAheadSongListEntryDTO.setIdForFeedback(lookAheadHistoryEntry

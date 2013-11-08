@@ -14,6 +14,7 @@ import views.api.APIStatus_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
+import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
@@ -51,8 +52,8 @@ public class SongFeedbackUseCases extends UseCase {
 		SongFeedback songFeedback = new SongFeedback(feedbackType, getContext()
 				.getUser().getId());
 		stationHistoryEntry.addSongFeedback(songFeedback);
-		getStationHistoryDAO().save(stationHistoryEntry, getContext()
-				.getAppDeveloper().getEmailAddress());
+		getStationHistoryDAO().save(stationHistoryEntry,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		// update DTO
 		updateDTOForPostSongFeedback(songFeedbackDTO, stationHistoryEntry,
@@ -81,8 +82,8 @@ public class SongFeedbackUseCases extends UseCase {
 		// process request
 		stationHistoryEntry.removeSongFeedback(songFeedback);
 		// save
-		getStationHistoryDAO().save(stationHistoryEntry, getContext()
-				.getAppDeveloper().getEmailAddress());
+		getStationHistoryDAO().save(stationHistoryEntry,
+				getContext().getAppDeveloper().getEmailAddress());
 	}
 
 	private SongFeedback buildSongFeedback(String feedbackType)
@@ -156,13 +157,16 @@ public class SongFeedbackUseCases extends UseCase {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
 		starredSongList.setUserId(userId);
 
-		SongDTO_V0_4 songDTO;
+		StationSongListEntryDTO_V0_4 songListEntryDTO;
 		for (StationHistoryEntry stationHistoryEntry : stationHistoryEntries) {
-			songDTO = new SongDTO_V0_4();
-			songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
-			songDTO.setArtistsNames(stationHistoryEntry.getSong()
+			songListEntryDTO = new StationSongListEntryDTO_V0_4();
+			songListEntryDTO.setTrackTitle(stationHistoryEntry.getSong()
+					.getSongTitle());
+			songListEntryDTO.setArtistsNames(stationHistoryEntry.getSong()
 					.getArtistsNames());
-			starredSongList.add(songDTO);
+			songListEntryDTO.setIdForFeedback(stationHistoryEntry.getId()
+					.toString());
+			starredSongList.add(songListEntryDTO);
 		}
 		return starredSongList;
 	}
