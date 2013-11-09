@@ -97,7 +97,6 @@ public class UsersController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
-	@UserAuthenticated
 	public static Result getUsers(String userId) {
 		if (userId == null) {
 			// this is a call for all registered users

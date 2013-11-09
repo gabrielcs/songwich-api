@@ -69,28 +69,10 @@ public class UsersUseCases extends UseCase {
 	}
 
 	public UserDTO_V0_4 getUsers(String userId) throws SongwichAPIException {
-		if (!ObjectId.isValid(userId)) {
-			throw new SongwichAPIException("Invalid userId",
-					APIStatus_V0_4.INVALID_PARAMETER);
-		} else if (getContext().getUser() == null) {
-			throw new SongwichAPIException(
-					APIStatus_V0_4.UNAUTHORIZED.toString(),
-					APIStatus_V0_4.UNAUTHORIZED);
-		}
-
-		ObjectId userIdObject = new ObjectId(userId);
-		User user = getUserDAO().findById(userIdObject);
-		if (user == null) {
-			throw new SongwichAPIException("Non-existent userId",
-					APIStatus_V0_4.INVALID_PARAMETER);
-		} else if (!user.equals(getContext().getUser())) {
-			throw new SongwichAPIException(
-					APIStatus_V0_4.UNAUTHORIZED.toString(),
-					APIStatus_V0_4.UNAUTHORIZED);
-		}
+		User user = authorizeForGetUsers(userId);
 
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
-				.findByScrobblerId(userIdObject);
+				.findByScrobblerId(user.getId());
 
 		return createDTOForGetUsers(user, scrobblerStations);
 	}
@@ -116,6 +98,24 @@ public class UsersUseCases extends UseCase {
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(user.getId());
 		updateDTOPutUsers(user, userUpdateDTO, scrobblerStations);
+	}
+	
+	private User authorizeForGetUsers(String userId)
+			throws SongwichAPIException {
+		
+		if (!ObjectId.isValid(userId)) {
+			throw new SongwichAPIException("Invalid userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		ObjectId userIdObject = new ObjectId(userId);
+		User user = getUserDAO().findById(userIdObject);
+		if (user == null) {
+			throw new SongwichAPIException("Non-existent userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+		
+		return user;
 	}
 
 	private User authorizePutUsers(String userId,
