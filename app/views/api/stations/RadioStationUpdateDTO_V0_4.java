@@ -2,18 +2,17 @@ package views.api.stations;
 
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import play.data.validation.ValidationError;
+import views.api.DTOValidator;
 import views.api.DataTransferObject;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("station")
-public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
 
 	// only for output
 	private String stationId;
@@ -24,10 +23,10 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String active;
 
 	// only for output
-	private StationSongListEntryDTO_V0_4 nowPlaying;
+	private TrackDTO_V0_4 nowPlaying;
 
 	// only for output
-	private StationSongListEntryDTO_V0_4 lookAhead;
+	private TrackDTO_V0_4 lookAhead;
 
 	private String groupName;
 
@@ -36,40 +35,22 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String imageUrl;
 
 	public RadioStationUpdateDTO_V0_4() {
+		this.new RadioStationUpdateDTOValidator();
 	}
 
-	@Override
-	public void addValidation() {
-		addValidation(validateStationName(), validateScrobblerIds(),
-				validateImageUrl());
-	}
-
-	private ValidationError validateStationName() {
-		return validateIfNonNullThenNonEmptyProperty("stationName", stationName);
-	}
-
-	private ValidationError validateScrobblerIds() {
-		return validateObjectIdArray("scrobblerIds", "scrobblerId",
-				scrobblerIds);
-	}
-
-	private ValidationError validateImageUrl() {
-		return validateImageUrl("imageUrl", imageUrl);
-	}
-
-	public StationSongListEntryDTO_V0_4 getNowPlaying() {
+	public TrackDTO_V0_4 getNowPlaying() {
 		return nowPlaying;
 	}
 
-	public void setNowPlaying(StationSongListEntryDTO_V0_4 nowPlaying) {
+	public void setNowPlaying(TrackDTO_V0_4 nowPlaying) {
 		this.nowPlaying = nowPlaying;
 	}
 
-	public StationSongListEntryDTO_V0_4 getLookAhead() {
+	public TrackDTO_V0_4 getLookAhead() {
 		return lookAhead;
 	}
 
-	public void setLookAhead(StationSongListEntryDTO_V0_4 lookAhead) {
+	public void setLookAhead(TrackDTO_V0_4 lookAhead) {
 		this.lookAhead = lookAhead;
 	}
 
@@ -128,5 +109,26 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
 				+ ", nowPlaying=" + nowPlaying + ", lookAhead=" + lookAhead
 				+ ", groupName=" + groupName + ", scrobblerIds=" + scrobblerIds
 				+ ", imageUrl=" + imageUrl + "]";
+	}
+	
+	public class RadioStationUpdateDTOValidator extends DTOValidator {
+		@Override
+		public void addValidation() {
+			addValidation(validateStationName(), validateScrobblerIds(),
+					validateImageUrl());
+		}
+
+		private ValidationError validateStationName() {
+			return validateIfNonNullThenNonEmptyProperty("stationName", stationName);
+		}
+
+		private ValidationError validateScrobblerIds() {
+			return validateObjectIdArray("scrobblerIds", "scrobblerId",
+					scrobblerIds);
+		}
+
+		private ValidationError validateImageUrl() {
+			return validateImageUrl("imageUrl", imageUrl);
+		}
 	}
 }

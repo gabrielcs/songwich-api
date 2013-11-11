@@ -2,17 +2,16 @@ package views.api.stations;
 
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import views.api.DTOValidator;
 import views.api.DataTransferObject;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("song")
-public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class SongDTO_V0_4 extends DataTransferObject {
 	private String trackTitle;
 	
 	private String albumTitle;
@@ -20,11 +19,7 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private List<String> artistsNames;
 
 	public SongDTO_V0_4() {
-	}
-
-	@Override
-	public void addValidation() {
-		// nothing to validate
+		setValidator(this.new SongDTOValidator());
 	}
 	
 	public String getAlbumTitle() {
@@ -84,5 +79,12 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 		} else if (!trackTitle.equals(other.trackTitle))
 			return false;
 		return true;
+	}
+	
+	public class SongDTOValidator extends DTOValidator {
+		@Override
+		public void addValidation() {
+			// nothing to validate
+		}
 	}
 }

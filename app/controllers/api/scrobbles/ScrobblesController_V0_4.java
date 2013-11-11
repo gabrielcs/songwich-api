@@ -11,7 +11,7 @@ import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
-import views.api.DataTransferObject;
+import views.api.DTOValidator;
 import views.api.scrobbles.GetScrobblesResponse_V0_4;
 import views.api.scrobbles.PostScrobblesResponse_V0_4;
 import views.api.scrobbles.PutScrobblesResponse_V0_4;
@@ -31,7 +31,7 @@ public class ScrobblesController_V0_4 extends APIController {
 		if (scrobblesForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(scrobblesForm.errors()));
+					DTOValidator.errorsAsString(scrobblesForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			ScrobblesDTO_V0_4 scrobbleDTO = scrobblesForm.get();
@@ -66,7 +66,7 @@ public class ScrobblesController_V0_4 extends APIController {
 		if (scrobblesUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(scrobblesUpdateForm
+					DTOValidator.errorsAsString(scrobblesUpdateForm
 							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {

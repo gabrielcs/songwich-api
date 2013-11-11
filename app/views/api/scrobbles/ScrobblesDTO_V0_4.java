@@ -3,18 +3,17 @@ package views.api.scrobbles;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import play.data.validation.ValidationError;
+import views.api.DTOValidator;
 import views.api.DataTransferObject;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
-public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class ScrobblesDTO_V0_4 extends DataTransferObject {
 	// used only for output
 	private String scrobbleId;
 
@@ -42,14 +41,10 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
+		
+		setValidator(this.new ScrobblesDTOValidator());
 	}
 
-	@Override
-	public void addValidation() {
-		addValidation(validateTrackTitle(), validateArtistsNames(),
-				validateTimestamp(), validateChosenByUser());
-	}
-	
 	public String getScrobbleId() {
 		return scrobbleId;
 	}
@@ -82,10 +77,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.trackTitle = track_title;
 	}
 
-	private ValidationError validateTrackTitle() {
-		return validateRequiredProperty("trackTitle", trackTitle);
-	}
-
 	public List<String> getArtistsNames() {
 		return artistsNames;
 	}
@@ -93,10 +84,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setArtistsNames(List<String> artistsNames) {
 		// separate by comma here?
 		this.artistsNames = artistsNames;
-	}
-
-	private ValidationError validateArtistsNames() {
-		return validateRequiredNonEmptyArray("artistsNames", artistsNames);
 	}
 
 	public String getPlayer() {
@@ -128,29 +115,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.timestamp = timestamp;
 	}
 
-	// convert to Long and delegate further validation
-	private ValidationError validateTimestamp() {
-		Long timestampNumber;
-		try {
-			timestampNumber = Long.parseLong(timestamp);
-		} catch (NumberFormatException e) {
-			return new ValidationError("timestamp",
-					"timestamp is not an integer number");
-		}
-
-		// check if the number is within the range
-		if (timestampNumber > System.currentTimeMillis()) {
-			return new ValidationError("timestamp",
-					"timestamp cannot be in the future");
-		} else if (timestampNumber < new GregorianCalendar(2002, 1, 1)
-				.getTimeInMillis()) {
-			// it's older than scrobbling itself (2002)
-			return new ValidationError("timestamp", "timestamp is too old");
-		}
-
-		return null;
-	}
-
 	/**
 	 * @return the chosenByUser
 	 */
@@ -166,8 +130,49 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.chosenByUser = chosenByUser;
 	}
 
-	private ValidationError validateChosenByUser() {
-		// choosenByUser is optional
-		return validateBoolean("chosenByUser", chosenByUser);
+	
+	
+	public class ScrobblesDTOValidator extends DTOValidator {
+		@Override
+		public void addValidation() {
+			addValidation(validateTrackTitle(), validateArtistsNames(),
+					validateTimestamp(), validateChosenByUser());
+		}
+
+		private ValidationError validateTrackTitle() {
+			return validateRequiredProperty("trackTitle", trackTitle);
+		}
+		
+		private ValidationError validateArtistsNames() {
+			return validateRequiredNonEmptyArray("artistsNames", artistsNames);
+		}
+		
+		// convert to Long and delegate further validation
+		private ValidationError validateTimestamp() {
+			Long timestampNumber;
+			try {
+				timestampNumber = Long.parseLong(timestamp);
+			} catch (NumberFormatException e) {
+				return new ValidationError("timestamp",
+						"timestamp is not an integer number");
+			}
+
+			// check if the number is within the range
+			if (timestampNumber > System.currentTimeMillis()) {
+				return new ValidationError("timestamp",
+						"timestamp cannot be in the future");
+			} else if (timestampNumber < new GregorianCalendar(2002, 1, 1)
+					.getTimeInMillis()) {
+				// it's older than scrobbling itself (2002)
+				return new ValidationError("timestamp", "timestamp is too old");
+			}
+
+			return null;
+		}
+		
+		private ValidationError validateChosenByUser() {
+			// choosenByUser is optional
+			return validateBoolean("chosenByUser", chosenByUser);
+		}
 	}
 }

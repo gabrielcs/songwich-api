@@ -21,7 +21,7 @@ import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
-import views.api.stations.StationSongListEntryDTO_V0_4;
+import views.api.stations.TrackDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -526,7 +526,7 @@ public class StationsUseCases extends UseCase {
 	private static void updateDTOForGetActiveStation(RadioStation station,
 			RadioStationDTO_V0_4 stationDTO) {
 		// nowPlaying
-		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
+		TrackDTO_V0_4 nowPlayingDTO = new TrackDTO_V0_4();
 		nowPlayingDTO.setArtistsNames(station.getNowPlaying()
 				.getStationHistoryEntry().getSong().getArtistsNames());
 		nowPlayingDTO.setTrackTitle(station.getNowPlaying()
@@ -536,7 +536,7 @@ public class StationsUseCases extends UseCase {
 		stationDTO.setNowPlaying(nowPlayingDTO);
 
 		// lookAhead
-		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
+		TrackDTO_V0_4 lookAheadDTO = new TrackDTO_V0_4();
 		lookAheadDTO.setArtistsNames(station.getLookAhead()
 				.getStationHistoryEntry().getSong().getArtistsNames());
 		lookAheadDTO.setTrackTitle(station.getLookAhead()
@@ -566,11 +566,11 @@ public class StationsUseCases extends UseCase {
 				lookAheadHistoryEntry);
 
 		// updates the song scrobblers
-		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = radioStationDTO
+		TrackDTO_V0_4 nowPlayingSongListEntryDTO = radioStationDTO
 				.getNowPlaying();
 		nowPlayingSongListEntryDTO
 				.setRecentScrobblers(createScrobblersDTO(nowPlayingScrobblers));
-		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = radioStationDTO
+		TrackDTO_V0_4 lookAheadSongListEntryDTO = radioStationDTO
 				.getLookAhead();
 		lookAheadSongListEntryDTO
 				.setRecentScrobblers(createScrobblersDTO(lookAheadScrobblers));
@@ -602,7 +602,7 @@ public class StationsUseCases extends UseCase {
 			StationHistoryEntry lookAheadHistoryEntry) {
 
 		// sets StationSongListDTO's nowPlaying
-		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = new StationSongListEntryDTO_V0_4();
+		TrackDTO_V0_4 nowPlayingSongListEntryDTO = new TrackDTO_V0_4();
 		nowPlayingSongListEntryDTO.setArtistsNames(nowPlayingHistoryEntry
 				.getSong().getArtistsNames());
 		nowPlayingSongListEntryDTO.setTrackTitle(nowPlayingHistoryEntry
@@ -612,7 +612,7 @@ public class StationsUseCases extends UseCase {
 		radioStationUpdateDTO.setNowPlaying(nowPlayingSongListEntryDTO);
 
 		// sets StationSongListDTO's lookAhead
-		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = new StationSongListEntryDTO_V0_4();
+		TrackDTO_V0_4 lookAheadSongListEntryDTO = new TrackDTO_V0_4();
 		lookAheadSongListEntryDTO.setArtistsNames(lookAheadHistoryEntry
 				.getSong().getArtistsNames());
 		lookAheadSongListEntryDTO.setTrackTitle(lookAheadHistoryEntry.getSong()

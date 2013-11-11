@@ -1,16 +1,15 @@
 package views.api.stations;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import views.api.DTOValidator;
 import views.api.DataTransferObject;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("isSongStarredResult")
-public class IsSongStarredDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class IsSongStarredDTO_V0_4 extends DataTransferObject {
 	
 	private String userId;
 
@@ -22,11 +21,7 @@ public class IsSongStarredDTO_V0_4 extends DataTransferObject<Scrobble> {
 	private String idForFeedback;
 
 	public IsSongStarredDTO_V0_4() {
-	}
-
-	@Override
-	public void addValidation() {
-		// nothing to validate
+		setValidator(this.new IsSongStarredDTOValidator());
 	}
 	
 	public String getUserId() {
@@ -59,6 +54,13 @@ public class IsSongStarredDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	public void setIdForFeedback(String idForFeedback) {
 		this.idForFeedback = idForFeedback;
+	}
+	
+	public class IsSongStarredDTOValidator extends DTOValidator {
+		@Override
+		public void addValidation() {
+			// nothing to validate
+		}
 	}
 
 }

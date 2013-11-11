@@ -16,7 +16,7 @@ import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
-import views.api.stations.StationSongListEntryDTO_V0_4;
+import views.api.stations.TrackDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
@@ -198,9 +198,9 @@ public class SongFeedbackUseCases extends UseCase {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
 		starredSongList.setUserId(userId);
 
-		StationSongListEntryDTO_V0_4 songListEntryDTO;
+		TrackDTO_V0_4 songListEntryDTO;
 		for (StationHistoryEntry stationHistoryEntry : stationHistoryEntries) {
-			songListEntryDTO = new StationSongListEntryDTO_V0_4();
+			songListEntryDTO = new TrackDTO_V0_4();
 			songListEntryDTO.setTrackTitle(stationHistoryEntry.getSong()
 					.getSongTitle());
 			songListEntryDTO.setArtistsNames(stationHistoryEntry.getSong()

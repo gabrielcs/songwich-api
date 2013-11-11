@@ -3,19 +3,17 @@ package views.api.stations;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import views.api.DTOValidator;
 import views.api.DataTransferObject;
 import views.api.scrobbles.UserDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("stationEntry")
-public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
-	
+public class TrackDTO_V0_4 extends DataTransferObject {
 	// only for output
 	private String trackTitle;
 	
@@ -35,12 +33,8 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	// only for output
 	private List<UserDTO_V0_4> recentScrobblers = new ArrayList<UserDTO_V0_4>();
 
-	public StationSongListEntryDTO_V0_4() {
-	}
-
-	@Override
-	public void addValidation() {
-		// nothing to validate
+	public TrackDTO_V0_4() {
+		setValidator(this.new TrackDTOValidator());
 	}
 	
 	public List<UserDTO_V0_4> getRecentScrobblers() {
@@ -118,7 +112,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StationSongListEntryDTO_V0_4 other = (StationSongListEntryDTO_V0_4) obj;
+		TrackDTO_V0_4 other = (TrackDTO_V0_4) obj;
 		if (albumTitle == null) {
 			if (other.albumTitle != null)
 				return false;
@@ -135,6 +129,13 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 		} else if (!trackTitle.equals(other.trackTitle))
 			return false;
 		return true;
+	}
+	
+	public class TrackDTOValidator extends DTOValidator {
+		@Override
+		public void addValidation() {
+			// nothing to validate
+		}
 	}
 
 }

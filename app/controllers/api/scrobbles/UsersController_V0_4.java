@@ -11,7 +11,7 @@ import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
-import views.api.DataTransferObject;
+import views.api.DTOValidator;
 import views.api.scrobbles.GetUsersResponse_V0_4;
 import views.api.scrobbles.GetUsersUniqueResponse_V0_4;
 import views.api.scrobbles.PostUsersResponse_V0_4;
@@ -32,7 +32,7 @@ public class UsersController_V0_4 extends APIController {
 		if (form.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(form.errors()));
+					DTOValidator.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			UserDTO_V0_4 userDTO = form.get();
@@ -56,7 +56,7 @@ public class UsersController_V0_4 extends APIController {
 		if (form.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(form.errors()));
+					DTOValidator.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			UserUpdateDTO_V0_4 userUpdateDTO = form.get();

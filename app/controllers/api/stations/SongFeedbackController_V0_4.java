@@ -9,7 +9,7 @@ import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
-import views.api.DataTransferObject;
+import views.api.DTOValidator;
 import views.api.stations.GetIsSongStarredResponse_V0_4;
 import views.api.stations.GetStarredSongsResponse_V0_4;
 import views.api.stations.IsSongStarredDTO_V0_4;
@@ -31,7 +31,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 		if (songFeedbackForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(songFeedbackForm.errors()));
+					DTOValidator.errorsAsString(songFeedbackForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			SongFeedbackDTO_V0_4 songFeedbackDTO = songFeedbackForm.get();

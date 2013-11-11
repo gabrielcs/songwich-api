@@ -13,7 +13,7 @@ import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
-import views.api.DataTransferObject;
+import views.api.DTOValidator;
 import views.api.stations.GetStationsResponse_V0_4;
 import views.api.stations.GetStationsUniqueResponse_V0_4;
 import views.api.stations.PostNextSongResponse_V0_4;
@@ -46,7 +46,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(radioStationForm.errors()));
+					DTOValidator.errorsAsString(radioStationForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			RadioStationDTO_V0_4 radioStationDTO = radioStationForm.get();
@@ -127,7 +127,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(radioStationUpdateForm
+					DTOValidator.errorsAsString(radioStationUpdateForm
 							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
@@ -168,7 +168,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(radioStationUpdateForm
+					DTOValidator.errorsAsString(radioStationUpdateForm
 							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
@@ -210,7 +210,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(radioStationUpdateForm
+					DTOValidator.errorsAsString(radioStationUpdateForm
 							.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
@@ -251,7 +251,7 @@ public class StationsController_V0_4 extends APIController {
 		if (stationEntryForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DataTransferObject.errorsAsString(stationEntryForm.errors()));
+					DTOValidator.errorsAsString(stationEntryForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			RadioStationUpdateDTO_V0_4 radioStationDTO = stationEntryForm.get();
