@@ -1,5 +1,7 @@
 package views.api.stations;
 
+import models.api.scrobbles.Scrobble;
+
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -8,7 +10,7 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("isSongStarredResult")
-public class IsSongStarredDTO_V0_4 extends DataTransferObject {
+public class IsSongStarredDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private String userId;
 

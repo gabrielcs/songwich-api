@@ -16,7 +16,7 @@ import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
-import views.api.stations.TrackDTO_V0_4;
+import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
@@ -188,7 +188,7 @@ public class SongFeedbackUseCases extends UseCase {
 
 		songFeedbackDTO.setUserId(userId);
 		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
-		songDTO.setSongTitle(stationHistoryEntry.getSong().getSongTitle());
+		songDTO.setTrackTitle(stationHistoryEntry.getSong().getSongTitle());
 		songDTO.setArtistsNames(stationHistoryEntry.getSong().getArtistsNames());
 		songFeedbackDTO.setSong(songDTO);
 	}
@@ -198,10 +198,10 @@ public class SongFeedbackUseCases extends UseCase {
 		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
 		starredSongList.setUserId(userId);
 
-		TrackDTO_V0_4 songListEntryDTO;
+		StationSongListEntryDTO_V0_4 songListEntryDTO;
 		for (StationHistoryEntry stationHistoryEntry : stationHistoryEntries) {
-			songListEntryDTO = new TrackDTO_V0_4();
-			songListEntryDTO.setSongTitle(stationHistoryEntry.getSong()
+			songListEntryDTO = new StationSongListEntryDTO_V0_4();
+			songListEntryDTO.setTrackTitle(stationHistoryEntry.getSong()
 					.getSongTitle());
 			songListEntryDTO.setArtistsNames(stationHistoryEntry.getSong()
 					.getArtistsNames());
@@ -217,7 +217,7 @@ public class SongFeedbackUseCases extends UseCase {
 			Song song) {
 		
 		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
-		songDTO.setSongTitle(song.getSongTitle());
+		songDTO.setTrackTitle(song.getSongTitle());
 		songDTO.setArtistsNames(song.getArtistsNames());
 		songDTO.setAlbumTitle(song.getAlbumTitle());
 

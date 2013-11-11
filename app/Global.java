@@ -9,7 +9,7 @@ import util.api.DevelopmentDependencyInjectionModule;
 import util.api.MongoDependencyInjectionModule;
 import util.api.MyLogger;
 import util.api.ProductionDependencyInjectionModule;
-import views.api.APIResponse;
+import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 
 import com.google.inject.Guice;
@@ -70,7 +70,7 @@ public class Global extends GlobalSettings {
 	// error) {
 	public Result onBadRequest(RequestHeader request, String error) {
 		MyLogger.warn(String.format("Bad request [%s]: %s\n", error, request));
-		APIResponse response = new APIResponse(
+		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.BAD_REQUEST, error);
 		// return Promise.<SimpleResult>
 		// pure(Results.badRequest(Json.toJson(response)));
@@ -87,7 +87,7 @@ public class Global extends GlobalSettings {
 		}
 
 		MyLogger.warn("Handler not found: " + request);
-		APIResponse response = new APIResponse(
+		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.BAD_REQUEST, String.format(
 						"API method not found: %s %s", request.method(),
 						request.path()));
@@ -112,7 +112,7 @@ public class Global extends GlobalSettings {
 		MyLogger.error(String.format("Error while processing: %s [%s]",
 				request, message));
 
-		APIResponse response = new APIResponse(
+		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.UNKNOWN_ERROR, message);
 		// return Promise.<SimpleResult>
 		// pure(Results.badRequest(Json.toJson(response)));

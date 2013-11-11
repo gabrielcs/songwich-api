@@ -3,6 +3,8 @@ package views.api.scrobbles;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import models.api.scrobbles.Scrobble;
+
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -12,7 +14,7 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
-public class ScrobbleDTO_V0_4 extends DataTransferObject {
+public class ScrobblesDTO_V0_4 extends DataTransferObject<Scrobble> {
 	// used only for output
 	private String scrobbleId;
 
@@ -37,7 +39,7 @@ public class ScrobbleDTO_V0_4 extends DataTransferObject {
 
 	private String timestamp;
 
-	public ScrobbleDTO_V0_4() {
+	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
 	}

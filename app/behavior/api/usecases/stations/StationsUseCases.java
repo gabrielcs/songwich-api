@@ -21,8 +21,7 @@ import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
-import views.api.stations.RadioStationsListDTO_V0_4;
-import views.api.stations.TrackDTO_V0_4;
+import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -33,7 +32,7 @@ public class StationsUseCases extends UseCase {
 		super(context);
 	}
 
-	public RadioStationsListDTO_V0_4 getStations() {
+	public List<RadioStationDTO_V0_4> getStations() {
 		// TODO: limit the number of results
 		List<RadioStation> stations = getRadioStationDAO().find().asList();
 
@@ -393,7 +392,7 @@ public class StationsUseCases extends UseCase {
 
 		if (station.getScrobbler().isIndividualStation()) {
 			throw new SongwichAPIException(
-					"Not allowed to change scrobblers on an individual station",
+					"Not allowed to change scrobblers on a user station",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
@@ -479,10 +478,10 @@ public class StationsUseCases extends UseCase {
 		}
 	}
 
-	public static RadioStationsListDTO_V0_4 createDTOForGetMultipleStations(
+	public static List<RadioStationDTO_V0_4> createDTOForGetMultipleStations(
 			List<RadioStation> stations) {
 
-		RadioStationsListDTO_V0_4 stationsDTO = new RadioStationsListDTO_V0_4();
+		List<RadioStationDTO_V0_4> stationsDTO = new ArrayList<RadioStationDTO_V0_4>();
 		RadioStationDTO_V0_4 stationDTO;
 		for (RadioStation station : stations) {
 			stationDTO = createBasicDTOForStations(station);
@@ -523,20 +522,20 @@ public class StationsUseCases extends UseCase {
 	private static void updateDTOForGetActiveStation(RadioStation station,
 			RadioStationDTO_V0_4 stationDTO) {
 		// nowPlaying
-		TrackDTO_V0_4 nowPlayingDTO = new TrackDTO_V0_4();
+		StationSongListEntryDTO_V0_4 nowPlayingDTO = new StationSongListEntryDTO_V0_4();
 		nowPlayingDTO.setArtistsNames(station.getNowPlaying()
 				.getStationHistoryEntry().getSong().getArtistsNames());
-		nowPlayingDTO.setSongTitle(station.getNowPlaying()
+		nowPlayingDTO.setTrackTitle(station.getNowPlaying()
 				.getStationHistoryEntry().getSong().getSongTitle());
 		nowPlayingDTO.setIdForFeedback(station.getNowPlaying()
 				.getStationHistoryEntry().getId().toString());
 		stationDTO.setNowPlaying(nowPlayingDTO);
 
 		// lookAhead
-		TrackDTO_V0_4 lookAheadDTO = new TrackDTO_V0_4();
+		StationSongListEntryDTO_V0_4 lookAheadDTO = new StationSongListEntryDTO_V0_4();
 		lookAheadDTO.setArtistsNames(station.getLookAhead()
 				.getStationHistoryEntry().getSong().getArtistsNames());
-		lookAheadDTO.setSongTitle(station.getLookAhead()
+		lookAheadDTO.setTrackTitle(station.getLookAhead()
 				.getStationHistoryEntry().getSong().getSongTitle());
 		lookAheadDTO.setIdForFeedback(station.getLookAhead()
 				.getStationHistoryEntry().getId().toString());
@@ -563,11 +562,11 @@ public class StationsUseCases extends UseCase {
 				lookAheadHistoryEntry);
 
 		// updates the song scrobblers
-		TrackDTO_V0_4 nowPlayingSongListEntryDTO = radioStationDTO
+		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = radioStationDTO
 				.getNowPlaying();
 		nowPlayingSongListEntryDTO
 				.setRecentScrobblers(createScrobblersDTO(nowPlayingScrobblers));
-		TrackDTO_V0_4 lookAheadSongListEntryDTO = radioStationDTO
+		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = radioStationDTO
 				.getLookAhead();
 		lookAheadSongListEntryDTO
 				.setRecentScrobblers(createScrobblersDTO(lookAheadScrobblers));
@@ -599,20 +598,20 @@ public class StationsUseCases extends UseCase {
 			StationHistoryEntry lookAheadHistoryEntry) {
 
 		// sets StationSongListDTO's nowPlaying
-		TrackDTO_V0_4 nowPlayingSongListEntryDTO = new TrackDTO_V0_4();
+		StationSongListEntryDTO_V0_4 nowPlayingSongListEntryDTO = new StationSongListEntryDTO_V0_4();
 		nowPlayingSongListEntryDTO.setArtistsNames(nowPlayingHistoryEntry
 				.getSong().getArtistsNames());
-		nowPlayingSongListEntryDTO.setSongTitle(nowPlayingHistoryEntry
+		nowPlayingSongListEntryDTO.setTrackTitle(nowPlayingHistoryEntry
 				.getSong().getSongTitle());
 		nowPlayingSongListEntryDTO.setIdForFeedback(nowPlayingHistoryEntry
 				.getId().toString());
 		radioStationUpdateDTO.setNowPlaying(nowPlayingSongListEntryDTO);
 
 		// sets StationSongListDTO's lookAhead
-		TrackDTO_V0_4 lookAheadSongListEntryDTO = new TrackDTO_V0_4();
+		StationSongListEntryDTO_V0_4 lookAheadSongListEntryDTO = new StationSongListEntryDTO_V0_4();
 		lookAheadSongListEntryDTO.setArtistsNames(lookAheadHistoryEntry
 				.getSong().getArtistsNames());
-		lookAheadSongListEntryDTO.setSongTitle(lookAheadHistoryEntry.getSong()
+		lookAheadSongListEntryDTO.setTrackTitle(lookAheadHistoryEntry.getSong()
 				.getSongTitle());
 		lookAheadSongListEntryDTO.setIdForFeedback(lookAheadHistoryEntry
 				.getId().toString());

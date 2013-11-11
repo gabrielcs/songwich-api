@@ -1,5 +1,7 @@
 package controllers.api.scrobbles;
 
+import java.util.List;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -7,12 +9,15 @@ import play.mvc.Result;
 import play.mvc.Results;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
-import views.api.APIResponse;
+import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
+import views.api.scrobbles.GetUsersResponse_V0_4;
+import views.api.scrobbles.GetUsersUniqueResponse_V0_4;
+import views.api.scrobbles.PostUsersResponse_V0_4;
+import views.api.scrobbles.PutUsersResponse_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.scrobbles.UserUpdateDTO_V0_4;
-import views.api.scrobbles.UsersListDTO_V0_4;
 import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -25,7 +30,7 @@ public class UsersController_V0_4 extends APIController {
 		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
-			APIResponse apiResponse = new APIResponse(
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
 					DataTransferObject.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
@@ -37,7 +42,7 @@ public class UsersController_V0_4 extends APIController {
 			usersUseCases.postUsers(userDTO);
 
 			// return the response
-			APIResponse response = new APIResponse(
+			PostUsersResponse_V0_4 response = new PostUsersResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", userDTO);
 			return ok(Json.toJson(response));
 		}
@@ -49,7 +54,7 @@ public class UsersController_V0_4 extends APIController {
 		Form<UserUpdateDTO_V0_4> form = Form.form(UserUpdateDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
-			APIResponse apiResponse = new APIResponse(
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
 					DataTransferObject.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
@@ -63,7 +68,7 @@ public class UsersController_V0_4 extends APIController {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
 						Http.Context.current().request()));
-				APIResponse response = new APIResponse(
+				APIResponse_V0_4 response = new APIResponse_V0_4(
 						exception.getStatus(), exception.getMessage());
 				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
 					return Results.unauthorized(Json.toJson(response));
@@ -73,7 +78,7 @@ public class UsersController_V0_4 extends APIController {
 			}
 
 			// return the response
-			APIResponse response = new APIResponse(
+			PutUsersResponse_V0_4 response = new PutUsersResponse_V0_4(
 					APIStatus_V0_4.SUCCESS, "Success", userUpdateDTO);
 			return ok(Json.toJson(response));
 		}
@@ -83,10 +88,10 @@ public class UsersController_V0_4 extends APIController {
 	public static Result getUsers() {
 		// process the request
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
-		UsersListDTO_V0_4 usersDTO = usersUseCases.getUsers();
+		List<UserDTO_V0_4> usersDTO = usersUseCases.getUsers();
 
 		// return the response
-		APIResponse response = new APIResponse(
+		GetUsersResponse_V0_4 response = new GetUsersResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", usersDTO);
 		return ok(Json.toJson(response));
 	}
@@ -107,7 +112,7 @@ public class UsersController_V0_4 extends APIController {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
 					.request()));
-			APIResponse response = new APIResponse(
+			APIResponse_V0_4 response = new APIResponse_V0_4(
 					exception.getStatus(), exception.getMessage());
 			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
 				return Results.unauthorized(Json.toJson(response));
@@ -117,7 +122,7 @@ public class UsersController_V0_4 extends APIController {
 		}
 
 		// return the response
-		APIResponse response = new APIResponse(
+		GetUsersUniqueResponse_V0_4 response = new GetUsersUniqueResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", userDTO);
 		return ok(Json.toJson(response));
 	}

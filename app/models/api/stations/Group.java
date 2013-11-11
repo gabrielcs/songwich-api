@@ -11,12 +11,12 @@ import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
 public class Group extends MongoModelImpl implements MongoModel {
-
+	
 	private String name;
 
 	@Embedded
 	private Set<GroupMember> groupMembers = new HashSet<GroupMember>();
-
+	
 	protected Group() {
 		super();
 	}
@@ -50,28 +50,22 @@ public class Group extends MongoModelImpl implements MongoModel {
 	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
 	 */
 	public boolean addGroupMember(User user) {
-		boolean result = this.groupMembers.add(new GroupMember(user, System
-				.currentTimeMillis()));
+		boolean result = this.groupMembers.add(new GroupMember(user, System.currentTimeMillis()));
 		fireModelUpdated();
 		return result;
 	}
-
+	
 	/**
 	 * 
 	 * @param groupMember
-	 * @return <tt>true</tt> (as specified by
-	 *         {@link java.util.Collection#remove})
+	 * @return <tt>true</tt> (as specified by {@link java.util.Collection#remove})
 	 */
 	public boolean deactivateGroupMember(User user) {
 		for (GroupMember groupMember : groupMembers) {
 			if (groupMember.getUser().getId().equals(user.getId())) {
-				// checks whether the user has previously integrated the radio
-				// in the past
-				if (groupMember.getEndDate() == null) {
-					groupMember.setEndDate(System.currentTimeMillis());
-					fireModelUpdated();
-					return true;
-				}
+				groupMember.setEndDate(System.currentTimeMillis());
+				fireModelUpdated();
+				return true;
 			}
 		}
 		return false;

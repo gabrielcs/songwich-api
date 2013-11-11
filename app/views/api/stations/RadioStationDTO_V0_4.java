@@ -2,6 +2,8 @@ package views.api.stations;
 
 import java.util.List;
 
+import models.api.scrobbles.Scrobble;
+
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -11,7 +13,7 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("station")
-public class RadioStationDTO_V0_4 extends DataTransferObject {
+public class RadioStationDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	// only for output
 	private String stationId;
@@ -29,10 +31,10 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	private String stationReadiness;
 
 	// only for output
-	private TrackDTO_V0_4 nowPlaying;
+	private StationSongListEntryDTO_V0_4 nowPlaying;
 
 	// only for output
-	private TrackDTO_V0_4 lookAhead;
+	private StationSongListEntryDTO_V0_4 lookAhead;
 
 	private String imageUrl;
 
@@ -98,19 +100,19 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 		this.stationId = stationId;
 	}
 
-	public TrackDTO_V0_4 getNowPlaying() {
+	public StationSongListEntryDTO_V0_4 getNowPlaying() {
 		return nowPlaying;
 	}
 
-	public void setNowPlaying(TrackDTO_V0_4 nowPlaying) {
+	public void setNowPlaying(StationSongListEntryDTO_V0_4 nowPlaying) {
 		this.nowPlaying = nowPlaying;
 	}
 
-	public TrackDTO_V0_4 getLookAhead() {
+	public StationSongListEntryDTO_V0_4 getLookAhead() {
 		return lookAhead;
 	}
 
-	public void setLookAhead(TrackDTO_V0_4 lookAhead) {
+	public void setLookAhead(StationSongListEntryDTO_V0_4 lookAhead) {
 		this.lookAhead = lookAhead;
 	}
 
