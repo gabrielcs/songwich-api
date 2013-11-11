@@ -15,7 +15,7 @@ import views.api.stations.GetStarredSongsResponse_V0_4;
 import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.PostSongFeedback_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
-import views.api.stations.StarredSongListDTO_V0_4;
+import views.api.stations.StarredSongSetDTO_V0_4;
 import behavior.api.usecases.stations.SongFeedbackUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -66,7 +66,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 	public static Result getStarredSongs(String userId) {
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
 				getContext());
-		StarredSongListDTO_V0_4 starredSongSetDTO;
+		StarredSongSetDTO_V0_4 starredSongSetDTO;
 		try {
 			starredSongSetDTO = songFeedbackUseCases.getStarredSongs(userId);
 		} catch (SongwichAPIException exception) {
