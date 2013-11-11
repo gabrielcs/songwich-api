@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import models.api.scrobbles.Scrobble;
@@ -23,6 +22,7 @@ import util.api.SongwichAPIException;
 import util.api.WithProductionDependencyInjection;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
+import views.api.stations.RadioStationsListDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 
 public class StationsUseCasesTest extends WithProductionDependencyInjection {
@@ -261,7 +261,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
 
-		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations();
+		RadioStationsListDTO_V0_4 stationsDTO = stationsUseCases.getStations();
 		System.out.println(stationsDTO);
 
 		for (RadioStationDTO_V0_4 stationDTO : stationsDTO) {

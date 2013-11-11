@@ -7,13 +7,10 @@ import play.mvc.Result;
 import play.mvc.Results;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
-import views.api.APIResponse_V0_4;
+import views.api.APIResponse;
 import views.api.APIStatus_V0_4;
 import views.api.DataTransferObject;
-import views.api.stations.GetIsSongStarredResponse_V0_4;
-import views.api.stations.GetStarredSongsResponse_V0_4;
 import views.api.stations.IsSongStarredDTO_V0_4;
-import views.api.stations.PostSongFeedback_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
 import behavior.api.usecases.stations.SongFeedbackUseCases;
@@ -29,7 +26,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 		Form<SongFeedbackDTO_V0_4> songFeedbackForm = Form.form(
 				SongFeedbackDTO_V0_4.class).bindFromRequest();
 		if (songFeedbackForm.hasErrors()) {
-			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+			APIResponse apiResponse = new APIResponse(
 					APIStatus_V0_4.INVALID_PARAMETER,
 					DataTransferObject.errorsAsString(songFeedbackForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
@@ -45,8 +42,8 @@ public class SongFeedbackController_V0_4 extends APIController {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
 						Http.Context.current().request()));
-				APIResponse_V0_4 response = new APIResponse_V0_4(
-						exception.getStatus(), exception.getMessage());
+				APIResponse response = new APIResponse(exception.getStatus(),
+						exception.getMessage());
 				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
 					return Results.unauthorized(Json.toJson(response));
 				} else {
@@ -55,7 +52,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 			}
 
 			// return the response
-			PostSongFeedback_V0_4 response = new PostSongFeedback_V0_4(
+			APIResponse response = new APIResponse(
 					APIStatus_V0_4.SUCCESS, "Success", songFeedbackDTO);
 			return ok(Json.toJson(response));
 		}
@@ -73,14 +70,14 @@ public class SongFeedbackController_V0_4 extends APIController {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
 					.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(
-					exception.getStatus(), exception.getMessage());
+			APIResponse response = new APIResponse(exception.getStatus(),
+					exception.getMessage());
 			return Results.badRequest(Json.toJson(response));
 		}
 
 		// return the response
-		GetStarredSongsResponse_V0_4 response = new GetStarredSongsResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO);
+		APIResponse response = new APIResponse(APIStatus_V0_4.SUCCESS,
+				"Success", starredSongSetDTO);
 		return ok(Json.toJson(response));
 	}
 
@@ -99,14 +96,14 @@ public class SongFeedbackController_V0_4 extends APIController {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
 					.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(
-					exception.getStatus(), exception.getMessage());
+			APIResponse response = new APIResponse(exception.getStatus(),
+					exception.getMessage());
 			return Results.badRequest(Json.toJson(response));
 		}
 
 		// return the response
-		GetIsSongStarredResponse_V0_4 response = new GetIsSongStarredResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", isSongStarredDTO);
+		APIResponse response = new APIResponse(APIStatus_V0_4.SUCCESS,
+				"Success", isSongStarredDTO);
 		return ok(Json.toJson(response));
 	}
 
@@ -123,8 +120,8 @@ public class SongFeedbackController_V0_4 extends APIController {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
 					.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(
-					exception.getStatus(), exception.getMessage());
+			APIResponse response = new APIResponse(exception.getStatus(),
+					exception.getMessage());
 			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
 				return Results.unauthorized(Json.toJson(response));
 			} else {
@@ -134,8 +131,8 @@ public class SongFeedbackController_V0_4 extends APIController {
 		}
 
 		// return the response
-		APIResponse_V0_4 response = new APIResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success");
+		APIResponse response = new APIResponse(APIStatus_V0_4.SUCCESS,
+				"Success");
 		return ok(Json.toJson(response));
 	}
 

@@ -1,6 +1,5 @@
 package behavior.api.usecases.scrobbles;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import models.api.scrobbles.AppUser;
@@ -15,7 +14,8 @@ import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.scrobbles.UserUpdateDTO_V0_4;
-import views.api.stations.RadioStationDTO_V0_4;
+import views.api.scrobbles.UsersListDTO_V0_4;
+import views.api.stations.RadioStationsListDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 import behavior.api.usecases.stations.StationsUseCases;
@@ -61,7 +61,7 @@ public class UsersUseCases extends UseCase {
 				userDTO.getUserAuthToken()));
 	}
 
-	public List<UserDTO_V0_4> getUsers() {
+	public UsersListDTO_V0_4 getUsers() {
 		// TODO: limit the number of results
 		List<User> users = getUserDAO().find().asList();
 
@@ -173,8 +173,8 @@ public class UsersUseCases extends UseCase {
 		userDTO.setUserId(user.getId().toString());
 	}
 
-	private static List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
-		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
+	private static UsersListDTO_V0_4 createDTOForGetUsers(List<User> users) {
+		UsersListDTO_V0_4 usersDTO = new UsersListDTO_V0_4();
 		for (User user : users) {
 			usersDTO.add(createDTOForGetUsers(user, null));
 		}
@@ -189,7 +189,7 @@ public class UsersUseCases extends UseCase {
 		userDTO.setUserId(user.getId().toString());
 
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
-			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+			RadioStationsListDTO_V0_4 scrobblerStationsDTO = StationsUseCases
 					.createDTOForGetMultipleStations(scrobblerStations);
 			userDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
@@ -206,7 +206,7 @@ public class UsersUseCases extends UseCase {
 		userUpdateDTO.setUserEmail(user.getEmailAddress());
 
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
-			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+			RadioStationsListDTO_V0_4 scrobblerStationsDTO = StationsUseCases
 					.createDTOForGetMultipleStations(scrobblerStations);
 			userUpdateDTO.setScrobblerStations(scrobblerStationsDTO);
 		}

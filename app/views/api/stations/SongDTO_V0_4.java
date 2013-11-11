@@ -2,8 +2,6 @@ package views.api.stations;
 
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -12,8 +10,8 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("song")
-public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
-	private String trackTitle;
+public class SongDTO_V0_4 extends DataTransferObject {
+	private String songTitle;
 	
 	private String albumTitle;
 
@@ -35,12 +33,12 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.albumTitle = albumTitle;
 	}
 
-	public String getTrackTitle() {
-		return trackTitle;
+	public String getSongTitle() {
+		return songTitle;
 	}
 
-	public void setTrackTitle(String trackTitle) {
-		this.trackTitle = trackTitle;
+	public void setSongTitle(String songTitle) {
+		this.songTitle = songTitle;
 	}
 
 	public List<String> getArtistsNames() {
@@ -59,7 +57,7 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result
-				+ ((trackTitle == null) ? 0 : trackTitle.hashCode());
+				+ ((songTitle == null) ? 0 : songTitle.hashCode());
 		return result;
 	}
 
@@ -78,10 +76,10 @@ public class SongDTO_V0_4 extends DataTransferObject<Scrobble> {
 				return false;
 		} else if (!artistsNames.equals(other.artistsNames))
 			return false;
-		if (trackTitle == null) {
-			if (other.trackTitle != null)
+		if (songTitle == null) {
+			if (other.songTitle != null)
 				return false;
-		} else if (!trackTitle.equals(other.trackTitle))
+		} else if (!songTitle.equals(other.songTitle))
 			return false;
 		return true;
 	}

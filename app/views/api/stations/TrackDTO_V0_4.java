@@ -3,8 +3,6 @@ package views.api.stations;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -13,11 +11,11 @@ import views.api.scrobbles.UserDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-@JsonTypeName("stationEntry")
-public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
+@JsonTypeName("track")
+public class TrackDTO_V0_4 extends DataTransferObject {
 	
 	// only for output
-	private String trackTitle;
+	private String songTitle;
 	
 	private String albumTitle;
 
@@ -35,7 +33,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	// only for output
 	private List<UserDTO_V0_4> recentScrobblers = new ArrayList<UserDTO_V0_4>();
 
-	public StationSongListEntryDTO_V0_4() {
+	public TrackDTO_V0_4() {
 	}
 
 	@Override
@@ -63,12 +61,12 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.albumTitle = albumTitle;
 	}
 
-	public String getTrackTitle() {
-		return trackTitle;
+	public String getSongTitle() {
+		return songTitle;
 	}
 
-	public void setTrackTitle(String track_title) {
-		this.trackTitle = track_title;
+	public void setSongTitle(String track_title) {
+		this.songTitle = track_title;
 	}
 	
 	public List<String> getArtistsNames() {
@@ -89,7 +87,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	@Override
 	public String toString() {
-		return "StationSongListEntryDTO_V0_4 [trackTitle=" + trackTitle
+		return "StationSongListEntryDTO_V0_4 [songTitle=" + songTitle
 				+ ", albumTitle=" + albumTitle + ", artistsNames="
 				+ artistsNames + ", idForFeedback=" + idForFeedback
 				+ ", recentScrobblers=" + recentScrobblers + "]";
@@ -105,7 +103,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 		result = prime * result
 				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
 		result = prime * result
-				+ ((trackTitle == null) ? 0 : trackTitle.hashCode());
+				+ ((songTitle == null) ? 0 : songTitle.hashCode());
 		return result;
 	}
 
@@ -118,7 +116,7 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StationSongListEntryDTO_V0_4 other = (StationSongListEntryDTO_V0_4) obj;
+		TrackDTO_V0_4 other = (TrackDTO_V0_4) obj;
 		if (albumTitle == null) {
 			if (other.albumTitle != null)
 				return false;
@@ -129,10 +127,10 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 				return false;
 		} else if (!artistsNames.equals(other.artistsNames))
 			return false;
-		if (trackTitle == null) {
-			if (other.trackTitle != null)
+		if (songTitle == null) {
+			if (other.songTitle != null)
 				return false;
-		} else if (!trackTitle.equals(other.trackTitle))
+		} else if (!songTitle.equals(other.songTitle))
 			return false;
 		return true;
 	}

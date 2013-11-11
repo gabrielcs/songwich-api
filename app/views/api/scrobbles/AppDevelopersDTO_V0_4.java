@@ -1,7 +1,5 @@
 package views.api.scrobbles;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -11,7 +9,7 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("appDeveloper")
-public class AppDevelopersDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class AppDevelopersDTO_V0_4 extends DataTransferObject {
 	
 	private String devEmail;
 

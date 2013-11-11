@@ -15,7 +15,7 @@ import play.data.validation.ValidationError;
 /*
  * http://martinfowler.com/eaaCatalog/dataTransferObject.html
  */
-public abstract class DataTransferObject<T> {
+public abstract class DataTransferObject {
 
 	// method called by Play!
 	public List<ValidationError> validate() {
@@ -78,7 +78,7 @@ public abstract class DataTransferObject<T> {
 
 	protected static ValidationError validateIfNonNullThenNonEmptyProperty(
 			String propertyName, String property) {
-		
+
 		if (property != null && property.isEmpty()) {
 			return new ValidationError(propertyName, propertyName
 					+ " cannot be empty");

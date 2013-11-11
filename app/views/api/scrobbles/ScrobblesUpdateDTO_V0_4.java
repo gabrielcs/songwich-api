@@ -2,8 +2,6 @@ package views.api.scrobbles;
 
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -12,7 +10,7 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("scrobble")
-public class ScrobblesUpdateDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class ScrobblesUpdateDTO_V0_4 extends DataTransferObject {
 	// used only for output
 	private String scrobbleId;
 

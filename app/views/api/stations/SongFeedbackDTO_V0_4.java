@@ -1,7 +1,6 @@
 package views.api.stations;
 
-import models.api.scrobbles.Scrobble;
-
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -11,21 +10,14 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("songFeedback")
-public class SongFeedbackDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class SongFeedbackDTO_V0_4 extends DataTransferObject {
 
 	private String idForFeedback;
 
 	private String feedbackType;
 	
+	@JsonIgnore
 	private SongDTO_V0_4 song;
-
-	public SongDTO_V0_4 getSong() {
-		return song;
-	}
-
-	public void setSong(SongDTO_V0_4 song) {
-		this.song = song;
-	}
 
 	// only for output
 	private String userId;
@@ -44,6 +36,15 @@ public class SongFeedbackDTO_V0_4 extends DataTransferObject<Scrobble> {
 	
 	private ValidationError validateFeedbackType() {
 		return validateRequiredProperty("feedbackType", feedbackType);
+	}
+	
+	@JsonIgnore
+	public SongDTO_V0_4 getSong() {
+		return song;
+	}
+
+	public void setSong(SongDTO_V0_4 song) {
+		this.song = song;
 	}
 
 	public String getIdForFeedback() {

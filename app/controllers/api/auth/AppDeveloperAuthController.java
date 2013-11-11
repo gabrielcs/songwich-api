@@ -13,7 +13,7 @@ import play.mvc.Result;
 import play.mvc.Results;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
-import views.api.APIResponse_V0_4;
+import views.api.APIResponse;
 import views.api.APIStatus_V0_4;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import database.api.CascadeSaveDAO;
@@ -35,7 +35,7 @@ public class AppDeveloperAuthController extends Action<AppDeveloperAuthenticated
 		} catch (SongwichAPIException e) {
 			MyLogger.warn(String.format("%s [%s]: %s",
 					e.getStatus().toString(), e.getMessage(), ctx.request()));
-			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
+			APIResponse response = new APIResponse(e.getStatus(),
 					e.getMessage());
 			//return F.Promise.<SimpleResult> pure(Results.unauthorized(Json.toJson(response)));
 			return Results.unauthorized(Json.toJson(response));
