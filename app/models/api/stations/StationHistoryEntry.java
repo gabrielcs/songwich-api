@@ -25,6 +25,7 @@ public class StationHistoryEntry extends MongoModelImpl implements MongoEntity {
 	@Embedded
 	private Song song;
 
+	@Indexed
 	private Long timestamp;
 
 	@Embedded

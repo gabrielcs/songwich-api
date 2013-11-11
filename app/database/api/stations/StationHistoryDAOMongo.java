@@ -100,8 +100,9 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		 */
 
 		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
-		return ds.find(StationHistoryEntry.class)
-				.filter("songFeedback elem", songFeedback).asList();
+		Query<StationHistoryEntry> query = ds.find(StationHistoryEntry.class)
+				.filter("songFeedback elem", songFeedback);
+		return order(query).asList();
 	}
 
 	// TODO: test
