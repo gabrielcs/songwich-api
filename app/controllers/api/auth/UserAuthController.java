@@ -82,9 +82,6 @@ public class UserAuthController extends Action<UserAuthenticated> {
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 			}
 
-		} else {
-			// there's no userAuthToken
-			context.args.put(USER, null);
 		}
 	}
 }
