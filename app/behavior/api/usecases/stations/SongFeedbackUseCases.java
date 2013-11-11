@@ -15,7 +15,7 @@ import views.api.APIStatus_V0_4;
 import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
-import views.api.stations.StarredSongSetDTO_V0_4;
+import views.api.stations.StarredSongListDTO_V0_4;
 import views.api.stations.StationSongListEntryDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -62,7 +62,7 @@ public class SongFeedbackUseCases extends UseCase {
 				getContext().getUser().getId().toString());
 	}
 
-	public StarredSongSetDTO_V0_4 getStarredSongs(String userId)
+	public StarredSongListDTO_V0_4 getStarredSongs(String userId)
 			throws SongwichAPIException {
 
 		authorizeGetStarredSongs(userId);
@@ -193,9 +193,9 @@ public class SongFeedbackUseCases extends UseCase {
 		songFeedbackDTO.setSong(songDTO);
 	}
 
-	private static StarredSongSetDTO_V0_4 createDTOForGetStarredSongs(
+	private static StarredSongListDTO_V0_4 createDTOForGetStarredSongs(
 			List<StationHistoryEntry> stationHistoryEntries, String userId) {
-		StarredSongSetDTO_V0_4 starredSongList = new StarredSongSetDTO_V0_4();
+		StarredSongListDTO_V0_4 starredSongList = new StarredSongListDTO_V0_4();
 		starredSongList.setUserId(userId);
 
 		StationSongListEntryDTO_V0_4 songListEntryDTO;

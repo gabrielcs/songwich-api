@@ -1,7 +1,7 @@
 package views.api.stations;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import models.api.scrobbles.Scrobble;
 
@@ -11,14 +11,14 @@ import views.api.DataTransferObject;
 
 // let starredSongs be serialized even if it's empty
 @JsonTypeName("starredSongs")
-public class StarredSongSetDTO_V0_4 extends DataTransferObject<Scrobble> {
+public class StarredSongListDTO_V0_4 extends DataTransferObject<Scrobble> {
 
 	private String userId;
 
 	// only for output
-	private Set<StationSongListEntryDTO_V0_4> starredSongs = new HashSet<StationSongListEntryDTO_V0_4>();
+	private List<StationSongListEntryDTO_V0_4> starredSongs = new ArrayList<StationSongListEntryDTO_V0_4>();
 
-	public StarredSongSetDTO_V0_4() {
+	public StarredSongListDTO_V0_4() {
 	}
 
 	@Override
@@ -34,11 +34,11 @@ public class StarredSongSetDTO_V0_4 extends DataTransferObject<Scrobble> {
 		this.userId = userId;
 	}
 
-	public Set<StationSongListEntryDTO_V0_4> getStarredSongs() {
+	public List<StationSongListEntryDTO_V0_4> getStarredSongs() {
 		return starredSongs;
 	}
 
-	public void setStarredSongs(Set<StationSongListEntryDTO_V0_4> starredSongs) {
+	public void setStarredSongs(List<StationSongListEntryDTO_V0_4> starredSongs) {
 		this.starredSongs = starredSongs;
 	}
 

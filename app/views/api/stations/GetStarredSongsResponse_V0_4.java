@@ -11,19 +11,19 @@ import views.api.APIStatus;
 public class GetStarredSongsResponse_V0_4 extends APIResponse_V0_4 {
 
 	@JsonProperty("starredSongsResult")
-	private StarredSongSetDTO_V0_4 starredSongListDTO;
+	private StarredSongListDTO_V0_4 starredSongListDTO;
 
 	public GetStarredSongsResponse_V0_4(APIStatus status, String message,
-			StarredSongSetDTO_V0_4 starredSongSetDTO) {
+			StarredSongListDTO_V0_4 starredSongSetDTO) {
 		super(status, message);
 		setRadioStationsDTO(starredSongSetDTO);
 	}
 
-	public StarredSongSetDTO_V0_4 getRadioStationsDTO() {
+	public StarredSongListDTO_V0_4 getRadioStationsDTO() {
 		return starredSongListDTO;
 	}
 
-	public void setRadioStationsDTO(StarredSongSetDTO_V0_4 starredSongSetDTO) {
+	public void setRadioStationsDTO(StarredSongListDTO_V0_4 starredSongSetDTO) {
 		this.starredSongListDTO = starredSongSetDTO;
 	}
 }
