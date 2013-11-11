@@ -86,13 +86,55 @@ public class StationSongListEntryDTO_V0_4 extends DataTransferObject<Scrobble> {
 	public void setIdForFeedback(String idForFeedback) {
 		this.idForFeedback = idForFeedback;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "StationSongListEntryDTO_V0_4 [trackTitle=" + trackTitle
-				+ ", artistsNames=" + artistsNames + ", idForFeedback="
-				+ idForFeedback + ", recentScrobblers=" + recentScrobblers
-				+ "]";
+				+ ", albumTitle=" + albumTitle + ", artistsNames="
+				+ artistsNames + ", idForFeedback=" + idForFeedback
+				+ ", recentScrobblers=" + recentScrobblers + "]";
+	}
+
+	// doesn't take into account idForFeedback and recentScrobblers
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((albumTitle == null) ? 0 : albumTitle.hashCode());
+		result = prime * result
+				+ ((artistsNames == null) ? 0 : artistsNames.hashCode());
+		result = prime * result
+				+ ((trackTitle == null) ? 0 : trackTitle.hashCode());
+		return result;
+	}
+
+	// doesn't take into account idForFeedback and recentScrobblers
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		StationSongListEntryDTO_V0_4 other = (StationSongListEntryDTO_V0_4) obj;
+		if (albumTitle == null) {
+			if (other.albumTitle != null)
+				return false;
+		} else if (!albumTitle.equals(other.albumTitle))
+			return false;
+		if (artistsNames == null) {
+			if (other.artistsNames != null)
+				return false;
+		} else if (!artistsNames.equals(other.artistsNames))
+			return false;
+		if (trackTitle == null) {
+			if (other.trackTitle != null)
+				return false;
+		} else if (!trackTitle.equals(other.trackTitle))
+			return false;
+		return true;
 	}
 
 }
