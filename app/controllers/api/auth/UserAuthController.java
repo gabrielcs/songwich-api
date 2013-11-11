@@ -82,6 +82,9 @@ public class UserAuthController extends Action<UserAuthenticated> {
 						APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 			}
 
+		} else {
+			throw new SongwichAPIException("X-Songwich.userAuthToken missing",
+					APIStatus_V0_4.INVALID_USER_AUTH_TOKEN);
 		}
 	}
 }
