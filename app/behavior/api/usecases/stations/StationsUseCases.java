@@ -162,6 +162,10 @@ public class StationsUseCases extends UseCase {
 					.contains(new ObjectId(scrobblerId))) {
 
 				station.getScrobbler().getGroup().addGroupMember(user);
+			} else {
+				throw new SongwichAPIException(
+						"Cannot add a user that's already an active scrobbler of the station: "
+								+ scrobblerId, APIStatus_V0_4.BAD_REQUEST);
 			}
 		}
 
@@ -392,7 +396,7 @@ public class StationsUseCases extends UseCase {
 
 		if (station.getScrobbler().isIndividualStation()) {
 			throw new SongwichAPIException(
-					"Not allowed to change scrobblers on a user station",
+					"Not allowed to change scrobblers on an individual station",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
