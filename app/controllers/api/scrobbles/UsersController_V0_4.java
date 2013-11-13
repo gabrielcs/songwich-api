@@ -21,11 +21,13 @@ import views.api.scrobbles.UserUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class UsersController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
+	@Logged
 	public static Result postUsers() {
 		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
 				.bindFromRequest();
@@ -50,6 +52,7 @@ public class UsersController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result putUsers(String userId) {
 		Form<UserUpdateDTO_V0_4> form = Form.form(UserUpdateDTO_V0_4.class)
 				.bindFromRequest();
@@ -85,6 +88,7 @@ public class UsersController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
+	@Logged
 	public static Result getUsers() {
 		// process the request
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
@@ -97,6 +101,7 @@ public class UsersController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
+	@Logged
 	public static Result getUsers(String userId) {
 		if (userId == null) {
 			// this is a call for all registered users

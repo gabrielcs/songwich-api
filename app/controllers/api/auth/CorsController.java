@@ -30,5 +30,8 @@ public class CorsController extends Action.Simple {
 		response.setHeader(
 				"Access-Control-Allow-Headers",
 				"X-Songwich.devAuthToken, X-Songwich.userAuthToken, Content-Type, Origin, Accept");
+
+		//MyLogger.info("CORS - custom headers allowed for request: "
+		//		+ Http.Context.current().request());
 	}
 }

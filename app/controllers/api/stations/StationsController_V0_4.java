@@ -25,6 +25,7 @@ import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.stations.StationsUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class StationsController_V0_4 extends APIController {
@@ -40,6 +41,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public Result postStations() {
 		Form<RadioStationDTO_V0_4> radioStationForm = Form.form(
 				RadioStationDTO_V0_4.class).bindFromRequest();
@@ -77,6 +79,7 @@ public class StationsController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
+	@Logged
 	public Result getStations() {
 		// process the request
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
@@ -90,6 +93,7 @@ public class StationsController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
+	@Logged
 	public Result getStations(String stationId) {
 		if (stationId == null) {
 			// this is a call for all available stations
@@ -120,6 +124,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public Result putStations(String stationId) {
 
 		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
@@ -162,6 +167,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public Result putStationsAddScrobblers(String stationId) {
 		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
@@ -204,6 +210,7 @@ public class StationsController_V0_4 extends APIController {
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public Result putStationsRemoveScrobblers(String stationId) {
 		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
@@ -245,6 +252,7 @@ public class StationsController_V0_4 extends APIController {
 
 	// TODO: this should be accessible only from the Songwich Radio app
 	@AppDeveloperAuthenticated
+	@Logged
 	public Result postNextSong() {
 		Form<RadioStationUpdateDTO_V0_4> stationEntryForm = Form.form(
 				RadioStationUpdateDTO_V0_4.class).bindFromRequest();

@@ -20,11 +20,14 @@ import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblesController_V0_4 extends APIController {
+	
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result postScrobbles() {
 		Form<ScrobblesDTO_V0_4> scrobblesForm = Form.form(
 				ScrobblesDTO_V0_4.class).bindFromRequest();
@@ -60,6 +63,7 @@ public class ScrobblesController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result putScrobbles(String scrobbleId) {
 		Form<ScrobblesUpdateDTO_V0_4> scrobblesUpdateForm = Form.form(
 				ScrobblesUpdateDTO_V0_4.class).bindFromRequest();
@@ -97,6 +101,7 @@ public class ScrobblesController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result deleteScrobbles(String scrobbleId) {
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());
@@ -123,6 +128,7 @@ public class ScrobblesController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result getScrobbles(String userId, int daysOffset, int results) {
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());

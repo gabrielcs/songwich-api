@@ -19,12 +19,14 @@ import views.api.stations.StarredSongSetDTO_V0_4;
 import behavior.api.usecases.stations.SongFeedbackUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
+import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class SongFeedbackController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result postSongFeedback() {
 		Form<SongFeedbackDTO_V0_4> songFeedbackForm = Form.form(
 				SongFeedbackDTO_V0_4.class).bindFromRequest();
@@ -62,7 +64,8 @@ public class SongFeedbackController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
-	// TODO: decide if it should be @UserAuthenticated
+	// TODO: decide if it should also be @UserAuthenticated
+	@Logged
 	public static Result getStarredSongs(String userId) {
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
 				getContext());
@@ -85,7 +88,8 @@ public class SongFeedbackController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
-	// TODO: decide if it should be @UserAuthenticated
+	// TODO: decide if it should also be @UserAuthenticated
+	@Logged
 	public static Result getIsSongStarred(String userId, String songTitle,
 			String artistsNames, String albumTitle) {
 
@@ -112,6 +116,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
+	@Logged
 	public static Result deleteSongFeedback(String idForFeedback,
 			String feedbackType) {
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(

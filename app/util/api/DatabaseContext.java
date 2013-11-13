@@ -47,10 +47,10 @@ public class DatabaseContext {
 			MongoClient mongoClient = new MongoClient(mongoClientURI);
 			datastore = new Morphia().createDatastore(mongoClient, dbName);
 
-			// TODO: print this out without user and password
 			MyLogger.info("Connected to database");
 			return getDatastore();
 		} catch (Throwable t) {
+			// TODO: figure out why this is not being logged
 			MyLogger.error(String.format("Couldn't connect to database",
 					t.getMessage()));
 			throw new RuntimeException(t);
