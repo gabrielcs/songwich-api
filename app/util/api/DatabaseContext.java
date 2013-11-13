@@ -50,7 +50,7 @@ public class DatabaseContext {
 			// TODO: print this out without user and password
 			MyLogger.info("Connected to database");
 			return getDatastore();
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			MyLogger.error(String.format("Couldn't connect to database",
 					e.getMessage()));
 			throw new RuntimeException(e);
