@@ -20,7 +20,7 @@ public class AppDevelopersController extends Controller {
 		if (appDevelopersForm.hasErrors()) {
 			String errors = DTOValidator.errorsAsString(appDevelopersForm
 					.errors());
-			MyLogger.info(String.format(
+			MyLogger.warn(String.format(
 					"Error(s) creating AppDeveloper [%s]: %s",
 					appDevelopersForm.toString(), errors));
 			return badRequest(errors);

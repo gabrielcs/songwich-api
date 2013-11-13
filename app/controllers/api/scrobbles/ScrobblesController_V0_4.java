@@ -163,10 +163,6 @@ public class ScrobblesController_V0_4 extends APIController {
 		// return the response
 		GetScrobblesResponse_V0_4 response = new GetScrobblesResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTOs);
-		MyLogger.info(String.format(
-				"GET scrobbles processed for user=%s by devAuthToken=%s",
-				getContext().getUser().getId(), getContext().getAppDeveloper()
-						.getDevAuthToken().getToken()));
 		return ok(Json.toJson(response));
 	}
 	

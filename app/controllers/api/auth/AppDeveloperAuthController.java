@@ -127,7 +127,7 @@ public class AppDeveloperAuthController extends Action<AppDeveloperAuthenticated
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(songwich, homeDevEmail);
 
-		MyLogger.info("Created 'developers@songwich.com' working at 'Songwich' with devAuthToken="
+		MyLogger.debug("Created 'developers@songwich.com' working at 'Songwich' with devAuthToken="
 				+ authToken);
 
 		return devAuthToken;

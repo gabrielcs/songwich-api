@@ -27,7 +27,7 @@ public class DatabaseContext {
 		try {
 			datastore = new Morphia()
 					.createDatastore(new MongoClient(), dbName);
-			MyLogger.info("Connected to database " + dbName);
+			MyLogger.info("Connected to database ");
 			return getDatastore();
 		} catch (UnknownHostException e) {
 			MyLogger.error(String.format("Couldn't connect to database %s: %s",
@@ -60,7 +60,7 @@ public class DatabaseContext {
 	public static boolean dropDatabase() {
 		if (datastore != null) {
 			datastore.getDB().dropDatabase();
-			MyLogger.info("Dropped database");
+			MyLogger.debug("Dropped database");
 			return true;
 		} else {
 			return false;

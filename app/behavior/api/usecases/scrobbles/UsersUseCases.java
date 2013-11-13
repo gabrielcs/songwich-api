@@ -55,7 +55,7 @@ public class UsersUseCases extends UseCase {
 			AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
 			updateDTO(user, newAppUser, userDTO);
 		}
-		MyLogger.info(String.format(
+		MyLogger.debug(String.format(
 				"Created user \"%s\" with id=%s and authToken=%s",
 				userDTO.getUserEmail(), userDTO.getUserId(),
 				userDTO.getUserAuthToken()));
@@ -99,10 +99,10 @@ public class UsersUseCases extends UseCase {
 				.findByScrobblerId(user.getId());
 		updateDTOPutUsers(user, userUpdateDTO, scrobblerStations);
 	}
-	
+
 	private User authorizeForGetUsers(String userId)
 			throws SongwichAPIException {
-		
+
 		if (!ObjectId.isValid(userId)) {
 			throw new SongwichAPIException("Invalid userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
@@ -114,7 +114,7 @@ public class UsersUseCases extends UseCase {
 			throw new SongwichAPIException("Non-existent userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
-		
+
 		return user;
 	}
 
@@ -200,7 +200,7 @@ public class UsersUseCases extends UseCase {
 	private static void updateDTOPutUsers(User user,
 			UserUpdateDTO_V0_4 userUpdateDTO,
 			List<RadioStation> scrobblerStations) {
-		
+
 		userUpdateDTO.setUserId(user.getId().toString());
 		userUpdateDTO.setName(user.getName());
 		userUpdateDTO.setUserEmail(user.getEmailAddress());

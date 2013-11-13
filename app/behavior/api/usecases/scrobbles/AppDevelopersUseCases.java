@@ -15,7 +15,8 @@ public class AppDevelopersUseCases extends UseCase {
 		super(new RequestContext(null, null, null));
 	}
 
-	public AppDeveloper saveNewAppDeveloper(AppDevelopersDTO_V0_4 appDevelopersDTO) {
+	public AppDeveloper saveNewAppDeveloper(
+			AppDevelopersDTO_V0_4 appDevelopersDTO) {
 		// search the app in the database
 		App app = getAppDAO().findByName(appDevelopersDTO.getAppName());
 		if (app == null) {
@@ -42,7 +43,7 @@ public class AppDevelopersUseCases extends UseCase {
 		app.addAppDeveloper(appDeveloper);
 		getCascadeSaveAppDAO().cascadeSave(app, appDevelopersDTO.getDevEmail());
 
-		MyLogger.info(String.format(
+		MyLogger.debug(String.format(
 				"Created '%s' working at '%s' with devAuthToken=%s",
 				appDeveloper.getEmailAddress(), appDevelopersDTO.getAppName(),
 				appDeveloper.getDevAuthToken().getToken()));
