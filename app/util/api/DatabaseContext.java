@@ -2,15 +2,12 @@ package util.api;
 
 import java.net.UnknownHostException;
 
-
-
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.google.code.morphia.logging.MorphiaLoggerFactory;
 import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-
 
 public class DatabaseContext {
 	// it currently only supports 1 Datastore
@@ -51,11 +48,10 @@ public class DatabaseContext {
 			datastore = new Morphia().createDatastore(mongoClient, dbName);
 
 			// TODO: print this out without user and password
-			MyLogger.info("Connected to database " + uri);
+			MyLogger.info("Connected to database");
 			return getDatastore();
 		} catch (UnknownHostException e) {
-			MyLogger.error(String.format(
-					"Couldn't connect to database '%s' : %s", uri,
+			MyLogger.error(String.format("Couldn't connect to database",
 					e.getMessage()));
 			throw new RuntimeException(e);
 		}
