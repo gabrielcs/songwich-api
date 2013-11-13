@@ -30,15 +30,21 @@ public class APILoggingController extends Action<Logged> {
 		User user = (User) context.args.get(UserAuthController.USER);
 
 		// builds the string
-		StringBuilder logString = new StringBuilder(String.format(
-				"\n Developer: %s\n App:       %s", dev.getEmailAddress(),
-				app.getName()));
+		StringBuilder logString = new StringBuilder();
+		if (dev == null) {
+			logString.append("\n Developer: null\n App:       null");
+		} else {
+			logString.append(String.format("\n Developer: %s\n App:       %s",
+					dev.getEmailAddress(), app.getName()));
+		}
+
 		if (user == null) {
 			logString.append("\n User:      null");
 		} else {
 			logString.append(String.format("\n User:      %s (id: %s)",
 					user.getEmailAddress(), user.getId()));
 		}
+
 		logString.append(String.format("\n Request:   %s\n Body:      %s\n",
 				context.request(), context.request().body().asJson()));
 

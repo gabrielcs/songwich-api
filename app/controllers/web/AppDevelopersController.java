@@ -8,9 +8,11 @@ import util.api.MyLogger;
 import views.api.DTOValidator;
 import views.api.scrobbles.AppDevelopersDTO_V0_4;
 import behavior.api.usecases.scrobbles.AppDevelopersUseCases;
+import controllers.api.annotation.Logged;
 
 public class AppDevelopersController extends Controller {
 
+	@Logged
 	public static Result postAppDevelopers() {
 
 		Form<AppDevelopersDTO_V0_4> appDevelopersForm = Form.form(
