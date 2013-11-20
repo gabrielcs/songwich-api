@@ -47,8 +47,6 @@ public class APILoggingController extends Action<Logged> {
 			logString.append("\n Body:      "
 					+ context.request().body().asJson());
 		}
-		
-		logString.append("\n");
 
 		// process the log
 		MyLogger.info(logString.toString());

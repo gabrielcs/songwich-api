@@ -173,7 +173,7 @@ public class StationsUseCases extends UseCase {
 		if (!station.isActive()) {
 			stationStrategy.setStation(station);
 			if (stationStrategy.isStationReady()) {
-				station.setActive(true);
+				activateStation(station, stationStrategy);
 			}
 		}
 
