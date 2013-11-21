@@ -457,6 +457,7 @@ public class StationsUseCases extends UseCase {
 			Float stationReadiness, RadioStationDTO_V0_4 radioStationDTO) {
 
 		radioStationDTO.setStationId(station.getId().toString());
+		radioStationDTO.setIsActive(station.isActive().toString());
 		updateStationDTOWithReadinessOrSongs(station, stationReadiness,
 				radioStationDTO);
 	}
@@ -500,6 +501,7 @@ public class StationsUseCases extends UseCase {
 			RadioStation station) {
 		RadioStationDTO_V0_4 stationDTO = new RadioStationDTO_V0_4();
 		stationDTO.setStationId(station.getId().toString());
+		stationDTO.setIsActive(station.isActive().toString());
 		stationDTO.setStationName(station.getName());
 		stationDTO.setImageUrl(station.getImageUrl());
 		if (station.getScrobbler().isGroupStation()) {
