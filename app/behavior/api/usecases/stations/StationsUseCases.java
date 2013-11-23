@@ -307,8 +307,8 @@ public class StationsUseCases extends UseCase {
 			StationStrategy stationStrategy) throws SongwichAPIException {
 
 		station.setActive(true);
-		setNowPlaying(station, stationStrategy).getStationHistoryEntry();
-		setLookAhead(station, stationStrategy).getStationHistoryEntry();
+		setNowPlaying(station, stationStrategy);
+		setLookAhead(station, stationStrategy);
 	}
 
 	private Track setLookAhead(RadioStation station,
