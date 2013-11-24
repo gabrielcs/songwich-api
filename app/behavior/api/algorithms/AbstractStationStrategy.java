@@ -23,6 +23,13 @@ public abstract class AbstractStationStrategy implements StationStrategy {
 		MyLogger.debug(this.getClass().getSimpleName() + "'s instance random ID: "
 				+ Math.random());
 	}
+	
+	@Override 
+	public StationStrategy reset() {
+		station = null;
+		nextSongRecentScrobblersIds = null;
+		return this;
+	}
 
 	@Override
 	public void setStation(RadioStation station) {

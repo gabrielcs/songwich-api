@@ -39,6 +39,19 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 
 	public PseudoDMCAStationStrategy() {
 	}
+	
+	@Override
+	public StationStrategy reset() {
+		readinessCalculator = null;
+		relevantScrobbles = null;
+		nextSong = null;
+		
+		last59PlayedSongs = null;
+		last2PlayedArtists = null;
+		artistsPlayed3TimesInLast59Songs = null;
+		
+		return super.reset();
+	}
 
 	@Override
 	protected StationReadinessCalculator getStationReadinessCalculator() {

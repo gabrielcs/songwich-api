@@ -11,17 +11,27 @@ import util.api.SongwichAPIException;
 
 public interface StationStrategy extends StationReadinessCalculator {
 	/**
-	 * @throws IllegalStateException if setStation() has already been called
+	 * @throws IllegalStateException
+	 *             if setStation() has already been called
 	 */
 	public void setStation(RadioStation station);
-	
-	/**
-	 * @throws IllegalStateException if setStation() hasn't been called first
-	 */
-	public Song getNextSong() throws SongwichAPIException, IllegalStateException;
 
 	/**
-	 * @throws IllegalStateException if setStation() hasn't been called first
+	 * Resets all the calculations to be able to reuse the strategy.
+	 * @return "this". It can be used as the Builder design pattern.
+	 */
+	public StationStrategy reset();
+
+	/**
+	 * @throws IllegalStateException
+	 *             if setStation() hasn't been called first
+	 */
+	public Song getNextSong() throws SongwichAPIException,
+			IllegalStateException;
+
+	/**
+	 * @throws IllegalStateException
+	 *             if setStation() hasn't been called first
 	 */
 	public Set<ObjectId> getNextSongRecentScrobblers()
 			throws SongwichAPIException, IllegalStateException;

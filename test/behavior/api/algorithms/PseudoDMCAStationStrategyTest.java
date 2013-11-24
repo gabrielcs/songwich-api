@@ -129,6 +129,7 @@ public class PseudoDMCAStationStrategyTest extends WithRequestContext {
 					song, System.currentTimeMillis());
 			stationHistoryDAO.save(stationHistoryEntry, getContext()
 					.getAppDeveloper().getEmailAddress());
+			System.out.println("nextSong: " + song);
 		}
 	}
 }

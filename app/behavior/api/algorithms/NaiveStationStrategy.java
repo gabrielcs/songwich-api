@@ -26,6 +26,14 @@ public class NaiveStationStrategy extends AbstractStationStrategy implements
 
 	public NaiveStationStrategy() {
 	}
+	
+	@Override
+	public StationStrategy reset() {
+		readinessCalculator = null;
+		relevantScrobbles = null;
+		nextSong = null;
+		return super.reset();
+	}
 
 	@Override
 	public Song getNextSong() {

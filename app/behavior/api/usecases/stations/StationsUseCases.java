@@ -308,6 +308,8 @@ public class StationsUseCases extends UseCase {
 
 		station.setActive(true);
 		setNowPlaying(station, stationStrategy);
+		// resets the station strategy so it doesn't return the cached results
+		stationStrategy.reset().setStation(station);
 		setLookAhead(station, stationStrategy);
 	}
 
