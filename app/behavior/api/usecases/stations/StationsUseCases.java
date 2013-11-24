@@ -49,9 +49,7 @@ public class StationsUseCases extends UseCase {
 		if (!station.isActive()) {
 			stationStrategy.setStation(station);
 			if (stationStrategy.isStationReady()) {
-				station.setActive(true);
-				setNowPlaying(station, stationStrategy);
-				setLookAhead(station, stationStrategy);
+				activateStation(station, stationStrategy);
 				// saves it
 				saveStation(station);
 			} else {
