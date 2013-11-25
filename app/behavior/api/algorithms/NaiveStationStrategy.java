@@ -58,7 +58,7 @@ public class NaiveStationStrategy extends AbstractStationStrategy implements
 			index = (int) (Math.random() * getRelevantScrobbles().size());
 			nextSong = getRelevantScrobbles().get(index).getSong();
 		} while (nextSong.equals(previousNowPlaying)
-				|| nextSong.equals(previousLookAhead));
+				|| nextSong.equals(previousLookAhead)); // Song.equals() is case insensitive
 
 		return nextSong;
 	}

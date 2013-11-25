@@ -14,6 +14,7 @@ import models.api.stations.StationHistoryEntry;
 import org.bson.types.ObjectId;
 
 import util.api.SongwichAPIException;
+import util.api.StringUtils;
 import views.api.APIStatus_V0_4;
 import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.ScrobbleDAOMongo;
@@ -39,17 +40,17 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 
 	public PseudoDMCAStationStrategy() {
 	}
-	
+
 	@Override
 	public StationStrategy reset() {
 		readinessCalculator = null;
 		relevantScrobbles = null;
 		nextSong = null;
-		
+
 		last59PlayedSongs = null;
 		last2PlayedArtists = null;
 		artistsPlayed3TimesInLast59Songs = null;
-		
+
 		return super.reset();
 	}
 
@@ -65,9 +66,10 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 	@Override
 	protected List<Scrobble> getRelevantScrobbles() {
 		if (getStation() == null) {
-			throw new IllegalStateException("setStation() should be called first");
+			throw new IllegalStateException(
+					"setStation() should be called first");
 		}
-		
+
 		if (relevantScrobbles != null) {
 			return relevantScrobbles;
 		}
@@ -78,9 +80,10 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 	@Override
 	public Song getNextSong() throws SongwichAPIException {
 		if (getStation() == null) {
-			throw new IllegalStateException("setStation() should be called first");
+			throw new IllegalStateException(
+					"setStation() should be called first");
 		}
-		
+
 		if (nextSong != null) {
 			// the algorithm has already been invoked
 			return nextSong;
@@ -98,12 +101,15 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 			nextSong = currentScrobble.getSong();
 			nextSongArtist = nextSong.getArtistsNames();
 
-			if (last2PlayedArtists.contains(nextSongArtist)
-					|| artistsPlayed3TimesInLast59Songs
-							.contains(nextSongArtist)) {
+			if (StringUtils.containsIgnoreCaseCollection(last2PlayedArtists,
+					nextSongArtist)
+					|| StringUtils.containsIgnoreCaseCollection(
+							artistsPlayed3TimesInLast59Songs, nextSongArtist)) {
 				removeArtistFromPotentialSelection(getRelevantScrobbles(),
 						nextSongArtist);
-			} else if (last59PlayedSongs.contains(nextSong)) {
+			} else if (last59PlayedSongs.contains(nextSong)) { // Song.equals()
+																// is case
+																// insensitive
 				getRelevantScrobbles().remove(currentScrobble);
 			} else {
 				// success
@@ -215,8 +221,9 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 					artistSongsMap.put(scrobble.getSong().getArtistsNames(),
 							currentArtistSongTitles);
 				} else if (currentArtistSongTitles.size() < 3) {
-					if (!currentArtistSongTitles.contains(scrobble.getSong()
-							.getSongTitle())) {
+					if (!StringUtils.containsIgnoreCase(
+							currentArtistSongTitles, scrobble.getSong()
+									.getSongTitle())) {
 						currentArtistSongTitles.add(scrobble.getSong()
 								.getSongTitle());
 					}

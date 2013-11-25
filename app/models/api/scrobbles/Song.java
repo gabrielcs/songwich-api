@@ -3,6 +3,8 @@ package models.api.scrobbles;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.api.StringUtils;
+
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
@@ -109,7 +111,7 @@ public class Song {
 		if (artistsNames == null) {
 			if (other.artistsNames != null)
 				return false;
-		} else if (!equalsIgnoreCase(artistsNames, other.artistsNames))
+		} else if (!StringUtils.equalsIgnoreCase(artistsNames, other.artistsNames))
 			return false;
 		if (songTitle == null) {
 			if (other.songTitle != null)
@@ -117,31 +119,6 @@ public class Song {
 		} else if (!songTitle.equalsIgnoreCase(other.songTitle))
 			return false;
 		return true;
-	}
-
-	private boolean equalsIgnoreCase(List<String> artistsNames,
-			List<String> otherArtistsNames) {
-		if (artistsNames == otherArtistsNames) {
-			return true;
-		}
-		if (otherArtistsNames.size() != artistsNames.size()) {
-			return false;
-		}
-		for (String artistName : otherArtistsNames) {
-			if (!containsIgnoreCase(artistsNames, artistName)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private boolean containsIgnoreCase(List<String> artistsNames, String artistName) {
-		for (String string : artistsNames) {
-			if (artistName.equalsIgnoreCase(string)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }
