@@ -228,6 +228,7 @@ public class ScrobblesUseCases extends UseCase {
 			scrobblesDTO.setScrobbleId(scrobble.getId().toString());
 			scrobblesDTO.setTrackTitle(scrobble.getSong().getSongTitle());
 			scrobblesDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
+			scrobblesDTO.setAlbumTitle(scrobble.getSong().getAlbumTitle());
 			scrobblesDTO.setTimestamp(Long.toString(scrobble.getTimestamp()));
 			scrobblesDTO.setChosenByUser(Boolean.toString(scrobble
 					.isChosenByUser()));
