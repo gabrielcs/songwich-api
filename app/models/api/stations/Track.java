@@ -16,26 +16,28 @@ import com.google.code.morphia.annotations.Reference;
 public class Track {
 	@Reference(lazy = true)
 	private StationHistoryEntry stationHistoryEntry;
-	
+
 	// this will be an empty list if it is not a group station
-	@Reference(lazy = true)
+	// TODO: check what happens if we do ignoreMissing=true
+	@Reference(lazy = true, ignoreMissing = true)
 	private List<User> songScrobblers = new ArrayList<User>();
 
 	protected Track() {
 		super();
 	}
-	
+
 	public Track(StationHistoryEntry stationHistoryEntry) {
 		super();
 		setStationHistoryEntry(stationHistoryEntry);
 	}
 
-	public Track(StationHistoryEntry stationHistoryEntry, List<User> songScrobblers) {
+	public Track(StationHistoryEntry stationHistoryEntry,
+			List<User> songScrobblers) {
 		super();
 		setStationHistoryEntry(stationHistoryEntry);
 		setSongScrobblers(songScrobblers);
 	}
-	
+
 	public List<User> getSongScrobblers() {
 		return songScrobblers;
 	}
@@ -54,11 +56,11 @@ public class Track {
 	public void setStationHistoryEntry(StationHistoryEntry stationHistoryEntry) {
 		this.stationHistoryEntry = stationHistoryEntry;
 	}
-	
+
 	public Song getSong() {
 		return this.stationHistoryEntry.getSong();
 	}
-	
+
 	public String getAlbumTitle() {
 		return this.stationHistoryEntry.getSong().getAlbumTitle();
 	}

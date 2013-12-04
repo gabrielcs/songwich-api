@@ -139,48 +139,42 @@ public class UsersController_V0_4 extends APIController {
 	}
 
 	/*
-	public static Result postFixUserNames() {
-		String devEmail = "gabrielcs@gmail.com";
+	 * public static Result postFixUserNames() { String devEmail =
+	 * "gabrielcs@gmail.com";
+	 * 
+	 * UserDAO<ObjectId> userDAO = new UserDAOMongo(); User userGabriel =
+	 * userDAO.findByEmailAddress("gabrielcs@gmail.com");
+	 * userGabriel.setName("Gabriel Cypriano"); userDAO.save(userGabriel,
+	 * devEmail);
+	 * 
+	 * User userDaniel = userDAO.findByEmailAddress("drscaon@gmail.com");
+	 * userDaniel.setName("Daniel Caon"); userDAO.save(userDaniel, devEmail);
+	 * 
+	 * return Results.ok(); }
+	 * 
+	 * public static Result postFixTestUser() { String gabrielEmail =
+	 * "gabrielcs@gmail.com";
+	 * 
+	 * ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d"); ObjectId newId
+	 * = new ObjectId("5267d52792e6bf54e1b5047d");
+	 * 
+	 * UserDAO<ObjectId> userDAO = new UserDAOMongo(); List<User> users =
+	 * userDAO.find().asList(); for (User user : users) { if
+	 * (user.getId().equals(oldId)) { userDAO.delete(user); user.setId(newId);
+	 * userDAO.save(user, gabrielEmail); } }
+	 * 
+	 * return Results.ok(); }
+	 */
 
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User userGabriel = userDAO.findByEmailAddress("gabrielcs@gmail.com");
-		userGabriel.setName("Gabriel Cypriano");
-		userDAO.save(userGabriel, devEmail);
-
-		User userDaniel = userDAO.findByEmailAddress("drscaon@gmail.com");
-		userDaniel.setName("Daniel Caon");
-		userDAO.save(userDaniel, devEmail);
-
-		return Results.ok();
-	}
-	
-	public static Result postFixTestUser() {
-		String gabrielEmail = "gabrielcs@gmail.com";
-
-		ObjectId oldId = new ObjectId("526ee2cee4b03f1a33f3dd4d");
-		ObjectId newId = new ObjectId("5267d52792e6bf54e1b5047d");
-
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		List<User> users = userDAO.find().asList();
-		for (User user : users) {
-			if (user.getId().equals(oldId)) {
-				userDAO.delete(user);
-				user.setId(newId);
-				userDAO.save(user, gabrielEmail);
-			}
-		}
-
-		return Results.ok();
-	}
-	*/
-	
+	// TODO: first delete it's individual station and remove it from any group
+	// station, otherwise there might be broken DB references
 	public static Result deleteDuplicateUser() {
 		String userId = "528e06bce4b08f0a9784d567";
-				
+
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
 		User user = userDAO.findById(new ObjectId(userId));
 		userDAO.delete(user);
-		
+
 		return Results.ok();
 	}
 
