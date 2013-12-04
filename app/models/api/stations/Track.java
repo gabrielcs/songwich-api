@@ -14,7 +14,7 @@ import com.google.code.morphia.annotations.Reference;
  */
 @Embedded
 public class Track {
-	@Reference(lazy = true)
+	@Reference(lazy = true, ignoreMissing = true)
 	private StationHistoryEntry stationHistoryEntry;
 
 	// this will be an empty list if it is not a group station
