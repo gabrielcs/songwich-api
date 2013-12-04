@@ -38,8 +38,8 @@ GET     /v0.4/isSongStarred/:userId                       controllers.api.statio
 #POST    /v0.4/fixTestUser                                controllers.api.scrobbles.UsersController_V0_4.postFixTestUser()
 
 # Web App
-# GET     /dev                                              controllers.web.Application.index()
-# POST    /postAppDeveloper                                 controllers.web.AppDevelopersController.postAppDevelopers()
+GET     /dev                                              controllers.web.Application.index()
+POST    /postAppDeveloper                                 controllers.web.AppDevelopersController.postAppDevelopers()
 
 # Javascript routes
 GET     /assets/javascripts/routes                        controllers.web.Application.javascriptRoutes()
