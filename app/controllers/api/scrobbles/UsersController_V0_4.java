@@ -2,6 +2,10 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
+import models.api.scrobbles.User;
+
+import org.bson.types.ObjectId;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -23,6 +27,8 @@ import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
+import database.api.scrobbles.UserDAO;
+import database.api.scrobbles.UserDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
 
@@ -167,5 +173,15 @@ public class UsersController_V0_4 extends APIController {
 		return Results.ok();
 	}
 	*/
+	
+	public static Result deleteDuplicateUser() {
+		String userId = "528e06bce4b08f0a9784d567";
+				
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		User user = userDAO.findById(new ObjectId(userId));
+		userDAO.delete(user);
+		
+		return Results.ok();
+	}
 
 }
