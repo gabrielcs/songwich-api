@@ -7,8 +7,15 @@
 	oauth: true                                // autenticação via OAuth 2.0
  });*/
 window.fbAsyncInit = function() {
+	var myAppId;
+	if (baseUrl()=="http://api.songwich.com/"){
+		myAppId ='291135277698838';
+	}
+	else if(baseUrl()=="http://songwich-api-minimal-db.herokuapp.com/"){
+		myAppId ='1440583172821929';
+	}
 	FB.init({
-		appId : '291135277698838',
+		appId : myAppId,
 		status : true,
 		cookie : true,
 		xfbml : true
@@ -97,7 +104,7 @@ function aboutMe() {
 function loginWithFacebook() {
 	FB.login(function(response) {
 		if (response.authResponse) {
-			window.location = "http://api.songwich.com/dev"; // #fb_token="+response.authResponse.accessToken;
+			window.location = baseUrl()+'dev'; // #fb_token="+response.authResponse.accessToken;
 		} else {
 			console.log('User cancelled login or did not fully authorize.');
 		}
@@ -130,10 +137,15 @@ bootstrap_alert.warning = function(
 							+ '</span></div>')
 }
 
+function baseUrl() {
+	   var href = window.location.href.split('/');
+	   return href[0]+'//'+href[2]+'/';
+}
+
 $(document).ready(function() {
 	
 	$('#submitButton').bind('click', function() {
-	    $.post('http://api.songwich.com/postAppDeveloper', 
+	    $.post(baseUrl()+'postAppDeveloper', 
 	       $('#developerForm').serialize(), 
 	       function(data, status, xhr){
 	         // do something here with response;
