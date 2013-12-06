@@ -17,7 +17,7 @@ DELETE  /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobb
 POST    /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.postUsers()
 GET     /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null)
 PUT     /v0.4/users/:userId                               controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
-PUT     /v0.4/users/:userId/deactivate                    controllers.api.scrobbles.UsersController_V0_4.putUsersDeactivate(userId)
+PUT     /v0.4/users/:userId/deactivate                    @controllers.api.scrobbles.UsersController_V0_4.putUsersDeactivate(userId)
 
 # Stations API (@ indicates dependency injection)
 POST    /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.postStations()
@@ -38,7 +38,7 @@ GET     /v0.4/isSongStarred/:userId                       controllers.api.statio
 #POST    /fixScrobbles                                     controllers.api.scrobbles.ScrobblesController_V0_4.postFixScrobbles()
 #POST    /fixUserNames                                     controllers.api.scrobbles.UsersController_V0_4.postFixUserNames()
 #POST    /fixTestUser                                      controllers.api.scrobbles.UsersController_V0_4.postFixTestUser()
-#POST    /fixStationsIds                                   @controllers.api.stations.StationsController_V0_4.postFixStationsIds()
+#POST    /fixStationsIds                                   controllers.api.stations.StationsController_V0_4.postFixStationsIds()
 #POST    /fixDevAuthTokens                                 controllers.api.scrobbles.UsersController_V0_4.postFixDevAuthTokens()
 
 # Web App

@@ -1,6 +1,7 @@
 package behavior.api.usecases.scrobbles;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import models.api.scrobbles.AppUser;
@@ -16,6 +17,8 @@ import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.scrobbles.UserUpdateDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
+import views.api.stations.RadioStationUpdateDTO_V0_4;
+import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 import behavior.api.usecases.stations.StationsUseCases;
@@ -101,20 +104,54 @@ public class UsersUseCases extends UseCase {
 		updateDTOPutUsers(user, userUpdateDTO, scrobblerStations);
 	}
 
-	public UserUpdateDTO_V0_4 putUsersDeactivate(String userId)
-			throws SongwichAPIException {
-		
+	public UserUpdateDTO_V0_4 putUsersDeactivate(String userId,
+			StationStrategy stationStrategy) throws SongwichAPIException {
+
 		User user = authorizePutUsers(userId);
-		
+
 		// process request
+		checkStationsForDeactivation(user.getId(), stationStrategy);
+
+		// deactivate user
 		user.setDeactivated(true);
-		getUserDAO().save(user, getContext().getAppDeveloper().getEmailAddress());
-		
+		getUserDAO().save(user,
+				getContext().getAppDeveloper().getEmailAddress());
+
 		// update output
 		UserUpdateDTO_V0_4 userUpdateDTO = new UserUpdateDTO_V0_4();
 		userUpdateDTO.setUserId(userId);
-		
+
 		return userUpdateDTO;
+	}
+
+	private void checkStationsForDeactivation(ObjectId userId,
+			StationStrategy stationStrategy) throws SongwichAPIException {
+
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		List<RadioStation> stations = getRadioStationDAO().findByScrobblerId(
+				userId);
+		for (RadioStation station : stations) {
+			if (station.getScrobbler().isIndividualStation()) {
+				// individual station
+				stationsUseCases.putStationsDeactivate(station.getId()
+						.toString());
+			} else {
+				// group station
+				if (station.getScrobbler().getActiveScrobblersUserIds().size() == 1) {
+					// only active scrobbler (deactivate station)
+					stationsUseCases.putStationsDeactivate(station.getId()
+							.toString());
+				} else {
+					// there are other active scrobblers
+					RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = new RadioStationUpdateDTO_V0_4();
+					radioStationUpdateDTO.setScrobblerIds(Arrays.asList(userId
+							.toString()));
+					stationsUseCases.putStationsRemoveScrobblers(station
+							.getId().toString(), radioStationUpdateDTO,
+							stationStrategy);
+				}
+			}
+		}
 	}
 
 	private User authorizeForGetUsers(String userId)

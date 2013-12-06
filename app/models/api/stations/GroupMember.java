@@ -11,7 +11,7 @@ import com.google.code.morphia.annotations.Reference;
 public class GroupMember extends MongoModelImpl implements MongoModel {
 	
 	// TODO: check what happens if we do ignoreMissing=true
-	@Reference(lazy = true, ignoreMissing = true)
+	@Reference(lazy = true)
 	private User user;
 
 	private Long startDate;

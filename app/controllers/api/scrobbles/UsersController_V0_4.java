@@ -2,6 +2,8 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -18,6 +20,7 @@ import views.api.scrobbles.PostUsersResponse_V0_4;
 import views.api.scrobbles.PutUsersResponse_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.scrobbles.UserUpdateDTO_V0_4;
+import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -25,6 +28,14 @@ import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class UsersController_V0_4 extends APIController {
+	
+	private StationStrategy stationStrategy;
+
+	@Inject
+	public UsersController_V0_4(StationStrategy stationStrategy) {
+		super();
+		this.stationStrategy = stationStrategy;
+	}
 
 	@AppDeveloperAuthenticated
 	@Logged
@@ -135,12 +146,12 @@ public class UsersController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
-	public static Result putUsersDeactivate(String userId) {
+	public Result putUsersDeactivate(String userId) {
 		// process the request
 		UserUpdateDTO_V0_4 userUpdateDTO;
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
 		try {
-			userUpdateDTO = usersUseCases.putUsersDeactivate(userId);
+			userUpdateDTO = usersUseCases.putUsersDeactivate(userId, stationStrategy);
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()

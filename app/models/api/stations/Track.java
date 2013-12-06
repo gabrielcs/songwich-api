@@ -14,12 +14,12 @@ import com.google.code.morphia.annotations.Reference;
  */
 @Embedded
 public class Track {
-	@Reference(lazy = true, ignoreMissing = true)
+	@Reference(lazy = true)
 	private StationHistoryEntry stationHistoryEntry;
 
 	// this will be an empty list if it is not a group station
 	// TODO: check what happens if we do ignoreMissing=true
-	@Reference(lazy = true, ignoreMissing = true)
+	@Reference(lazy = true)
 	private List<User> songScrobblers = new ArrayList<User>();
 
 	protected Track() {
