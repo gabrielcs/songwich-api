@@ -25,6 +25,8 @@ public class User extends MongoModelImpl implements MongoEntity {
 
 	@Embedded
 	private Set<AppUser> appUsers = new HashSet<AppUser>();
+	
+	private Boolean deactivated;
 
 	protected User() {
 		super();
@@ -98,9 +100,18 @@ public class User extends MongoModelImpl implements MongoEntity {
 		return id;
 	}
 	
-	// TODO: comment
+	/*
 	public void setId(ObjectId id) {
 		this.id = id;
+	}
+	*/
+	
+	public Boolean isDeactivated() {
+		return deactivated;
+	}
+
+	public void setDeactivated(Boolean deactivated) {
+		this.deactivated = deactivated;
 	}
 
 	@Override

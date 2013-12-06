@@ -3,6 +3,7 @@ package controllers.api.scrobbles;
 import java.util.List;
 
 import models.api.scrobbles.User;
+import models.api.stations.RadioStation;
 
 import org.bson.types.ObjectId;
 
@@ -27,8 +28,8 @@ import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
+import database.api.stations.RadioStationDAO;
+import database.api.stations.RadioStationDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
 
@@ -166,16 +167,29 @@ public class UsersController_V0_4 extends APIController {
 	 * return Results.ok(); }
 	 */
 
-	// TODO: first delete it's individual station and remove it from any group
-	// station, otherwise there might be broken DB references
-	public static Result deleteDuplicateUser() {
-		String userId = "528e06bce4b08f0a9784d567";
-
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findById(new ObjectId(userId));
-		userDAO.delete(user);
-
-		return Results.ok();
+	public static Result postFixStationsIds() {
+		ObjectId oldStationId = new ObjectId("52a20974e4b04a9b4816440d");
+		ObjectId newStationId = new ObjectId("526ee177e4b03f1a33f3dd45");
+		fixStationId(oldStationId, newStationId);
+		
+		oldStationId = new ObjectId("52a20760e4b04a9b4816440c");
+		newStationId = new ObjectId("526ee129e4b03f1a33f3dd42");
+		fixStationId(oldStationId, newStationId);
+		
+		oldStationId = new ObjectId("52a21390e4b0f949eea56540");
+		newStationId = new ObjectId("526ee1bfe4b03f1a33f3dd48");
+		fixStationId(oldStationId, newStationId);
+		
+	    return Results.ok();	
+	}
+	
+	private static void fixStationId(ObjectId oldStationId, ObjectId newStationId) {
+		String devEmail = "gabrielcs@gmail.com";
+		
+		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+		RadioStation station = stationDAO.findById(oldStationId);
+		station.setId(newStationId);
+		stationDAO.save(station, devEmail);
 	}
 
 }

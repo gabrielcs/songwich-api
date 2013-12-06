@@ -10,6 +10,7 @@ import models.api.stations.ScrobblerBridge;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.Key;
+import com.google.code.morphia.query.Query;
 
 import database.api.BasicDAOMongo;
 import database.api.CascadeSaveDAO;
@@ -47,18 +48,30 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 
 	@Override
 	public RadioStation findById(ObjectId id) {
-		return ds.find(RadioStation.class).filter("id", id).get();
+		Query<RadioStation> query = ds.find(RadioStation.class)
+				.filter("id", id);
+		filterDeactivated(query);
+		return query.get();
 	}
 
 	@Override
 	public List<RadioStation> findByName(String name) {
-		return ds.find(RadioStation.class).filter("name", name).asList();
+		Query<RadioStation> query = ds.find(RadioStation.class).filter("name",
+				name);
+		filterDeactivated(query);
+		return query.asList();
 	}
 
 	@Override
 	public List<RadioStation> findByScrobblerId(ObjectId scrobblerId) {
-		return ds.find(RadioStation.class)
-				.filter("scrobbler.activeScrobblersUserIds", scrobblerId)
-				.asList();
+		Query<RadioStation> query = ds.find(RadioStation.class).filter(
+				"scrobbler.activeScrobblersUserIds", scrobblerId);
+		filterDeactivated(query);
+		return query.asList();
+	}
+
+	private Query<RadioStation> filterDeactivated(Query<RadioStation> query) {
+		Boolean deactivated = true;
+		return query.filter("deactivated !=", deactivated);
 	}
 }

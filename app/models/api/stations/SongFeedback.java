@@ -5,8 +5,6 @@ import models.api.MongoModelImpl;
 
 import org.bson.types.ObjectId;
 
-import util.api.MyLogger;
-
 import com.google.code.morphia.annotations.Embedded;
 
 @Embedded
@@ -65,7 +63,7 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		MyLogger.debug(String.format("Comparing %s to %s", this, obj));
+		//MyLogger.debug(String.format("Comparing %s to %s", this, obj));
 		
 		if (this == obj)
 			return true;

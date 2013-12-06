@@ -11,6 +11,7 @@ import models.api.scrobbles.User;
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.Key;
+import com.google.code.morphia.query.Query;
 
 import database.api.BasicDAOMongo;
 import database.api.CascadeSaveDAO;
@@ -23,12 +24,16 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	@Override
 	public User findById(ObjectId id) {
-		return ds.find(User.class).filter("id", id).get();
+		Query<User> query = ds.find(User.class).filter("id", id);
+		filterDeactivated(query);
+		return query.get();
 	}
 
 	@Override
 	public List<User> findUsersByIds(Collection<ObjectId> ids) {
-		return ds.find(User.class).filter("id in", ids).asList();
+		Query<User> query = ds.find(User.class).filter("id in", ids);
+		filterDeactivated(query);
+		return query.asList();
 	}
 
 	@Override
@@ -58,22 +63,27 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	@Override
 	public User findByEmailAddress(String emailAddress) {
-		User user = ds.find(User.class).filter("emailAddress", emailAddress)
-				.get();
+		Query<User> query = ds.find(User.class).filter("emailAddress",
+				emailAddress);
+		filterDeactivated(query);
+		User user = query.get();
 		if (user != null) {
 			return user;
 		}
 
 		// it might be an alternative email address
-		return ds.find(User.class)
-				.filter("appUsers.userEmailAddress", emailAddress).get();
+		query = ds.find(User.class).filter("appUsers.userEmailAddress",
+				emailAddress);
+		filterDeactivated(query);
+		return query.get();
 	}
 
 	@Override
 	public User findByUserAuthToken(String userAuthToken) {
-		return ds.find(User.class)
-				.filter("appUsers.userAuthToken.token", userAuthToken)
-				.get();
+		Query<User> query = ds.find(User.class).filter(
+				"appUsers.userAuthToken.token", userAuthToken);
+		filterDeactivated(query);
+		return query.get();
 
 		/*
 		 * // search for it in the deprecated field return ds.find(User.class)
@@ -94,12 +104,16 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 		}
 
 		for (AppUser appUser : user.getAppUsers()) {
-			if (appUser.getUserAuthToken().getToken()
-					.equals(userAuthToken)) {
+			if (appUser.getUserAuthToken().getToken().equals(userAuthToken)) {
 				return appUser;
 			}
 		}
 		// shouldn't reach this point
 		return null;
+	}
+
+	private Query<User> filterDeactivated(Query<User> query) {
+		Boolean deactivated = true;
+		return query.filter("deactivated !=", deactivated);
 	}
 }

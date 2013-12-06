@@ -44,7 +44,7 @@ public class UsersUseCases extends UseCase {
 					return;
 				} else {
 					// registers a new AppUser for that User
-					AppUser newAppUser = saveNewAppUser(user,
+					AppUser newAppUser = createAppUserAndSaveNewUser(user,
 							userDTO.getUserEmail());
 					updateDTO(user, newAppUser, userDTO);
 				}
@@ -52,7 +52,8 @@ public class UsersUseCases extends UseCase {
 		} else {
 			// TODO: add name to UserDTO
 			user = new User(userDTO.getUserEmail(), userDTO.getName());
-			AppUser newAppUser = saveNewAppUser(user, userDTO.getUserEmail());
+			AppUser newAppUser = createAppUserAndSaveNewUser(user,
+					userDTO.getUserEmail());
 			updateDTO(user, newAppUser, userDTO);
 		}
 		MyLogger.debug(String.format(
@@ -155,12 +156,14 @@ public class UsersUseCases extends UseCase {
 	/*
 	 * If the User is also a new one it will be saved to the database as well.
 	 */
-	private AppUser saveNewAppUser(User user, String userEmail) {
+	private AppUser createAppUserAndSaveNewUser(User user, String userEmail) {
 		AuthToken userAuthToken = AuthToken.createUserAuthToken();
 		AppUser newAppUser = new AppUser(getContext().getApp(), userEmail,
 				userAuthToken);
 		user.addAppUser(newAppUser);
 
+		// TODO: should we change this for "update" so that we never create 2
+		// users for a same email address?
 		getUserDAO().save(user,
 				getContext().getAppDeveloper().getEmailAddress());
 

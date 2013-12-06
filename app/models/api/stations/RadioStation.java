@@ -31,6 +31,8 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 
 	@Embedded
 	private Track lookAhead;
+	
+	private Boolean deactivated;
 
 	protected RadioStation() {
 		super();
@@ -133,6 +135,18 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	@Override
 	public ObjectId getId() {
 		return id;
+	}
+	
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+	
+	public Boolean isDeactivated() {
+		return deactivated;
+	}
+
+	public void setDeactivated(Boolean deactivated) {
+		this.deactivated = deactivated;
 	}
 
 	@Override
