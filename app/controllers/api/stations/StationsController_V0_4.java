@@ -132,8 +132,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DTOValidator.errorsAsString(radioStationUpdateForm
-							.errors()));
+					DTOValidator.errorsAsString(radioStationUpdateForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = radioStationUpdateForm
@@ -174,8 +173,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DTOValidator.errorsAsString(radioStationUpdateForm
-							.errors()));
+					DTOValidator.errorsAsString(radioStationUpdateForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = radioStationUpdateForm
@@ -217,8 +215,7 @@ public class StationsController_V0_4 extends APIController {
 		if (radioStationUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DTOValidator.errorsAsString(radioStationUpdateForm
-							.errors()));
+					DTOValidator.errorsAsString(radioStationUpdateForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = radioStationUpdateForm
@@ -288,33 +285,71 @@ public class StationsController_V0_4 extends APIController {
 			return ok(Json.toJson(response));
 		}
 	}
-	
+
+	// TODO: this should be accessible only from the Songwich Radio app
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	@Logged
+	public Result putStationsDeactivate(String stationId) {
+
+		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
+				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
+		if (radioStationUpdateForm.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DTOValidator.errorsAsString(radioStationUpdateForm.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO;
+
+			// process the request
+			StationsUseCases stationsUseCases = new StationsUseCases(
+					getContext());
+			try {
+				radioStationUpdateDTO = stationsUseCases.putStationsDeactivate(stationId);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+
+			// return the response
+			PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+
 	/*
-	public Result postFixStationsIds() {
-		ObjectId oldStationId = new ObjectId("52a20974e4b04a9b4816440d");
-		ObjectId newStationId = new ObjectId("526ee177e4b03f1a33f3dd45");
-		fixStationId(oldStationId, newStationId);
-		
-		oldStationId = new ObjectId("52a20760e4b04a9b4816440c");
-		newStationId = new ObjectId("526ee129e4b03f1a33f3dd42");
-		fixStationId(oldStationId, newStationId);
-		
-		oldStationId = new ObjectId("52a21390e4b0f949eea56540");
-		newStationId = new ObjectId("526ee1bfe4b03f1a33f3dd48");
-		fixStationId(oldStationId, newStationId);
-		
-	    return Results.ok();	
-	}
-	
-	private void fixStationId(ObjectId oldStationId, ObjectId newStationId) {
-		String devEmail = "gabrielcs@gmail.com";
-		
-		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
-		RadioStation station = stationDAO.findById(oldStationId);
-		stationDAO.delete(station);
-		station.setId(newStationId);
-		stationDAO.save(station, devEmail);
-	}
-	*/
-	
+	 * public Result postFixStationsIds() { ObjectId oldStationId = new
+	 * ObjectId("52a20974e4b04a9b4816440d"); ObjectId newStationId = new
+	 * ObjectId("526ee177e4b03f1a33f3dd45"); fixStationId(oldStationId,
+	 * newStationId);
+	 * 
+	 * oldStationId = new ObjectId("52a20760e4b04a9b4816440c"); newStationId =
+	 * new ObjectId("526ee129e4b03f1a33f3dd42"); fixStationId(oldStationId,
+	 * newStationId);
+	 * 
+	 * oldStationId = new ObjectId("52a21390e4b0f949eea56540"); newStationId =
+	 * new ObjectId("526ee1bfe4b03f1a33f3dd48"); fixStationId(oldStationId,
+	 * newStationId);
+	 * 
+	 * return Results.ok(); }
+	 * 
+	 * private void fixStationId(ObjectId oldStationId, ObjectId newStationId) {
+	 * String devEmail = "gabrielcs@gmail.com";
+	 * 
+	 * RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+	 * RadioStation station = stationDAO.findById(oldStationId);
+	 * stationDAO.delete(station); station.setId(newStationId);
+	 * stationDAO.save(station, devEmail); }
+	 */
+
 }

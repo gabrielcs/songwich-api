@@ -132,6 +132,42 @@ public class UsersController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 	}
 
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	@Logged
+	public static Result putUsersDeactivate(String userId) {
+		Form<UserUpdateDTO_V0_4> form = Form.form(UserUpdateDTO_V0_4.class)
+				.bindFromRequest();
+		if (form.hasErrors()) {
+			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
+					APIStatus_V0_4.INVALID_PARAMETER,
+					DTOValidator.errorsAsString(form.errors()));
+			return badRequest(Json.toJson(apiResponse));
+		} else {
+			// process the request
+			UserUpdateDTO_V0_4 userUpdateDTO;
+			UsersUseCases usersUseCases = new UsersUseCases(getContext());
+			try {
+				userUpdateDTO = usersUseCases.putUsersDeactivate(userId);
+			} catch (SongwichAPIException exception) {
+				MyLogger.warn(String.format("%s [%s]: %s", exception
+						.getStatus().toString(), exception.getMessage(),
+						Http.Context.current().request()));
+				APIResponse_V0_4 response = new APIResponse_V0_4(
+						exception.getStatus(), exception.getMessage());
+				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+					return Results.unauthorized(Json.toJson(response));
+				} else {
+					return Results.badRequest(Json.toJson(response));
+				}
+			}
+			// return the response
+			PutUsersResponse_V0_4 response = new PutUsersResponse_V0_4(
+					APIStatus_V0_4.SUCCESS, "Success", userUpdateDTO);
+			return ok(Json.toJson(response));
+		}
+	}
+
 	/*
 	 * public static Result postFixUserNames() { String devEmail =
 	 * "gabrielcs@gmail.com";

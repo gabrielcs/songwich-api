@@ -81,7 +81,7 @@ public class UsersUseCases extends UseCase {
 	public void putUsers(String userId, UserUpdateDTO_V0_4 userUpdateDTO)
 			throws SongwichAPIException {
 
-		User user = authorizePutUsers(userId, userUpdateDTO);
+		User user = authorizePutUsers(userId);
 
 		// process the request
 		if (userUpdateDTO.getName() != null
@@ -99,6 +99,22 @@ public class UsersUseCases extends UseCase {
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(user.getId());
 		updateDTOPutUsers(user, userUpdateDTO, scrobblerStations);
+	}
+
+	public UserUpdateDTO_V0_4 putUsersDeactivate(String userId)
+			throws SongwichAPIException {
+		
+		User user = authorizePutUsers(userId);
+		
+		// process request
+		user.setDeactivated(true);
+		getUserDAO().save(user, getContext().getAppDeveloper().getEmailAddress());
+		
+		// update output
+		UserUpdateDTO_V0_4 userUpdateDTO = new UserUpdateDTO_V0_4();
+		userUpdateDTO.setUserId(userId);
+		
+		return userUpdateDTO;
 	}
 
 	private User authorizeForGetUsers(String userId)
@@ -119,8 +135,7 @@ public class UsersUseCases extends UseCase {
 		return user;
 	}
 
-	private User authorizePutUsers(String userId,
-			UserUpdateDTO_V0_4 userUpdateDTO) throws SongwichAPIException {
+	private User authorizePutUsers(String userId) throws SongwichAPIException {
 
 		if (!ObjectId.isValid(userId)) {
 			throw new SongwichAPIException("Invalid userId",
@@ -133,12 +148,11 @@ public class UsersUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		authenticatePutUsers(user, userUpdateDTO);
+		authenticatePutUsers(user);
 		return user;
 	}
 
-	private void authenticatePutUsers(User user,
-			UserUpdateDTO_V0_4 userUpdateDTO) throws SongwichAPIException {
+	private void authenticatePutUsers(User user) throws SongwichAPIException {
 
 		if (getContext().getUser() == null) {
 			throw new SongwichAPIException("Missing X-Songwich.userAuthToken",

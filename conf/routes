@@ -17,6 +17,7 @@ DELETE  /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobb
 POST    /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.postUsers()
 GET     /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null)
 PUT     /v0.4/users/:userId                               controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
+PUT     /v0.4/users/:userId/deactivate                    controllers.api.scrobbles.UsersController_V0_4.putUsersDeactivate(userId)
 
 # Stations API (@ indicates dependency injection)
 POST    /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.postStations()
@@ -25,6 +26,7 @@ PUT     /v0.4/stations/:stationId                         @controllers.api.stati
 PUT     /v0.4/stations/:stationId/addScrobblers           @controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId)
 PUT     /v0.4/stations/:stationId/removeScrobblers        @controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)
 POST    /v0.4/nextSong	                                  @controllers.api.stations.StationsController_V0_4.postNextSong()
+PUT     /v0.4/stations/:stationId/deactivate              @controllers.api.stations.StationsController_V0_4.putStationsDeactivate(stationId)
 
 # Feedback API
 POST    /v0.4/songFeedback                                controllers.api.stations.SongFeedbackController_V0_4.postSongFeedback()
@@ -38,7 +40,6 @@ GET     /v0.4/isSongStarred/:userId                       controllers.api.statio
 #POST    /fixTestUser                                      controllers.api.scrobbles.UsersController_V0_4.postFixTestUser()
 #POST    /fixStationsIds                                   @controllers.api.stations.StationsController_V0_4.postFixStationsIds()
 #POST    /fixDevAuthTokens                                 controllers.api.scrobbles.UsersController_V0_4.postFixDevAuthTokens()
-
 
 # Web App
 GET     /dev                                              controllers.web.Application.index()

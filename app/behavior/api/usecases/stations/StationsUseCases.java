@@ -129,8 +129,7 @@ public class StationsUseCases extends UseCase {
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
 			throws SongwichAPIException {
 
-		RadioStation station = authorizePutStations(stationId,
-				radioStationUpdateDTO);
+		RadioStation station = authorizePutStations(stationId);
 
 		// update imageUrl
 		if (radioStationUpdateDTO.getImageUrl() != null) {
@@ -143,6 +142,22 @@ public class StationsUseCases extends UseCase {
 		}
 
 		savePutStationsScrobblers(station, radioStationUpdateDTO);
+	}
+	
+	public RadioStationUpdateDTO_V0_4 putStationsDeactivate(String stationId)
+			throws SongwichAPIException {
+		
+		RadioStation station = authorizePutStations(stationId);
+		
+		// process request
+		station.setDeactivated(true);
+		getRadioStationDAO().save(station, getContext().getAppDeveloper().getEmailAddress());
+		
+		// update output
+		RadioStationUpdateDTO_V0_4 stationUpdateDTO = new RadioStationUpdateDTO_V0_4();
+		stationUpdateDTO.setStationId(stationId);
+		
+		return stationUpdateDTO;
 	}
 
 	public void putStationsAddScrobblers(String stationId,
@@ -357,8 +372,7 @@ public class StationsUseCases extends UseCase {
 		return track;
 	}
 
-	private RadioStation authorizePutStations(String stationId,
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+	private RadioStation authorizePutStations(String stationId)
 			throws SongwichAPIException {
 
 		if (!ObjectId.isValid(stationId)) {
@@ -375,7 +389,7 @@ public class StationsUseCases extends UseCase {
 
 		// check if the user is already one of the stations's scrobbler and will
 		// continue to be
-		authenticatePutStations(station, radioStationUpdateDTO);
+		authenticatePutStations(station);
 
 		return station;
 	}
@@ -384,8 +398,7 @@ public class StationsUseCases extends UseCase {
 			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
 			throws SongwichAPIException {
 
-		RadioStation station = authorizePutStations(stationId,
-				radioStationUpdateDTO);
+		RadioStation station = authorizePutStations(stationId);
 
 		if (radioStationUpdateDTO.getScrobblerIds() == null
 				|| radioStationUpdateDTO.getScrobblerIds().isEmpty()) {
@@ -419,8 +432,7 @@ public class StationsUseCases extends UseCase {
 		}
 	}
 
-	private void authenticatePutStations(RadioStation station,
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO)
+	private void authenticatePutStations(RadioStation station)
 			throws SongwichAPIException {
 
 		if (getContext().getUser() == null) {
