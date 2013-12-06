@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.Key;
 import com.google.code.morphia.query.Query;
+import com.google.code.morphia.query.QueryResults;
 
 import database.api.BasicDAOMongo;
 import database.api.CascadeSaveDAO;
@@ -20,6 +21,22 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 		UserDAO<ObjectId>, CascadeSaveDAO<User, ObjectId> {
 
 	public UserDAOMongo() {
+	}
+
+	/** Finds all User's that are not deactivated */
+	@Override
+	public QueryResults<User> find() {
+		Query<User> query = ds.find(User.class);
+		filterDeactivated(query);
+		return query;
+	}
+
+	/** Counts User's that are not deactivated */
+	@Override
+	public long count() {
+		Query<User> query = ds.find(User.class);
+		filterDeactivated(query);
+		return super.count(query);
 	}
 
 	@Override

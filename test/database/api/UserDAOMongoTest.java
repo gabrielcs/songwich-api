@@ -1,7 +1,6 @@
 package database.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +33,30 @@ public class UserDAOMongoTest extends WithRequestContext {
 		userDao.delete(user2);
 
 		assertTrue(userDao.count() == 0);
+	}
+	
+	@Test
+	public void testCountAndDeactivate() {
+		User user1 = new User("gabriel@example.com", "Gabriel Example");
+		User user2 = new User("daniel@example.com", "Daniel Example");
+
+		UserDAOMongo userDao = new UserDAOMongo();
+		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
+
+		assertEquals(2, userDao.count());
+		assertEquals(2, userDao.find().asList().size());
+		
+		user1.setDeactivated(true);
+		userDao.save(user1, getContext().getAppDeveloper().getEmailAddress());
+		user2.setDeactivated(true);
+		userDao.save(user2, getContext().getAppDeveloper().getEmailAddress());
+		
+		assertEquals(0, userDao.count());
+		assertEquals(0, userDao.find().asList().size());
+		
+		assertNull(userDao.findById(user1.getId()));
+		assertNull(userDao.findById(user2.getId()));
 	}
 
 	@Test

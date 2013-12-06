@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 
 import com.google.code.morphia.Key;
 import com.google.code.morphia.query.Query;
+import com.google.code.morphia.query.QueryResults;
 
 import database.api.BasicDAOMongo;
 import database.api.CascadeSaveDAO;
@@ -44,6 +45,22 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	private void cascadeSaveUser(User user, String devEmail) {
 		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
 		userDao.cascadeSave(user, devEmail);
+	}
+
+	/** Finds all RadioStation's that are not deactivated */
+	@Override
+	public QueryResults<RadioStation> find() {
+		Query<RadioStation> query = ds.find(RadioStation.class);
+		filterDeactivated(query);
+		return query;
+	}
+
+	/** Counts RadioStation's that are not deactivated */
+	@Override
+	public long count() {
+		Query<RadioStation> query = ds.find(RadioStation.class);
+		filterDeactivated(query);
+		return super.count(query);
 	}
 
 	@Override

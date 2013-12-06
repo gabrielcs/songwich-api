@@ -1,7 +1,6 @@
 package database.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,34 +69,46 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 		nofxStation = new RadioStation("NOFX FM", nofx);
 		fatMikeStation = new RadioStation("Fat Mike", fatMike);
 		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(nofxStation, getContext().getAppDeveloper().getEmailAddress());
-		radioStationDAO.cascadeSave(fatMikeStation, getContext().getAppDeveloper().getEmailAddress());
-		
+		radioStationDAO.cascadeSave(nofxStation, getContext().getAppDeveloper()
+				.getEmailAddress());
+		radioStationDAO.cascadeSave(fatMikeStation, getContext()
+				.getAppDeveloper().getEmailAddress());
+
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
 		StationHistoryDAO<ObjectId> stationHistoryDAO = new StationHistoryDAOMongo();
-		
+
 		// set nowPlaying and lookAhead for nofxStation
 		StationHistoryEntry doWhatYouWantNofxStationHistoryEntry = new StationHistoryEntry(
 				nofxStation.getId(), doWhatYouWant, null);
-		stationHistoryDAO.save(doWhatYouWantNofxStationHistoryEntry, getContext().getAppDeveloper().getEmailAddress());
-		nofxStation.setNowPlaying(new Track(doWhatYouWantNofxStationHistoryEntry, null));
+		stationHistoryDAO.save(doWhatYouWantNofxStationHistoryEntry,
+				getContext().getAppDeveloper().getEmailAddress());
+		nofxStation.setNowPlaying(new Track(
+				doWhatYouWantNofxStationHistoryEntry, null));
 		StationHistoryEntry linoleumNofxStationHistoryEntry = new StationHistoryEntry(
 				nofxStation.getId(), linoleum, System.currentTimeMillis());
-		stationHistoryDAO.save(linoleumNofxStationHistoryEntry, getContext().getAppDeveloper().getEmailAddress());
-		nofxStation.setLookAhead(new Track(linoleumNofxStationHistoryEntry, null));
-		radioStationDAO.save(nofxStation, getContext().getAppDeveloper().getEmailAddress());
-		
+		stationHistoryDAO.save(linoleumNofxStationHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
+		nofxStation.setLookAhead(new Track(linoleumNofxStationHistoryEntry,
+				null));
+		radioStationDAO.save(nofxStation, getContext().getAppDeveloper()
+				.getEmailAddress());
+
 		// set nowPlaying and lookAhead for fatMikeStation
 		StationHistoryEntry linoleumFatMikeStationHistoryEntry = new StationHistoryEntry(
 				fatMikeStation.getId(), linoleum, System.currentTimeMillis());
-		stationHistoryDAO.save(linoleumFatMikeStationHistoryEntry, getContext().getAppDeveloper().getEmailAddress());
-		fatMikeStation.setNowPlaying(new Track(linoleumFatMikeStationHistoryEntry, null));
+		stationHistoryDAO.save(linoleumFatMikeStationHistoryEntry, getContext()
+				.getAppDeveloper().getEmailAddress());
+		fatMikeStation.setNowPlaying(new Track(
+				linoleumFatMikeStationHistoryEntry, null));
 		StationHistoryEntry doWhatYouWantFatMikeStationHistoryEntry = new StationHistoryEntry(
 				fatMikeStation.getId(), doWhatYouWant, null);
-		stationHistoryDAO.save(doWhatYouWantFatMikeStationHistoryEntry, getContext().getAppDeveloper().getEmailAddress());
-		fatMikeStation.setLookAhead(new Track(doWhatYouWantFatMikeStationHistoryEntry, null));
-		radioStationDAO.save(fatMikeStation, getContext().getAppDeveloper().getEmailAddress());
+		stationHistoryDAO.save(doWhatYouWantFatMikeStationHistoryEntry,
+				getContext().getAppDeveloper().getEmailAddress());
+		fatMikeStation.setLookAhead(new Track(
+				doWhatYouWantFatMikeStationHistoryEntry, null));
+		radioStationDAO.save(fatMikeStation, getContext().getAppDeveloper()
+				.getEmailAddress());
 	}
 
 	@Test
@@ -105,6 +116,21 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 		assertTrue(radioStationDao.count() == 2);
 		radioStationDao.delete(nofxStation);
 		assertTrue(radioStationDao.count() == 1);
+	}
+
+	@Test
+	public void testCountAndDeactivate() {
+		assertEquals(2, radioStationDao.count());
+		assertEquals(2, radioStationDao.find().asList().size());
+		
+		nofxStation.setDeactivated(true);
+		radioStationDao.save(nofxStation, getContext().getAppDeveloper()
+				.getEmailAddress());
+		
+		assertEquals(1, radioStationDao.count());
+		assertEquals(1, radioStationDao.find().asList().size());
+		
+		assertNull(radioStationDao.findById(nofxStation.getId()));
 	}
 
 	@Test

@@ -2,12 +2,6 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
-import models.api.scrobbles.App;
-import models.api.scrobbles.AppDeveloper;
-import models.api.scrobbles.AuthToken;
-
-import org.bson.types.ObjectId;
-
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -29,8 +23,6 @@ import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
-import database.api.scrobbles.AppDAO;
-import database.api.scrobbles.AppDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
 
@@ -166,33 +158,28 @@ public class UsersController_V0_4 extends APIController {
 	 * userDAO.save(user, gabrielEmail); } }
 	 * 
 	 * return Results.ok(); }
+	 * 
+	 * 
+	 * public static Result postFixDevAuthTokens() { String oldAuthTokenString =
+	 * "52ea5b3f-0700-4e4f-9074-d0cba7d77237"; AuthToken newAuthToken = new
+	 * AuthToken("5158f947-291e-4594-8c14-72671a92e94e");
+	 * postFixDevAuthToken(oldAuthTokenString, newAuthToken);
+	 * 
+	 * oldAuthTokenString = "75df2d1e-27f6-4c23-befb-ba0577814953"; newAuthToken
+	 * = new AuthToken("aa9da1b3-d3aa-408a-8a1d-9d852c3bc421");
+	 * postFixDevAuthToken(oldAuthTokenString, newAuthToken);
+	 * 
+	 * return Results.ok(); }
+	 * 
+	 * public static void postFixDevAuthToken(String oldAuthTokenString,
+	 * AuthToken newAuthToken) { String devEmail = "gabrielcs@gmail.com";
+	 * 
+	 * AppDAO<ObjectId> appDAO = new AppDAOMongo(); App app =
+	 * appDAO.findByDevAuthToken(oldAuthTokenString); for (AppDeveloper
+	 * appDeveloper : app.getAppDevelopers()) { if
+	 * (appDeveloper.getDevAuthToken().getToken().equals(oldAuthTokenString)) {
+	 * appDeveloper.setDevAuthToken(newAuthToken); break; } }
+	 * 
+	 * appDAO.save(app, devEmail); }
 	 */
-
-	public static Result postFixDevAuthTokens() {
-		String oldAuthTokenString = "52ea5b3f-0700-4e4f-9074-d0cba7d77237";
-		AuthToken newAuthToken = new AuthToken("5158f947-291e-4594-8c14-72671a92e94e");
-		postFixDevAuthToken(oldAuthTokenString, newAuthToken);
-		
-		oldAuthTokenString = "75df2d1e-27f6-4c23-befb-ba0577814953";
-		newAuthToken = new AuthToken("aa9da1b3-d3aa-408a-8a1d-9d852c3bc421");
-		postFixDevAuthToken(oldAuthTokenString, newAuthToken);
-		
-		return Results.ok();
-	}
-	
-	public static void postFixDevAuthToken(String oldAuthTokenString, AuthToken newAuthToken) {
-		String devEmail = "gabrielcs@gmail.com";
-		
-		AppDAO<ObjectId> appDAO = new AppDAOMongo();
-		App app = appDAO.findByDevAuthToken(oldAuthTokenString);
-		for (AppDeveloper appDeveloper : app.getAppDevelopers()) {
-			if (appDeveloper.getDevAuthToken().getToken().equals(oldAuthTokenString)) {
-				appDeveloper.setDevAuthToken(newAuthToken);
-				break;
-			}
-		}
-		
-		appDAO.save(app, devEmail);
-	}
-
 }

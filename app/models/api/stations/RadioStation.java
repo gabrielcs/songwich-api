@@ -144,7 +144,7 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	*/
 	
 	public Boolean isDeactivated() {
-		return deactivated;
+		return deactivated == null ? false : deactivated;
 	}
 
 	public void setDeactivated(Boolean deactivated) {
