@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import models.api.stations.RadioStation;
+
+import org.bson.types.ObjectId;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -27,6 +31,8 @@ import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
+import database.api.stations.RadioStationDAO;
+import database.api.stations.RadioStationDAOMongo;
 
 public class StationsController_V0_4 extends APIController {
 
@@ -287,5 +293,30 @@ public class StationsController_V0_4 extends APIController {
 					APIStatus_V0_4.SUCCESS, "Success", radioStationDTO);
 			return ok(Json.toJson(response));
 		}
+	}
+	
+	public Result postFixStationsIds() {
+		ObjectId oldStationId = new ObjectId("52a20974e4b04a9b4816440d");
+		ObjectId newStationId = new ObjectId("526ee177e4b03f1a33f3dd45");
+		fixStationId(oldStationId, newStationId);
+		
+		oldStationId = new ObjectId("52a20760e4b04a9b4816440c");
+		newStationId = new ObjectId("526ee129e4b03f1a33f3dd42");
+		fixStationId(oldStationId, newStationId);
+		
+		oldStationId = new ObjectId("52a21390e4b0f949eea56540");
+		newStationId = new ObjectId("526ee1bfe4b03f1a33f3dd48");
+		fixStationId(oldStationId, newStationId);
+		
+	    return Results.ok();	
+	}
+	
+	private void fixStationId(ObjectId oldStationId, ObjectId newStationId) {
+		String devEmail = "gabrielcs@gmail.com";
+		
+		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+		RadioStation station = stationDAO.findById(oldStationId);
+		station.setId(newStationId);
+		stationDAO.save(station, devEmail);
 	}
 }
