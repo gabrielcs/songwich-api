@@ -25,7 +25,7 @@ public class AuthToken extends MongoModelImpl implements MongoModel {
 	protected AuthToken() {
 	}
 
-	protected AuthToken(String authToken) {
+	public AuthToken(String authToken) {
 		this.token = authToken;
 		this.state = AuthTokenState.VALID;
 	}

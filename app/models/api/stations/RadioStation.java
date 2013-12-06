@@ -137,9 +137,11 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		return id;
 	}
 	
+	/*
 	public void setId(ObjectId id) {
 		this.id = id;
 	}
+	*/
 	
 	public Boolean isDeactivated() {
 		return deactivated;
