@@ -291,40 +291,30 @@ public class StationsController_V0_4 extends APIController {
 	@UserAuthenticated
 	@Logged
 	public Result putStationsDeactivate(String stationId) {
+		RadioStationUpdateDTO_V0_4 radioStationUpdateDTO;
 
-		Form<RadioStationUpdateDTO_V0_4> radioStationUpdateForm = Form.form(
-				RadioStationUpdateDTO_V0_4.class).bindFromRequest();
-		if (radioStationUpdateForm.hasErrors()) {
-			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
-					APIStatus_V0_4.INVALID_PARAMETER,
-					DTOValidator.errorsAsString(radioStationUpdateForm.errors()));
-			return badRequest(Json.toJson(apiResponse));
-		} else {
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO;
-
-			// process the request
-			StationsUseCases stationsUseCases = new StationsUseCases(
-					getContext());
-			try {
-				radioStationUpdateDTO = stationsUseCases.putStationsDeactivate(stationId);
-			} catch (SongwichAPIException exception) {
-				MyLogger.warn(String.format("%s [%s]: %s", exception
-						.getStatus().toString(), exception.getMessage(),
-						Http.Context.current().request()));
-				APIResponse_V0_4 response = new APIResponse_V0_4(
-						exception.getStatus(), exception.getMessage());
-				if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
-					return Results.unauthorized(Json.toJson(response));
-				} else {
-					return Results.badRequest(Json.toJson(response));
-				}
+		// process the request
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		try {
+			radioStationUpdateDTO = stationsUseCases
+					.putStationsDeactivate(stationId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+				return Results.unauthorized(Json.toJson(response));
+			} else {
+				return Results.badRequest(Json.toJson(response));
 			}
-
-			// return the response
-			PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
-			return ok(Json.toJson(response));
 		}
+
+		// return the response
+		PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
+		return ok(Json.toJson(response));
 	}
 
 	/*
