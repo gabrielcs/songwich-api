@@ -316,6 +316,7 @@ public class StationsController_V0_4 extends APIController {
 		
 		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
 		RadioStation station = stationDAO.findById(oldStationId);
+		stationDAO.delete(station);
 		station.setId(newStationId);
 		stationDAO.save(station, devEmail);
 	}
