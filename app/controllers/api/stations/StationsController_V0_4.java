@@ -295,6 +295,7 @@ public class StationsController_V0_4 extends APIController {
 		}
 	}
 	
+	/*
 	public Result postFixStationsIds() {
 		ObjectId oldStationId = new ObjectId("52a20974e4b04a9b4816440d");
 		ObjectId newStationId = new ObjectId("526ee177e4b03f1a33f3dd45");
@@ -320,4 +321,6 @@ public class StationsController_V0_4 extends APIController {
 		station.setId(newStationId);
 		stationDAO.save(station, devEmail);
 	}
+	*/
+	
 }
