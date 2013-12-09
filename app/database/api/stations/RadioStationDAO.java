@@ -11,6 +11,8 @@ import database.api.SongwichDAO;
 public interface RadioStationDAO<I> extends SongwichDAO<RadioStation, I> {
 
 	public RadioStation findById(I id);
+	
+	public RadioStation findById(I id, boolean nonDeactivatedOnly);
 
 	public List<RadioStation> findByName(String name);
 

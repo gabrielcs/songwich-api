@@ -41,9 +41,23 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	@Override
 	public User findById(ObjectId id) {
-		Query<User> query = ds.find(User.class).filter("id", id);
+		Query<User> query = queryById(id);
 		filterDeactivated(query);
 		return query.get();
+	}
+	
+	@Override
+	public User findById(ObjectId id, boolean nonDeactivatedOnly) {
+		if (nonDeactivatedOnly) {
+			return findById(id);
+		}
+		// includes deactivated users
+		Query<User> query = queryById(id);
+		return query.get();
+	}
+	
+	private Query<User> queryById(Object id) {
+		return ds.find(User.class).filter("id", id);
 	}
 
 	@Override

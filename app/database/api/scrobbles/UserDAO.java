@@ -11,6 +11,8 @@ public interface UserDAO<I> extends SongwichDAO<User, I> {
 	
 	public User findById(I id);
 	
+	public User findById(I id, boolean nonDeactivatedOnly);
+	
 	public List<User> findUsersByIds(Collection<I> ids);
 
 	public User findByUserAuthToken(String userAuthToken);

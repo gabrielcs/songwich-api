@@ -65,10 +65,23 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 
 	@Override
 	public RadioStation findById(ObjectId id) {
-		Query<RadioStation> query = ds.find(RadioStation.class)
-				.filter("id", id);
+		Query<RadioStation> query = queryById(id);
 		filterDeactivated(query);
 		return query.get();
+	}
+	
+	@Override
+	public RadioStation findById(ObjectId id, boolean nonDeactivatedOnly) {
+		if (nonDeactivatedOnly) {
+			return findById(id);
+		}
+		// includes deactivated stations
+		Query<RadioStation> query = queryById(id);
+		return query.get();
+	}
+	
+	private Query<RadioStation> queryById(Object id) {
+		return ds.find(RadioStation.class).filter("id", id);
 	}
 
 	@Override

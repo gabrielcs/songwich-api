@@ -187,7 +187,7 @@ public class UsersController_V0_4 extends APIController {
 		ObjectId objectId = new ObjectId("5267d52792e6bf54e1b5047d");
 
 		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findById(objectId);
+		User user = userDAO.findById(objectId, false);
 		user.setDeactivated(false);
 		userDAO.save(user, devEmail);
 
@@ -200,7 +200,7 @@ public class UsersController_V0_4 extends APIController {
 		ObjectId objectId = new ObjectId("528e59f2e4b0fed29a59c813");
 
 		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
-		RadioStation station = stationDAO.findById(objectId);
+		RadioStation station = stationDAO.findById(objectId, false);
 		station.setDeactivated(false);
 		stationDAO.save(station, devEmail);
 
