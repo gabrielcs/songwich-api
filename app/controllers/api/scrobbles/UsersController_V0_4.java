@@ -4,6 +4,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import models.api.scrobbles.User;
+import models.api.stations.RadioStation;
+
+import org.bson.types.ObjectId;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -26,9 +31,13 @@ import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
+import database.api.scrobbles.UserDAO;
+import database.api.scrobbles.UserDAOMongo;
+import database.api.stations.RadioStationDAO;
+import database.api.stations.RadioStationDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
-	
+
 	private StationStrategy stationStrategy;
 
 	@Inject
@@ -151,7 +160,8 @@ public class UsersController_V0_4 extends APIController {
 		UserUpdateDTO_V0_4 userUpdateDTO;
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
 		try {
-			userUpdateDTO = usersUseCases.putUsersDeactivate(userId, stationStrategy);
+			userUpdateDTO = usersUseCases.putUsersDeactivate(userId,
+					stationStrategy);
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
@@ -170,6 +180,34 @@ public class UsersController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 
 	}
+
+	public static Result postFixReactivateUser() {
+		String devEmail = "gabrielcs@gmail.com";
+
+		ObjectId objectId = new ObjectId("5267d52792e6bf54e1b5047d");
+
+		UserDAO<ObjectId> userDAO = new UserDAOMongo();
+		User user = userDAO.findById(objectId);
+		user.setDeactivated(false);
+		userDAO.save(user, devEmail);
+
+		return Results.ok();
+	}
+	
+	public static Result postFixReactivateStation() {
+		String devEmail = "gabrielcs@gmail.com";
+
+		ObjectId objectId = new ObjectId("528e59f2e4b0fed29a59c813");
+
+		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+		RadioStation station = stationDAO.findById(objectId);
+		station.setDeactivated(false);
+		stationDAO.save(station, devEmail);
+
+		return Results.ok();
+	}
+	
+	
 
 	/*
 	 * public static Result postFixUserNames() { String devEmail =
