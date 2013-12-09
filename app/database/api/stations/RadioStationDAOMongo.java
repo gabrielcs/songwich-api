@@ -55,6 +55,15 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 		return query;
 	}
 
+	@Override
+	public QueryResults<RadioStation> find(boolean nonDeactivatedOnly) {
+		if (nonDeactivatedOnly) {
+			return find();
+		} else {
+			return super.find();
+		}
+	}
+
 	/** Counts RadioStation's that are not deactivated */
 	@Override
 	public long count() {
@@ -64,40 +73,70 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 	}
 
 	@Override
-	public RadioStation findById(ObjectId id) {
-		Query<RadioStation> query = queryById(id);
-		filterDeactivated(query);
-		return query.get();
+	public long count(boolean nonDeactivatedOnly) {
+		if (nonDeactivatedOnly) {
+			return count();
+		} else {
+			return super.count();
+		}
 	}
-	
+
+	@Override
+	public RadioStation findById(ObjectId id) {
+		return queryById(id, true).get();
+	}
+
 	@Override
 	public RadioStation findById(ObjectId id, boolean nonDeactivatedOnly) {
-		if (nonDeactivatedOnly) {
-			return findById(id);
-		}
-		// includes deactivated stations
-		Query<RadioStation> query = queryById(id);
-		return query.get();
+		return queryById(id, nonDeactivatedOnly).get();
 	}
-	
-	private Query<RadioStation> queryById(Object id) {
-		return ds.find(RadioStation.class).filter("id", id);
+
+	private Query<RadioStation> queryById(Object id, boolean nonDeactivatedOnly) {
+		Query<RadioStation> query = ds.find(RadioStation.class)
+				.filter("id", id);
+		if (nonDeactivatedOnly) {
+			filterDeactivated(query);
+		}
+		return query;
 	}
 
 	@Override
 	public List<RadioStation> findByName(String name) {
+		return queryByName(name, true).asList();
+	}
+
+	@Override
+	public List<RadioStation> findByName(String name, boolean nonDeactivatedOnly) {
+		return queryByName(name, nonDeactivatedOnly).asList();
+	}
+
+	private Query<RadioStation> queryByName(String name,
+			boolean nonDeactivatedOnly) {
 		Query<RadioStation> query = ds.find(RadioStation.class).filter("name",
 				name);
-		filterDeactivated(query);
-		return query.asList();
+		if (nonDeactivatedOnly) {
+			filterDeactivated(query);
+		}
+		return query;
 	}
 
 	@Override
 	public List<RadioStation> findByScrobblerId(ObjectId scrobblerId) {
+		return queryByScrobblerId(scrobblerId, true).asList();
+	}
+
+	@Override
+	public List<RadioStation> findByScrobblerId(ObjectId scrobblerId,
+			boolean nonDeactivatedOnly) {
+		return queryByScrobblerId(scrobblerId, nonDeactivatedOnly).asList();
+	}
+
+	private Query<RadioStation> queryByScrobblerId(ObjectId scrobblerId,
+			boolean nonDeactivatedOnly) {
 		Query<RadioStation> query = ds.find(RadioStation.class).filter(
 				"scrobbler.activeScrobblersUserIds", scrobblerId);
 		filterDeactivated(query);
-		return query.asList();
+		return query;
 	}
 
 	private Query<RadioStation> filterDeactivated(Query<RadioStation> query) {
