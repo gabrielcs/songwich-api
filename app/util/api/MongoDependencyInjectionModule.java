@@ -20,6 +20,8 @@ import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
 import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
+import database.api.subscriptions.SubscriptionDAO;
+import database.api.subscriptions.SubscriptionDAOMongo;
 
 public class MongoDependencyInjectionModule extends AbstractModule {
 	@Override
@@ -46,5 +48,9 @@ public class MongoDependencyInjectionModule extends AbstractModule {
 		// StationHistoryDAO
 		bind(new TypeLiteral<StationHistoryDAO<ObjectId>>() {}).to(StationHistoryDAOMongo.class);
 		bind(StationHistoryDAO.class).to(StationHistoryDAOMongo.class);
+		
+		// SubscriptionDAO
+		bind(new TypeLiteral<SubscriptionDAO<ObjectId>>() {}).to(SubscriptionDAOMongo.class);
+		bind(SubscriptionDAO.class).to(SubscriptionDAOMongo.class);
 	}
 }

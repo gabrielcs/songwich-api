@@ -101,7 +101,8 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 
 		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
 		Query<StationHistoryEntry> query = ds.find(StationHistoryEntry.class)
-				.filter("songFeedback elem", songFeedback);
+		// .filter("songFeedback elem", songFeedback);
+				.field("songFeedback").hasThisElement(songFeedback);
 		return order(query).asList();
 	}
 
@@ -111,7 +112,8 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 	public StationHistoryEntry isSongStarredByUser(ObjectId userId, Song song) {
 		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
 		return ds.find(StationHistoryEntry.class).filter("song", song)
-				.filter("songFeedback elem", songFeedback).get();
+		// .filter("songFeedback elem", songFeedback).get();
+				.field("songFeedback").hasThisElement(songFeedback).get();
 	}
 
 	private Query<StationHistoryEntry> order(Query<StationHistoryEntry> query) {
@@ -146,6 +148,7 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		calendar.add(Calendar.HOUR, -hourOffset);
 		long hourOffsetMillis = calendar.getTimeInMillis();
 
-		return query.filter("timestamp >", hourOffsetMillis);
+		//return query.filter("timestamp >", hourOffsetMillis);
+		return query.field("timestamp").greaterThan(hourOffsetMillis);
 	}
 }

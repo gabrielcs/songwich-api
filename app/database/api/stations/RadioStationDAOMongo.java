@@ -141,6 +141,7 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 
 	private Query<RadioStation> filterDeactivated(Query<RadioStation> query) {
 		Boolean deactivated = true;
-		return query.filter("deactivated !=", deactivated);
+		//return query.filter("deactivated !=", deactivated);
+		return query.field("deactivated").notEqual(deactivated);
 	}
 }

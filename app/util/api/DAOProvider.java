@@ -16,6 +16,7 @@ import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.UserDAO;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.StationHistoryDAO;
+import database.api.subscriptions.SubscriptionDAO;
 
 public class DAOProvider {
 
@@ -26,6 +27,7 @@ public class DAOProvider {
 	private ScrobbleDAO<ObjectId> scrobbleDAO;
 	private RadioStationDAO<ObjectId> radioStationDAO;
 	private StationHistoryDAO<ObjectId> stationHistoryDAO;
+	private SubscriptionDAO<ObjectId> subscriptionDAO;
 
 	private CascadeSaveDAO<App, ObjectId> cascadeSaveAppDAO;
 	private CascadeSaveDAO<User, ObjectId> cascadeSaveUserDAO;
@@ -83,6 +85,15 @@ public class DAOProvider {
 		return stationHistoryDAO;
 	}
 
+	public SubscriptionDAO<ObjectId> getSubscriptionDAO() {
+		if (subscriptionDAO == null) {
+			subscriptionDAO = INJECTOR.getInstance(Key
+					.get(new TypeLiteral<SubscriptionDAO<ObjectId>>() {
+					}));
+		}
+		return subscriptionDAO;
+	}
+
 	public CascadeSaveDAO<App, ObjectId> getCascadeSaveAppDAO() {
 		if (cascadeSaveAppDAO == null) {
 			cascadeSaveAppDAO = INJECTOR.getInstance(Key
@@ -110,5 +121,4 @@ public class DAOProvider {
 		}
 		return cascadeSaveRadioStationDAO;
 	}
-
 }

@@ -17,6 +17,7 @@ import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.UserDAO;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.StationHistoryDAO;
+import database.api.subscriptions.SubscriptionDAO;
 
 public class WithProductionDependencyInjection extends WithRequestContext {
 
@@ -63,6 +64,10 @@ public class WithProductionDependencyInjection extends WithRequestContext {
 
 	protected StationHistoryDAO<ObjectId> getStationHistoryDAO() {
 		return daoProvider.getStationHistoryDAO();
+	}
+	
+	protected SubscriptionDAO<ObjectId> getSubscriptionDAO() {
+		return daoProvider.getSubscriptionDAO();
 	}
 	
 	protected CascadeSaveDAO<App, ObjectId> getCascadeSaveAppDAO() {

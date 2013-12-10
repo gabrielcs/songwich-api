@@ -102,7 +102,8 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 	}
 
 	private Query<Scrobble> queryByUserIds(Set<ObjectId> userIds) {
-		return ds.find(Scrobble.class).filter("userId in", userIds);
+		//return ds.find(Scrobble.class).filter("userId in", userIds);
+		return ds.find(Scrobble.class).field("userId").hasAnyOf(userIds);
 	}
 
 	private Query<Scrobble> filterChosenByUserOnly(Query<Scrobble> query,
@@ -129,6 +130,7 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		long daysOffsetMillis = calendar.getTimeInMillis();
-		return query.filter("timestamp >", daysOffsetMillis);
+		//return query.filter("timestamp >", daysOffsetMillis);
+		return query.field("timestamp").greaterThan(daysOffsetMillis);
 	}
 }

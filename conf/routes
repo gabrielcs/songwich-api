@@ -40,8 +40,8 @@ GET     /v0.4/isSongStarred/:userId                       controllers.api.statio
 #POST    /fixTestUser                                      controllers.api.scrobbles.UsersController_V0_4.postFixTestUser()
 #POST    /fixStationsIds                                   controllers.api.stations.StationsController_V0_4.postFixStationsIds()
 #POST    /fixDevAuthTokens                                 controllers.api.scrobbles.UsersController_V0_4.postFixDevAuthTokens()
-POST    /fixReactivateUser                                controllers.api.scrobbles.UsersController_V0_4.postFixReactivateUser()
-POST    /fixReactivateStation                             controllers.api.scrobbles.UsersController_V0_4.postFixReactivateStation()
+#POST    /fixReactivateUser                                controllers.api.scrobbles.UsersController_V0_4.postFixReactivateUser()
+#POST    /fixReactivateStation                             controllers.api.scrobbles.UsersController_V0_4.postFixReactivateStation()
 
 # Web App
 GET     /dev                                              controllers.web.Application.index()

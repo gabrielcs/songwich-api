@@ -73,7 +73,8 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	private Query<User> queryUsersByIds(Collection<ObjectId> ids,
 			boolean nonDeactivatedOnly) {
-		Query<User> query = ds.find(User.class).filter("id in", ids);
+		//Query<User> query = ds.find(User.class).filter("id in", ids);
+		Query<User> query = ds.find(User.class).field("id").hasAnyOf(ids);
 		if (nonDeactivatedOnly) {
 			filterDeactivated(query);
 		}
@@ -203,6 +204,7 @@ public class UserDAOMongo extends BasicDAOMongo<User> implements
 
 	private Query<User> filterDeactivated(Query<User> query) {
 		Boolean deactivated = true;
-		return query.filter("deactivated !=", deactivated);
+		//return query.filter("deactivated !=", deactivated);
+		return query.field("deactivated").notEqual(deactivated);
 	}
 }
