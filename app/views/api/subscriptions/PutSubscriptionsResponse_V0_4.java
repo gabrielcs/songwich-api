@@ -1,10 +1,13 @@
 package views.api.subscriptions;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
 
+//there was a mysterious "subscriptionsDTO" property duplicating the output
+@JsonIgnoreProperties({"subscriptionsDTO"})
 public class PutSubscriptionsResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("subscription")
 	private SubscriptionDTO_V0_4 subscriptionDTO;
