@@ -49,6 +49,14 @@ public class SubscriptionDTO_V0_4 extends DataTransferObject {
 		this.userId = userId;
 	}
 
+	@Override
+	public String toString() {
+		return "SubscriptionDTO_V0_4 [id=" + id + ", userId=" + userId
+				+ ", station=" + station + "]";
+	}
+
+
+
 	public class SubscriptionDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {

@@ -1,6 +1,7 @@
 package behavior.api.usecases.subscriptions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 import util.api.SongwichAPIException;
 import util.api.WithProductionDependencyInjection;
 import views.api.subscriptions.SubscriptionDTO_V0_4;
+import views.api.subscriptions.SubscriptionInputDTO_V0_4;
 
 public class SubscriptionsUseCasesTest extends
 		WithProductionDependencyInjection {
@@ -20,7 +22,7 @@ public class SubscriptionsUseCasesTest extends
 	private User gabriel, daniel;
 	private RadioStation gabrielStation, danielStation;
 
-	private SubscriptionDTO_V0_4 gabrielSubscriptionGabrielStationDTO,
+	private SubscriptionInputDTO_V0_4 gabrielSubscriptionGabrielStationDTO,
 			danielSubscriptionDanielStationDTO,
 			danielSubscriptionGabrielStationDTO;
 
@@ -48,18 +50,18 @@ public class SubscriptionsUseCasesTest extends
 				getContext().getAppDeveloper().getEmailAddress());
 
 		// subscription dto's
-		gabrielSubscriptionGabrielStationDTO = new SubscriptionDTO_V0_4();
+		gabrielSubscriptionGabrielStationDTO = new SubscriptionInputDTO_V0_4();
 		gabrielSubscriptionGabrielStationDTO.setUserId(gabriel.getId()
 				.toString());
 		gabrielSubscriptionGabrielStationDTO.setStationId(gabrielStation
 				.getId().toString());
 
-		danielSubscriptionDanielStationDTO = new SubscriptionDTO_V0_4();
+		danielSubscriptionDanielStationDTO = new SubscriptionInputDTO_V0_4();
 		danielSubscriptionDanielStationDTO.setUserId(daniel.getId().toString());
 		danielSubscriptionDanielStationDTO.setStationId(danielStation.getId()
 				.toString());
 
-		danielSubscriptionGabrielStationDTO = new SubscriptionDTO_V0_4();
+		danielSubscriptionGabrielStationDTO = new SubscriptionInputDTO_V0_4();
 		danielSubscriptionGabrielStationDTO
 				.setUserId(daniel.getId().toString());
 		danielSubscriptionGabrielStationDTO.setStationId(gabrielStation.getId()
@@ -72,9 +74,9 @@ public class SubscriptionsUseCasesTest extends
 		SubscriptionsUseCases subscriptionsUseCases = new SubscriptionsUseCases(
 				getContext());
 		setRequestContextUser(gabriel);
-		subscriptionsUseCases
+		SubscriptionDTO_V0_4 subscriptionDTO = subscriptionsUseCases
 				.postSubscriptions(gabrielSubscriptionGabrielStationDTO);
-		assertNotNull(gabrielSubscriptionGabrielStationDTO.getId());
+		assertNotNull(subscriptionDTO.getId());
 	}
 
 	@Test
@@ -96,17 +98,12 @@ public class SubscriptionsUseCasesTest extends
 				.getSubscriptions(gabriel.getId().toString());
 		assertEquals(1, subscriptionsDTO.size());
 		assertEquals(gabrielSubscriptionGabrielStationDTO.getStationId(),
-				subscriptionsDTO.get(0).getStationId());
-		assertEquals(gabriel.getId().toString(), subscriptionsDTO.get(0)
-				.getUserId());
+				subscriptionsDTO.get(0).getStation().getStationId());
 
 		setRequestContextUser(daniel);
 		subscriptionsDTO = subscriptionsUseCases.getSubscriptions(daniel
 				.getId().toString());
 		assertEquals(2, subscriptionsDTO.size());
-		for (SubscriptionDTO_V0_4 subscriptionDTO : subscriptionsDTO) {
-			assertEquals(daniel.getId().toString(), subscriptionDTO.getUserId());
-		}
 	}
 
 	@Test
@@ -115,14 +112,12 @@ public class SubscriptionsUseCasesTest extends
 				getContext());
 
 		setRequestContextUser(gabriel);
-		subscriptionsUseCases
+		SubscriptionDTO_V0_4 subscriptionDTO = subscriptionsUseCases
 				.postSubscriptions(gabrielSubscriptionGabrielStationDTO);
 		assertEquals(1, getSubscriptionDAO().findByUserId(gabriel.getId())
 				.size());
 
-		subscriptionsUseCases
-				.putEndSubscription(gabrielSubscriptionGabrielStationDTO
-						.getId());
+		subscriptionsUseCases.putEndSubscription(subscriptionDTO.getId());
 		assertEquals(0, getSubscriptionDAO().findByUserId(gabriel.getId())
 				.size());
 	}
