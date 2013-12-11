@@ -25,6 +25,11 @@ public interface SubscriptionDAO<I> extends SongwichDAO<Subscription, I> {
 	public Subscription findById(I id);
 
 	/** Filters expired Subscription's */
+	public long countByStationId(ObjectId stationId);
+	
+	public long countByStationId(ObjectId stationId, boolean activeOnly);
+	
+	/** Filters expired Subscription's */
 	public List<Subscription> findByStationId(ObjectId stationId);
 	
 	public List<Subscription> findByStationId(ObjectId stationId, boolean activeOnly);

@@ -16,6 +16,7 @@ import views.api.subscriptions.GetSubscriptionsResponse_V0_4;
 import views.api.subscriptions.PostSubscriptionsResponse_V0_4;
 import views.api.subscriptions.PutSubscriptionsResponse_V0_4;
 import views.api.subscriptions.SubscriptionDTO_V0_4;
+import views.api.subscriptions.SubscriptionInputDTO_V0_4;
 import behavior.api.usecases.subscriptions.SubscriptionsUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
@@ -29,21 +30,22 @@ public class SubscriptionsController_V0_4 extends APIController {
 	@UserAuthenticated
 	@Logged
 	public static Result postSubscriptions() {
-		Form<SubscriptionDTO_V0_4> subscriptionForm = Form.form(
-				SubscriptionDTO_V0_4.class).bindFromRequest();
+		Form<SubscriptionInputDTO_V0_4> subscriptionForm = Form.form(
+				SubscriptionInputDTO_V0_4.class).bindFromRequest();
 		if (subscriptionForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
 					DTOValidator.errorsAsString(subscriptionForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			SubscriptionDTO_V0_4 subscriptionDTO = subscriptionForm.get();
+			SubscriptionInputDTO_V0_4 subscriptionInputDTO = subscriptionForm.get();
 
 			// process the request
 			SubscriptionsUseCases subscriptionsUseCases = new SubscriptionsUseCases(
 					getContext());
+			SubscriptionDTO_V0_4 subscriptionDTO;
 			try {
-				subscriptionsUseCases.postSubscriptions(subscriptionDTO);
+				subscriptionDTO = subscriptionsUseCases.postSubscriptions(subscriptionInputDTO);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),

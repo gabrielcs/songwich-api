@@ -2,12 +2,15 @@ package behavior.api.usecases.scrobbles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.AuthToken;
 import models.api.scrobbles.User;
 import models.api.stations.RadioStation;
+import models.api.subscriptions.Subscription;
 
 import org.bson.types.ObjectId;
 
@@ -18,10 +21,12 @@ import views.api.scrobbles.UserDTO_V0_4;
 import views.api.scrobbles.UserUpdateDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
 import views.api.stations.RadioStationUpdateDTO_V0_4;
+import views.api.subscriptions.SubscriptionDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 import behavior.api.usecases.stations.StationsUseCases;
+import behavior.api.usecases.subscriptions.SubscriptionsUseCases;
 
 public class UsersUseCases extends UseCase {
 
@@ -78,7 +83,11 @@ public class UsersUseCases extends UseCase {
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(user.getId());
 
-		return createDTOForGetUsers(user, scrobblerStations);
+		List<Subscription> activeSubscriptions = getSubscriptionDAO()
+				.findByUserId(user.getId());
+
+		return createDTOForGetUsers(user, scrobblerStations,
+				activeSubscriptions);
 	}
 
 	public void putUsers(String userId, UserUpdateDTO_V0_4 userUpdateDTO)
@@ -99,9 +108,7 @@ public class UsersUseCases extends UseCase {
 				getContext().getAppDeveloper().getEmailAddress());
 
 		// update output
-		List<RadioStation> scrobblerStations = getRadioStationDAO()
-				.findByScrobblerId(user.getId());
-		updateDTOPutUsers(user, userUpdateDTO, scrobblerStations);
+		updateDTOPutUsers(user, userUpdateDTO);
 	}
 
 	public UserUpdateDTO_V0_4 putUsersDeactivate(String userId,
@@ -227,16 +234,17 @@ public class UsersUseCases extends UseCase {
 		userDTO.setUserId(user.getId().toString());
 	}
 
-	private static List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
+	private List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
 		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
 		for (User user : users) {
-			usersDTO.add(createDTOForGetUsers(user, null));
+			usersDTO.add(createDTOForGetUsers(user, null, null));
 		}
 		return usersDTO;
 	}
 
-	private static UserDTO_V0_4 createDTOForGetUsers(User user,
-			List<RadioStation> scrobblerStations) {
+	private UserDTO_V0_4 createDTOForGetUsers(User user,
+			List<RadioStation> scrobblerStations,
+			List<Subscription> subscriptions) {
 		UserDTO_V0_4 userDTO = new UserDTO_V0_4();
 		userDTO.setName(user.getName());
 		userDTO.setUserEmail(user.getEmailAddress());
@@ -248,21 +256,30 @@ public class UsersUseCases extends UseCase {
 			userDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
 
+		if (subscriptions != null && !subscriptions.isEmpty()) {
+			Map<Subscription, RadioStation> subscriptionStationMap = new HashMap<Subscription, RadioStation>(
+					subscriptions.size());
+			RadioStation station;
+			for (Subscription subscription : subscriptions) {
+				station = getRadioStationDAO().findById(
+						subscription.getStationId());
+				subscriptionStationMap.put(subscription, station);
+			}
+
+			List<SubscriptionDTO_V0_4> subscriptionsDTO = SubscriptionsUseCases
+					.createDTOForGetSubscriptions(subscriptionStationMap, false);
+
+			userDTO.setActiveStationSubscriptions(subscriptionsDTO);
+		}
+
 		return userDTO;
 	}
 
 	private static void updateDTOPutUsers(User user,
-			UserUpdateDTO_V0_4 userUpdateDTO,
-			List<RadioStation> scrobblerStations) {
+			UserUpdateDTO_V0_4 userUpdateDTO) {
 
 		userUpdateDTO.setUserId(user.getId().toString());
 		userUpdateDTO.setName(user.getName());
 		userUpdateDTO.setUserEmail(user.getEmailAddress());
-
-		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
-			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
-					.createDTOForGetMultipleStations(scrobblerStations);
-			userUpdateDTO.setScrobblerStations(scrobblerStationsDTO);
-		}
 	}
 }

@@ -56,7 +56,11 @@ public class StationsUseCases extends UseCase {
 				stationReadiness = stationStrategy.getStationReadiness();
 			}
 		}
-		return createStationDTO(station, stationReadiness);
+
+		long numberSubscribers = getSubscriptionDAO().countByStationId(
+				new ObjectId(stationId));
+
+		return createStationDTO(station, stationReadiness, numberSubscribers);
 	}
 
 	private RadioStation authorizeGetStations(String stationId)
@@ -143,20 +147,21 @@ public class StationsUseCases extends UseCase {
 
 		savePutStationsScrobblers(station, radioStationUpdateDTO);
 	}
-	
+
 	public RadioStationUpdateDTO_V0_4 putStationsDeactivate(String stationId)
 			throws SongwichAPIException {
-		
+
 		RadioStation station = authorizePutStations(stationId);
-		
+
 		// process request
 		station.setDeactivated(true);
-		getRadioStationDAO().save(station, getContext().getAppDeveloper().getEmailAddress());
-		
+		getRadioStationDAO().save(station,
+				getContext().getAppDeveloper().getEmailAddress());
+
 		// update output
 		RadioStationUpdateDTO_V0_4 stationUpdateDTO = new RadioStationUpdateDTO_V0_4();
 		stationUpdateDTO.setStationId(stationId);
-		
+
 		return stationUpdateDTO;
 	}
 
@@ -475,11 +480,16 @@ public class StationsUseCases extends UseCase {
 	}
 
 	private static RadioStationDTO_V0_4 createStationDTO(RadioStation station,
-			Float stationReadiness) {
+			Float stationReadiness, long numberSubscribers) {
 
 		RadioStationDTO_V0_4 stationDTO = createBasicDTOForStations(station);
 		updateStationDTOWithReadinessOrSongs(station, stationReadiness,
 				stationDTO);
+
+		if (numberSubscribers > 0) {
+			stationDTO.setNumberSubscribers(numberSubscribers);
+		}
+
 		return stationDTO;
 	}
 

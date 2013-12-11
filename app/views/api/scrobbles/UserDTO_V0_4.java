@@ -9,6 +9,7 @@ import play.data.validation.ValidationError;
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
 import views.api.stations.RadioStationDTO_V0_4;
+import views.api.subscriptions.SubscriptionDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -27,6 +28,9 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	
 	// not used for input, only for output
 	private List<RadioStationDTO_V0_4> scrobblerStations;
+	
+	// not used for input, only for output
+	private List<SubscriptionDTO_V0_4> activeStationSubscriptions;
 
 	public UserDTO_V0_4() {
 		setValidator(this.new UserDTOValidator());
@@ -38,6 +42,14 @@ public class UserDTO_V0_4 extends DataTransferObject {
 
 	public void setScrobblerStations(List<RadioStationDTO_V0_4> scrobblerStations) {
 		this.scrobblerStations = scrobblerStations;
+	}
+	
+	public void setActiveStationSubscriptions(List<SubscriptionDTO_V0_4> activeStationSubscriptions) {
+		this.activeStationSubscriptions = activeStationSubscriptions;
+	}
+	
+	public List<SubscriptionDTO_V0_4> getActiveStationSubscriptions() {
+		return activeStationSubscriptions;
 	}
 	
 	public String getName() {
@@ -85,14 +97,16 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "UserDTO_V0_4 [userEmail=" + userEmail + ", name=" + name
 				+ ", userId=" + userId + ", userAuthToken=" + userAuthToken
-				+ ", scrobblerStations=" + scrobblerStations + "]";
+				+ ", scrobblerStations=" + scrobblerStations
+				+ ", activeStationSubscriptions=" + activeStationSubscriptions
+				+ "]";
 	}
-	
+
 	public class UserDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {

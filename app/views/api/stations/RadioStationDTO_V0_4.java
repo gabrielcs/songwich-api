@@ -23,6 +23,8 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 
 	private List<String> scrobblerIds;
 
+	private Long numberSubscribers;
+
 	// only for output
 	private String isActive;
 
@@ -41,6 +43,14 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 		setValidator(this.new RadioStationUpdateDTOValidator());
 	}
 
+	public Long getNumberSubscribers() {
+		return numberSubscribers;
+	}
+
+	public void setNumberSubscribers(Long numberSubscribers) {
+		this.numberSubscribers = numberSubscribers;
+	}
+
 	public String getActive() {
 		return isActive;
 	}
@@ -48,7 +58,7 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	public void setIsActive(String isActive) {
 		this.isActive = isActive;
 	}
-	
+
 	public String getStationReadiness() {
 		return stationReadiness;
 	}
@@ -117,12 +127,13 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	public String toString() {
 		return "RadioStationDTO_V0_4 [stationId=" + stationId
 				+ ", stationName=" + stationName + ", groupName=" + groupName
-				+ ", scrobblerIds=" + scrobblerIds + ", isActive=" + isActive
+				+ ", scrobblerIds=" + scrobblerIds + ", numberSubscribers="
+				+ numberSubscribers + ", isActive=" + isActive
 				+ ", stationReadiness=" + stationReadiness + ", nowPlaying="
 				+ nowPlaying + ", lookAhead=" + lookAhead + ", imageUrl="
 				+ imageUrl + "]";
 	}
-	
+
 	public class RadioStationUpdateDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {

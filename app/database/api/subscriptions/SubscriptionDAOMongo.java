@@ -94,6 +94,16 @@ public class SubscriptionDAOMongo extends BasicDAOMongo<Subscription> implements
 		}
 		return query;
 	}
+	
+	@Override
+	public long countByStationId(ObjectId stationId) {
+		return queryByStationId(stationId, true).countAll();
+	}
+
+	@Override
+	public long countByStationId(ObjectId stationId, boolean activeOnly) {
+		return queryByStationId(stationId, activeOnly).countAll();
+	}
 
 	private Query<Subscription> filterExpired(Query<Subscription> query) {
 		return query.field("endDate").doesNotExist();

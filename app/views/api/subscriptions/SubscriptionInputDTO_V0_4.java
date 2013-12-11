@@ -3,42 +3,29 @@ package views.api.subscriptions;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import play.data.validation.ValidationError;
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
-import views.api.stations.RadioStationDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("subscription")
-public class SubscriptionDTO_V0_4 extends DataTransferObject {
+public class SubscriptionInputDTO_V0_4 extends DataTransferObject {
 
-	// only for output
-	private String id;
+	private String stationId;
 
-	// only for output
 	private String userId;
 
-	// only for output
-	private RadioStationDTO_V0_4 station;
-
-	public SubscriptionDTO_V0_4() {
+	public SubscriptionInputDTO_V0_4() {
 		setValidator(this.new SubscriptionDTOValidator());
 	}
-
-	public String getId() {
-		return id;
+	
+	public String getStationId() {
+		return stationId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public RadioStationDTO_V0_4 getStation() {
-		return station;
-	}
-
-	public void setStation(RadioStationDTO_V0_4 station) {
-		this.station = station;
+	public void setStationId(String stationId) {
+		this.stationId = stationId;
 	}
 
 	public String getUserId() {
@@ -52,8 +39,15 @@ public class SubscriptionDTO_V0_4 extends DataTransferObject {
 	public class SubscriptionDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {
-			// nothing to validate
-			addValidation();
+			addValidation(validateStationId(), validateUserId());
+		}
+
+		private ValidationError validateStationId() {
+			return validateRequiredObjectId("stationId", stationId);
+		}
+
+		private ValidationError validateUserId() {
+			return validateRequiredObjectId("userId", userId);
 		}
 	}
 }
