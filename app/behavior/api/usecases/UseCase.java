@@ -13,6 +13,7 @@ import database.api.scrobbles.ScrobbleDAO;
 import database.api.scrobbles.UserDAO;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.StationHistoryDAO;
+import database.api.subscriptions.SubscriptionDAO;
 
 
 public abstract class UseCase {
@@ -51,6 +52,10 @@ public abstract class UseCase {
 
 	protected StationHistoryDAO<ObjectId> getStationHistoryDAO() {
 		return daoProvider.getStationHistoryDAO();
+	}
+	
+	protected SubscriptionDAO<ObjectId> getSubscriptionDAO() {
+		return daoProvider.getSubscriptionDAO();
 	}
 	
 	protected CascadeSaveDAO<App, ObjectId> getCascadeSaveAppDAO() {
