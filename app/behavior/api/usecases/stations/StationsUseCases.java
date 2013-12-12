@@ -664,4 +664,14 @@ public class StationsUseCases extends UseCase {
 
 		return radioStationUpdateDTO;
 	}
+
+	public static RadioStationDTO_V0_4 createDTOForSubscription(
+			RadioStation station) {
+		
+		RadioStationDTO_V0_4 stationDTO = new RadioStationDTO_V0_4();
+		stationDTO.setStationId(station.getId().toString());
+		stationDTO.setStationName(station.getName());
+		stationDTO.setImageUrl(station.getImageUrl());
+		return stationDTO;
+	}
 }

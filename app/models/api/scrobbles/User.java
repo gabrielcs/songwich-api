@@ -23,9 +23,13 @@ public class User extends MongoModelImpl implements MongoEntity {
 
 	private String name;
 
+	private String imageUrl;
+
+	private String shortBio;
+
 	@Embedded
 	private Set<AppUser> appUsers = new HashSet<AppUser>();
-	
+
 	private Boolean deactivated;
 
 	protected User() {
@@ -39,6 +43,36 @@ public class User extends MongoModelImpl implements MongoEntity {
 	public User(String emailAddress, String name) {
 		this.emailAddress = emailAddress;
 		this.name = name;
+	}
+
+	public User(String emailAddress, String name, String imageUrl) {
+		this.emailAddress = emailAddress;
+		this.name = name;
+		this.imageUrl = imageUrl;
+	}
+
+	public User(String emailAddress, String name, String imageUrl,
+			String shortBio) {
+		this.emailAddress = emailAddress;
+		this.name = name;
+		this.imageUrl = imageUrl;
+		this.shortBio = shortBio;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getShortBio() {
+		return shortBio;
+	}
+
+	public void setShortBio(String shortBio) {
+		this.shortBio = shortBio;
 	}
 
 	/**
@@ -99,13 +133,11 @@ public class User extends MongoModelImpl implements MongoEntity {
 	public ObjectId getId() {
 		return id;
 	}
-	
+
 	/*
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
-	*/
-	
+	 * public void setId(ObjectId id) { this.id = id; }
+	 */
+
 	public Boolean isDeactivated() {
 		return deactivated == null ? false : deactivated;
 	}
@@ -117,7 +149,9 @@ public class User extends MongoModelImpl implements MongoEntity {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", emailAddress=" + emailAddress + ", name="
-				+ name + ", appUsers=" + appUsers + "]";
+				+ name + ", imageUrl=" + imageUrl + ", shortBio=" + shortBio
+				+ ", appUsers=" + appUsers + ", deactivated=" + deactivated
+				+ "]";
 	}
 
 	@Override
@@ -126,7 +160,6 @@ public class User extends MongoModelImpl implements MongoEntity {
 		int result = super.hashCode();
 		result = prime * result
 				+ ((emailAddress == null) ? 0 : emailAddress.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -143,11 +176,6 @@ public class User extends MongoModelImpl implements MongoEntity {
 			if (other.emailAddress != null)
 				return false;
 		} else if (!emailAddress.equals(other.emailAddress))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

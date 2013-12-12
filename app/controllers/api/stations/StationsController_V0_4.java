@@ -94,7 +94,9 @@ public class StationsController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@Logged
-	public Result getStations(String stationId) {
+	public Result getStations(String stationId, Boolean includeScrobblersData) {
+		MyLogger.debug("includeScrobblersData=" + includeScrobblersData);
+		
 		if (stationId == null) {
 			// this is a call for all available stations
 			return getStations();

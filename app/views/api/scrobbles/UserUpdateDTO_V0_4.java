@@ -14,32 +14,53 @@ import views.api.stations.RadioStationDTO_V0_4;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("user")
 public class UserUpdateDTO_V0_4 extends DataTransferObject {
-	
+
 	private String userEmail;
 
 	private String name;
+
+	private String imageUrl;
+
+	private String shortBio;
 
 	// not used for input, only for output
 	private String userId;
 
 	// not used for input, only for output
 	private String userAuthToken;
-	
+
 	// not used for input, only for output
 	private List<RadioStationDTO_V0_4> scrobblerStations;
 
 	public UserUpdateDTO_V0_4() {
 		setValidator(this.new UserUpdateDTOValidator());
 	}
-	
+
 	public List<RadioStationDTO_V0_4> getScrobblerStations() {
 		return scrobblerStations;
 	}
 
-	public void setScrobblerStations(List<RadioStationDTO_V0_4> scrobblerStations) {
+	public void setScrobblerStations(
+			List<RadioStationDTO_V0_4> scrobblerStations) {
 		this.scrobblerStations = scrobblerStations;
 	}
 	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getShortBio() {
+		return shortBio;
+	}
+
+	public void setShortBio(String shortBio) {
+		this.shortBio = shortBio;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -85,15 +106,19 @@ public class UserUpdateDTO_V0_4 extends DataTransferObject {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	public class UserUpdateDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {
-			addValidation(validateUserEmail());
+			addValidation(validateUserEmail(), validateImageUrl());
 		}
 
 		private ValidationError validateUserEmail() {
 			return validateEmailAddress("userEmail", userEmail);
+		}
+		
+		private ValidationError validateImageUrl() {
+			return validateImageUrl("imageUrl", imageUrl);
 		}
 	}
 }

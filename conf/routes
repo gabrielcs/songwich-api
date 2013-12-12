@@ -21,7 +21,7 @@ PUT     /v0.4/users/:userId/deactivate                    @controllers.api.scrob
 
 # Stations API (@ indicates dependency injection)
 POST    /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.postStations()
-GET     /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null)
+GET     /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null, includeScrobblersData: Boolean ?= false)
 PUT     /v0.4/stations/:stationId                         @controllers.api.stations.StationsController_V0_4.putStations(stationId)
 PUT     /v0.4/stations/:stationId/addScrobblers           @controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId)
 PUT     /v0.4/stations/:stationId/removeScrobblers        @controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)

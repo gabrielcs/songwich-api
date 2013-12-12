@@ -85,6 +85,11 @@ public abstract class DTOValidator {
 
 	public static ValidationError validateEmailAddress(String propertyName,
 			String emailAddress) {
+		
+		if (emailAddress == null || emailAddress.isEmpty()) {
+			// field not present
+			return null;
+		}
 
 		EmailValidator emailValidator = EmailValidator.getInstance();
 		if (!emailValidator.isValid(emailAddress)) {
@@ -178,6 +183,11 @@ public abstract class DTOValidator {
 	}
 
 	protected static ValidationError validateUrl(String propertyName, String url) {
+		if (url == null || url.isEmpty()) {
+			// field not present
+			return null;
+		}
+		
 		UrlValidator urlValidator = UrlValidator.getInstance();
 		if (!urlValidator.isValid(url)) {
 			return new ValidationError(propertyName, "Invalid " + propertyName);
@@ -189,7 +199,9 @@ public abstract class DTOValidator {
 
 	protected static ValidationError validateImageUrl(String propertyName,
 			String imageUrl) {
-		if (imageUrl == null) {
+		
+		if (imageUrl == null || imageUrl.isEmpty()) {
+			// field not present
 			return null;
 		}
 

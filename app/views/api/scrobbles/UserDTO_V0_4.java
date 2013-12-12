@@ -19,6 +19,10 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	private String userEmail;
 
 	private String name;
+	
+	private String imageUrl;
+	
+	private String shortBio;
 
 	// not used for input, only for output
 	private String userId;
@@ -50,6 +54,22 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	
 	public List<SubscriptionDTO_V0_4> getActiveStationSubscriptions() {
 		return activeStationSubscriptions;
+	}
+	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getShortBio() {
+		return shortBio;
+	}
+
+	public void setShortBio(String shortBio) {
+		this.shortBio = shortBio;
 	}
 	
 	public String getName() {
@@ -97,10 +117,11 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "UserDTO_V0_4 [userEmail=" + userEmail + ", name=" + name
+				+ ", imageUrl=" + imageUrl + ", shortBio=" + shortBio
 				+ ", userId=" + userId + ", userAuthToken=" + userAuthToken
 				+ ", scrobblerStations=" + scrobblerStations
 				+ ", activeStationSubscriptions=" + activeStationSubscriptions
@@ -110,11 +131,15 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	public class UserDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {
-			addValidation(validateUserEmail());
+			addValidation(validateUserEmail(), validateImageUrl());
 		}
 
 		private ValidationError validateUserEmail() {
 			return validateRequiredEmailAddress("userEmail", userEmail);
+		}
+		
+		private ValidationError validateImageUrl() {
+			return validateImageUrl("imageUrl", imageUrl);
 		}
 	}
 }

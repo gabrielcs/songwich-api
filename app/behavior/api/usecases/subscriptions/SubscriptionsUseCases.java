@@ -18,6 +18,7 @@ import views.api.subscriptions.SubscriptionDTO_V0_4;
 import views.api.subscriptions.SubscriptionInputDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
+import behavior.api.usecases.stations.StationsUseCases;
 
 public class SubscriptionsUseCases extends UseCase {
 
@@ -150,10 +151,8 @@ public class SubscriptionsUseCases extends UseCase {
 		SubscriptionDTO_V0_4 subscriptionDTO = new SubscriptionDTO_V0_4();
 		subscriptionDTO.setId(subscription.getId().toString());
 
-		RadioStationDTO_V0_4 stationDTO = new RadioStationDTO_V0_4();
-		stationDTO.setStationId(station.getId().toString());
-		stationDTO.setStationName(station.getName());
-		stationDTO.setImageUrl(station.getImageUrl());
+		RadioStationDTO_V0_4 stationDTO = StationsUseCases
+				.createDTOForSubscription(station);
 		subscriptionDTO.setStation(stationDTO);
 
 		if (includeUserData) {

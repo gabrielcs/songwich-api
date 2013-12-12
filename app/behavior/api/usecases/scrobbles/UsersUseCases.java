@@ -59,8 +59,8 @@ public class UsersUseCases extends UseCase {
 				}
 			}
 		} else {
-			// TODO: add name to UserDTO
-			user = new User(userDTO.getUserEmail(), userDTO.getName());
+			user = new User(userDTO.getUserEmail(), userDTO.getName(),
+					userDTO.getImageUrl(), userDTO.getShortBio());
 			AppUser newAppUser = createAppUserAndSaveNewUser(user,
 					userDTO.getUserEmail());
 			updateDTO(user, newAppUser, userDTO);
@@ -114,6 +114,14 @@ public class UsersUseCases extends UseCase {
 		if (userUpdateDTO.getUserEmail() != null
 				&& !userUpdateDTO.getUserEmail().isEmpty()) {
 			user.setEmailAddress(userUpdateDTO.getUserEmail());
+		}
+		if (userUpdateDTO.getImageUrl() != null
+				&& !userUpdateDTO.getImageUrl().isEmpty()) {
+			user.setImageUrl(userUpdateDTO.getImageUrl());
+		}
+		if (userUpdateDTO.getShortBio() != null
+				&& !userUpdateDTO.getShortBio().isEmpty()) {
+			user.setShortBio(userUpdateDTO.getShortBio());
 		}
 		getUserDAO().save(user,
 				getContext().getAppDeveloper().getEmailAddress());
@@ -278,6 +286,8 @@ public class UsersUseCases extends UseCase {
 		userDTO.setName(user.getName());
 		userDTO.setUserEmail(user.getEmailAddress());
 		userDTO.setUserId(user.getId().toString());
+		userDTO.setImageUrl(user.getImageUrl());
+		userDTO.setShortBio(user.getShortBio());
 
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
 			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
@@ -310,5 +320,7 @@ public class UsersUseCases extends UseCase {
 		userUpdateDTO.setUserId(user.getId().toString());
 		userUpdateDTO.setName(user.getName());
 		userUpdateDTO.setUserEmail(user.getEmailAddress());
+		userUpdateDTO.setImageUrl(user.getImageUrl());
+		userUpdateDTO.setShortBio(user.getShortBio());
 	}
 }
