@@ -83,7 +83,7 @@ public abstract class DTOValidator {
 		}
 	}
 
-	protected static ValidationError validateEmailAddress(String propertyName,
+	public static ValidationError validateEmailAddress(String propertyName,
 			String emailAddress) {
 
 		EmailValidator emailValidator = EmailValidator.getInstance();

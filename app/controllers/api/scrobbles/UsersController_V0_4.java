@@ -122,8 +122,8 @@ public class UsersController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@Logged
-	public static Result getUsers(String userId) {
-		if (userId == null) {
+	public static Result getUsers(String userId, String userEmail) {
+		if (userId == null && userEmail == null) {
 			// this is a call for all registered users
 			return getUsers();
 		}
@@ -132,7 +132,12 @@ public class UsersController_V0_4 extends APIController {
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
 		UserDTO_V0_4 userDTO;
 		try {
-			userDTO = usersUseCases.getUsers(userId);
+			if (userId != null) {
+				userDTO = usersUseCases.getUsersById(userId);
+			} else {
+				// userEmail != null
+				userDTO = usersUseCases.getUsersByEmail(userEmail);
+			}
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
@@ -193,7 +198,7 @@ public class UsersController_V0_4 extends APIController {
 
 		return Results.ok();
 	}
-	
+
 	public static Result postFixReactivateStation() {
 		String devEmail = "gabrielcs@gmail.com";
 
@@ -206,8 +211,6 @@ public class UsersController_V0_4 extends APIController {
 
 		return Results.ok();
 	}
-	
-	
 
 	/*
 	 * public static Result postFixUserNames() { String devEmail =

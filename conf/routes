@@ -15,7 +15,7 @@ DELETE  /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobb
 
 # Users API (@ indicates dependency injection)
 POST    /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.postUsers()
-GET     /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null)
+GET     /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null, userEmail ?= null)
 PUT     /v0.4/users/:userId                               controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
 PUT     /v0.4/users/:userId/deactivate                    @controllers.api.scrobbles.UsersController_V0_4.putUsersDeactivate(userId)
 

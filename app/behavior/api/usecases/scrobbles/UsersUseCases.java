@@ -12,6 +12,7 @@ import models.api.scrobbles.User;
 import models.api.stations.RadioStation;
 import models.api.subscriptions.Subscription;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.bson.types.ObjectId;
 
 import util.api.MyLogger;
@@ -77,9 +78,19 @@ public class UsersUseCases extends UseCase {
 		return createDTOForGetUsers(users);
 	}
 
-	public UserDTO_V0_4 getUsers(String userId) throws SongwichAPIException {
-		User user = authorizeForGetUsers(userId);
+	public UserDTO_V0_4 getUsersById(String userId) throws SongwichAPIException {
+		User user = authorizeForGetUsersById(userId);
+		return getUsers(user);
+	}
 
+	public UserDTO_V0_4 getUsersByEmail(String userEmail)
+			throws SongwichAPIException {
+
+		User user = authorizeForGetUsersByEmail(userEmail);
+		return getUsers(user);
+	}
+
+	public UserDTO_V0_4 getUsers(User user) throws SongwichAPIException {
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(user.getId());
 
@@ -161,7 +172,7 @@ public class UsersUseCases extends UseCase {
 		}
 	}
 
-	private User authorizeForGetUsers(String userId)
+	private User authorizeForGetUsersById(String userId)
 			throws SongwichAPIException {
 
 		if (!ObjectId.isValid(userId)) {
@@ -173,6 +184,24 @@ public class UsersUseCases extends UseCase {
 		User user = getUserDAO().findById(userIdObject);
 		if (user == null) {
 			throw new SongwichAPIException("Non-existent userId",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		return user;
+	}
+
+	private User authorizeForGetUsersByEmail(String userEmail)
+			throws SongwichAPIException {
+
+		EmailValidator emailValidator = EmailValidator.getInstance();
+		if (!emailValidator.isValid(userEmail)) {
+			throw new SongwichAPIException("Invalid userEmail",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		User user = getUserDAO().findByEmailAddress(userEmail);
+		if (user == null) {
+			throw new SongwichAPIException("Non-existent userEmail",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
