@@ -37,44 +37,46 @@ public class ScrobblesUseCases extends UseCase {
 				Boolean.parseBoolean(scrobbleDTO.getChosenByUser()),
 				scrobbleDTO.getPlayer());
 
-		getScrobbleDAO().save(scrobble, getContext().getAppDeveloper()
-				.getEmailAddress());
+		getScrobbleDAO().save(scrobble,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		// updates scrobbleDTO
 		scrobbleDTO.setUserId(getContext().getUser().getId().toString());
 		scrobbleDTO.setScrobbleId(scrobble.getId().toString());
 	}
 
-	public List<ScrobblesDTO_V0_4> getScrobbles(String userId)
-			throws SongwichAPIException {
+	public List<ScrobblesDTO_V0_4> getScrobbles(String userId,
+			boolean chosenByUserOnly) throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = getScrobbleDAO().findByUserId(
-				userIdObject, false);
+		List<Scrobble> scrobbles = getScrobbleDAO().findByUserId(userIdObject,
+				chosenByUserOnly);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
-	public List<ScrobblesDTO_V0_4> getScrobbles(String userId, int results)
-			throws SongwichAPIException {
+	public List<ScrobblesDTO_V0_4> getScrobbles(String userId, int results,
+			boolean chosenByUserOnly) throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = getScrobbleDAO()
-				.findLastScrobblesByUserId(userIdObject, results, false);
-		return createGetScrobblesResponse(scrobbles);
-	}
-
-	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
-			int daysOffset) throws SongwichAPIException {
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = getScrobbleDAO()
-				.findByUserIdWithDaysOffset(userIdObject, daysOffset, false);
+		List<Scrobble> scrobbles = getScrobbleDAO().findLastScrobblesByUserId(
+				userIdObject, results, chosenByUserOnly);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
 	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
-			int daysOffset, int results) throws SongwichAPIException {
+			int daysOffset, boolean chosenByUserOnly)
+			throws SongwichAPIException {
+		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = getScrobbleDAO().findByUserIdWithDaysOffset(
+				userIdObject, daysOffset, chosenByUserOnly);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
+			int daysOffset, int results, boolean chosenByUserOnly)
+			throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
 		List<Scrobble> scrobbles = getScrobbleDAO()
 				.findLastScrobblesByUserIdWithDaysOffset(userIdObject,
-						daysOffset, results, false);
+						daysOffset, results, chosenByUserOnly);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
@@ -94,16 +96,17 @@ public class ScrobblesUseCases extends UseCase {
 				|| (!scrobblesUpdateDTO.getChosenByUser().equalsIgnoreCase(
 						"true") && !scrobblesUpdateDTO.getChosenByUser()
 						.equalsIgnoreCase("false"))) {
-			
+
 			throw new SongwichAPIException(
 					"chosenByUser should be either true or false",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		} else {
-			scrobble.setChosenByUser(new Boolean(scrobblesUpdateDTO.getChosenByUser()));
+			scrobble.setChosenByUser(new Boolean(scrobblesUpdateDTO
+					.getChosenByUser()));
 		}
 
-		getScrobbleDAO().save(scrobble, getContext().getAppDeveloper()
-				.getEmailAddress());
+		getScrobbleDAO().save(scrobble,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		// update output
 		updateDTOPutScrobbles(scrobble, scrobblesUpdateDTO);
@@ -204,16 +207,18 @@ public class ScrobblesUseCases extends UseCase {
 
 		return scrobbleIdObject;
 	}
-	
+
 	private static void updateDTOPutScrobbles(Scrobble scrobble,
 			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO) {
-		
+
 		scrobblesUpdateDTO.setScrobbleId(scrobble.getId().toString());
 		scrobblesUpdateDTO.setUserId(scrobble.getUserId().toString());
 		scrobblesUpdateDTO.setTrackTitle(scrobble.getSong().getSongTitle());
-		scrobblesUpdateDTO.setArtistsNames(scrobble.getSong().getArtistsNames());
+		scrobblesUpdateDTO
+				.setArtistsNames(scrobble.getSong().getArtistsNames());
 		scrobblesUpdateDTO.setAlbumTitle(scrobble.getSong().getAlbumTitle());
-		scrobblesUpdateDTO.setChosenByUser(scrobble.isChosenByUser().toString());
+		scrobblesUpdateDTO
+				.setChosenByUser(scrobble.isChosenByUser().toString());
 		scrobblesUpdateDTO.setPlayer(scrobble.getPlayer());
 		scrobblesUpdateDTO.setTimestamp(scrobble.getTimestamp().toString());
 	}

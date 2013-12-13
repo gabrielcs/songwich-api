@@ -24,7 +24,7 @@ import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblesController_V0_4 extends APIController {
-	
+
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
@@ -70,8 +70,7 @@ public class ScrobblesController_V0_4 extends APIController {
 		if (scrobblesUpdateForm.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
-					DTOValidator.errorsAsString(scrobblesUpdateForm
-							.errors()));
+					DTOValidator.errorsAsString(scrobblesUpdateForm.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
 			ScrobblesUpdateDTO_V0_4 scrobblesUpdateDTO = scrobblesUpdateForm
@@ -129,25 +128,28 @@ public class ScrobblesController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
-	public static Result getScrobbles(String userId, int daysOffset, int results) {
+	public static Result getScrobbles(String userId, int daysOffset,
+			int results, boolean chosenByUserOnly) {
+		
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());
 		List<ScrobblesDTO_V0_4> scrobbleDTOs;
 		try {
 			if (daysOffset < 0) {
 				if (results < 0) {
-					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId);
+					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
+							chosenByUserOnly);
 				} else {
 					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
-							results);
+							results, chosenByUserOnly);
 				}
 			} else {
 				if (results < 0) {
 					scrobbleDTOs = scrobblesUseCases.getScrobblesDaysOffset(
-							userId, daysOffset);
+							userId, daysOffset, chosenByUserOnly);
 				} else {
 					scrobbleDTOs = scrobblesUseCases.getScrobblesDaysOffset(
-							userId, daysOffset, results);
+							userId, daysOffset, results, chosenByUserOnly);
 				}
 			}
 		} catch (SongwichAPIException exception) {
@@ -165,24 +167,19 @@ public class ScrobblesController_V0_4 extends APIController {
 				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTOs);
 		return ok(Json.toJson(response));
 	}
-	
+
 	/*
-	public static Result postFixScrobbles() {
-		String devEmail = "gabrielcs@gmail.com";
-		
-		ObjectId oldId = new ObjectId("525db27d92e69e28dca31ca6");
-		ObjectId newId = new ObjectId("5272bf5ce4b065f24467b51d");
-		
-		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		List<Scrobble> scrobbles = scrobbleDAO.find().asList();
-		for (Scrobble scrobble : scrobbles) {
-			if (scrobble.getUserId().equals(oldId)) {
-				scrobble.setUserId(newId);
-				scrobbleDAO.save(scrobble, devEmail);
-			}
-		}
-		
-		return Results.ok();
-	}
-	*/
+	 * public static Result postFixScrobbles() { String devEmail =
+	 * "gabrielcs@gmail.com";
+	 * 
+	 * ObjectId oldId = new ObjectId("525db27d92e69e28dca31ca6"); ObjectId newId
+	 * = new ObjectId("5272bf5ce4b065f24467b51d");
+	 * 
+	 * ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
+	 * List<Scrobble> scrobbles = scrobbleDAO.find().asList(); for (Scrobble
+	 * scrobble : scrobbles) { if (scrobble.getUserId().equals(oldId)) {
+	 * scrobble.setUserId(newId); scrobbleDAO.save(scrobble, devEmail); } }
+	 * 
+	 * return Results.ok(); }
+	 */
 }
