@@ -42,7 +42,10 @@ public class UserUpdateDTO_V0_4 extends DataTransferObject {
 
 	public void setScrobblerStations(
 			List<RadioStationDTO_V0_4> scrobblerStations) {
-		this.scrobblerStations = scrobblerStations;
+		
+		if (!scrobblerStations.isEmpty()) {
+			this.scrobblerStations = scrobblerStations;
+		}
 	}
 	
 	public String getImageUrl() {

@@ -15,13 +15,13 @@ import views.api.subscriptions.SubscriptionDTO_V0_4;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("user")
 public class UserDTO_V0_4 extends DataTransferObject {
-	
+
 	private String userEmail;
 
 	private String name;
-	
+
 	private String imageUrl;
-	
+
 	private String shortBio;
 
 	// not used for input, only for output
@@ -29,10 +29,10 @@ public class UserDTO_V0_4 extends DataTransferObject {
 
 	// not used for input, only for output
 	private String userAuthToken;
-	
+
 	// not used for input, only for output
 	private List<RadioStationDTO_V0_4> scrobblerStations;
-	
+
 	// not used for input, only for output
 	private List<SubscriptionDTO_V0_4> activeStationSubscriptions;
 
@@ -44,18 +44,23 @@ public class UserDTO_V0_4 extends DataTransferObject {
 		return scrobblerStations;
 	}
 
-	public void setScrobblerStations(List<RadioStationDTO_V0_4> scrobblerStations) {
-		this.scrobblerStations = scrobblerStations;
+	public void setScrobblerStations(
+			List<RadioStationDTO_V0_4> scrobblerStations) {
+		
+		if (!scrobblerStations.isEmpty()) {
+			this.scrobblerStations = scrobblerStations;
+		}
 	}
-	
-	public void setActiveStationSubscriptions(List<SubscriptionDTO_V0_4> activeStationSubscriptions) {
+
+	public void setActiveStationSubscriptions(
+			List<SubscriptionDTO_V0_4> activeStationSubscriptions) {
 		this.activeStationSubscriptions = activeStationSubscriptions;
 	}
-	
+
 	public List<SubscriptionDTO_V0_4> getActiveStationSubscriptions() {
 		return activeStationSubscriptions;
 	}
-	
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -71,7 +76,7 @@ public class UserDTO_V0_4 extends DataTransferObject {
 	public void setShortBio(String shortBio) {
 		this.shortBio = shortBio;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -137,7 +142,7 @@ public class UserDTO_V0_4 extends DataTransferObject {
 		private ValidationError validateUserEmail() {
 			return validateRequiredEmailAddress("userEmail", userEmail);
 		}
-		
+
 		private ValidationError validateImageUrl() {
 			return validateImageUrl("imageUrl", imageUrl);
 		}
