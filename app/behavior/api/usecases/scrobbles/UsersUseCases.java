@@ -19,6 +19,7 @@ import org.bson.types.ObjectId;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
+import views.api.scrobbles.DetailedUserDTO_V0_4;
 import views.api.scrobbles.UserDTO_V0_4;
 import views.api.scrobbles.UserUpdateDTO_V0_4;
 import views.api.stations.RadioStationDTO_V0_4;
@@ -79,26 +80,26 @@ public class UsersUseCases extends UseCase {
 		return createDTOForGetUsers(users);
 	}
 
-	public UserDTO_V0_4 getUsersById(String userId) throws SongwichAPIException {
+	public DetailedUserDTO_V0_4 getUsersById(String userId) throws SongwichAPIException {
 		User user = authorizeForGetUsersById(userId);
 		return getUsers(user);
 	}
 
-	public UserDTO_V0_4 getUsersByEmail(String userEmail)
+	public DetailedUserDTO_V0_4 getUsersByEmail(String userEmail)
 			throws SongwichAPIException {
 
 		User user = authorizeForGetUsersByEmail(userEmail);
 		return getUsers(user);
 	}
 
-	public UserDTO_V0_4 getUsers(User user) throws SongwichAPIException {
+	public DetailedUserDTO_V0_4 getUsers(User user) throws SongwichAPIException {
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(user.getId());
 
 		List<Subscription> activeSubscriptions = getSubscriptionDAO()
 				.findByUserId(user.getId());
 
-		return createDTOForGetUsers(user, scrobblerStations,
+		return createDetailedDTOForGetUsers(user, scrobblerStations,
 				activeSubscriptions);
 	}
 
@@ -278,11 +279,48 @@ public class UsersUseCases extends UseCase {
 		}
 		return usersDTO;
 	}
-
+	
 	private UserDTO_V0_4 createDTOForGetUsers(User user,
 			Collection<RadioStation> scrobblerStations,
 			Collection<Subscription> subscriptions) {
+		
 		UserDTO_V0_4 userDTO = new UserDTO_V0_4();
+		userDTO.setName(user.getName());
+		userDTO.setUserEmail(user.getEmailAddress());
+		userDTO.setUserId(user.getId().toString());
+		userDTO.setImageUrl(user.getImageUrl());
+		userDTO.setShortBio(user.getShortBio());
+
+		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
+			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+					.createDTOForGetMultipleStations(scrobblerStations);
+			userDTO.setScrobblerStations(scrobblerStationsDTO);
+		}
+
+		if (subscriptions != null && !subscriptions.isEmpty()) {
+			Map<Subscription, RadioStation> subscriptionStationMap = new HashMap<Subscription, RadioStation>(
+					subscriptions.size());
+			RadioStation station;
+			for (Subscription subscription : subscriptions) {
+				station = getRadioStationDAO().findById(
+						subscription.getStationId());
+				subscriptionStationMap.put(subscription, station);
+			}
+
+			List<SubscriptionDTO_V0_4> subscriptionsDTO = SubscriptionsUseCases
+					.createDTOForGetSubscriptions(subscriptionStationMap, false);
+
+			userDTO.setActiveStationSubscriptions(subscriptionsDTO);
+		}
+
+		return userDTO;
+	}
+
+	private DetailedUserDTO_V0_4 createDetailedDTOForGetUsers(User user,
+			Collection<RadioStation> scrobblerStations,
+			Collection<Subscription> subscriptions) {
+		
+		DetailedUserDTO_V0_4 userDTO = new DetailedUserDTO_V0_4();
 		userDTO.setName(user.getName());
 		userDTO.setUserEmail(user.getEmailAddress());
 		userDTO.setUserId(user.getId().toString());

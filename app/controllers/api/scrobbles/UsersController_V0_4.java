@@ -19,6 +19,7 @@ import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DTOValidator;
+import views.api.scrobbles.DetailedUserDTO_V0_4;
 import views.api.scrobbles.GetUsersResponse_V0_4;
 import views.api.scrobbles.GetUsersUniqueResponse_V0_4;
 import views.api.scrobbles.PostUsersResponse_V0_4;
@@ -130,7 +131,7 @@ public class UsersController_V0_4 extends APIController {
 
 		// process the request
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
-		UserDTO_V0_4 userDTO;
+		DetailedUserDTO_V0_4 userDTO;
 		try {
 			if (userId != null) {
 				userDTO = usersUseCases.getUsersById(userId);
