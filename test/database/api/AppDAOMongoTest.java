@@ -32,15 +32,17 @@ public class AppDAOMongoTest extends WithRequestContext {
 		AppDAO<ObjectId> appDao = new AppDAOMongo();
 		Key<App> keySave = appDao.save(app1, getContext().getAppDeveloper().getEmailAddress());
 		appDao.save(app2, getContext().getAppDeveloper().getEmailAddress());
-
+		// app Songwich from superclass WithRequestContext
+		assertEquals(3, appDao.count());
+		
 		// updates a document using save()
 		app1.setName("Rdio");
 		Key<App> keySaveAgain = appDao.save(app1, getContext().getAppDeveloper().getEmailAddress());
 		// checks that it doesn't save twice
 		assertEquals(keySave.getId(), keySaveAgain.getId());
 
-		assertEquals(2, appDao.count());
-
+		assertEquals(3, appDao.count());
+		
 		// assert that it updates the object
 		App spotifyFromDatabase = appDao.findByName("Spotify");
 		App rdioFromDatabase = appDao.findByName("Rdio");
@@ -54,7 +56,8 @@ public class AppDAOMongoTest extends WithRequestContext {
 		WriteResult writeResultDeleteTwice = appDao.delete(app2);
 		assertNull(writeResultDeleteTwice.getError());
 
-		assertTrue(appDao.count() == 0);
+		// only app Songwich from superclass WithRequestContext
+		assertEquals(1, appDao.count());
 	}
 
 	@Test
