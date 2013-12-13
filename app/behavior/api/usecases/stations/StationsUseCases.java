@@ -1,6 +1,7 @@
 package behavior.api.usecases.stations;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import views.api.stations.TrackDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
+import behavior.api.usecases.scrobbles.UsersUseCases;
 
 public class StationsUseCases extends UseCase {
 
@@ -40,7 +42,8 @@ public class StationsUseCases extends UseCase {
 	}
 
 	public RadioStationDTO_V0_4 getStations(String stationId,
-			StationStrategy stationStrategy) throws SongwichAPIException {
+			StationStrategy stationStrategy, boolean includeScrobblersData)
+			throws SongwichAPIException {
 
 		RadioStation station = authorizeGetStations(stationId);
 
@@ -60,7 +63,24 @@ public class StationsUseCases extends UseCase {
 		long numberSubscribers = getSubscriptionDAO().countByStationId(
 				new ObjectId(stationId));
 
-		return createStationDTO(station, stationReadiness, numberSubscribers);
+		List<UserDTO_V0_4> activeScrobblersDTO = null;
+		if (includeScrobblersData) {
+			Set<ObjectId> activeScrobblersObjectId = station.getScrobbler()
+					.getActiveScrobblersUserIds();
+			List<User> activeScrobblers = new ArrayList<User>(
+					activeScrobblersObjectId.size());
+			for (ObjectId scrobblerId : activeScrobblersObjectId) {
+				User scrobbler = getUserDAO().findById(scrobblerId);
+				activeScrobblers.add(scrobbler);
+			}
+
+			UsersUseCases usersUseCases = new UsersUseCases(getContext());
+			activeScrobblersDTO = usersUseCases
+					.createUsersDTOForGetStations(activeScrobblers);
+		}
+
+		return createStationDTO(station, stationReadiness, numberSubscribers,
+				activeScrobblersDTO);
 	}
 
 	private RadioStation authorizeGetStations(String stationId)
@@ -90,12 +110,12 @@ public class StationsUseCases extends UseCase {
 		ScrobblerBridge scrobblerBridge;
 		if (radioStationDTO.getGroupName() == null) {
 			ObjectId userId = new ObjectId(radioStationDTO.getScrobblerIds()
-					.get(0));
+					.iterator().next());
 			// TODO: check if the user exists
 			scrobblerBridge = new ScrobblerBridge(getUserDAO().findById(userId));
 		} else {
 			// validation guarantees there will be multiple scrobblerIds
-			List<String> userIds = radioStationDTO.getScrobblerIds();
+			Collection<String> userIds = radioStationDTO.getScrobblerIds();
 			Set<GroupMember> groupMembers = new HashSet<GroupMember>(
 					userIds.size());
 			User user;
@@ -480,7 +500,8 @@ public class StationsUseCases extends UseCase {
 	}
 
 	private static RadioStationDTO_V0_4 createStationDTO(RadioStation station,
-			Float stationReadiness, long numberSubscribers) {
+			Float stationReadiness, long numberSubscribers,
+			List<UserDTO_V0_4> activeScrobblersDTO) {
 
 		RadioStationDTO_V0_4 stationDTO = createBasicDTOForStations(station);
 		updateStationDTOWithReadinessOrSongs(station, stationReadiness,
@@ -488,6 +509,12 @@ public class StationsUseCases extends UseCase {
 
 		if (numberSubscribers > 0) {
 			stationDTO.setNumberSubscribers(numberSubscribers);
+		}
+
+		if (activeScrobblersDTO != null) {
+			stationDTO.setActiveScrobblers(activeScrobblersDTO);
+			// so we don't have duplicate data
+			stationDTO.setScrobblerIds(null);
 		}
 
 		return stationDTO;
@@ -506,11 +533,11 @@ public class StationsUseCases extends UseCase {
 	}
 
 	public static List<RadioStationDTO_V0_4> createDTOForGetMultipleStations(
-			List<RadioStation> stations) {
+			Collection<RadioStation> scrobblerStations) {
 
 		List<RadioStationDTO_V0_4> stationsDTO = new ArrayList<RadioStationDTO_V0_4>();
 		RadioStationDTO_V0_4 stationDTO;
-		for (RadioStation station : stations) {
+		for (RadioStation station : scrobblerStations) {
 			stationDTO = createBasicDTOForStations(station);
 			stationDTO.setIsActive(station.isActive().toString());
 			stationsDTO.add(stationDTO);
@@ -667,7 +694,7 @@ public class StationsUseCases extends UseCase {
 
 	public static RadioStationDTO_V0_4 createDTOForSubscription(
 			RadioStation station) {
-		
+
 		RadioStationDTO_V0_4 stationDTO = new RadioStationDTO_V0_4();
 		stationDTO.setStationId(station.getId().toString());
 		stationDTO.setStationName(station.getName());

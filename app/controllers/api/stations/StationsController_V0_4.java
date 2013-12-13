@@ -94,9 +94,7 @@ public class StationsController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@Logged
-	public Result getStations(String stationId, Boolean includeScrobblersData) {
-		MyLogger.debug("includeScrobblersData=" + includeScrobblersData);
-		
+	public Result getStations(String stationId, boolean includeScrobblersData) {
 		if (stationId == null) {
 			// this is a call for all available stations
 			return getStations();
@@ -107,7 +105,7 @@ public class StationsController_V0_4 extends APIController {
 		RadioStationDTO_V0_4 radioStationDTO;
 		try {
 			radioStationDTO = stationsUseCases.getStations(stationId,
-					stationStrategy);
+					stationStrategy, includeScrobblersData);
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()

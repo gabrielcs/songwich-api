@@ -12,9 +12,9 @@ public class GetUsersResponse_V0_4 extends APIResponse_V0_4 {
 	private List<UserDTO_V0_4> userDTO;
 
 	public GetUsersResponse_V0_4(APIStatus status, String message,
-			List<UserDTO_V0_4> userDTO) {
+			List<UserDTO_V0_4> usersDTO) {
 		super(status, message);
-		this.userDTO = userDTO;
+		this.userDTO = usersDTO;
 	}
 
 	/**

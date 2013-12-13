@@ -2,6 +2,7 @@ package behavior.api.usecases.scrobbles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -265,13 +266,12 @@ public class UsersUseCases extends UseCase {
 		return newAppUser;
 	}
 
-	private static void updateDTO(User user, AppUser newAppUser,
-			UserDTO_V0_4 userDTO) {
+	private void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
 		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
 		userDTO.setUserId(user.getId().toString());
 	}
 
-	private List<UserDTO_V0_4> createDTOForGetUsers(List<User> users) {
+	private List<UserDTO_V0_4> createDTOForGetUsers(Collection<User> users) {
 		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
 		for (User user : users) {
 			usersDTO.add(createDTOForGetUsers(user, null, null));
@@ -280,8 +280,8 @@ public class UsersUseCases extends UseCase {
 	}
 
 	private UserDTO_V0_4 createDTOForGetUsers(User user,
-			List<RadioStation> scrobblerStations,
-			List<Subscription> subscriptions) {
+			Collection<RadioStation> scrobblerStations,
+			Collection<Subscription> subscriptions) {
 		UserDTO_V0_4 userDTO = new UserDTO_V0_4();
 		userDTO.setName(user.getName());
 		userDTO.setUserEmail(user.getEmailAddress());
@@ -314,13 +314,27 @@ public class UsersUseCases extends UseCase {
 		return userDTO;
 	}
 
-	private static void updateDTOPutUsers(User user,
-			UserUpdateDTO_V0_4 userUpdateDTO) {
+	private void updateDTOPutUsers(User user, UserUpdateDTO_V0_4 userUpdateDTO) {
 
 		userUpdateDTO.setUserId(user.getId().toString());
 		userUpdateDTO.setName(user.getName());
 		userUpdateDTO.setUserEmail(user.getEmailAddress());
 		userUpdateDTO.setImageUrl(user.getImageUrl());
 		userUpdateDTO.setShortBio(user.getShortBio());
+	}
+
+	public List<UserDTO_V0_4> createUsersDTOForGetStations(
+			Collection<User> users) {
+		
+		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>(users.size());
+		UserDTO_V0_4 userDTO;
+		for (User user : users) {
+			userDTO = new UserDTO_V0_4();
+			userDTO.setUserId(user.getId().toString());
+			userDTO.setName(user.getName());
+			userDTO.setImageUrl(user.getImageUrl());
+			usersDTO.add(userDTO);
+		}
+		return usersDTO;
 	}
 }

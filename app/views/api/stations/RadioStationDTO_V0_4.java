@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import play.data.validation.ValidationError;
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
+import views.api.scrobbles.UserDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -22,7 +23,11 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	private String groupName;
 
 	private List<String> scrobblerIds;
+	
+	// only for output
+	private List<UserDTO_V0_4> activeScrobblers;
 
+	// only for output
 	private Long numberSubscribers;
 
 	// only for output
@@ -114,6 +119,14 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	public void setScrobblerIds(List<String> scrobblerIds) {
 		this.scrobblerIds = scrobblerIds;
 	}
+	
+	public List<UserDTO_V0_4> getActiveScrobblers() {
+		return activeScrobblers;
+	}
+
+	public void setActiveScrobblers(List<UserDTO_V0_4> activeScrobblersDTO) {
+		this.activeScrobblers = activeScrobblersDTO;
+	}
 
 	public String getImageUrl() {
 		return imageUrl;
@@ -127,11 +140,11 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	public String toString() {
 		return "RadioStationDTO_V0_4 [stationId=" + stationId
 				+ ", stationName=" + stationName + ", groupName=" + groupName
-				+ ", scrobblerIds=" + scrobblerIds + ", numberSubscribers="
-				+ numberSubscribers + ", isActive=" + isActive
-				+ ", stationReadiness=" + stationReadiness + ", nowPlaying="
-				+ nowPlaying + ", lookAhead=" + lookAhead + ", imageUrl="
-				+ imageUrl + "]";
+				+ ", scrobblerIds=" + scrobblerIds + ", activeScrobblers="
+				+ activeScrobblers + ", numberSubscribers=" + numberSubscribers
+				+ ", isActive=" + isActive + ", stationReadiness="
+				+ stationReadiness + ", nowPlaying=" + nowPlaying
+				+ ", lookAhead=" + lookAhead + ", imageUrl=" + imageUrl + "]";
 	}
 
 	public class RadioStationUpdateDTOValidator extends DTOValidator {

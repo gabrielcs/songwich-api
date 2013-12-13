@@ -145,11 +145,11 @@ public abstract class DTOValidator {
 	}
 
 	protected static ValidationError validateRequiredNonEmptyArray(
-			String arrayName, List<String> array) {
-		if (array == null || array.isEmpty()) {
+			String arrayName, List<String> scrobblerIds) {
+		if (scrobblerIds == null || scrobblerIds.isEmpty()) {
 			return new ValidationError(arrayName, arrayName + " is required");
 		} else {
-			for (String value : array) {
+			for (String value : scrobblerIds) {
 				if (!value.isEmpty()) {
 					return null;
 				}
@@ -160,19 +160,19 @@ public abstract class DTOValidator {
 	}
 
 	protected static ValidationError validateRequiredNonEmptyObjectIdArray(
-			String arrayName, String arrayItemName, List<String> array) {
-		ValidationError result = validateRequiredNonEmptyArray(arrayName, array);
+			String arrayName, String arrayItemName, List<String> scrobblerIds) {
+		ValidationError result = validateRequiredNonEmptyArray(arrayName, scrobblerIds);
 		if (result != null) {
 			return result;
 		}
 
-		return validateObjectIdArray(arrayName, arrayItemName, array);
+		return validateObjectIdArray(arrayName, arrayItemName, scrobblerIds);
 	}
 
 	protected static ValidationError validateObjectIdArray(String arrayName,
-			String arrayItemName, List<String> array) {
-		if (array != null) {
-			for (String id : array) {
+			String arrayItemName, List<String> scrobblerIds) {
+		if (scrobblerIds != null) {
+			for (String id : scrobblerIds) {
 				if (!ObjectId.isValid(id)) {
 					return new ValidationError(arrayName, String.format(
 							"Invalid %s: %s", arrayItemName, id));
