@@ -41,7 +41,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject {
 	public ScrobblesDTO_V0_4() {
 		// sets default value for timestamp
 		timestamp = Long.toString(System.currentTimeMillis());
-		
+
 		setValidator(this.new ScrobblesDTOValidator());
 	}
 
@@ -58,7 +58,9 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject {
 	}
 
 	public void setAlbumTitle(String albumTitle) {
-		this.albumTitle = albumTitle;
+		if (albumTitle != null && !albumTitle.isEmpty()) {
+			this.albumTitle = albumTitle;
+		}
 	}
 
 	public String getUserId() {
@@ -130,8 +132,6 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject {
 		this.chosenByUser = chosenByUser;
 	}
 
-	
-	
 	public class ScrobblesDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {
@@ -142,11 +142,11 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject {
 		private ValidationError validateTrackTitle() {
 			return validateRequiredProperty("trackTitle", trackTitle);
 		}
-		
+
 		private ValidationError validateArtistsNames() {
 			return validateRequiredNonEmptyArray("artistsNames", artistsNames);
 		}
-		
+
 		// convert to Long and delegate further validation
 		private ValidationError validateTimestamp() {
 			Long timestampNumber;
@@ -169,7 +169,7 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject {
 
 			return null;
 		}
-		
+
 		private ValidationError validateChosenByUser() {
 			// choosenByUser is optional
 			return validateBoolean("chosenByUser", chosenByUser);

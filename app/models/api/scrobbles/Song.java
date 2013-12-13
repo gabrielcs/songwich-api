@@ -51,7 +51,9 @@ public class Song {
 	}
 
 	public void setAlbumTitle(String albumTitle) {
-		this.albumTitle = albumTitle;
+		if (albumTitle != null && !albumTitle.isEmpty()) {
+			this.albumTitle = albumTitle;
+		}
 	}
 
 	public String getSongTitle() {
@@ -111,7 +113,8 @@ public class Song {
 		if (artistsNames == null) {
 			if (other.artistsNames != null)
 				return false;
-		} else if (!StringUtils.equalsIgnoreCase(artistsNames, other.artistsNames))
+		} else if (!StringUtils.equalsIgnoreCase(artistsNames,
+				other.artistsNames))
 			return false;
 		if (songTitle == null) {
 			if (other.songTitle != null)

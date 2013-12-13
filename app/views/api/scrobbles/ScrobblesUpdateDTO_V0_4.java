@@ -32,7 +32,7 @@ public class ScrobblesUpdateDTO_V0_4 extends DataTransferObject {
 	public ScrobblesUpdateDTO_V0_4() {
 		setValidator(this.new ScrobblesUpdateDTOValidator());
 	}
-	
+
 	public String getScrobbleId() {
 		return scrobbleId;
 	}
@@ -46,7 +46,9 @@ public class ScrobblesUpdateDTO_V0_4 extends DataTransferObject {
 	}
 
 	public void setAlbumTitle(String albumTitle) {
-		this.albumTitle = albumTitle;
+		if (albumTitle != null && !albumTitle.isEmpty()) {
+			this.albumTitle = albumTitle;
+		}
 	}
 
 	public String getUserId() {
@@ -117,7 +119,7 @@ public class ScrobblesUpdateDTO_V0_4 extends DataTransferObject {
 	public void setChosenByUser(String chosenByUser) {
 		this.chosenByUser = chosenByUser;
 	}
-	
+
 	public class ScrobblesUpdateDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {
