@@ -1,6 +1,8 @@
 package database.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 import models.api.scrobbles.App;
 import models.api.scrobbles.AppUser;
 import models.api.scrobbles.AuthToken;
+import models.api.scrobbles.Scrobble;
 import models.api.scrobbles.Song;
 import models.api.scrobbles.User;
 import models.api.stations.Group;
@@ -20,15 +23,14 @@ import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
-import util.api.WithRequestContext;
-import database.api.stations.RadioStationDAO;
-import database.api.stations.RadioStationDAOMongo;
+import util.api.SongwichAPIException;
+import util.api.WithProductionDependencyInjection;
+import behavior.api.algorithms.NaiveStationStrategy;
+import behavior.api.usecases.stations.StationsUseCases;
 import database.api.stations.StationHistoryDAO;
 import database.api.stations.StationHistoryDAOMongo;
 
-public class RadioStationDAOMongoTest extends WithRequestContext {
-
-	private RadioStationDAO<ObjectId> radioStationDao;
+public class RadioStationDAOMongoTest extends WithProductionDependencyInjection {
 
 	private User fatMike, elHefe;
 	private GroupMember fatMikeFromNofx, elHefeFromNofx;
@@ -42,7 +44,6 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		radioStationDao = new RadioStationDAOMongo();
 		initData();
 	}
 
@@ -68,11 +69,10 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 
 		nofxStation = new RadioStation("NOFX FM", nofx);
 		fatMikeStation = new RadioStation("Fat Mike", fatMike);
-		RadioStationDAOMongo radioStationDAO = new RadioStationDAOMongo();
-		radioStationDAO.cascadeSave(nofxStation, getContext().getAppDeveloper()
-				.getEmailAddress());
-		radioStationDAO.cascadeSave(fatMikeStation, getContext()
-				.getAppDeveloper().getEmailAddress());
+		getCascadeSaveRadioStationDAO().cascadeSave(nofxStation,
+				getContext().getAppDeveloper().getEmailAddress());
+		getCascadeSaveRadioStationDAO().cascadeSave(fatMikeStation,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		linoleum = new Song("Linoleum", "NOFX");
 		doWhatYouWant = new Song("Do What You Want", "Bad Religion");
@@ -91,8 +91,8 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 				.getAppDeveloper().getEmailAddress());
 		nofxStation.setLookAhead(new Track(linoleumNofxStationHistoryEntry,
 				null));
-		radioStationDAO.save(nofxStation, getContext().getAppDeveloper()
-				.getEmailAddress());
+		getRadioStationDAO().save(nofxStation,
+				getContext().getAppDeveloper().getEmailAddress());
 
 		// set nowPlaying and lookAhead for fatMikeStation
 		StationHistoryEntry linoleumFatMikeStationHistoryEntry = new StationHistoryEntry(
@@ -107,35 +107,77 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 				getContext().getAppDeveloper().getEmailAddress());
 		fatMikeStation.setLookAhead(new Track(
 				doWhatYouWantFatMikeStationHistoryEntry, null));
-		radioStationDAO.save(fatMikeStation, getContext().getAppDeveloper()
-				.getEmailAddress());
+		getRadioStationDAO().save(fatMikeStation,
+				getContext().getAppDeveloper().getEmailAddress());
 	}
 
 	@Test
 	public void testCountAndDelete() {
-		assertTrue(radioStationDao.count() == 2);
-		radioStationDao.delete(nofxStation);
-		assertTrue(radioStationDao.count() == 1);
+		assertTrue(getRadioStationDAO().count() == 2);
+		getRadioStationDAO().delete(nofxStation);
+		assertTrue(getRadioStationDAO().count() == 1);
 	}
 
 	@Test
 	public void testCountAndDeactivate() {
-		assertEquals(2, radioStationDao.count());
-		assertEquals(2, radioStationDao.find().asList().size());
-		
+		assertEquals(2, getRadioStationDAO().count());
+		assertEquals(2, getRadioStationDAO().find().asList().size());
+
 		nofxStation.setDeactivated(true);
-		radioStationDao.save(nofxStation, getContext().getAppDeveloper()
-				.getEmailAddress());
-		
-		assertEquals(1, radioStationDao.count());
-		assertEquals(1, radioStationDao.find().asList().size());
-		
-		assertNull(radioStationDao.findById(nofxStation.getId()));
+		getRadioStationDAO().save(nofxStation,
+				getContext().getAppDeveloper().getEmailAddress());
+
+		assertEquals(1, getRadioStationDAO().count());
+		assertEquals(1, getRadioStationDAO().find().asList().size());
+
+		assertNull(getRadioStationDAO().findById(nofxStation.getId()));
+	}
+
+	@Test
+	public void testFindActiveOnly() throws SongwichAPIException {
+		activateNofxStation();
+
+		List<RadioStation> activeStations = getRadioStationDAO()
+				.findActiveOnly();
+		assertEquals(1, activeStations.size());
+		assertEquals(nofxStation, activeStations.get(0));
+	}
+
+	@Test
+	public void testCountActiveOnly() throws SongwichAPIException {
+		activateNofxStation();
+
+		assertEquals(1, getRadioStationDAO().countActiveOnly());
+	}
+
+	private void activateNofxStation() throws SongwichAPIException {
+		// give elHefe some scrobbles
+		Scrobble scrobble1 = new Scrobble(elHefe.getId(), new Song("Track1",
+				"Artist1"), System.currentTimeMillis(), true, "Player");
+		Scrobble scrobble2 = new Scrobble(elHefe.getId(), new Song("Track2",
+				"Artist1"), System.currentTimeMillis(), true, "Player");
+		Scrobble scrobble3 = new Scrobble(elHefe.getId(), new Song("Track3",
+				"Artist3"), System.currentTimeMillis(), true, "Player");
+		getScrobbleDAO().save(scrobble1,
+				getContext().getAppDeveloper().getEmailAddress());
+		getScrobbleDAO().save(scrobble2,
+				getContext().getAppDeveloper().getEmailAddress());
+		getScrobbleDAO().save(scrobble3,
+				getContext().getAppDeveloper().getEmailAddress());
+
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+		boolean result = stationsUseCases.tryToActivateStation(nofxStation,
+				new NaiveStationStrategy());
+		assertTrue(result);
+		getRadioStationDAO().save(nofxStation,
+				getContext().getAppDeveloper().getEmailAddress());
+		assertTrue(getRadioStationDAO().findById(nofxStation.getId())
+				.isActive());
 	}
 
 	@Test
 	public void testFindById() {
-		RadioStation databaseStation = (RadioStation) radioStationDao
+		RadioStation databaseStation = (RadioStation) getRadioStationDAO()
 				.findById(nofxStation.getId());
 		assertEquals(nofxStation, databaseStation);
 		assertEquals(databaseStation, nofxStation);
@@ -143,8 +185,8 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 
 	@Test
 	public void testFindByName() {
-		List<RadioStation> radioStations = radioStationDao
-				.findByName(nofxStation.getName());
+		List<RadioStation> radioStations = getRadioStationDAO().findByName(
+				nofxStation.getName());
 
 		assertTrue(radioStations.size() == 1);
 		RadioStation databaseStation = radioStations.iterator().next();
@@ -155,13 +197,13 @@ public class RadioStationDAOMongoTest extends WithRequestContext {
 
 	@Test
 	public void testFindByScrobblerId() {
-		List<RadioStation> mikeStations = radioStationDao
+		List<RadioStation> mikeStations = getRadioStationDAO()
 				.findByScrobblerId(fatMike.getId());
 		assertTrue(mikeStations.size() == 2);
 		assertTrue(mikeStations.contains(fatMikeStation));
 		assertTrue(mikeStations.contains(nofxStation));
 
-		List<RadioStation> hefeStations = radioStationDao
+		List<RadioStation> hefeStations = getRadioStationDAO()
 				.findByScrobblerId(elHefe.getId());
 		assertTrue(hefeStations.size() == 1);
 		assertTrue(hefeStations.contains(nofxStation));

@@ -17,10 +17,16 @@ public interface RadioStationDAO<I> extends SongwichDAO<RadioStation, I> {
 
 	public QueryResults<RadioStation> find(boolean nonDeactivatedOnly);
 
+	/** Only stations that already have been launched */
+	public List<RadioStation> findActiveOnly();
+	
 	/** Filters deactivated RadioStation's */
 	public long count();
 
 	public long count(boolean nonDeactivatedOnly);
+	
+	/** Only stations that already have been launched */
+	public long countActiveOnly();
 
 	/** Filters deactivated RadioStation's */
 	public RadioStation findById(I id);

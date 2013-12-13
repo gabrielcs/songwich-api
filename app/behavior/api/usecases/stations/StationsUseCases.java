@@ -34,9 +34,15 @@ public class StationsUseCases extends UseCase {
 		super(context);
 	}
 
-	public List<RadioStationDTO_V0_4> getStations() {
-		// TODO: limit the number of results
-		List<RadioStation> stations = getRadioStationDAO().find().asList();
+	// TODO: limit the number of results
+	public List<RadioStationDTO_V0_4> getStations(boolean onlyActiveStations) {
+		List<RadioStation> stations;
+
+		if (onlyActiveStations) {
+			stations = getRadioStationDAO().findActiveOnly();
+		} else {
+			stations = getRadioStationDAO().find().asList();
+		}
 
 		return createDTOForGetMultipleStations(stations);
 	}
@@ -135,10 +141,7 @@ public class StationsUseCases extends UseCase {
 				radioStationDTO.getImageUrl(), radioStationDTO.getDescription());
 
 		// checks if station can be activated and activates it
-		stationStrategy.setStation(station);
-		if (stationStrategy.isStationReady()) {
-			activateStation(station, stationStrategy);
-		}
+		tryToActivateStation(station, stationStrategy);
 		// save it
 		saveStation(station);
 
@@ -213,13 +216,7 @@ public class StationsUseCases extends UseCase {
 			}
 		}
 
-		// checks if it can activate the station
-		if (!station.isActive()) {
-			stationStrategy.setStation(station);
-			if (stationStrategy.isStationReady()) {
-				activateStation(station, stationStrategy);
-			}
-		}
+		tryToActivateStation(station, stationStrategy);
 
 		savePutStationsScrobblers(station, radioStationUpdateDTO);
 	}
@@ -344,6 +341,20 @@ public class StationsUseCases extends UseCase {
 		}
 
 		return station;
+	}
+	
+	// it doesn't save it
+	public boolean tryToActivateStation(RadioStation station,
+			StationStrategy stationStrategy) throws SongwichAPIException {
+		
+		if (!station.isActive()) {
+			stationStrategy.setStation(station);
+			if (stationStrategy.isStationReady()) {
+				activateStation(station, stationStrategy);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// it doesn't save it

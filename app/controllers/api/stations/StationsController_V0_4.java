@@ -80,11 +80,11 @@ public class StationsController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@Logged
-	public Result getStations() {
+	private Result getStations(boolean onlyActiveStations) {
 		// process the request
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		List<RadioStationDTO_V0_4> radioStationsDTO = stationsUseCases
-				.getStations();
+				.getStations(onlyActiveStations);
 
 		// return the response
 		GetStationsResponse_V0_4 response = new GetStationsResponse_V0_4(
@@ -94,10 +94,12 @@ public class StationsController_V0_4 extends APIController {
 
 	@AppDeveloperAuthenticated
 	@Logged
-	public Result getStations(String stationId, boolean includeScrobblersData) {
+	public Result getStations(String stationId, boolean onlyActiveStations,
+			boolean includeScrobblersData) {
+		
 		if (stationId == null) {
 			// this is a call for all available stations
-			return getStations();
+			return getStations(onlyActiveStations);
 		}
 
 		// process the request

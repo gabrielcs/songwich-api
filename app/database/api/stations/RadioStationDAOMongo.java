@@ -80,6 +80,22 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 			return super.count();
 		}
 	}
+	
+	@Override
+	public List<RadioStation> findActiveOnly() {
+		Query<RadioStation> query = ds.find(RadioStation.class);
+		filterDeactivated(query);
+		filterNonActive(query);
+		return query.asList();
+	}
+	
+	@Override
+	public long countActiveOnly() {
+		Query<RadioStation> query = ds.find(RadioStation.class);
+		filterDeactivated(query);
+		filterNonActive(query);
+		return count(query);
+	}
 
 	@Override
 	public RadioStation findById(ObjectId id) {
@@ -137,6 +153,11 @@ public class RadioStationDAOMongo extends BasicDAOMongo<RadioStation> implements
 				"scrobbler.activeScrobblersUserIds", scrobblerId);
 		filterDeactivated(query);
 		return query;
+	}
+	
+	private Query<RadioStation> filterNonActive(Query<RadioStation> query) {
+		Boolean active = true;
+		return query.field("active").equal(active);
 	}
 
 	private Query<RadioStation> filterDeactivated(Query<RadioStation> query) {

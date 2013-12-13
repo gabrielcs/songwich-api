@@ -108,7 +108,7 @@ public class NaiveStationStrategy extends AbstractStationStrategy implements
 		protected Float calculateStationReadiness() {
 			// minimum of 3 relevant scrobbles
 			final float MIN_SONGS = 3f;
-			return ((getRelevantScrobbles().size() / MIN_SONGS) > 1) ? 1f
+			return ((getRelevantScrobbles().size() / MIN_SONGS) >= 1) ? 1f
 					: (getRelevantScrobbles().size() / MIN_SONGS);
 		}
 

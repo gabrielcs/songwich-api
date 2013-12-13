@@ -43,9 +43,12 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		daniel = new User("daniel@example.com", "Daniel");
 		john = new User("john@example.com", "John");
 
-		getUserDAO().save(gabriel, getContext().getAppDeveloper().getEmailAddress());
-		getUserDAO().save(daniel, getContext().getAppDeveloper().getEmailAddress());
-		getUserDAO().save(john, getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(gabriel,
+				getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(daniel,
+				getContext().getAppDeveloper().getEmailAddress());
+		getUserDAO().save(john,
+				getContext().getAppDeveloper().getEmailAddress());
 	}
 
 	private void createScrobbles() {
@@ -108,8 +111,8 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		setRequestContextUser(gabriel);
 		stationsUseCases.postStations(gabrielStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
-		station = getRadioStationDAO().findById(new ObjectId(gabrielStationDTO
-				.getStationId()));
+		station = getRadioStationDAO().findById(
+				new ObjectId(gabrielStationDTO.getStationId()));
 		System.out.println(gabrielStationDTO);
 
 		assertTrue(station.isActive());
@@ -124,8 +127,8 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		setRequestContextUser(daniel);
 		stationsUseCases.postStations(danielStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
-		station = getRadioStationDAO().findById(new ObjectId(danielStationDTO
-				.getStationId()));
+		station = getRadioStationDAO().findById(
+				new ObjectId(danielStationDTO.getStationId()));
 		System.out.println(danielStationDTO);
 
 		assertFalse(station.isActive());
@@ -140,8 +143,8 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		setRequestContextUser(john);
 		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
-		station = getRadioStationDAO().findById(new ObjectId(danielAndJohnStationDTO
-				.getStationId()));
+		station = getRadioStationDAO().findById(
+				new ObjectId(danielAndJohnStationDTO.getStationId()));
 		System.out.println(danielAndJohnStationDTO);
 
 		assertTrue(station.isActive());
@@ -171,7 +174,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 				.getInstance(StationStrategy.class));
 		gabrielStationDTO = stationsUseCases.getStations(
 				gabrielStationDTO.getStationId(),
-				getInjector().getInstance(StationStrategy.class));
+				getInjector().getInstance(StationStrategy.class), false);
 		System.out.println(gabrielStationDTO);
 
 		assertNull(gabrielStationDTO.getStationReadiness());
@@ -184,7 +187,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 				.getInstance(StationStrategy.class));
 		danielStationDTO = stationsUseCases.getStations(
 				danielStationDTO.getStationId(),
-				getInjector().getInstance(StationStrategy.class));
+				getInjector().getInstance(StationStrategy.class), false);
 		System.out.println(danielStationDTO);
 
 		assertNotNull(danielStationDTO.getStationReadiness());
@@ -197,7 +200,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 				.getInstance(StationStrategy.class));
 		danielAndJohnStationDTO = stationsUseCases.getStations(
 				danielAndJohnStationDTO.getStationId(), getInjector()
-						.getInstance(StationStrategy.class));
+						.getInstance(StationStrategy.class), false);
 		System.out.println(danielAndJohnStationDTO);
 
 		assertNull(danielAndJohnStationDTO.getStationReadiness());
@@ -229,8 +232,8 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.putStationsRemoveScrobblers(
 				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
 				getInjector().getInstance(StationStrategy.class));
-		station = getRadioStationDAO().findById(new ObjectId(danielAndJohnStationDTO
-				.getStationId()));
+		station = getRadioStationDAO().findById(
+				new ObjectId(danielAndJohnStationDTO.getStationId()));
 		assertFalse(station.isActive());
 		assertFalse(new Boolean(stationUpdateDTO.getActive()));
 
@@ -241,8 +244,8 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.putStationsAddScrobblers(
 				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
 				getInjector().getInstance(StationStrategy.class));
-		station = getRadioStationDAO().findById(new ObjectId(danielAndJohnStationDTO
-				.getStationId()));
+		station = getRadioStationDAO().findById(
+				new ObjectId(danielAndJohnStationDTO.getStationId()));
 		assertTrue(station.isActive());
 		assertTrue(new Boolean(stationUpdateDTO.getActive()));
 	}
@@ -261,7 +264,7 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
 
-		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations();
+		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations(false);
 		System.out.println(stationsDTO);
 
 		for (RadioStationDTO_V0_4 stationDTO : stationsDTO) {
@@ -290,8 +293,8 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 							+ String.valueOf(i + registeredArtists + 1));
 					scrobble = new Scrobble(userId, song,
 							System.currentTimeMillis(), true, null);
-					getScrobbleDAO().save(scrobble, getContext().getAppDeveloper()
-							.getEmailAddress());
+					getScrobbleDAO().save(scrobble,
+							getContext().getAppDeveloper().getEmailAddress());
 				}
 			}
 			registeredScrobbles = registeredScrobbles + nArtists
