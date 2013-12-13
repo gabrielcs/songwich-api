@@ -43,6 +43,8 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	private TrackDTO_V0_4 lookAhead;
 
 	private String imageUrl;
+	
+	private String description;
 
 	public RadioStationDTO_V0_4() {
 		setValidator(this.new RadioStationUpdateDTOValidator());
@@ -54,6 +56,14 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 
 	public void setNumberSubscribers(Long numberSubscribers) {
 		this.numberSubscribers = numberSubscribers;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getActive() {
@@ -144,7 +154,8 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 				+ activeScrobblers + ", numberSubscribers=" + numberSubscribers
 				+ ", isActive=" + isActive + ", stationReadiness="
 				+ stationReadiness + ", nowPlaying=" + nowPlaying
-				+ ", lookAhead=" + lookAhead + ", imageUrl=" + imageUrl + "]";
+				+ ", lookAhead=" + lookAhead + ", imageUrl=" + imageUrl
+				+ ", description=" + description + "]";
 	}
 
 	public class RadioStationUpdateDTOValidator extends DTOValidator {

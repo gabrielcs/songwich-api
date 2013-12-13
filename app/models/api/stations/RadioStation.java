@@ -22,6 +22,8 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	private Boolean active = false;
 
 	private String imageUrl;
+	
+	private String description;
 
 	@Embedded
 	private ScrobblerBridge scrobbler;
@@ -48,6 +50,13 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = scrobbler;
 		this.imageUrl = imageUrl;
 	}
+	
+	public RadioStation(String name, ScrobblerBridge scrobbler, String imageUrl, String description) {
+		this.name = name;
+		this.scrobbler = scrobbler;
+		this.imageUrl = imageUrl;
+		this.description = description;
+	}
 
 	public RadioStation(String name, Group group) {
 		this.name = name;
@@ -59,6 +68,13 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = new ScrobblerBridge(group);
 		this.imageUrl = imageUrl;
 	}
+	
+	public RadioStation(String name, Group group, String imageUrl, String description) {
+		this.name = name;
+		this.scrobbler = new ScrobblerBridge(group);
+		this.imageUrl = imageUrl;
+		this.description = description;
+	}
 
 	public RadioStation(String name, User user) {
 		this.name = name;
@@ -69,6 +85,21 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.name = name;
 		this.scrobbler = new ScrobblerBridge(user);
 		this.imageUrl = imageUrl;
+	}
+	
+	public RadioStation(String name, User user, String imageUrl, String description) {
+		this.name = name;
+		this.scrobbler = new ScrobblerBridge(user);
+		this.imageUrl = imageUrl;
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Boolean isActive() {
@@ -154,9 +185,10 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	@Override
 	public String toString() {
 		return "RadioStation [id=" + id + ", name=" + name + ", active="
-				+ active + ", imageUrl=" + imageUrl + ", scrobbler="
-				+ scrobbler + ", nowPlaying=" + nowPlaying + ", lookAhead="
-				+ lookAhead + "]";
+				+ active + ", imageUrl=" + imageUrl + ", description="
+				+ description + ", scrobbler=" + scrobbler + ", nowPlaying="
+				+ nowPlaying + ", lookAhead=" + lookAhead + ", deactivated="
+				+ deactivated + "]";
 	}
 
 	@Override

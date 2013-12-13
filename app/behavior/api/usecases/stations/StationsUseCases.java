@@ -129,9 +129,10 @@ public class StationsUseCases extends UseCase {
 			scrobblerBridge = new ScrobblerBridge(new Group(
 					radioStationDTO.getGroupName(), groupMembers));
 		}
-		String imageUrl = radioStationDTO.getImageUrl();
+
 		RadioStation station = new RadioStation(
-				radioStationDTO.getStationName(), scrobblerBridge, imageUrl);
+				radioStationDTO.getStationName(), scrobblerBridge,
+				radioStationDTO.getImageUrl(), radioStationDTO.getDescription());
 
 		// checks if station can be activated and activates it
 		stationStrategy.setStation(station);
@@ -158,6 +159,11 @@ public class StationsUseCases extends UseCase {
 		// update imageUrl
 		if (radioStationUpdateDTO.getImageUrl() != null) {
 			station.setImageUrl(radioStationUpdateDTO.getImageUrl());
+		}
+
+		// update description
+		if (radioStationUpdateDTO.getDescription() != null) {
+			station.setDescription(radioStationUpdateDTO.getDescription());
 		}
 
 		// update station name
@@ -553,6 +559,7 @@ public class StationsUseCases extends UseCase {
 		stationDTO.setIsActive(station.isActive().toString());
 		stationDTO.setStationName(station.getName());
 		stationDTO.setImageUrl(station.getImageUrl());
+		stationDTO.setDescription(station.getDescription());
 		if (station.getScrobbler().isGroupStation()) {
 			stationDTO
 					.setGroupName(station.getScrobbler().getGroup().getName());
@@ -681,6 +688,7 @@ public class StationsUseCases extends UseCase {
 		radioStationUpdateDTO.setStationName(station.getName());
 		radioStationUpdateDTO.setActive(station.isActive().toString());
 		radioStationUpdateDTO.setImageUrl(station.getImageUrl());
+		radioStationUpdateDTO.setDescription(station.getDescription());
 
 		List<String> scrobblerIds = new ArrayList<String>();
 		for (ObjectId scrobblerId : station.getScrobbler()

@@ -33,9 +33,19 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
 	private List<String> scrobblerIds;
 
 	private String imageUrl;
+	
+	private String description;
 
 	public RadioStationUpdateDTO_V0_4() {
 		this.new RadioStationUpdateDTOValidator();
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public TrackDTO_V0_4 getNowPlaying() {
@@ -101,16 +111,17 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
 	public String getActive() {
 		return active;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "RadioStationUpdateDTO_V0_4 [stationId=" + stationId
 				+ ", stationName=" + stationName + ", active=" + active
 				+ ", nowPlaying=" + nowPlaying + ", lookAhead=" + lookAhead
 				+ ", groupName=" + groupName + ", scrobblerIds=" + scrobblerIds
-				+ ", imageUrl=" + imageUrl + "]";
+				+ ", imageUrl=" + imageUrl + ", description=" + description
+				+ "]";
 	}
-	
+
 	public class RadioStationUpdateDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {
