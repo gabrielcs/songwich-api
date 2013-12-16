@@ -93,7 +93,7 @@ public class RadioStationInputDTO_V0_4 extends DataTransferObject {
 		}
 
 		private ValidationError validateGroupName() {
-			if (scrobblerIds.size() > 1) {
+			if (scrobblerIds != null && scrobblerIds.size() > 1) {
 				return validateRequiredProperty("groupName", groupName);
 			} else {
 				return null;
