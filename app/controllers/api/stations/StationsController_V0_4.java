@@ -43,7 +43,7 @@ public class StationsController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
-	public Result postStations() {
+	public Result postStations(boolean subscribeScrobblers) {
 		Form<RadioStationInputDTO_V0_4> radioStationForm = Form.form(
 				RadioStationInputDTO_V0_4.class).bindFromRequest();
 		if (radioStationForm.hasErrors()) {
@@ -61,7 +61,7 @@ public class StationsController_V0_4 extends APIController {
 			RadioStationOutputDTO_V0_4 radioStationOutputDTO;
 			try {
 				radioStationOutputDTO = stationsUseCases.postStations(
-						radioStationInputDTO, stationStrategy);
+						radioStationInputDTO, stationStrategy, subscribeScrobblers);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -175,7 +175,9 @@ public class StationsController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
-	public Result putStationsAddScrobblers(String stationId) {
+	public Result putStationsAddScrobblers(String stationId,
+			boolean subscribeScrobblers) {
+		
 		Form<RadioStationUpdateInputDTO_V0_4> radioStationUpdateForm = Form
 				.form(RadioStationUpdateInputDTO_V0_4.class).bindFromRequest();
 		if (radioStationUpdateForm.hasErrors()) {
@@ -194,7 +196,7 @@ public class StationsController_V0_4 extends APIController {
 			try {
 				radioStationOutputDTO = stationsUseCases
 						.putStationsAddScrobblers(stationId,
-								radioStationUpdateDTO, stationStrategy);
+								radioStationUpdateDTO, stationStrategy, subscribeScrobblers);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),

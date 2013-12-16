@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import models.api.scrobbles.User;
 import models.api.stations.RadioStation;
@@ -11,6 +12,7 @@ import models.api.subscriptions.Subscription;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.stations.RadioStationOutputDTO_V0_4;
@@ -42,6 +44,15 @@ public class SubscriptionsUseCases extends UseCase {
 		RadioStation station = getRadioStationDAO().findById(
 				subscription.getStationId());
 		return createDTOForSubscription(subscription, station, true);
+	}
+
+	public void postSubscriptionsForPostStations(Set<ObjectId> usersIds,
+			ObjectId stationId) {
+		MyLogger.debug("usersIds: " + usersIds);
+		for (ObjectId userId : usersIds) {
+			Subscription subscription = new Subscription(userId, stationId);
+			saveSubscription(subscription);
+		}
 	}
 
 	public List<SubscriptionDTO_V0_4> getSubscriptions(String userId)

@@ -17,6 +17,7 @@ import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserOutputDTO_V0_4;
@@ -28,6 +29,7 @@ import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 import behavior.api.usecases.scrobbles.UsersUseCases;
+import behavior.api.usecases.subscriptions.SubscriptionsUseCases;
 
 public class StationsUseCases extends UseCase {
 
@@ -93,7 +95,8 @@ public class StationsUseCases extends UseCase {
 
 	public RadioStationOutputDTO_V0_4 postStations(
 			RadioStationInputDTO_V0_4 radioStationInputDTO,
-			StationStrategy stationStrategy) throws SongwichAPIException {
+			StationStrategy stationStrategy, boolean subscribeScrobblers)
+			throws SongwichAPIException {
 
 		authenticatePostStations(radioStationInputDTO);
 
@@ -138,6 +141,12 @@ public class StationsUseCases extends UseCase {
 		// save it
 		saveStation(station);
 
+		// check if we need to subscribe the scrobblers
+		if (subscribeScrobblers) {
+			subscribeScrobblers(station);
+		}
+
+		// output
 		if (station.isActive()) {
 			return createDTOForPostStations(station, null, radioStationInputDTO);
 		} else {
@@ -145,6 +154,16 @@ public class StationsUseCases extends UseCase {
 			return createDTOForPostStations(station, stationReadiness,
 					radioStationInputDTO);
 		}
+	}
+
+	private void subscribeScrobblers(RadioStation station) {
+		MyLogger.debug("inside subscribeScrobblers()");
+		Set<ObjectId> scrobblerIds = station.getScrobbler()
+				.getActiveScrobblersUserIds();
+		SubscriptionsUseCases subscriptionUseCases = new SubscriptionsUseCases(
+				getContext());
+		subscriptionUseCases.postSubscriptionsForPostStations(scrobblerIds,
+				station.getId());
 	}
 
 	public RadioStationOutputDTO_V0_4 putStations(String stationId,
@@ -167,8 +186,10 @@ public class StationsUseCases extends UseCase {
 		if (radioStationUpdateDTO.getStationName() != null) {
 			station.setName(radioStationUpdateDTO.getStationName());
 		}
+		
+		saveStation(station);
 
-		return savePutStationsScrobblers(station, radioStationUpdateDTO);
+		return createDTOForPutStationsScrobblers(station, radioStationUpdateDTO);
 	}
 
 	public RadioStationOutputDTO_V0_4 putStationsDeactivate(String stationId)
@@ -191,7 +212,8 @@ public class StationsUseCases extends UseCase {
 	public RadioStationOutputDTO_V0_4 putStationsAddScrobblers(
 			String stationId,
 			RadioStationUpdateInputDTO_V0_4 radioStationUpdateDTO,
-			StationStrategy stationStrategy) throws SongwichAPIException {
+			StationStrategy stationStrategy, boolean subscribeScrobblers)
+			throws SongwichAPIException {
 
 		RadioStation station = authorizePutStationsScrobblers(stationId,
 				radioStationUpdateDTO);
@@ -213,7 +235,15 @@ public class StationsUseCases extends UseCase {
 
 		tryToActivateStation(station, stationStrategy);
 
-		return savePutStationsScrobblers(station, radioStationUpdateDTO);
+		// save it
+		saveStation(station);
+
+		// check if we need to subscribe the scrobblers
+		if (subscribeScrobblers) {
+			subscribeScrobblers(station);
+		}
+
+		return createDTOForPutStationsScrobblers(station, radioStationUpdateDTO);
 	}
 
 	public RadioStationOutputDTO_V0_4 putStationsRemoveScrobblers(
@@ -247,8 +277,10 @@ public class StationsUseCases extends UseCase {
 				station.setActive(false);
 			}
 		}
+		
+		saveStation(station);
 
-		return savePutStationsScrobblers(station, radioStationUpdateDTO);
+		return createDTOForPutStationsScrobblers(station, radioStationUpdateDTO);
 	}
 
 	public RadioStationOutputDTO_V0_4 putStationsMarkAsVerified(String stationId)
@@ -527,13 +559,10 @@ public class StationsUseCases extends UseCase {
 				getContext().getAppDeveloper().getEmailAddress());
 	}
 
-	private RadioStationOutputDTO_V0_4 savePutStationsScrobblers(
+	private RadioStationOutputDTO_V0_4 createDTOForPutStationsScrobblers(
 			RadioStation station,
 			RadioStationUpdateInputDTO_V0_4 radioStationUpdateDTO) {
 
-		// saves it
-		getRadioStationDAO().save(station,
-				getContext().getAppDeveloper().getEmailAddress());
 		// updates the user output
 		return createDTOForPutStations(radioStationUpdateDTO, station);
 	}
@@ -541,13 +570,13 @@ public class StationsUseCases extends UseCase {
 	private static RadioStationOutputDTO_V0_4 createDTOForPostStations(
 			RadioStation station, Float stationReadiness,
 			RadioStationInputDTO_V0_4 inputDTO) {
-		
+
 		RadioStationOutputDTO_V0_4 outputDTO = new RadioStationOutputDTO_V0_4(
 				inputDTO);
 		outputDTO.setStationId(station.getId().toString());
 		outputDTO.setActive(station.isActive().toString());
 		outputDTO.setVerified(station.isVerified().toString());
-		
+
 		return updateStationDTOWithReadinessOrSongs(station, stationReadiness,
 				outputDTO);
 	}
