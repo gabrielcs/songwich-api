@@ -17,7 +17,6 @@ import models.api.stations.Track;
 
 import org.bson.types.ObjectId;
 
-import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.UserOutputDTO_V0_4;
@@ -129,6 +128,13 @@ public class StationsUseCases extends UseCase {
 
 		// checks if station can be activated and activates it
 		tryToActivateStation(station, stationStrategy);
+		// checks if it's an individual station by a verified user and marks it
+		// as verified
+		if (station.getScrobbler().isIndividualStation()
+				&& station.getScrobbler().getUser().isVerified()) {
+			station.setVerified(true);
+		}
+
 		// save it
 		saveStation(station);
 
@@ -535,14 +541,13 @@ public class StationsUseCases extends UseCase {
 	private static RadioStationOutputDTO_V0_4 createDTOForPostStations(
 			RadioStation station, Float stationReadiness,
 			RadioStationInputDTO_V0_4 inputDTO) {
-		MyLogger.debug(inputDTO.toString());
-
+		
 		RadioStationOutputDTO_V0_4 outputDTO = new RadioStationOutputDTO_V0_4(
 				inputDTO);
 		outputDTO.setStationId(station.getId().toString());
 		outputDTO.setActive(station.isActive().toString());
 		outputDTO.setVerified(station.isVerified().toString());
-		MyLogger.debug(outputDTO.toString());
+		
 		return updateStationDTOWithReadinessOrSongs(station, stationReadiness,
 				outputDTO);
 	}
@@ -575,7 +580,6 @@ public class StationsUseCases extends UseCase {
 		if (station.isActive()) {
 			return updateDTOForGetActiveStation(station, stationDTO);
 		} else {
-			MyLogger.debug(stationDTO.toString());
 			return updateDTOForGetInactiveStation(station, stationReadiness,
 					stationDTO);
 		}
@@ -594,7 +598,8 @@ public class StationsUseCases extends UseCase {
 		return stationsDTO;
 	}
 
-	// id, name, url, scrobblers, verified (no songs, no activeness, no readiness)
+	// id, name, url, scrobblers, verified (no songs, no activeness, no
+	// readiness)
 	private static RadioStationOutputDTO_V0_4 createBasicDTOForStations(
 			RadioStation station) {
 		RadioStationOutputDTO_V0_4 stationDTO = new RadioStationOutputDTO_V0_4();
@@ -625,7 +630,6 @@ public class StationsUseCases extends UseCase {
 			RadioStationOutputDTO_V0_4 stationDTO) {
 
 		stationDTO.setStationReadiness(String.format("%.2f", stationReadiness));
-		MyLogger.debug(stationDTO.toString());
 		return stationDTO;
 	}
 

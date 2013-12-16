@@ -161,17 +161,28 @@ public class UsersUseCases extends UseCase {
 		return userOutputDTO;
 	}
 
-	
 	public UserOutputDTO_V0_4 putUsersMarkAsVerified(String userId)
 			throws SongwichAPIException {
-		
+
 		User user = authorizePutUsers(userId);
-		
+
 		// mark user as verified
 		user.setVerified(true);
 		getUserDAO().save(user,
 				getContext().getAppDeveloper().getEmailAddress());
-		
+
+		// mark the user's individual station(s) as verified
+		List<RadioStation> scrobblerStations = getRadioStationDAO()
+				.findByScrobblerId(user.getId());
+		for (RadioStation station : scrobblerStations) {
+			if (station.getScrobbler().isIndividualStation()
+					&& station.isVerified() == false) {
+				station.setVerified(true);
+				getRadioStationDAO().save(station,
+						getContext().getAppDeveloper().getEmailAddress());
+			}
+		}
+
 		// output
 		return createDTOForGetUsers(user, null, null);
 	}
