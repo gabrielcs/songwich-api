@@ -125,6 +125,12 @@ public abstract class DTOValidator {
 
 	protected static ValidationError validateObjectId(String propertyName,
 			String objectId) {
+		
+		if (objectId == null) {
+			// not a required property
+			return null;
+		}
+		
 		if (!ObjectId.isValid(objectId)) {
 			return new ValidationError(propertyName, "Invalid " + propertyName);
 		} else {

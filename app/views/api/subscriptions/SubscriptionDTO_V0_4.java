@@ -5,7 +5,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
-import views.api.stations.RadioStationDTO_V0_4;
+import views.api.stations.RadioStationOutputDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -19,7 +19,7 @@ public class SubscriptionDTO_V0_4 extends DataTransferObject {
 	private String userId;
 
 	// only for output
-	private RadioStationDTO_V0_4 station;
+	private RadioStationOutputDTO_V0_4 station;
 
 	public SubscriptionDTO_V0_4() {
 		setValidator(this.new SubscriptionDTOValidator());
@@ -33,12 +33,12 @@ public class SubscriptionDTO_V0_4 extends DataTransferObject {
 		this.id = id;
 	}
 
-	public RadioStationDTO_V0_4 getStation() {
+	public RadioStationOutputDTO_V0_4 getStation() {
 		return station;
 	}
 
-	public void setStation(RadioStationDTO_V0_4 station) {
-		this.station = station;
+	public void setStation(RadioStationOutputDTO_V0_4 stationDTO) {
+		this.station = stationDTO;
 	}
 
 	public String getUserId() {

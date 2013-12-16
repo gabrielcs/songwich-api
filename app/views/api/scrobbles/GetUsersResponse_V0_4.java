@@ -9,10 +9,10 @@ import views.api.APIStatus;
 
 public class GetUsersResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("user")
-	private List<UserDTO_V0_4> userDTO;
+	private List<UserOutputDTO_V0_4> userDTO;
 
 	public GetUsersResponse_V0_4(APIStatus status, String message,
-			List<UserDTO_V0_4> usersDTO) {
+			List<UserOutputDTO_V0_4> usersDTO) {
 		super(status, message);
 		this.userDTO = usersDTO;
 	}
@@ -20,7 +20,7 @@ public class GetUsersResponse_V0_4 extends APIResponse_V0_4 {
 	/**
 	 * @return the userDTO
 	 */
-	public List<UserDTO_V0_4> getUserDTO() {
+	public List<UserOutputDTO_V0_4> getUserDTO() {
 		return userDTO;
 	}
 
@@ -28,7 +28,7 @@ public class GetUsersResponse_V0_4 extends APIResponse_V0_4 {
 	 * @param userDTO
 	 *            the userDTO to set
 	 */
-	public void setUserDTO(List<UserDTO_V0_4> userDTO) {
+	public void setUserDTO(List<UserOutputDTO_V0_4> userDTO) {
 		this.userDTO = userDTO;
 	}
 }

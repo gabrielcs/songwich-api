@@ -12,34 +12,22 @@ import views.api.DataTransferObject;
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("station")
-public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
-
-	// only for output
-	private String stationId;
+public class RadioStationInputDTO_V0_4 extends DataTransferObject {
 
 	private String stationName;
-
-	// only for output
-	private String active;
-
-	// only for output
-	private TrackDTO_V0_4 nowPlaying;
-
-	// only for output
-	private TrackDTO_V0_4 lookAhead;
 
 	private String groupName;
 
 	private List<String> scrobblerIds;
 
 	private String imageUrl;
-	
+
 	private String description;
 
-	public RadioStationUpdateDTO_V0_4() {
-		this.new RadioStationUpdateDTOValidator();
+	public RadioStationInputDTO_V0_4() {
+		setValidator(this.new RadioStationUpdateDTOValidator());
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -48,36 +36,12 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
 		this.description = description;
 	}
 
-	public TrackDTO_V0_4 getNowPlaying() {
-		return nowPlaying;
-	}
-
-	public void setNowPlaying(TrackDTO_V0_4 nowPlaying) {
-		this.nowPlaying = nowPlaying;
-	}
-
-	public TrackDTO_V0_4 getLookAhead() {
-		return lookAhead;
-	}
-
-	public void setLookAhead(TrackDTO_V0_4 lookAhead) {
-		this.lookAhead = lookAhead;
-	}
-
 	public String getGroupName() {
 		return groupName;
 	}
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
-	}
-
-	public String getStationId() {
-		return stationId;
-	}
-
-	public void setStationId(String stationId) {
-		this.stationId = stationId;
 	}
 
 	public String getStationName() {
@@ -104,19 +68,9 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
 		this.imageUrl = imageUrl;
 	}
 
-	public void setActive(String active) {
-		this.active = active;
-	}
-
-	public String getActive() {
-		return active;
-	}
-	
 	@Override
 	public String toString() {
-		return "RadioStationUpdateDTO_V0_4 [stationId=" + stationId
-				+ ", stationName=" + stationName + ", active=" + active
-				+ ", nowPlaying=" + nowPlaying + ", lookAhead=" + lookAhead
+		return "RadioStationInputDTO_V0_4 [stationName=" + stationName
 				+ ", groupName=" + groupName + ", scrobblerIds=" + scrobblerIds
 				+ ", imageUrl=" + imageUrl + ", description=" + description
 				+ "]";
@@ -126,20 +80,29 @@ public class RadioStationUpdateDTO_V0_4 extends DataTransferObject {
 		@Override
 		public void addValidation() {
 			addValidation(validateStationName(), validateScrobblerIds(),
-					validateImageUrl());
+					validateGroupName(), validateImageUrl());
 		}
 
 		private ValidationError validateStationName() {
-			return validateIfNonNullThenNonEmptyProperty("stationName", stationName);
+			return validateRequiredProperty("stationName", stationName);
 		}
 
 		private ValidationError validateScrobblerIds() {
-			return validateObjectIdArray("scrobblerIds", "scrobblerId",
-					scrobblerIds);
+			return validateRequiredNonEmptyObjectIdArray("scrobblerIds",
+					"scrobblerId", scrobblerIds);
+		}
+
+		private ValidationError validateGroupName() {
+			if (scrobblerIds.size() > 1) {
+				return validateRequiredProperty("groupName", groupName);
+			} else {
+				return null;
+			}
 		}
 
 		private ValidationError validateImageUrl() {
 			return validateImageUrl("imageUrl", imageUrl);
 		}
 	}
+
 }

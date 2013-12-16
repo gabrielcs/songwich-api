@@ -26,6 +26,9 @@ public class User extends MongoModelImpl implements MongoEntity {
 	private String imageUrl;
 
 	private String shortBio;
+	
+	// all users are not verified unless specified so
+	private Boolean verified;
 
 	@Embedded
 	private Set<AppUser> appUsers = new HashSet<AppUser>();
@@ -133,6 +136,14 @@ public class User extends MongoModelImpl implements MongoEntity {
 	public ObjectId getId() {
 		return id;
 	}
+	
+	public Boolean isVerified() {
+		return verified == null ? false : verified;
+	}
+
+	public void setVerified(Boolean verified) {
+		this.verified = verified;
+	}
 
 	/*
 	 * public void setId(ObjectId id) { this.id = id; }
@@ -150,8 +161,8 @@ public class User extends MongoModelImpl implements MongoEntity {
 	public String toString() {
 		return "User [id=" + id + ", emailAddress=" + emailAddress + ", name="
 				+ name + ", imageUrl=" + imageUrl + ", shortBio=" + shortBio
-				+ ", appUsers=" + appUsers + ", deactivated=" + deactivated
-				+ "]";
+				+ ", verified=" + verified + ", appUsers=" + appUsers
+				+ ", deactivated=" + deactivated + "]";
 	}
 
 	@Override

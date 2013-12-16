@@ -24,6 +24,9 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	private String imageUrl;
 	
 	private String description;
+	
+	// all stations are not verified unless specified so
+	private Boolean verified;
 
 	@Embedded
 	private ScrobblerBridge scrobbler;
@@ -92,6 +95,14 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 		this.scrobbler = new ScrobblerBridge(user);
 		this.imageUrl = imageUrl;
 		this.description = description;
+	}
+	
+	public Boolean isVerified() {
+		return verified == null ? false : verified;
+	}
+
+	public void setVerified(Boolean verified) {
+		this.verified = verified;
 	}
 	
 	public String getDescription() {
@@ -186,9 +197,9 @@ public class RadioStation extends MongoModelImpl implements MongoEntity {
 	public String toString() {
 		return "RadioStation [id=" + id + ", name=" + name + ", active="
 				+ active + ", imageUrl=" + imageUrl + ", description="
-				+ description + ", scrobbler=" + scrobbler + ", nowPlaying="
-				+ nowPlaying + ", lookAhead=" + lookAhead + ", deactivated="
-				+ deactivated + "]";
+				+ description + ", verified=" + verified + ", scrobbler="
+				+ scrobbler + ", nowPlaying=" + nowPlaying + ", lookAhead="
+				+ lookAhead + ", deactivated=" + deactivated + "]";
 	}
 
 	@Override

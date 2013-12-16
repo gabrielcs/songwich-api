@@ -11,19 +11,19 @@ import views.api.APIStatus;
 public class PostNextSongResponse_V0_4 extends APIResponse_V0_4 {
 
 	@JsonProperty("station")
-	private RadioStationUpdateDTO_V0_4 radioStationUpdateDTO;
+	private RadioStationOutputDTO_V0_4 radioStationUpdateDTO;
 
 	public PostNextSongResponse_V0_4(APIStatus status, String message,
-			RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
+			RadioStationOutputDTO_V0_4 stationOutputDTO) {
 		super(status, message);
-		setStationSongList(radioStationUpdateDTO);
+		setStationSongList(stationOutputDTO);
 	}
 
-	public RadioStationUpdateDTO_V0_4 getStationSongListDTO() {
+	public RadioStationOutputDTO_V0_4 getStationSongListDTO() {
 		return radioStationUpdateDTO;
 	}
 
-	public void setStationSongList(RadioStationUpdateDTO_V0_4 radioStationUpdateDTO) {
+	public void setStationSongList(RadioStationOutputDTO_V0_4 radioStationUpdateDTO) {
 		this.radioStationUpdateDTO = radioStationUpdateDTO;
 	}
 

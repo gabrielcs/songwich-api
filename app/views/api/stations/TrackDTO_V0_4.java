@@ -8,7 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
-import views.api.scrobbles.UserDTO_V0_4;
+import views.api.scrobbles.UserOutputDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
@@ -31,21 +31,21 @@ public class TrackDTO_V0_4 extends DataTransferObject {
 	private String idForFeedback;
 	
 	// only for output
-	private List<UserDTO_V0_4> recentScrobblers = new ArrayList<UserDTO_V0_4>();
+	private List<UserOutputDTO_V0_4> recentScrobblers = new ArrayList<UserOutputDTO_V0_4>();
 
 	public TrackDTO_V0_4() {
 		setValidator(this.new TrackDTOValidator());
 	}
 	
-	public List<UserDTO_V0_4> getRecentScrobblers() {
+	public List<UserOutputDTO_V0_4> getRecentScrobblers() {
 		return recentScrobblers;
 	}
 
-	public void setRecentScrobblers(List<UserDTO_V0_4> recentScrobblers) {
-		this.recentScrobblers = recentScrobblers;
+	public void setRecentScrobblers(List<UserOutputDTO_V0_4> list) {
+		this.recentScrobblers = list;
 	}
 	
-	public boolean addRecentScrobbler(UserDTO_V0_4 recentScrobbler) {
+	public boolean addRecentScrobbler(UserOutputDTO_V0_4 recentScrobbler) {
 		return recentScrobblers.add(recentScrobbler);
 	}
 	

@@ -19,11 +19,11 @@ import org.bson.types.ObjectId;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
-import views.api.scrobbles.DetailedUserDTO_V0_4;
-import views.api.scrobbles.UserDTO_V0_4;
-import views.api.scrobbles.UserUpdateDTO_V0_4;
-import views.api.stations.RadioStationDTO_V0_4;
-import views.api.stations.RadioStationUpdateDTO_V0_4;
+import views.api.scrobbles.UserInputDTO_V0_4;
+import views.api.scrobbles.UserOutputDTO_V0_4;
+import views.api.scrobbles.UserUpdateInputDTO_V0_4;
+import views.api.stations.RadioStationOutputDTO_V0_4;
+import views.api.stations.RadioStationUpdateInputDTO_V0_4;
 import views.api.subscriptions.SubscriptionDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.RequestContext;
@@ -37,62 +37,71 @@ public class UsersUseCases extends UseCase {
 		super(context);
 	}
 
-	public void postUsers(UserDTO_V0_4 userDTO) {
-		User user = getUserDAO().findByEmailAddress(userDTO.getUserEmail());
+	public UserOutputDTO_V0_4 postUsers(UserInputDTO_V0_4 userInputDTO) {
+		UserOutputDTO_V0_4 userOutputDTO = null;
+		User user = getUserDAO()
+				.findByEmailAddress(userInputDTO.getUserEmail());
 		if (user != null) {
 
 			// user was already in the database
 			for (AppUser appUser : user.getAppUsers()) {
 				if (appUser.getApp().equals(getContext().getApp())) {
 					// AppUser was also already in the database
-					updateDTO(user, appUser, userDTO);
+					userOutputDTO = createOutputUserDTO(user, appUser,
+							userInputDTO);
 					MyLogger.info(String
 							.format("Tried to create user \"%s\" but it was already in database with id=%s",
-									userDTO.getUserEmail(), userDTO.getUserId())
+									userInputDTO.getUserEmail(),
+									userOutputDTO.getUserId())
 							+ String.format(". devAuthToken=%s", getContext()
 									.getAppDeveloper().getDevAuthToken()
 									.getToken()));
-					return;
+					return userOutputDTO;
 				} else {
 					// registers a new AppUser for that User
 					AppUser newAppUser = createAppUserAndSaveNewUser(user,
-							userDTO.getUserEmail());
-					updateDTO(user, newAppUser, userDTO);
+							userInputDTO.getUserEmail());
+					userOutputDTO = createOutputUserDTO(user, newAppUser,
+							userInputDTO);
+					// TODO: test with 1 User and multiple AppUser's
 				}
 			}
 		} else {
-			user = new User(userDTO.getUserEmail(), userDTO.getName(),
-					userDTO.getImageUrl(), userDTO.getShortBio());
+			user = new User(userInputDTO.getUserEmail(),
+					userInputDTO.getName(), userInputDTO.getImageUrl(),
+					userInputDTO.getShortBio());
 			AppUser newAppUser = createAppUserAndSaveNewUser(user,
-					userDTO.getUserEmail());
-			updateDTO(user, newAppUser, userDTO);
+					userInputDTO.getUserEmail());
+			userOutputDTO = createOutputUserDTO(user, newAppUser, userInputDTO);
 		}
 		MyLogger.debug(String.format(
 				"Created user \"%s\" with id=%s and authToken=%s",
-				userDTO.getUserEmail(), userDTO.getUserId(),
-				userDTO.getUserAuthToken()));
+				userOutputDTO.getUserEmail(), userOutputDTO.getUserId(),
+				userOutputDTO.getUserAuthToken()));
+		return userOutputDTO;
 	}
 
-	public List<UserDTO_V0_4> getUsers() {
+	public List<UserOutputDTO_V0_4> getUsers() {
 		// TODO: limit the number of results
 		List<User> users = getUserDAO().find().asList();
 
 		return createDTOForGetUsers(users);
 	}
 
-	public DetailedUserDTO_V0_4 getUsersById(String userId) throws SongwichAPIException {
+	public UserOutputDTO_V0_4 getUsersById(String userId)
+			throws SongwichAPIException {
 		User user = authorizeForGetUsersById(userId);
 		return getUsers(user);
 	}
 
-	public DetailedUserDTO_V0_4 getUsersByEmail(String userEmail)
+	public UserOutputDTO_V0_4 getUsersByEmail(String userEmail)
 			throws SongwichAPIException {
 
 		User user = authorizeForGetUsersByEmail(userEmail);
 		return getUsers(user);
 	}
 
-	public DetailedUserDTO_V0_4 getUsers(User user) throws SongwichAPIException {
+	public UserOutputDTO_V0_4 getUsers(User user) throws SongwichAPIException {
 		List<RadioStation> scrobblerStations = getRadioStationDAO()
 				.findByScrobblerId(user.getId());
 
@@ -103,8 +112,8 @@ public class UsersUseCases extends UseCase {
 				activeSubscriptions);
 	}
 
-	public void putUsers(String userId, UserUpdateDTO_V0_4 userUpdateDTO)
-			throws SongwichAPIException {
+	public UserOutputDTO_V0_4 putUsers(String userId,
+			UserUpdateInputDTO_V0_4 userUpdateDTO) throws SongwichAPIException {
 
 		User user = authorizePutUsers(userId);
 
@@ -129,10 +138,10 @@ public class UsersUseCases extends UseCase {
 				getContext().getAppDeveloper().getEmailAddress());
 
 		// update output
-		updateDTOPutUsers(user, userUpdateDTO);
+		return createDTOPutUsers(user, userUpdateDTO);
 	}
 
-	public UserUpdateDTO_V0_4 putUsersDeactivate(String userId,
+	public UserOutputDTO_V0_4 putUsersDeactivate(String userId,
 			StationStrategy stationStrategy) throws SongwichAPIException {
 
 		User user = authorizePutUsers(userId);
@@ -145,11 +154,26 @@ public class UsersUseCases extends UseCase {
 		getUserDAO().save(user,
 				getContext().getAppDeveloper().getEmailAddress());
 
-		// update output
-		UserUpdateDTO_V0_4 userUpdateDTO = new UserUpdateDTO_V0_4();
-		userUpdateDTO.setUserId(userId);
+		// output
+		UserOutputDTO_V0_4 userOutputDTO = new UserOutputDTO_V0_4();
+		userOutputDTO.setUserId(userId);
 
-		return userUpdateDTO;
+		return userOutputDTO;
+	}
+
+	
+	public UserOutputDTO_V0_4 putUsersMarkAsVerified(String userId)
+			throws SongwichAPIException {
+		
+		User user = authorizePutUsers(userId);
+		
+		// mark user as verified
+		user.setVerified(true);
+		getUserDAO().save(user,
+				getContext().getAppDeveloper().getEmailAddress());
+		
+		// output
+		return createDTOForGetUsers(user, null, null);
 	}
 
 	private void checkStationsForDeactivation(ObjectId userId,
@@ -171,7 +195,7 @@ public class UsersUseCases extends UseCase {
 							.toString());
 				} else {
 					// there are other active scrobblers
-					RadioStationUpdateDTO_V0_4 radioStationUpdateDTO = new RadioStationUpdateDTO_V0_4();
+					RadioStationUpdateInputDTO_V0_4 radioStationUpdateDTO = new RadioStationUpdateInputDTO_V0_4();
 					radioStationUpdateDTO.setScrobblerIds(Arrays.asList(userId
 							.toString()));
 					stationsUseCases.putStationsRemoveScrobblers(station
@@ -267,32 +291,38 @@ public class UsersUseCases extends UseCase {
 		return newAppUser;
 	}
 
-	private void updateDTO(User user, AppUser newAppUser, UserDTO_V0_4 userDTO) {
-		userDTO.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
-		userDTO.setUserId(user.getId().toString());
+	private UserOutputDTO_V0_4 createOutputUserDTO(User user,
+			AppUser newAppUser, UserInputDTO_V0_4 userInputDTO) {
+		UserOutputDTO_V0_4 userOutputDTO = new UserOutputDTO_V0_4(userInputDTO);
+		userOutputDTO
+				.setUserAuthToken(newAppUser.getUserAuthToken().getToken());
+		userOutputDTO.setUserId(user.getId().toString());
+		userOutputDTO.setVerified(user.isVerified().toString());
+		return userOutputDTO;
 	}
 
-	private List<UserDTO_V0_4> createDTOForGetUsers(Collection<User> users) {
-		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>();
+	private List<UserOutputDTO_V0_4> createDTOForGetUsers(Collection<User> users) {
+		List<UserOutputDTO_V0_4> usersDTO = new ArrayList<UserOutputDTO_V0_4>();
 		for (User user : users) {
 			usersDTO.add(createDTOForGetUsers(user, null, null));
 		}
 		return usersDTO;
 	}
-	
-	private UserDTO_V0_4 createDTOForGetUsers(User user,
+
+	private UserOutputDTO_V0_4 createDTOForGetUsers(User user,
 			Collection<RadioStation> scrobblerStations,
 			Collection<Subscription> subscriptions) {
-		
-		UserDTO_V0_4 userDTO = new UserDTO_V0_4();
+
+		UserOutputDTO_V0_4 userDTO = new UserOutputDTO_V0_4();
 		userDTO.setName(user.getName());
 		userDTO.setUserEmail(user.getEmailAddress());
 		userDTO.setUserId(user.getId().toString());
 		userDTO.setImageUrl(user.getImageUrl());
 		userDTO.setShortBio(user.getShortBio());
+		userDTO.setVerified(user.isVerified().toString());
 
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
-			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+			List<RadioStationOutputDTO_V0_4> scrobblerStationsDTO = StationsUseCases
 					.createDTOForGetMultipleStations(scrobblerStations);
 			userDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
@@ -316,19 +346,20 @@ public class UsersUseCases extends UseCase {
 		return userDTO;
 	}
 
-	private DetailedUserDTO_V0_4 createDetailedDTOForGetUsers(User user,
+	private UserOutputDTO_V0_4 createDetailedDTOForGetUsers(User user,
 			Collection<RadioStation> scrobblerStations,
 			Collection<Subscription> subscriptions) {
-		
-		DetailedUserDTO_V0_4 userDTO = new DetailedUserDTO_V0_4();
+
+		UserOutputDTO_V0_4 userDTO = new UserOutputDTO_V0_4();
 		userDTO.setName(user.getName());
 		userDTO.setUserEmail(user.getEmailAddress());
 		userDTO.setUserId(user.getId().toString());
 		userDTO.setImageUrl(user.getImageUrl());
 		userDTO.setShortBio(user.getShortBio());
+		userDTO.setVerified(user.isVerified().toString());
 
 		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
-			List<RadioStationDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+			List<RadioStationOutputDTO_V0_4> scrobblerStationsDTO = StationsUseCases
 					.createDTOForGetMultipleStations(scrobblerStations);
 			userDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
@@ -352,25 +383,31 @@ public class UsersUseCases extends UseCase {
 		return userDTO;
 	}
 
-	private void updateDTOPutUsers(User user, UserUpdateDTO_V0_4 userUpdateDTO) {
-
-		userUpdateDTO.setUserId(user.getId().toString());
-		userUpdateDTO.setName(user.getName());
-		userUpdateDTO.setUserEmail(user.getEmailAddress());
-		userUpdateDTO.setImageUrl(user.getImageUrl());
-		userUpdateDTO.setShortBio(user.getShortBio());
+	private UserOutputDTO_V0_4 createDTOPutUsers(User user,
+			UserUpdateInputDTO_V0_4 userUpdateInputDTO) {
+		UserOutputDTO_V0_4 userOutputDTO = new UserOutputDTO_V0_4(
+				userUpdateInputDTO);
+		userOutputDTO.setUserId(user.getId().toString());
+		userOutputDTO.setName(user.getName());
+		userOutputDTO.setUserEmail(user.getEmailAddress());
+		userOutputDTO.setImageUrl(user.getImageUrl());
+		userOutputDTO.setShortBio(user.getShortBio());
+		userOutputDTO.setVerified(user.isVerified().toString());
+		return userOutputDTO;
 	}
 
-	public List<UserDTO_V0_4> createUsersDTOForGetStations(
+	public List<UserOutputDTO_V0_4> createUsersDTOForGetStations(
 			Collection<User> users) {
-		
-		List<UserDTO_V0_4> usersDTO = new ArrayList<UserDTO_V0_4>(users.size());
-		UserDTO_V0_4 userDTO;
+
+		List<UserOutputDTO_V0_4> usersDTO = new ArrayList<UserOutputDTO_V0_4>(
+				users.size());
+		UserOutputDTO_V0_4 userDTO;
 		for (User user : users) {
-			userDTO = new UserDTO_V0_4();
+			userDTO = new UserOutputDTO_V0_4();
 			userDTO.setUserId(user.getId().toString());
 			userDTO.setName(user.getName());
 			userDTO.setImageUrl(user.getImageUrl());
+			userDTO.setVerified(user.isVerified().toString());
 			usersDTO.add(userDTO);
 		}
 		return usersDTO;

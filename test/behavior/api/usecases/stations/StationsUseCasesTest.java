@@ -21,13 +21,14 @@ import org.junit.Test;
 
 import util.api.SongwichAPIException;
 import util.api.WithProductionDependencyInjection;
-import views.api.stations.RadioStationDTO_V0_4;
-import views.api.stations.RadioStationUpdateDTO_V0_4;
+import views.api.stations.RadioStationInputDTO_V0_4;
+import views.api.stations.RadioStationOutputDTO_V0_4;
+import views.api.stations.RadioStationUpdateInputDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 
 public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	private User gabriel, daniel, john;
-	private RadioStationDTO_V0_4 gabrielStationDTO, danielStationDTO,
+	private RadioStationInputDTO_V0_4 gabrielStationDTO, danielStationDTO,
 			danielAndJohnStationDTO;
 
 	@Before
@@ -85,17 +86,17 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	}
 
 	private void createStationDTOs() {
-		gabrielStationDTO = new RadioStationDTO_V0_4();
+		gabrielStationDTO = new RadioStationInputDTO_V0_4();
 		gabrielStationDTO.setStationName("Gabriel FM");
 		gabrielStationDTO.setScrobblerIds(Arrays.asList(gabriel.getId()
 				.toString()));
 
-		danielStationDTO = new RadioStationDTO_V0_4();
+		danielStationDTO = new RadioStationInputDTO_V0_4();
 		danielStationDTO.setStationName("Daniel FM");
 		danielStationDTO.setScrobblerIds(Arrays.asList(daniel.getId()
 				.toString()));
 
-		danielAndJohnStationDTO = new RadioStationDTO_V0_4();
+		danielAndJohnStationDTO = new RadioStationInputDTO_V0_4();
 		danielAndJohnStationDTO.setStationName("Daniel and John FM");
 		danielAndJohnStationDTO.setGroupName("Daniel and John");
 		danielAndJohnStationDTO.setScrobblerIds(Arrays.asList(daniel.getId()
@@ -109,59 +110,58 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 
 		// Gabriel FM should be active
 		setRequestContextUser(gabriel);
-		stationsUseCases.postStations(gabrielStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
+		RadioStationOutputDTO_V0_4 outputDTO = stationsUseCases.postStations(
+				gabrielStationDTO,
+				getInjector().getInstance(StationStrategy.class));
 		station = getRadioStationDAO().findById(
-				new ObjectId(gabrielStationDTO.getStationId()));
-		System.out.println(gabrielStationDTO);
+				new ObjectId(outputDTO.getStationId()));
+		System.out.println(outputDTO);
 
 		assertTrue(station.isActive());
-		assertNull(gabrielStationDTO.getStationReadiness());
+		assertNull(outputDTO.getStationReadiness());
 
 		assertNotNull(station.getNowPlaying());
 		assertNotNull(station.getLookAhead());
-		assertNotNull(gabrielStationDTO.getNowPlaying());
-		assertNotNull(gabrielStationDTO.getLookAhead());
+		assertNotNull(outputDTO.getNowPlaying());
+		assertNotNull(outputDTO.getLookAhead());
 
 		// Daniel FM should be inactive
 		setRequestContextUser(daniel);
-		stationsUseCases.postStations(danielStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
+		outputDTO = stationsUseCases.postStations(danielStationDTO,
+				getInjector().getInstance(StationStrategy.class));
 		station = getRadioStationDAO().findById(
-				new ObjectId(danielStationDTO.getStationId()));
-		System.out.println(danielStationDTO);
+				new ObjectId(outputDTO.getStationId()));
+		System.out.println(outputDTO);
 
 		assertFalse(station.isActive());
-		assertNotNull(danielStationDTO.getStationReadiness());
+		assertNotNull(outputDTO.getStationReadiness());
 
 		assertNull(station.getNowPlaying());
 		assertNull(station.getLookAhead());
-		assertNull(danielStationDTO.getNowPlaying());
-		assertNull(danielStationDTO.getLookAhead());
+		assertNull(outputDTO.getNowPlaying());
+		assertNull(outputDTO.getLookAhead());
 
 		// Daniel and John FM should be active and have "recent scrobblers"
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
+		outputDTO = stationsUseCases.postStations(danielAndJohnStationDTO,
+				getInjector().getInstance(StationStrategy.class));
 		station = getRadioStationDAO().findById(
-				new ObjectId(danielAndJohnStationDTO.getStationId()));
-		System.out.println(danielAndJohnStationDTO);
+				new ObjectId(outputDTO.getStationId()));
+		System.out.println(outputDTO);
 
 		assertTrue(station.isActive());
-		assertNull(danielAndJohnStationDTO.getStationReadiness());
+		assertNull(outputDTO.getStationReadiness());
 
 		assertNotNull(station.getNowPlaying());
 		assertNotNull(station.getLookAhead());
-		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
-		assertNotNull(danielAndJohnStationDTO.getLookAhead());
+		assertNotNull(outputDTO.getNowPlaying());
+		assertNotNull(outputDTO.getLookAhead());
 
 		// it won't work if we don't setup the users' names
 		assertNotNull(station.getNowPlaying().getSongScrobblers());
 		assertNotNull(station.getLookAhead().getSongScrobblers());
-		assertNotNull(danielAndJohnStationDTO.getNowPlaying()
-				.getRecentScrobblers());
-		assertNotNull(danielAndJohnStationDTO.getLookAhead()
-				.getRecentScrobblers());
+		assertNotNull(outputDTO.getNowPlaying().getRecentScrobblers());
+		assertNotNull(outputDTO.getLookAhead().getRecentScrobblers());
 	}
 
 	@Test
@@ -170,48 +170,44 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 
 		// Gabriel FM should be active
 		setRequestContextUser(gabriel);
-		stationsUseCases.postStations(gabrielStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
-		gabrielStationDTO = stationsUseCases.getStations(
-				gabrielStationDTO.getStationId(),
+		RadioStationOutputDTO_V0_4 outputDTO = stationsUseCases.postStations(
+				gabrielStationDTO,
+				getInjector().getInstance(StationStrategy.class));
+		outputDTO = stationsUseCases.getStations(outputDTO.getStationId(),
 				getInjector().getInstance(StationStrategy.class), false);
-		System.out.println(gabrielStationDTO);
+		System.out.println(outputDTO);
 
-		assertNull(gabrielStationDTO.getStationReadiness());
-		assertNotNull(gabrielStationDTO.getNowPlaying());
-		assertNotNull(gabrielStationDTO.getLookAhead());
+		assertNull(outputDTO.getStationReadiness());
+		assertNotNull(outputDTO.getNowPlaying());
+		assertNotNull(outputDTO.getLookAhead());
 
 		// Daniel FM should be inactive
 		setRequestContextUser(daniel);
-		stationsUseCases.postStations(danielStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
-		danielStationDTO = stationsUseCases.getStations(
-				danielStationDTO.getStationId(),
+		outputDTO = stationsUseCases.postStations(danielStationDTO,
+				getInjector().getInstance(StationStrategy.class));
+		outputDTO = stationsUseCases.getStations(outputDTO.getStationId(),
 				getInjector().getInstance(StationStrategy.class), false);
-		System.out.println(danielStationDTO);
+		System.out.println(outputDTO);
 
-		assertNotNull(danielStationDTO.getStationReadiness());
-		assertNull(danielStationDTO.getNowPlaying());
-		assertNull(danielStationDTO.getLookAhead());
+		assertNotNull(outputDTO.getStationReadiness());
+		assertNull(outputDTO.getNowPlaying());
+		assertNull(outputDTO.getLookAhead());
 
 		// Daniel and John FM should be active and have "recent scrobblers"
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
-		danielAndJohnStationDTO = stationsUseCases.getStations(
-				danielAndJohnStationDTO.getStationId(), getInjector()
-						.getInstance(StationStrategy.class), false);
-		System.out.println(danielAndJohnStationDTO);
+		outputDTO = stationsUseCases.postStations(danielAndJohnStationDTO,
+				getInjector().getInstance(StationStrategy.class));
+		outputDTO = stationsUseCases.getStations(outputDTO.getStationId(),
+				getInjector().getInstance(StationStrategy.class), false);
+		System.out.println(outputDTO);
 
-		assertNull(danielAndJohnStationDTO.getStationReadiness());
-		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
-		assertNotNull(danielAndJohnStationDTO.getLookAhead());
+		assertNull(outputDTO.getStationReadiness());
+		assertNotNull(outputDTO.getNowPlaying());
+		assertNotNull(outputDTO.getLookAhead());
 
 		// it won't work if we don't setup the users' names
-		assertNotNull(danielAndJohnStationDTO.getNowPlaying()
-				.getRecentScrobblers());
-		assertNotNull(danielAndJohnStationDTO.getLookAhead()
-				.getRecentScrobblers());
+		assertNotNull(outputDTO.getNowPlaying().getRecentScrobblers());
+		assertNotNull(outputDTO.getLookAhead().getRecentScrobblers());
 	}
 
 	@Test
@@ -221,33 +217,35 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 
 		// Daniel and John FM should be active
 		setRequestContextUser(john);
-		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
-				.getInstance(StationStrategy.class));
-		assertNotNull(danielAndJohnStationDTO.getNowPlaying());
+		RadioStationOutputDTO_V0_4 outputDTO = stationsUseCases.postStations(
+				danielAndJohnStationDTO,
+				getInjector().getInstance(StationStrategy.class));
+		assertNotNull(outputDTO.getNowPlaying());
 
 		// remove a scrobbler and checks if it deactivates the station
-		RadioStationUpdateDTO_V0_4 stationUpdateDTO = new RadioStationUpdateDTO_V0_4();
+		RadioStationUpdateInputDTO_V0_4 stationUpdateDTO = new RadioStationUpdateInputDTO_V0_4();
 		stationUpdateDTO.setScrobblerIds(Arrays.asList(daniel.getId()
 				.toString()));
-		stationsUseCases.putStationsRemoveScrobblers(
-				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
+		stationUpdateDTO.setStationId(outputDTO.getStationId());
+		
+		outputDTO = stationsUseCases.putStationsRemoveScrobblers(
+				outputDTO.getStationId(), stationUpdateDTO,
 				getInjector().getInstance(StationStrategy.class));
 		station = getRadioStationDAO().findById(
-				new ObjectId(danielAndJohnStationDTO.getStationId()));
+				new ObjectId(outputDTO.getStationId()));
 		assertFalse(station.isActive());
-		assertFalse(new Boolean(stationUpdateDTO.getActive()));
+		assertFalse(new Boolean(outputDTO.getActive()));
 
 		// add a scrobbler and checks if it reactivates the station
-		stationUpdateDTO = new RadioStationUpdateDTO_V0_4();
 		stationUpdateDTO.setScrobblerIds(Arrays.asList(daniel.getId()
 				.toString()));
-		stationsUseCases.putStationsAddScrobblers(
-				danielAndJohnStationDTO.getStationId(), stationUpdateDTO,
+		outputDTO = stationsUseCases.putStationsAddScrobblers(
+				outputDTO.getStationId(), stationUpdateDTO,
 				getInjector().getInstance(StationStrategy.class));
 		station = getRadioStationDAO().findById(
-				new ObjectId(danielAndJohnStationDTO.getStationId()));
+				new ObjectId(outputDTO.getStationId()));
 		assertTrue(station.isActive());
-		assertTrue(new Boolean(stationUpdateDTO.getActive()));
+		assertTrue(new Boolean(outputDTO.getActive()));
 	}
 
 	@Test
@@ -264,10 +262,11 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 		stationsUseCases.postStations(danielAndJohnStationDTO, getInjector()
 				.getInstance(StationStrategy.class));
 
-		List<RadioStationDTO_V0_4> stationsDTO = stationsUseCases.getStations(false);
+		List<RadioStationOutputDTO_V0_4> stationsDTO = stationsUseCases
+				.getStations(false);
 		System.out.println(stationsDTO);
 
-		for (RadioStationDTO_V0_4 stationDTO : stationsDTO) {
+		for (RadioStationOutputDTO_V0_4 stationDTO : stationsDTO) {
 			assertNotNull(stationDTO.getActive());
 			assertNull(stationDTO.getStationReadiness());
 			assertNull(stationDTO.getNowPlaying());

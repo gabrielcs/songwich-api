@@ -7,18 +7,18 @@ import views.api.APIStatus;
 
 public class PutUsersResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("user")
-	private UserUpdateDTO_V0_4 userUpdateDTO;
+	private UserOutputDTO_V0_4 userUpdateDTO;
 
 	public PutUsersResponse_V0_4(APIStatus status, String message,
-			UserUpdateDTO_V0_4 userUpdateDTO) {
+			UserOutputDTO_V0_4 userOutputDTO) {
 		super(status, message);
-		this.userUpdateDTO = userUpdateDTO;
+		this.userUpdateDTO = userOutputDTO;
 	}
 
 	/**
 	 * @return the userUpdateDTO
 	 */
-	public UserUpdateDTO_V0_4 getUserUpdateDTO() {
+	public UserOutputDTO_V0_4 getUserUpdateDTO() {
 		return userUpdateDTO;
 	}
 
@@ -26,7 +26,7 @@ public class PutUsersResponse_V0_4 extends APIResponse_V0_4 {
 	 * @param userUpdateDTO
 	 *            the userUpdateDTO to set
 	 */
-	public void setUserUpdateDTO(UserUpdateDTO_V0_4 userUpdateDTO) {
+	public void setUserUpdateDTO(UserOutputDTO_V0_4 userUpdateDTO) {
 		this.userUpdateDTO = userUpdateDTO;
 	}
 }

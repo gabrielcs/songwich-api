@@ -1,19 +1,16 @@
 package views.api.scrobbles;
 
-import java.util.List;
-
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import play.data.validation.ValidationError;
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
-import views.api.stations.RadioStationDTO_V0_4;
 
-//@JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+//@JsonInclude(Include.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonTypeName("user")
-public class UserUpdateDTO_V0_4 extends DataTransferObject {
+public class UserUpdateInputDTO_V0_4 extends DataTransferObject {
 
 	private String userEmail;
 
@@ -23,29 +20,8 @@ public class UserUpdateDTO_V0_4 extends DataTransferObject {
 
 	private String shortBio;
 
-	// not used for input, only for output
-	private String userId;
-
-	// not used for input, only for output
-	private String userAuthToken;
-
-	// not used for input, only for output
-	private List<RadioStationDTO_V0_4> scrobblerStations;
-
-	public UserUpdateDTO_V0_4() {
+	public UserUpdateInputDTO_V0_4() {
 		setValidator(this.new UserUpdateDTOValidator());
-	}
-
-	public List<RadioStationDTO_V0_4> getScrobblerStations() {
-		return scrobblerStations;
-	}
-
-	public void setScrobblerStations(
-			List<RadioStationDTO_V0_4> scrobblerStations) {
-		
-		if (!scrobblerStations.isEmpty()) {
-			this.scrobblerStations = scrobblerStations;
-		}
 	}
 	
 	public String getImageUrl() {
@@ -85,29 +61,6 @@ public class UserUpdateDTO_V0_4 extends DataTransferObject {
 	 */
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
-	}
-
-	/**
-	 * @return the userAuthToken
-	 */
-	public String getUserAuthToken() {
-		return userAuthToken;
-	}
-
-	/**
-	 * @param userAuthToken
-	 *            the userAuthToken to set
-	 */
-	public void setUserAuthToken(String userAuthToken) {
-		this.userAuthToken = userAuthToken;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public class UserUpdateDTOValidator extends DTOValidator {

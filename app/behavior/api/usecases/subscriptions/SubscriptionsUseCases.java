@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
-import views.api.stations.RadioStationDTO_V0_4;
+import views.api.stations.RadioStationOutputDTO_V0_4;
 import views.api.subscriptions.SubscriptionDTO_V0_4;
 import views.api.subscriptions.SubscriptionInputDTO_V0_4;
 import behavior.api.usecases.RequestContext;
@@ -151,7 +151,7 @@ public class SubscriptionsUseCases extends UseCase {
 		SubscriptionDTO_V0_4 subscriptionDTO = new SubscriptionDTO_V0_4();
 		subscriptionDTO.setId(subscription.getId().toString());
 
-		RadioStationDTO_V0_4 stationDTO = StationsUseCases
+		RadioStationOutputDTO_V0_4 stationDTO = StationsUseCases
 				.createDTOForSubscription(station);
 		subscriptionDTO.setStation(stationDTO);
 

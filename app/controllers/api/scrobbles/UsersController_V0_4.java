@@ -4,11 +4,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import models.api.scrobbles.User;
-import models.api.stations.RadioStation;
-
-import org.bson.types.ObjectId;
-
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -19,23 +14,19 @@ import util.api.SongwichAPIException;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus_V0_4;
 import views.api.DTOValidator;
-import views.api.scrobbles.DetailedUserDTO_V0_4;
 import views.api.scrobbles.GetUsersResponse_V0_4;
 import views.api.scrobbles.GetUsersUniqueResponse_V0_4;
 import views.api.scrobbles.PostUsersResponse_V0_4;
 import views.api.scrobbles.PutUsersResponse_V0_4;
-import views.api.scrobbles.UserDTO_V0_4;
-import views.api.scrobbles.UserUpdateDTO_V0_4;
+import views.api.scrobbles.UserInputDTO_V0_4;
+import views.api.scrobbles.UserOutputDTO_V0_4;
+import views.api.scrobbles.UserUpdateInputDTO_V0_4;
 import behavior.api.algorithms.StationStrategy;
 import behavior.api.usecases.scrobbles.UsersUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
-import database.api.scrobbles.UserDAO;
-import database.api.scrobbles.UserDAOMongo;
-import database.api.stations.RadioStationDAO;
-import database.api.stations.RadioStationDAOMongo;
 
 public class UsersController_V0_4 extends APIController {
 
@@ -47,10 +38,38 @@ public class UsersController_V0_4 extends APIController {
 		this.stationStrategy = stationStrategy;
 	}
 
+	// TODO: this should be accessible only from Songwich developers
+	@AppDeveloperAuthenticated
+	@UserAuthenticated
+	@Logged
+	public static Result putUsersMarkAsVerified(String userId) {
+		// process the request
+		UserOutputDTO_V0_4 userOutputDTO;
+		UsersUseCases usersUseCases = new UsersUseCases(getContext());
+		try {
+			userOutputDTO = usersUseCases.putUsersMarkAsVerified(userId);
+		} catch (SongwichAPIException exception) {
+			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
+					.toString(), exception.getMessage(), Http.Context.current()
+					.request()));
+			APIResponse_V0_4 response = new APIResponse_V0_4(
+					exception.getStatus(), exception.getMessage());
+			if (exception.getStatus().equals(APIStatus_V0_4.UNAUTHORIZED)) {
+				return Results.unauthorized(Json.toJson(response));
+			} else {
+				return Results.badRequest(Json.toJson(response));
+			}
+		}
+		// return the response
+		PutUsersResponse_V0_4 response = new PutUsersResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success", userOutputDTO);
+		return ok(Json.toJson(response));
+	}
+
 	@AppDeveloperAuthenticated
 	@Logged
 	public static Result postUsers() {
-		Form<UserDTO_V0_4> form = Form.form(UserDTO_V0_4.class)
+		Form<UserInputDTO_V0_4> form = Form.form(UserInputDTO_V0_4.class)
 				.bindFromRequest();
 		if (form.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
@@ -58,15 +77,16 @@ public class UsersController_V0_4 extends APIController {
 					DTOValidator.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			UserDTO_V0_4 userDTO = form.get();
+			UserInputDTO_V0_4 userInputDTO = form.get();
 
 			// process the request
 			UsersUseCases usersUseCases = new UsersUseCases(getContext());
-			usersUseCases.postUsers(userDTO);
+			UserOutputDTO_V0_4 userOutputDTO = usersUseCases
+					.postUsers(userInputDTO);
 
 			// return the response
 			PostUsersResponse_V0_4 response = new PostUsersResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", userDTO);
+					APIStatus_V0_4.SUCCESS, "Success", userOutputDTO);
 			return ok(Json.toJson(response));
 		}
 	}
@@ -75,19 +95,20 @@ public class UsersController_V0_4 extends APIController {
 	@UserAuthenticated
 	@Logged
 	public static Result putUsers(String userId) {
-		Form<UserUpdateDTO_V0_4> form = Form.form(UserUpdateDTO_V0_4.class)
-				.bindFromRequest();
+		Form<UserUpdateInputDTO_V0_4> form = Form.form(
+				UserUpdateInputDTO_V0_4.class).bindFromRequest();
 		if (form.hasErrors()) {
 			APIResponse_V0_4 apiResponse = new APIResponse_V0_4(
 					APIStatus_V0_4.INVALID_PARAMETER,
 					DTOValidator.errorsAsString(form.errors()));
 			return badRequest(Json.toJson(apiResponse));
 		} else {
-			UserUpdateDTO_V0_4 userUpdateDTO = form.get();
+			UserUpdateInputDTO_V0_4 userUpdateDTO = form.get();
 			// process the request
 			UsersUseCases usersUseCases = new UsersUseCases(getContext());
+			UserOutputDTO_V0_4 userOutputDTO;
 			try {
-				usersUseCases.putUsers(userId, userUpdateDTO);
+				userOutputDTO = usersUseCases.putUsers(userId, userUpdateDTO);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -103,7 +124,7 @@ public class UsersController_V0_4 extends APIController {
 
 			// return the response
 			PutUsersResponse_V0_4 response = new PutUsersResponse_V0_4(
-					APIStatus_V0_4.SUCCESS, "Success", userUpdateDTO);
+					APIStatus_V0_4.SUCCESS, "Success", userOutputDTO);
 			return ok(Json.toJson(response));
 		}
 	}
@@ -113,7 +134,7 @@ public class UsersController_V0_4 extends APIController {
 	public static Result getUsers() {
 		// process the request
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
-		List<UserDTO_V0_4> usersDTO = usersUseCases.getUsers();
+		List<UserOutputDTO_V0_4> usersDTO = usersUseCases.getUsers();
 
 		// return the response
 		GetUsersResponse_V0_4 response = new GetUsersResponse_V0_4(
@@ -131,7 +152,7 @@ public class UsersController_V0_4 extends APIController {
 
 		// process the request
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
-		DetailedUserDTO_V0_4 userDTO;
+		UserOutputDTO_V0_4 userDTO;
 		try {
 			if (userId != null) {
 				userDTO = usersUseCases.getUsersById(userId);
@@ -163,10 +184,10 @@ public class UsersController_V0_4 extends APIController {
 	@Logged
 	public Result putUsersDeactivate(String userId) {
 		// process the request
-		UserUpdateDTO_V0_4 userUpdateDTO;
+		UserOutputDTO_V0_4 userOutputDTO;
 		UsersUseCases usersUseCases = new UsersUseCases(getContext());
 		try {
-			userUpdateDTO = usersUseCases.putUsersDeactivate(userId,
+			userOutputDTO = usersUseCases.putUsersDeactivate(userId,
 					stationStrategy);
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
@@ -182,38 +203,34 @@ public class UsersController_V0_4 extends APIController {
 		}
 		// return the response
 		PutUsersResponse_V0_4 response = new PutUsersResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", userUpdateDTO);
+				APIStatus_V0_4.SUCCESS, "Success", userOutputDTO);
 		return ok(Json.toJson(response));
-
-	}
-
-	public static Result postFixReactivateUser() {
-		String devEmail = "gabrielcs@gmail.com";
-
-		ObjectId objectId = new ObjectId("5267d52792e6bf54e1b5047d");
-
-		UserDAO<ObjectId> userDAO = new UserDAOMongo();
-		User user = userDAO.findById(objectId, false);
-		user.setDeactivated(false);
-		userDAO.save(user, devEmail);
-
-		return Results.ok();
-	}
-
-	public static Result postFixReactivateStation() {
-		String devEmail = "gabrielcs@gmail.com";
-
-		ObjectId objectId = new ObjectId("528e59f2e4b0fed29a59c813");
-
-		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
-		RadioStation station = stationDAO.findById(objectId, false);
-		station.setDeactivated(false);
-		stationDAO.save(station, devEmail);
-
-		return Results.ok();
 	}
 
 	/*
+	 * public static Result postFixReactivateUser() { String devEmail =
+	 * "gabrielcs@gmail.com";
+	 * 
+	 * ObjectId objectId = new ObjectId("5267d52792e6bf54e1b5047d");
+	 * 
+	 * UserDAO<ObjectId> userDAO = new UserDAOMongo(); User user =
+	 * userDAO.findById(objectId, false); user.setDeactivated(false);
+	 * userDAO.save(user, devEmail);
+	 * 
+	 * return Results.ok(); }
+	 * 
+	 * public static Result postFixReactivateStation() { String devEmail =
+	 * "gabrielcs@gmail.com";
+	 * 
+	 * ObjectId objectId = new ObjectId("528e59f2e4b0fed29a59c813");
+	 * 
+	 * RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+	 * RadioStation station = stationDAO.findById(objectId, false);
+	 * station.setDeactivated(false); stationDAO.save(station, devEmail);
+	 * 
+	 * return Results.ok(); }
+	 * 
+	 * 
 	 * public static Result postFixUserNames() { String devEmail =
 	 * "gabrielcs@gmail.com";
 	 * 

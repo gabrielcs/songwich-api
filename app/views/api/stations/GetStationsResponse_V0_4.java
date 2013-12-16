@@ -10,19 +10,19 @@ import views.api.APIStatus;
 public class GetStationsResponse_V0_4 extends APIResponse_V0_4 {
 
 	@JsonProperty("stations")
-	private List<RadioStationDTO_V0_4> radioStationsDTO;
+	private List<RadioStationOutputDTO_V0_4> radioStationsDTO;
 
 	public GetStationsResponse_V0_4(APIStatus status, String message,
-			List<RadioStationDTO_V0_4> radioStationsDTO) {
+			List<RadioStationOutputDTO_V0_4> radioStationsDTO2) {
 		super(status, message);
-		setRadioStationsDTO(radioStationsDTO);
+		setRadioStationsDTO(radioStationsDTO2);
 	}
 
-	public List<RadioStationDTO_V0_4> getRadioStationsDTO() {
+	public List<RadioStationOutputDTO_V0_4> getRadioStationsDTO() {
 		return radioStationsDTO;
 	}
 
-	public void setRadioStationsDTO(List<RadioStationDTO_V0_4> radioStationsDTO) {
+	public void setRadioStationsDTO(List<RadioStationOutputDTO_V0_4> radioStationsDTO) {
 		this.radioStationsDTO = radioStationsDTO;
 	}
 

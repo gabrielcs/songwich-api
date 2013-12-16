@@ -11,19 +11,19 @@ import views.api.APIStatus;
 public class GetUsersUniqueResponse_V0_4 extends APIResponse_V0_4 {
 
 	@JsonProperty("user")
-	private DetailedUserDTO_V0_4 userStationDTO;
+	private UserOutputDTO_V0_4 userStationDTO;
 
 	public GetUsersUniqueResponse_V0_4(APIStatus status, String message,
-			DetailedUserDTO_V0_4 userStationDTO) {
+			UserOutputDTO_V0_4 userStationDTO) {
 		super(status, message);
 		setUserDTO(userStationDTO);
 	}
 
-	public DetailedUserDTO_V0_4 getUserDTO() {
+	public UserOutputDTO_V0_4 getUserDTO() {
 		return userStationDTO;
 	}
 
-	public void setUserDTO(DetailedUserDTO_V0_4 userDTO) {
+	public void setUserDTO(UserOutputDTO_V0_4 userDTO) {
 		this.userStationDTO = userDTO;
 	}
 

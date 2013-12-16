@@ -5,49 +5,58 @@ import java.util.List;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import play.data.validation.ValidationError;
-import views.api.DTOValidator;
 import views.api.DataTransferObject;
-import views.api.scrobbles.UserDTO_V0_4;
+import views.api.scrobbles.UserOutputDTO_V0_4;
 
 //@JsonInclude(Include.NON_EMPTY)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonTypeName("station")
-public class RadioStationDTO_V0_4 extends DataTransferObject {
+public class RadioStationOutputDTO_V0_4 extends DataTransferObject {
 
-	// only for output
-	private String stationId;
-
+	// from input DTO
 	private String stationName;
-
 	private String groupName;
-
 	private List<String> scrobblerIds;
-	
-	// only for output
-	private List<UserDTO_V0_4> activeScrobblers;
-
-	// only for output
-	private Long numberSubscribers;
-
-	// only for output
-	private String isActive;
-
-	// only for output
-	private String stationReadiness;
-
-	// only for output
-	private TrackDTO_V0_4 nowPlaying;
-
-	// only for output
-	private TrackDTO_V0_4 lookAhead;
-
 	private String imageUrl;
-	
 	private String description;
 
-	public RadioStationDTO_V0_4() {
-		setValidator(this.new RadioStationUpdateDTOValidator());
+	// additional elements
+	private String verified;
+
+	private String stationId;
+	private List<UserOutputDTO_V0_4> activeScrobblers;
+	private Long numberSubscribers;
+	private String active;
+	private String stationReadiness;
+	private TrackDTO_V0_4 nowPlaying;
+	private TrackDTO_V0_4 lookAhead;
+
+	public RadioStationOutputDTO_V0_4() {
+	}
+
+	public RadioStationOutputDTO_V0_4(RadioStationInputDTO_V0_4 inputDTO) {
+		setStationName(inputDTO.getStationName());
+		setGroupName(inputDTO.getGroupName());
+		setScrobblerIds(inputDTO.getScrobblerIds());
+		setImageUrl(inputDTO.getImageUrl());
+		setDescription(inputDTO.getDescription());
+	}
+
+	public RadioStationOutputDTO_V0_4(RadioStationUpdateInputDTO_V0_4 inputDTO) {
+		setStationId(inputDTO.getStationId());
+		setStationName(inputDTO.getStationName());
+		setGroupName(inputDTO.getGroupName());
+		setScrobblerIds(inputDTO.getScrobblerIds());
+		setImageUrl(inputDTO.getImageUrl());
+		setDescription(inputDTO.getDescription());
+	}
+
+	public String getVerified() {
+		return verified;
+	}
+
+	public void setVerified(String verified) {
+		this.verified = verified;
 	}
 
 	public Long getNumberSubscribers() {
@@ -57,7 +66,7 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	public void setNumberSubscribers(Long numberSubscribers) {
 		this.numberSubscribers = numberSubscribers;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -67,11 +76,11 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	}
 
 	public String getActive() {
-		return isActive;
+		return active;
 	}
 
-	public void setIsActive(String isActive) {
-		this.isActive = isActive;
+	public void setActive(String active) {
+		this.active = active;
 	}
 
 	public String getStationReadiness() {
@@ -129,12 +138,12 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 	public void setScrobblerIds(List<String> scrobblerIds) {
 		this.scrobblerIds = scrobblerIds;
 	}
-	
-	public List<UserDTO_V0_4> getActiveScrobblers() {
+
+	public List<UserOutputDTO_V0_4> getActiveScrobblers() {
 		return activeScrobblers;
 	}
 
-	public void setActiveScrobblers(List<UserDTO_V0_4> activeScrobblersDTO) {
+	public void setActiveScrobblers(List<UserOutputDTO_V0_4> activeScrobblersDTO) {
 		this.activeScrobblers = activeScrobblersDTO;
 	}
 
@@ -148,43 +157,14 @@ public class RadioStationDTO_V0_4 extends DataTransferObject {
 
 	@Override
 	public String toString() {
-		return "RadioStationDTO_V0_4 [stationId=" + stationId
-				+ ", stationName=" + stationName + ", groupName=" + groupName
-				+ ", scrobblerIds=" + scrobblerIds + ", activeScrobblers="
-				+ activeScrobblers + ", numberSubscribers=" + numberSubscribers
-				+ ", isActive=" + isActive + ", stationReadiness="
-				+ stationReadiness + ", nowPlaying=" + nowPlaying
-				+ ", lookAhead=" + lookAhead + ", imageUrl=" + imageUrl
-				+ ", description=" + description + "]";
+		return "RadioStationOutputDTO_V0_4 [stationName=" + stationName
+				+ ", groupName=" + groupName + ", scrobblerIds=" + scrobblerIds
+				+ ", imageUrl=" + imageUrl + ", description=" + description
+				+ ", verified=" + verified + ", stationId=" + stationId
+				+ ", activeScrobblers=" + activeScrobblers
+				+ ", numberSubscribers=" + numberSubscribers + ", active="
+				+ active + ", stationReadiness=" + stationReadiness
+				+ ", nowPlaying=" + nowPlaying + ", lookAhead=" + lookAhead
+				+ "]";
 	}
-
-	public class RadioStationUpdateDTOValidator extends DTOValidator {
-		@Override
-		public void addValidation() {
-			addValidation(validateStationName(), validateScrobblerIds(),
-					validateGroupName(), validateImageUrl());
-		}
-
-		private ValidationError validateStationName() {
-			return validateRequiredProperty("stationName", stationName);
-		}
-
-		private ValidationError validateScrobblerIds() {
-			return validateRequiredNonEmptyObjectIdArray("scrobblerIds",
-					"scrobblerId", scrobblerIds);
-		}
-
-		private ValidationError validateGroupName() {
-			if (scrobblerIds.size() > 1) {
-				return validateRequiredProperty("groupName", groupName);
-			} else {
-				return null;
-			}
-		}
-
-		private ValidationError validateImageUrl() {
-			return validateImageUrl("imageUrl", imageUrl);
-		}
-	}
-
 }
