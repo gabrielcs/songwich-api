@@ -43,34 +43,17 @@ public class PseudoDMCAStationStrategyTest extends WithRequestContext {
 	}
 
 	@Test
-	public void testOneRound1x10And2x6And3x4And5x2And8x1()
+	public void testTwoRounds1x10And2x6And3x4And5x2And8x1()
 			throws SongwichAPIException {
 		generateScrobbles20x1And8x2And4x3And3x6And1x12(gabriel.getId());
-		runGetNextSong(60, 1);
+		runGetNextSong(60, 2.1f);
 	}
 
-	/*
 	@Test
-	public void testTenRounds1x10And2x6And3x4And5x2And8x1()
-			throws SongwichAPIException {
-		generateScrobbles20x1And8x2And4x3And3x6And1x12(gabriel.getId());
-		runGetNextSong(60, 10);
-	}
-	*/
-
-	@Test
-	public void testOneRound21x3() throws SongwichAPIException {
+	public void testTwoRounds21x3() throws SongwichAPIException {
 		generateScrobbles(gabriel.getId(), 21, 0, 3, 0);
-		runGetNextSong(60, 1);
+		runGetNextSong(60, 2.1f);
 	}
-
-	/*
-	@Test
-	public void testTenRounds21x3() throws SongwichAPIException {
-		generateScrobbles(gabriel.getId(), 21, 0, 3, 0);
-		runGetNextSong(60, 10);
-	}
-	*/
 
 	private void generateScrobbles20x1And8x2And4x3And3x6And1x12(ObjectId userId) {
 		int registeredScrobbles = 0;

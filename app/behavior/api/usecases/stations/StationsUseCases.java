@@ -186,7 +186,7 @@ public class StationsUseCases extends UseCase {
 		if (radioStationUpdateDTO.getStationName() != null) {
 			station.setName(radioStationUpdateDTO.getStationName());
 		}
-		
+
 		saveStation(station);
 
 		return createDTOForPutStationsScrobblers(station, radioStationUpdateDTO);
@@ -277,7 +277,7 @@ public class StationsUseCases extends UseCase {
 				station.setActive(false);
 			}
 		}
-		
+
 		saveStation(station);
 
 		return createDTOForPutStationsScrobblers(station, radioStationUpdateDTO);
@@ -320,15 +320,17 @@ public class StationsUseCases extends UseCase {
 		Track nowPlayingTrack = station.getLookAhead();
 		StationHistoryEntry nowPlayingHistoryEntry = nowPlayingTrack
 				.getStationHistoryEntry();
+		// update its timestamp and save
 		nowPlayingHistoryEntry.setTimestamp(System.currentTimeMillis());
 		getStationHistoryDAO().save(nowPlayingHistoryEntry,
 				getContext().getAppDeveloper().getEmailAddress());
 		station.setNowPlaying(nowPlayingTrack);
 
-		// create and save the StationHistoryEntry for the lookAhead Track (with
-		// timestamp=null)
+		// create and save the StationHistoryEntry for the lookAhead Track
+		// we cannot have a null timestamp or the StationStrategy might repeat
+		// songs
 		StationHistoryEntry lookAheadHistoryEntry = new StationHistoryEntry(
-				station.getId(), lookAheadSong, null);
+				station.getId(), lookAheadSong, System.currentTimeMillis());
 		getStationHistoryDAO().save(lookAheadHistoryEntry,
 				getContext().getAppDeveloper().getEmailAddress());
 		station.setLookAhead(new Track(lookAheadHistoryEntry,

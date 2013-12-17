@@ -104,6 +104,26 @@ public class StationsUseCasesTest extends WithProductionDependencyInjection {
 	}
 
 	@Test
+	public void postNextSongTest() throws SongwichAPIException {
+		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
+
+		// Gabriel FM should be active
+		setRequestContextUser(gabriel);
+		RadioStationOutputDTO_V0_4 outputDTO = stationsUseCases.postStations(
+				gabrielStationDTO,
+				getInjector().getInstance(StationStrategy.class), false);
+		RadioStationUpdateInputDTO_V0_4 gabrielStationUpdateInputDTO = new RadioStationUpdateInputDTO_V0_4();
+		gabrielStationUpdateInputDTO.setStationId(outputDTO.getStationId());
+
+		for (int i = 0; i < 130; i++) {
+			outputDTO = stationsUseCases.postNextSong(
+					gabrielStationUpdateInputDTO,
+					getInjector().getInstance(StationStrategy.class));
+			System.out.println(outputDTO.getNowPlaying());
+		}
+	}
+
+	@Test
 	public void postStationsTest() throws SongwichAPIException {
 		StationsUseCases stationsUseCases = new StationsUseCases(getContext());
 		RadioStation station;
