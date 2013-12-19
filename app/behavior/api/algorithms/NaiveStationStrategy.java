@@ -77,7 +77,7 @@ public class NaiveStationStrategy extends AbstractStationStrategy implements
 		Set<ObjectId> scrobblersIds = getStation().getScrobbler()
 				.getActiveScrobblersUserIds();
 		ScrobbleDAO<ObjectId> scrobbleDao = new ScrobbleDAOMongo();
-		relevantScrobbles = scrobbleDao.findByUserIds(scrobblersIds, true);
+		relevantScrobbles = scrobbleDao.findAllByUserIds(scrobblersIds, true);
 		return relevantScrobbles;
 	}
 

@@ -44,9 +44,12 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 		// ScrobbleDAOMongo is not a CascadeSaveDAO
 		// it requires saving its references beforehand
 		CascadeSaveDAO<User, ObjectId> userDao = new UserDAOMongo();
-		userDao.cascadeSave(user1, getContext().getAppDeveloper().getEmailAddress());
-		userDao.cascadeSave(user2, getContext().getAppDeveloper().getEmailAddress());
-		userDao.cascadeSave(user3, getContext().getAppDeveloper().getEmailAddress());
+		userDao.cascadeSave(user1, getContext().getAppDeveloper()
+				.getEmailAddress());
+		userDao.cascadeSave(user2, getContext().getAppDeveloper()
+				.getEmailAddress());
+		userDao.cascadeSave(user3, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		List<String> artists1 = new ArrayList<String>();
 		artists1.add("Passion Pit");
@@ -58,30 +61,36 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 		fiveDaysAgo.add(Calendar.DATE, -5);
 		scrobble1 = new Scrobble(user1.getId(), new Song("Take a Walk",
 				artists1), fiveDaysAgo.getTimeInMillis(), false, "Spotify");
-		scrobbleDao.save(scrobble1, getContext().getAppDeveloper().getEmailAddress());
+		scrobbleDao.save(scrobble1, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		Calendar threeDaysAgo = new GregorianCalendar();
 		threeDaysAgo.add(Calendar.DATE, -3);
 		scrobble2 = new Scrobble(user2.getId(),
 				new Song("Get Lucky", artists2),
 				threeDaysAgo.getTimeInMillis(), true, "Deezer");
-		scrobbleDao.save(scrobble2, getContext().getAppDeveloper().getEmailAddress());
+		scrobbleDao.save(scrobble2, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		scrobble3 = new Scrobble(user1.getId(), new Song("Take a Walk 2",
 				artists1), System.currentTimeMillis(), true, "Spotify");
-		scrobbleDao.save(scrobble3, getContext().getAppDeveloper().getEmailAddress());
+		scrobbleDao.save(scrobble3, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		scrobble4 = new Scrobble(user2.getId(), new Song("Get Lucky 2",
 				artists2), System.currentTimeMillis(), true, "Deezer");
-		scrobbleDao.save(scrobble4, getContext().getAppDeveloper().getEmailAddress());
+		scrobbleDao.save(scrobble4, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		scrobble5 = new Scrobble(user3.getId(), new Song("Get Lucky 3",
 				artists2), System.currentTimeMillis(), true, "Deezer");
-		scrobbleDao.save(scrobble5, getContext().getAppDeveloper().getEmailAddress());
+		scrobbleDao.save(scrobble5, getContext().getAppDeveloper()
+				.getEmailAddress());
 
 		scrobble6 = new Scrobble(user1.getId(), new Song("Take a Walk 3",
 				artists1), System.currentTimeMillis(), false, "Spotify");
-		scrobbleDao.save(scrobble6, getContext().getAppDeveloper().getEmailAddress());
+		scrobbleDao.save(scrobble6, getContext().getAppDeveloper()
+				.getEmailAddress());
 	}
 
 	@Test
@@ -99,13 +108,13 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 	}
 
 	@Test
-	public void testFindByUserId() {
-		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId(),
-				false);
-		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId(),
-				false);
-		List<Scrobble> scrobblesUser3 = scrobbleDao.findByUserId(user3.getId(),
-				false);
+	public void testFindByUserIdTest() {
+		List<Scrobble> scrobblesUser1 = scrobbleDao.findAllByUserId(
+				user1.getId(), false);
+		List<Scrobble> scrobblesUser2 = scrobbleDao.findAllByUserId(
+				user2.getId(), false);
+		List<Scrobble> scrobblesUser3 = scrobbleDao.findAllByUserId(
+				user3.getId(), false);
 
 		assertEquals(scrobblesUser1.size(), 3);
 		assertEquals(scrobblesUser2.size(), 2);
@@ -122,32 +131,74 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 	}
 
 	@Test
-	public void chosenByUserOnly() {
-		List<Scrobble> scrobblesUser1 = scrobbleDao.findByUserId(user1.getId(),
-				true);
+	public void testChosenByUserOnly() {
+		List<Scrobble> scrobblesUser1 = scrobbleDao.findAllByUserId(
+				user1.getId(), true);
 		assertEquals(scrobblesUser1.size(), 1);
 		assertTrue(scrobblesUser1.contains(scrobble3));
-		
-		List<Scrobble> scrobblesUser2 = scrobbleDao.findByUserId(user2.getId(),
-				true);
+
+		List<Scrobble> scrobblesUser2 = scrobbleDao.findAllByUserId(
+				user2.getId(), true);
 		assertEquals(scrobblesUser2.size(), 2);
 		assertTrue(scrobblesUser2.contains(scrobble2));
 		assertTrue(scrobblesUser2.contains(scrobble4));
-		
-		List<Scrobble> scrobblesUser3 = scrobbleDao.findByUserId(user3.getId(),
-				true);
+
+		List<Scrobble> scrobblesUser3 = scrobbleDao.findAllByUserId(
+				user3.getId(), true);
 		assertEquals(scrobblesUser3.size(), 1);
 		assertTrue(scrobblesUser3.contains(scrobble5));
 	}
 
 	@Test
-	public void testFindLastScrobblesByUserId() {
-		List<Scrobble> scrobblesUser1 = scrobbleDao.findLastScrobblesByUserId(
-				user1.getId(), 2, false);
+	public void testFindLatestScrobblesByUserId() {
+		List<Scrobble> scrobblesUser1 = scrobbleDao
+				.findLatestScrobblesByUserId(user1.getId(), 2, false);
 
 		assertEquals(scrobblesUser1.size(), 2);
 		assertTrue(scrobblesUser1.iterator().next().equals(scrobble6));
 		assertTrue(scrobblesUser1.contains(scrobble3));
+	}
+
+	@Test
+	public void testFindNewerScrobblesByUserId() {
+		List<Scrobble> newerScrobblesUser1 = scrobbleDao
+				.findScrobblesByUserIdSince(user1.getId(),
+						scrobble1.getTimestamp(), 30, false);
+
+		assertEquals(newerScrobblesUser1.size(), 2);
+		assertTrue(newerScrobblesUser1.iterator().next().equals(scrobble6));
+		assertTrue(newerScrobblesUser1.contains(scrobble3));
+	}
+
+	@Test
+	public void testFindNewerScrobblesByUserIdChosenByUserOnly() {
+		List<Scrobble> newerScrobblesUser1 = scrobbleDao
+				.findScrobblesByUserIdSince(user1.getId(),
+						scrobble1.getTimestamp(), 30, true);
+
+		assertEquals(newerScrobblesUser1.size(), 1);
+		assertTrue(newerScrobblesUser1.contains(scrobble3));
+	}
+
+	@Test
+	public void testFindOlderScrobblesByUserId() {
+		List<Scrobble> olderScrobblesUser1 = scrobbleDao
+				.findScrobblesByUserIdUntil(user1.getId(),
+						scrobble6.getTimestamp(), 30, false);
+
+		assertEquals(olderScrobblesUser1.size(), 2);
+		assertTrue(olderScrobblesUser1.iterator().next().equals(scrobble3));
+		assertTrue(olderScrobblesUser1.contains(scrobble1));
+	}
+
+	@Test
+	public void testFindOlderScrobblesByUserIdChosenByUserOnly() {
+		List<Scrobble> olderScrobblesUser1 = scrobbleDao
+				.findScrobblesByUserIdUntil(user1.getId(),
+						scrobble6.getTimestamp(), 30, true);
+
+		assertEquals(olderScrobblesUser1.size(), 1);
+		assertTrue(olderScrobblesUser1.contains(scrobble3));
 	}
 
 	@Test
@@ -156,7 +207,7 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 		userIds.add(user1.getId());
 		userIds.add(user2.getId());
 		List<Scrobble> scrobblesUser1User2 = scrobbleDao
-				.findLastScrobblesByUserIds(userIds, 3, false);
+				.findLatestScrobblesByUserIds(userIds, 3, false);
 
 		assertEquals(scrobblesUser1User2.size(), 3);
 		assertTrue(scrobblesUser1User2.iterator().next().equals(scrobble6));
@@ -169,7 +220,7 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 		Set<ObjectId> userIds = new HashSet<ObjectId>();
 		userIds.add(user1.getId());
 		userIds.add(user2.getId());
-		List<Scrobble> scrobbles = scrobbleDao.findByUserIds(userIds, false);
+		List<Scrobble> scrobbles = scrobbleDao.findAllByUserIds(userIds, false);
 
 		assertEquals(scrobbles.size(), 5);
 		assertTrue(scrobbles.contains(scrobble1));

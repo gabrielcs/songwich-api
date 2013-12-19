@@ -10,14 +10,27 @@ public interface ScrobbleDAO<I> extends SongwichDAO<Scrobble, I> {
 
 	public Scrobble findById(I id);
 
-	public List<Scrobble> findByUserId(I userId, boolean chosenByUserOnly);
+	// pagination
 
-	public List<Scrobble> findByUserIds(Set<I> userIds, boolean chosenByUserOnly);
-
-	public List<Scrobble> findLastScrobblesByUserId(I userId, int results,
+	public List<Scrobble> findLatestScrobblesByUserId(I userId, int results,
 			boolean chosenByUserOnly);
 
-	public List<Scrobble> findLastScrobblesByUserIds(Set<I> userIds,
+	public List<Scrobble> findScrobblesByUserIdSince(I userId, long since,
+			int results, boolean chosenByUserOnly);
+
+	public List<Scrobble> findScrobblesByUserIdUntil(I userId, long until,
+			int results, boolean chosenByUserOnly);
+
+	// no pagination
+
+	public List<Scrobble> findAllByUserId(I userId, boolean chosenByUserOnly);
+
+	public List<Scrobble> findAllByUserIds(Set<I> userIds,
+			boolean chosenByUserOnly);
+
+	// additional methods
+
+	public List<Scrobble> findLatestScrobblesByUserIds(Set<I> userIds,
 			int results, boolean chosenByUserOnly);
 
 	public List<Scrobble> findByUserIdWithDaysOffset(I userId, int daysOffset,

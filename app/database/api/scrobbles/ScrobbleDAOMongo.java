@@ -28,31 +28,58 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return ds.find(Scrobble.class).filter("id", id).get();
 	}
 
+	// pagination
+
 	@Override
-	public List<Scrobble> findByUserId(ObjectId userId, boolean chosenByUserOnly) {
+	public List<Scrobble> findLatestScrobblesByUserId(ObjectId userId,
+			int results, boolean chosenByUserOnly) {
+
+		Query<Scrobble> query = queryByUserId(userId);
+		filterChosenByUserOnly(query, chosenByUserOnly);
+		return order(query).limit(results).asList();
+	}
+
+	@Override
+	public List<Scrobble> findScrobblesByUserIdSince(ObjectId userId,
+			long since, int results, boolean chosenByUserOnly) {
+
+		Query<Scrobble> query = queryByUserId(userId);
+		filterTimestampSince(query, since);
+		filterChosenByUserOnly(query, chosenByUserOnly);
+		return order(query).limit(results).asList();
+	}
+
+	@Override
+	public List<Scrobble> findScrobblesByUserIdUntil(ObjectId userId,
+			long until, int results, boolean chosenByUserOnly) {
+		Query<Scrobble> query = queryByUserId(userId);
+		filterTimestampUntil(query, until);
+		filterChosenByUserOnly(query, chosenByUserOnly);
+		return order(query).limit(results).asList();
+	}
+
+	// no pagination
+
+	@Override
+	public List<Scrobble> findAllByUserId(ObjectId userId,
+			boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserId(userId);
 		filterChosenByUserOnly(query, chosenByUserOnly);
 		return order(query).asList();
 	}
 
 	@Override
-	public List<Scrobble> findByUserIds(Set<ObjectId> userIds,
+	public List<Scrobble> findAllByUserIds(Set<ObjectId> userIds,
 			boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserIds(userIds);
 		filterChosenByUserOnly(query, chosenByUserOnly);
 		return order(query).asList();
 	}
 
+	// additional methods
+
 	@Override
-	public List<Scrobble> findLastScrobblesByUserId(ObjectId userId,
-			int results, boolean chosenByUserOnly) {
-		Query<Scrobble> query = queryByUserId(userId);
-		filterChosenByUserOnly(query, chosenByUserOnly);
-		return order(query).limit(results).asList();
-	}
-	
-	@Override
-	public List<Scrobble> findLastScrobblesByUserIds(Set<ObjectId> userIds,
+	public List<Scrobble> findLatestScrobblesByUserIds(Set<ObjectId> userIds,
 			int results, boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserIds(userIds);
 		filterChosenByUserOnly(query, chosenByUserOnly);
@@ -97,12 +124,14 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).limit(results).asList();
 	}
 
+	// private queries, filters and sorters
+
 	private Query<Scrobble> queryByUserId(ObjectId userId) {
 		return ds.find(Scrobble.class).filter("userId", userId);
 	}
 
 	private Query<Scrobble> queryByUserIds(Set<ObjectId> userIds) {
-		//return ds.find(Scrobble.class).filter("userId in", userIds);
+		// return ds.find(Scrobble.class).filter("userId in", userIds);
 		return ds.find(Scrobble.class).field("userId").hasAnyOf(userIds);
 	}
 
@@ -112,6 +141,14 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 			return query;
 		}
 		return query.filter("chosenByUser", true);
+	}
+
+	private Query<Scrobble> filterTimestampUntil(Query<Scrobble> query, long until) {
+		return query.field("timestamp").lessThan(until);
+	}
+
+	private Query<Scrobble> filterTimestampSince(Query<Scrobble> query, long since) {
+		return query.field("timestamp").greaterThan(since);
 	}
 
 	/*
@@ -130,7 +167,7 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		long daysOffsetMillis = calendar.getTimeInMillis();
-		//return query.filter("timestamp >", daysOffsetMillis);
+		// return query.filter("timestamp >", daysOffsetMillis);
 		return query.field("timestamp").greaterThan(daysOffsetMillis);
 	}
 }

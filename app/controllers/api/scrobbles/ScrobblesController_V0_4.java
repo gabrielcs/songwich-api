@@ -3,6 +3,7 @@ package controllers.api.scrobbles;
 import java.util.List;
 
 import play.data.Form;
+import play.libs.F.Option;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -128,29 +129,32 @@ public class ScrobblesController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
-	public static Result getScrobbles(String userId, int daysOffset,
-			int results, boolean chosenByUserOnly) {
-		
+	public static Result getScrobbles(String userId, Option<Integer> results,
+			Option<Long> since, Option<Long> until, boolean chosenByUserOnly) {
+
+		final int MAX_RESULTS = 100;
+
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());
 		List<ScrobblesDTO_V0_4> scrobbleDTOs;
 		try {
-			if (daysOffset < 0) {
-				if (results < 0) {
-					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
-							chosenByUserOnly);
-				} else {
-					scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
-							results, chosenByUserOnly);
-				}
+			if (since.isDefined() && until.isDefined()) {
+				throw new SongwichAPIException(
+						"Cannot define both 'since' and 'until'",
+						APIStatus_V0_4.INVALID_PARAMETER);
+			}
+
+			if (since.isDefined()) {
+				scrobbleDTOs = scrobblesUseCases.getScrobblesSince(userId,
+						since.get(), results.getOrElse(MAX_RESULTS),
+						chosenByUserOnly);
+			} else if (until.isDefined()) {
+				scrobbleDTOs = scrobblesUseCases.getScrobblesUntil(userId,
+						until.get(), results.getOrElse(MAX_RESULTS),
+						chosenByUserOnly);
 			} else {
-				if (results < 0) {
-					scrobbleDTOs = scrobblesUseCases.getScrobblesDaysOffset(
-							userId, daysOffset, chosenByUserOnly);
-				} else {
-					scrobbleDTOs = scrobblesUseCases.getScrobblesDaysOffset(
-							userId, daysOffset, results, chosenByUserOnly);
-				}
+				scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
+						results.getOrElse(MAX_RESULTS), chosenByUserOnly);
 			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user

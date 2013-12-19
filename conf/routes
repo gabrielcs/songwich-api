@@ -3,43 +3,43 @@
 # ~~~~
 
 # Untrail GET URLs (http://stackoverflow.com/questions/13189095/play-framework2-remove-trailing-slash-from-urls)
-GET     /*path/                                           controllers.web.Application.untrail(path)
+GET       /*path/                                           controllers.web.Application.untrail(path)
 # Authorize custom headers (http://daniel.reuterwall.com/blog/2013/04/15/play-with-cors)
-OPTIONS /*path                                            controllers.api.auth.CorsController.allowCustomHeaders(path)
+OPTIONS   /*path                                            controllers.api.auth.CorsController.allowCustomHeaders(path)
 
 # Scrobbles API
-POST    /v0.4/scrobbles                                   controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()
-GET     /v0.4/scrobbles/:userId                           controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(userId, daysOffset: Int ?= -1, results: Int ?= -1, chosenByUserOnly: Boolean ?= false)
-PUT     /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobbles.ScrobblesController_V0_4.putScrobbles(scrobbleId)
-DELETE  /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobbles.ScrobblesController_V0_4.deleteScrobbles(scrobbleId)
+POST      /v0.4/scrobbles                                   controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()
+GET       /v0.4/scrobbles/:userId                           controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(userId, results: play.libs.F.Option[Integer], since: play.libs.F.Option[java.lang.Long], until: play.libs.F.Option[java.lang.Long], chosenByUserOnly: Boolean ?= false)
+PUT       /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobbles.ScrobblesController_V0_4.putScrobbles(scrobbleId)
+DELETE    /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobbles.ScrobblesController_V0_4.deleteScrobbles(scrobbleId)
 
 # Users API (@ indicates dependency injection)
-POST    /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.postUsers()
-GET     /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null, userEmail ?= null)
-PUT     /v0.4/users/:userId                               controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
-PUT     /v0.4/users/:userId/markAsVerified                controllers.api.scrobbles.UsersController_V0_4.putUsersMarkAsVerified(userId)
-PUT     /v0.4/users/:userId/deactivate                    @controllers.api.scrobbles.UsersController_V0_4.putUsersDeactivate(userId)
+POST      /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.postUsers()
+GET       /v0.4/users                                       controllers.api.scrobbles.UsersController_V0_4.getUsers(userId ?= null, userEmail ?= null)
+PUT       /v0.4/users/:userId                               controllers.api.scrobbles.UsersController_V0_4.putUsers(userId)
+PUT       /v0.4/users/:userId/markAsVerified                controllers.api.scrobbles.UsersController_V0_4.putUsersMarkAsVerified(userId)
+PUT       /v0.4/users/:userId/deactivate                    @controllers.api.scrobbles.UsersController_V0_4.putUsersDeactivate(userId)
 
 # Stations API (@ indicates dependency injection)
-POST    /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.postStations(subscribeScrobblers: Boolean ?= false)
-GET     /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null, onlyActiveStations: Boolean ?= false, includeScrobblersData: Boolean ?= false)
-PUT     /v0.4/stations/:stationId                         @controllers.api.stations.StationsController_V0_4.putStations(stationId)
-PUT     /v0.4/stations/:stationId/markAsVerified          controllers.api.stations.StationsController_V0_4.putStationsMarkAsVerified(stationId)
-PUT     /v0.4/stations/:stationId/addScrobblers           @controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId, subscribeScrobblers: Boolean ?= false)
-PUT     /v0.4/stations/:stationId/removeScrobblers        @controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)
-POST    /v0.4/nextSong	                                  @controllers.api.stations.StationsController_V0_4.postNextSong()
-PUT     /v0.4/stations/:stationId/deactivate              @controllers.api.stations.StationsController_V0_4.putStationsDeactivate(stationId)
+POST      /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.postStations(subscribeScrobblers: Boolean ?= false)
+GET       /v0.4/stations                                    @controllers.api.stations.StationsController_V0_4.getStations(stationId ?= null, onlyActiveStations: Boolean ?= false, includeScrobblersData: Boolean ?= false)
+PUT       /v0.4/stations/:stationId                         @controllers.api.stations.StationsController_V0_4.putStations(stationId)
+PUT       /v0.4/stations/:stationId/markAsVerified          controllers.api.stations.StationsController_V0_4.putStationsMarkAsVerified(stationId)
+PUT       /v0.4/stations/:stationId/addScrobblers           @controllers.api.stations.StationsController_V0_4.putStationsAddScrobblers(stationId, subscribeScrobblers: Boolean ?= false)
+PUT       /v0.4/stations/:stationId/removeScrobblers        @controllers.api.stations.StationsController_V0_4.putStationsRemoveScrobblers(stationId)
+POST      /v0.4/nextSong                                    @controllers.api.stations.StationsController_V0_4.postNextSong()
+PUT       /v0.4/stations/:stationId/deactivate              @controllers.api.stations.StationsController_V0_4.putStationsDeactivate(stationId)
 
 # Feedback API
-POST    /v0.4/songFeedback                                controllers.api.stations.SongFeedbackController_V0_4.postSongFeedback()
-GET     /v0.4/starredSongs/:userId                        controllers.api.stations.SongFeedbackController_V0_4.getStarredSongs(userId)
-DELETE  /v0.4/songFeedback/:idForFeedback/:feedbackType   controllers.api.stations.SongFeedbackController_V0_4.deleteSongFeedback(idForFeedback, feedbackType)
-GET     /v0.4/isSongStarred/:userId                       controllers.api.stations.SongFeedbackController_V0_4.getIsSongStarred(userId, songTitle, artistsNames, albumTitle ?= null)
+POST      /v0.4/songFeedback                                controllers.api.stations.SongFeedbackController_V0_4.postSongFeedback()
+GET       /v0.4/starredSongs/:userId                        controllers.api.stations.SongFeedbackController_V0_4.getStarredSongs(userId)
+DELETE    /v0.4/songFeedback/:idForFeedback/:feedbackType   controllers.api.stations.SongFeedbackController_V0_4.deleteSongFeedback(idForFeedback, feedbackType)
+GET       /v0.4/isSongStarred/:userId                       controllers.api.stations.SongFeedbackController_V0_4.getIsSongStarred(userId, songTitle, artistsNames, albumTitle ?= null)
 
 # Subscriptions API
-POST /v0.4/subscriptions                                  controllers.api.subscriptions.SubscriptionsController_V0_4.postSubscriptions()
-GET  /v0.4/subscriptions/:userId                          controllers.api.subscriptions.SubscriptionsController_V0_4.getSubscriptions(userId)
-PUT  /v0.4/subscriptions/:subscriptionId/end              controllers.api.subscriptions.SubscriptionsController_V0_4.putEndSubscription(subscriptionId)
+POST      /v0.4/subscriptions                               controllers.api.subscriptions.SubscriptionsController_V0_4.postSubscriptions()
+GET       /v0.4/subscriptions/:userId                       controllers.api.subscriptions.SubscriptionsController_V0_4.getSubscriptions(userId)
+PUT       /v0.4/subscriptions/:subscriptionId/end           controllers.api.subscriptions.SubscriptionsController_V0_4.putEndSubscription(subscriptionId)
 
 # Database Fixes
 #POST    /fixScrobbles                                     controllers.api.scrobbles.ScrobblesController_V0_4.postFixScrobbles()
@@ -51,11 +51,11 @@ PUT  /v0.4/subscriptions/:subscriptionId/end              controllers.api.subscr
 #POST    /fixReactivateStation                             controllers.api.scrobbles.UsersController_V0_4.postFixReactivateStation()
 
 # Web App
-GET     /dev                                              controllers.web.Application.index()
-POST    /postAppDeveloper                                 controllers.web.AppDevelopersController.postAppDevelopers()
+GET       /dev                                              controllers.web.Application.index()
+POST      /postAppDeveloper                                 controllers.web.AppDevelopersController.postAppDevelopers()
 
 # Javascript routes
-GET     /assets/javascripts/routes                        controllers.web.Application.javascriptRoutes()
+GET       /assets/javascripts/routes                        controllers.web.Application.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                                     controllers.Assets.at(path="/public", file)
+GET       /assets/*file                                     controllers.Assets.at(path="/public", file)

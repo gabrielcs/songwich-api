@@ -74,7 +74,7 @@ public class PseudoDMCAStationStrategy extends AbstractStationStrategy
 			return relevantScrobbles;
 		}
 		ScrobbleDAO<ObjectId> scrobbleDAO = new ScrobbleDAOMongo();
-		return scrobbleDAO.findByUserIds(getActiveScrobblers(), true);
+		return scrobbleDAO.findAllByUserIds(getActiveScrobblers(), true);
 	}
 
 	@Override

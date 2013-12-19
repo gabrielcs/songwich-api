@@ -9,8 +9,8 @@ import views.api.DataTransferObject;
 import views.api.stations.RadioStationOutputDTO_V0_4;
 import views.api.subscriptions.SubscriptionDTO_V0_4;
 
-//@JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+//@JsonInclude(Include.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonTypeName("user")
 public class UserOutputDTO_V0_4 extends DataTransferObject {
 

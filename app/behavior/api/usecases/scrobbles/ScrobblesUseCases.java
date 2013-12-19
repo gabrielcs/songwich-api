@@ -45,38 +45,33 @@ public class ScrobblesUseCases extends UseCase {
 		scrobbleDTO.setScrobbleId(scrobble.getId().toString());
 	}
 
-	public List<ScrobblesDTO_V0_4> getScrobbles(String userId,
-			boolean chosenByUserOnly) throws SongwichAPIException {
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = getScrobbleDAO().findByUserId(userIdObject,
-				chosenByUserOnly);
-		return createGetScrobblesResponse(scrobbles);
-	}
-
 	public List<ScrobblesDTO_V0_4> getScrobbles(String userId, int results,
 			boolean chosenByUserOnly) throws SongwichAPIException {
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = getScrobbleDAO().findLastScrobblesByUserId(
-				userIdObject, results, chosenByUserOnly);
-		return createGetScrobblesResponse(scrobbles);
-	}
 
-	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
-			int daysOffset, boolean chosenByUserOnly)
-			throws SongwichAPIException {
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
-		List<Scrobble> scrobbles = getScrobbleDAO().findByUserIdWithDaysOffset(
-				userIdObject, daysOffset, chosenByUserOnly);
-		return createGetScrobblesResponse(scrobbles);
-	}
-
-	public List<ScrobblesDTO_V0_4> getScrobblesDaysOffset(String userId,
-			int daysOffset, int results, boolean chosenByUserOnly)
-			throws SongwichAPIException {
 		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
 		List<Scrobble> scrobbles = getScrobbleDAO()
-				.findLastScrobblesByUserIdWithDaysOffset(userIdObject,
-						daysOffset, results, chosenByUserOnly);
+				.findLatestScrobblesByUserId(userIdObject, results,
+						chosenByUserOnly);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	public List<ScrobblesDTO_V0_4> getScrobblesSince(String userId, Long since,
+			Integer results, boolean chosenByUserOnly)
+			throws SongwichAPIException {
+
+		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdSince(
+				userIdObject, since, results, chosenByUserOnly);
+		return createGetScrobblesResponse(scrobbles);
+	}
+
+	public List<ScrobblesDTO_V0_4> getScrobblesUntil(String userId, Long until,
+			Integer results, boolean chosenByUserOnly)
+			throws SongwichAPIException {
+
+		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
+		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdUntil(
+				userIdObject, until, results, chosenByUserOnly);
 		return createGetScrobblesResponse(scrobbles);
 	}
 
