@@ -1,5 +1,6 @@
 package views.api.scrobbles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -21,9 +22,9 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 	private String imageUrl;
 
 	private String shortBio;
-	
+
 	private String userId;
-	
+
 	private String verified;
 
 	private String userAuthToken;
@@ -33,22 +34,33 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 	private List<SubscriptionDTO_V0_4> activeStationSubscriptions;
 
 	public UserOutputDTO_V0_4() {
+		// make sure they're not null
+		setScrobblerStations(new ArrayList<RadioStationOutputDTO_V0_4>(1));
+		setActiveStationSubscriptions(new ArrayList<SubscriptionDTO_V0_4>(1));
 	}
-	
+
 	public UserOutputDTO_V0_4(UserInputDTO_V0_4 userInputDTO) {
 		setUserEmail(userInputDTO.getUserEmail());
 		setName(userInputDTO.getName());
 		setImageUrl(userInputDTO.getImageUrl());
 		setShortBio(userInputDTO.getShortBio());
+
+		// make sure they're not null
+		setScrobblerStations(new ArrayList<RadioStationOutputDTO_V0_4>(1));
+		setActiveStationSubscriptions(new ArrayList<SubscriptionDTO_V0_4>(1));
 	}
-	
+
 	public UserOutputDTO_V0_4(UserUpdateInputDTO_V0_4 userUpdateInputDTO) {
 		setUserEmail(userUpdateInputDTO.getUserEmail());
 		setName(userUpdateInputDTO.getName());
 		setImageUrl(userUpdateInputDTO.getImageUrl());
 		setShortBio(userUpdateInputDTO.getShortBio());
+
+		// make sure they're not null
+		setScrobblerStations(new ArrayList<RadioStationOutputDTO_V0_4>(1));
+		setActiveStationSubscriptions(new ArrayList<SubscriptionDTO_V0_4>(1));
 	}
-	
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -95,8 +107,8 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 	/** Empty lists will be included in the output JSON */
 	public void setScrobblerStations(
 			List<RadioStationOutputDTO_V0_4> scrobblerStationsDTO) {
-		
-		if (!scrobblerStationsDTO.isEmpty()) {
+
+		if (scrobblerStationsDTO != null) {
 			this.scrobblerStations = scrobblerStationsDTO;
 		}
 	}
@@ -104,7 +116,10 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 	/** Empty lists will be included in the output JSON */
 	public void setActiveStationSubscriptions(
 			List<SubscriptionDTO_V0_4> activeStationSubscriptions) {
-		this.activeStationSubscriptions = activeStationSubscriptions;
+
+		if (activeStationSubscriptions != null) {
+			this.activeStationSubscriptions = activeStationSubscriptions;
+		}
 	}
 
 	public List<SubscriptionDTO_V0_4> getActiveStationSubscriptions() {
@@ -133,7 +148,7 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	public String getVerified() {
 		return verified;
 	}
