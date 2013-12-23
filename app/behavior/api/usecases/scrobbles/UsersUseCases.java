@@ -369,11 +369,11 @@ public class UsersUseCases extends UseCase {
 		userDTO.setShortBio(user.getShortBio());
 		userDTO.setVerified(user.isVerified().toString());
 
-		if (scrobblerStations != null && !scrobblerStations.isEmpty()) {
-			List<RadioStationOutputDTO_V0_4> scrobblerStationsDTO = StationsUseCases
-					.createDTOForGetMultipleStations(scrobblerStations);
-			userDTO.setScrobblerStations(scrobblerStationsDTO);
-		}
+		List<RadioStationOutputDTO_V0_4> scrobblerStationsDTO = StationsUseCases
+				.createDTOForGetMultipleStations(scrobblerStations);
+		// make sure activeStationSubscriptions is never null or there might be
+		// a bug on the front-end
+		userDTO.setScrobblerStations(scrobblerStationsDTO);
 
 		Map<Subscription, RadioStation> subscriptionStationMap = new HashMap<Subscription, RadioStation>(
 				subscriptions.size());

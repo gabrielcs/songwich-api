@@ -619,6 +619,11 @@ public class StationsUseCases extends UseCase {
 	public static List<RadioStationOutputDTO_V0_4> createDTOForGetMultipleStations(
 			Collection<RadioStation> scrobblerStations) {
 
+		// defend from null parameters and never return a null list
+		if (scrobblerStations == null) {
+			return new ArrayList<RadioStationOutputDTO_V0_4>(0);
+		}
+		
 		List<RadioStationOutputDTO_V0_4> stationsDTO = new ArrayList<RadioStationOutputDTO_V0_4>(
 				scrobblerStations.size());
 		RadioStationOutputDTO_V0_4 stationDTO;
