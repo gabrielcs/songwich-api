@@ -619,7 +619,8 @@ public class StationsUseCases extends UseCase {
 	public static List<RadioStationOutputDTO_V0_4> createDTOForGetMultipleStations(
 			Collection<RadioStation> scrobblerStations) {
 
-		List<RadioStationOutputDTO_V0_4> stationsDTO = new ArrayList<RadioStationOutputDTO_V0_4>();
+		List<RadioStationOutputDTO_V0_4> stationsDTO = new ArrayList<RadioStationOutputDTO_V0_4>(
+				scrobblerStations.size());
 		RadioStationOutputDTO_V0_4 stationDTO;
 		for (RadioStation station : scrobblerStations) {
 			stationDTO = createBasicDTOForStations(station);

@@ -375,21 +375,21 @@ public class UsersUseCases extends UseCase {
 			userDTO.setScrobblerStations(scrobblerStationsDTO);
 		}
 
-		if (subscriptions != null && !subscriptions.isEmpty()) {
-			Map<Subscription, RadioStation> subscriptionStationMap = new HashMap<Subscription, RadioStation>(
-					subscriptions.size());
+		Map<Subscription, RadioStation> subscriptionStationMap = new HashMap<Subscription, RadioStation>(
+				subscriptions.size());
+		if (subscriptions != null) {
 			RadioStation station;
 			for (Subscription subscription : subscriptions) {
 				station = getRadioStationDAO().findById(
 						subscription.getStationId());
 				subscriptionStationMap.put(subscription, station);
 			}
-
-			List<SubscriptionDTO_V0_4> subscriptionsDTO = SubscriptionsUseCases
-					.createDTOForGetSubscriptions(subscriptionStationMap, false);
-
-			userDTO.setActiveStationSubscriptions(subscriptionsDTO);
 		}
+		List<SubscriptionDTO_V0_4> subscriptionsDTO = SubscriptionsUseCases
+				.createDTOForGetSubscriptions(subscriptionStationMap, false);
+		// make sure activeStationSubscriptions is never null or there might be
+		// a bug on the front-end
+		userDTO.setActiveStationSubscriptions(subscriptionsDTO);
 
 		return userDTO;
 	}

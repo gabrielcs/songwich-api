@@ -1,6 +1,5 @@
 package views.api.scrobbles;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonTypeName;
@@ -34,9 +33,6 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 	private List<SubscriptionDTO_V0_4> activeStationSubscriptions;
 
 	public UserOutputDTO_V0_4() {
-		// make sure they're not null
-		setScrobblerStations(new ArrayList<RadioStationOutputDTO_V0_4>(1));
-		setActiveStationSubscriptions(new ArrayList<SubscriptionDTO_V0_4>(1));
 	}
 
 	public UserOutputDTO_V0_4(UserInputDTO_V0_4 userInputDTO) {
@@ -44,10 +40,6 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 		setName(userInputDTO.getName());
 		setImageUrl(userInputDTO.getImageUrl());
 		setShortBio(userInputDTO.getShortBio());
-
-		// make sure they're not null
-		setScrobblerStations(new ArrayList<RadioStationOutputDTO_V0_4>(1));
-		setActiveStationSubscriptions(new ArrayList<SubscriptionDTO_V0_4>(1));
 	}
 
 	public UserOutputDTO_V0_4(UserUpdateInputDTO_V0_4 userUpdateInputDTO) {
@@ -55,10 +47,6 @@ public class UserOutputDTO_V0_4 extends DataTransferObject {
 		setName(userUpdateInputDTO.getName());
 		setImageUrl(userUpdateInputDTO.getImageUrl());
 		setShortBio(userUpdateInputDTO.getShortBio());
-
-		// make sure they're not null
-		setScrobblerStations(new ArrayList<RadioStationOutputDTO_V0_4>(1));
-		setActiveStationSubscriptions(new ArrayList<SubscriptionDTO_V0_4>(1));
 	}
 
 	public String getImageUrl() {
