@@ -2,8 +2,10 @@ package behavior.api.usecases.stations;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import models.api.scrobbles.Song;
@@ -48,7 +50,16 @@ public class StationsUseCases extends UseCase {
 			stations = getRadioStationDAO().find().asList();
 		}
 
-		return createDTOForGetMultipleStations(stations);
+		Map<RadioStation, Long> stationsNumberSubscribersMap = new HashMap<RadioStation, Long>(
+				stations.size());
+		long numberSubscribers;
+		for (RadioStation station : stations) {
+			numberSubscribers = getSubscriptionDAO().countByStationId(
+					station.getId());
+			stationsNumberSubscribersMap.put(station, numberSubscribers);
+		}
+
+		return createDTOForGetMultipleStationsWithNumberSubscribers(stationsNumberSubscribersMap);
 	}
 
 	public RadioStationOutputDTO_V0_4 getStations(String stationId,
@@ -591,7 +602,7 @@ public class StationsUseCases extends UseCase {
 		updateStationDTOWithReadinessOrSongs(station, stationReadiness,
 				stationDTO);
 
-		if (numberSubscribers > 0) {
+		if (numberSubscribers >= 0) {
 			stationDTO.setNumberSubscribers(numberSubscribers);
 		}
 
@@ -623,13 +634,34 @@ public class StationsUseCases extends UseCase {
 		if (scrobblerStations == null) {
 			return new ArrayList<RadioStationOutputDTO_V0_4>(0);
 		}
-		
+
 		List<RadioStationOutputDTO_V0_4> stationsDTO = new ArrayList<RadioStationOutputDTO_V0_4>(
 				scrobblerStations.size());
 		RadioStationOutputDTO_V0_4 stationDTO;
 		for (RadioStation station : scrobblerStations) {
 			stationDTO = createBasicDTOForStations(station);
 			stationDTO.setActive(station.isActive().toString());
+			stationsDTO.add(stationDTO);
+		}
+		return stationsDTO;
+	}
+
+	private List<RadioStationOutputDTO_V0_4> createDTOForGetMultipleStationsWithNumberSubscribers(
+			Map<RadioStation, Long> stationsNumberSubscribersMap) {
+
+		// defend from null parameters and never return a null list
+		if (stationsNumberSubscribersMap == null) {
+			return new ArrayList<RadioStationOutputDTO_V0_4>(0);
+		}
+
+		List<RadioStationOutputDTO_V0_4> stationsDTO = new ArrayList<RadioStationOutputDTO_V0_4>(
+				stationsNumberSubscribersMap.size());
+		RadioStationOutputDTO_V0_4 stationDTO;
+		for (RadioStation station : stationsNumberSubscribersMap.keySet()) {
+			stationDTO = createBasicDTOForStations(station);
+			stationDTO.setActive(station.isActive().toString());
+			stationDTO.setNumberSubscribers(stationsNumberSubscribersMap
+					.get(station));
 			stationsDTO.add(stationDTO);
 		}
 		return stationsDTO;
