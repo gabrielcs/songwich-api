@@ -7,11 +7,14 @@ import models.api.scrobbles.Scrobble;
 import models.api.scrobbles.Song;
 import models.api.scrobbles.User;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
+import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
@@ -45,34 +48,80 @@ public class ScrobblesUseCases extends UseCase {
 		scrobbleDTO.setScrobbleId(scrobble.getId().toString());
 	}
 
-	public List<ScrobblesDTO_V0_4> getScrobbles(String userId, int results,
-			boolean chosenByUserOnly) throws SongwichAPIException {
+	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobbles(
+			String hostUrl, String userId, Integer results,
+			Boolean chosenByUserOnly, Long requestTimestamp)
+			throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
+		ObjectId userIdObject = authorizeUserGetScrobbles(results, userId);
 		List<Scrobble> scrobbles = getScrobbleDAO()
 				.findLatestScrobblesByUserId(userIdObject, results,
 						chosenByUserOnly);
-		return createGetScrobblesResponse(scrobbles);
+		Long since, until;
+		if (scrobbles != null && !scrobbles.isEmpty()) {
+			since = scrobbles.get(scrobbles.size() - 1).getTimestamp();
+			until = scrobbles.get(0).getTimestamp();
+		} else {
+			since = until = requestTimestamp;
+		}
+
+		ScrobblesPagingDTO_V0_4 paginationDTO = new ScrobblesPagingDTO_V0_4(
+				hostUrl, userId, since, until, results, chosenByUserOnly);
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
+				createGetScrobblesResponse(scrobbles), paginationDTO);
+		return resultPair;
 	}
 
-	public List<ScrobblesDTO_V0_4> getScrobblesSince(String userId, Long since,
-			Integer results, boolean chosenByUserOnly)
-			throws SongwichAPIException {
+	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobblesSince(
+			String hostUrl, String userId, Long since, Integer results,
+			boolean chosenByUserOnly) throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
+		ObjectId userIdObject = authorizeUserGetScrobbles(results, userId);
 		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdSince(
 				userIdObject, since, results, chosenByUserOnly);
-		return createGetScrobblesResponse(scrobbles);
+
+		Long until;
+		if (scrobbles != null && !scrobbles.isEmpty()) {
+			since = scrobbles.get(scrobbles.size() - 1).getTimestamp();
+			until = scrobbles.get(0).getTimestamp();
+		} else {
+			until = since;
+			// make sure we include the last scrobble in an older scrobbles page
+			since++;
+		}
+
+		ScrobblesPagingDTO_V0_4 paginationDTO = new ScrobblesPagingDTO_V0_4(
+				hostUrl, userId, since, until, results, chosenByUserOnly);
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
+				createGetScrobblesResponse(scrobbles), paginationDTO);
+
+		return resultPair;
 	}
 
-	public List<ScrobblesDTO_V0_4> getScrobblesUntil(String userId, Long until,
-			Integer results, boolean chosenByUserOnly)
-			throws SongwichAPIException {
+	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobblesUntil(
+			String hostUrl, String userId, Long until, Integer results,
+			boolean chosenByUserOnly) throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(userId);
+		ObjectId userIdObject = authorizeUserGetScrobbles(results, userId);
 		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdUntil(
 				userIdObject, until, results, chosenByUserOnly);
-		return createGetScrobblesResponse(scrobbles);
+
+		Long since;
+		if (scrobbles != null && !scrobbles.isEmpty()) {
+			since = scrobbles.get(scrobbles.size() - 1).getTimestamp();
+			until = scrobbles.get(0).getTimestamp();
+		} else {
+			since = until;
+			// make sure we include the last scrobble in a newer scrobbles page
+			until--;
+		}
+
+		ScrobblesPagingDTO_V0_4 paginationDTO = new ScrobblesPagingDTO_V0_4(
+				hostUrl, userId, since, until, results, chosenByUserOnly);
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
+				createGetScrobblesResponse(scrobbles), paginationDTO);
+
+		return resultPair;
 	}
 
 	public void deleteScrobbles(String scrobbleId) throws SongwichAPIException {
@@ -143,8 +192,19 @@ public class ScrobblesUseCases extends UseCase {
 		}
 	}
 
-	private ObjectId authorizeUserGetScrobbles(String userId)
+	private ObjectId authorizeUserGetScrobbles(Integer results, String userId)
 			throws SongwichAPIException {
+
+		// TODO: get this from a configuration file
+		final int GET_SCROBBLES_MAX_RESULTS = 100;
+
+		if (results != null
+				&& (results > GET_SCROBBLES_MAX_RESULTS || results < 1)) {
+			throw new SongwichAPIException(String.format(
+					"results should be between %d and %d", 1,
+					GET_SCROBBLES_MAX_RESULTS),
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
 
 		if (getContext().getUser() == null) {
 			throw new SongwichAPIException(

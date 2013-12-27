@@ -9,12 +9,22 @@ public class RequestContext {
 	private App app;
 	private AppDeveloper appDeveloper;
 	private User user;
-	
-	public RequestContext(App app, AppDeveloper appDeveloper, User user) {
+	private Long timestamp;
+
+	public RequestContext(App app, AppDeveloper appDeveloper, User user, Long timestamp) {
 		super();
 		this.app = app;
 		this.appDeveloper = appDeveloper;
 		this.user = user;
+		this.timestamp = timestamp;
+	}
+	
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public App getApp() {

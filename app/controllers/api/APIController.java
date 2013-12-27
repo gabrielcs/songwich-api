@@ -7,10 +7,11 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import behavior.api.usecases.RequestContext;
 import controllers.api.auth.AppDeveloperAuthController;
+import controllers.api.auth.TimestampController;
 import controllers.api.auth.UserAuthController;
 
 public class APIController extends Controller {
-	
+
 	public APIController() {
 	}
 
@@ -20,6 +21,8 @@ public class APIController extends Controller {
 						.get(AppDeveloperAuthController.APP),
 				(AppDeveloper) Http.Context.current().args
 						.get(AppDeveloperAuthController.DEV),
-				(User) Http.Context.current().args.get(UserAuthController.USER));
+				(User) Http.Context.current().args.get(UserAuthController.USER),
+				(Long) Http.Context.current().args
+						.get(TimestampController.TIMESTAMP));
 	}
 }

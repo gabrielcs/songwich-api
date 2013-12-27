@@ -46,7 +46,7 @@ public class WithRequestContext extends WithCleanDatabase {
 		CascadeSaveDAO<App, ObjectId> appDao = new AppDAOMongo();
 		appDao.cascadeSave(testApp, testDevEmail);
 		// request contexts
-		requestContext = new RequestContext(testApp, testDev, null);
+		requestContext = new RequestContext(testApp, testDev, null, null);
 	}
 
 	@After

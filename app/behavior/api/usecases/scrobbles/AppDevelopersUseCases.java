@@ -12,7 +12,7 @@ public class AppDevelopersUseCases extends UseCase {
 
 	public AppDevelopersUseCases() {
 		// this is not an API resource
-		super(new RequestContext(null, null, null));
+		super(new RequestContext(null, null, null, null));
 	}
 
 	public AppDeveloper saveNewAppDeveloper(

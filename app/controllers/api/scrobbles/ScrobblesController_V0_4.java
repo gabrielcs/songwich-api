@@ -2,6 +2,8 @@ package controllers.api.scrobbles;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import play.data.Form;
 import play.libs.F.Option;
 import play.libs.Json;
@@ -17,11 +19,13 @@ import views.api.scrobbles.GetScrobblesResponse_V0_4;
 import views.api.scrobbles.PostScrobblesResponse_V0_4;
 import views.api.scrobbles.PutScrobblesResponse_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
+import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
+import controllers.api.annotation.Timestamped;
 import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblesController_V0_4 extends APIController {
@@ -126,17 +130,21 @@ public class ScrobblesController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 	}
 
+	@Timestamped
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
 	public static Result getScrobbles(String userId, Option<Integer> results,
 			Option<Long> since, Option<Long> until, boolean chosenByUserOnly) {
+		
+		MyLogger.debug("timestamp=" + getContext().getTimestamp());
 
-		final int MAX_RESULTS = 100;
+		// TODO: get this from a configuration file
+		final int DEFAULT_RESULTS = 30;
 
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());
-		List<ScrobblesDTO_V0_4> scrobbleDTOs;
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> scrobblesRestultDTOPair;
 		try {
 			if (since.isDefined() && until.isDefined()) {
 				throw new SongwichAPIException(
@@ -145,16 +153,20 @@ public class ScrobblesController_V0_4 extends APIController {
 			}
 
 			if (since.isDefined()) {
-				scrobbleDTOs = scrobblesUseCases.getScrobblesSince(userId,
-						since.get(), results.getOrElse(MAX_RESULTS),
+				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
+						Http.Context.current().request().host(), userId,
+						since.get(), results.getOrElse(DEFAULT_RESULTS),
 						chosenByUserOnly);
 			} else if (until.isDefined()) {
-				scrobbleDTOs = scrobblesUseCases.getScrobblesUntil(userId,
-						until.get(), results.getOrElse(MAX_RESULTS),
+				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
+						Http.Context.current().request().host(), userId,
+						until.get(), results.getOrElse(DEFAULT_RESULTS),
 						chosenByUserOnly);
 			} else {
-				scrobbleDTOs = scrobblesUseCases.getScrobbles(userId,
-						results.getOrElse(MAX_RESULTS), chosenByUserOnly);
+				scrobblesRestultDTOPair = scrobblesUseCases.getScrobbles(
+						Http.Context.current().request().host(), userId,
+						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly,
+						getContext().getTimestamp());
 			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user
@@ -168,7 +180,9 @@ public class ScrobblesController_V0_4 extends APIController {
 
 		// return the response
 		GetScrobblesResponse_V0_4 response = new GetScrobblesResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", scrobbleDTOs);
+				APIStatus_V0_4.SUCCESS, "Success",
+				scrobblesRestultDTOPair.getLeft(),
+				scrobblesRestultDTOPair.getRight());
 		return ok(Json.toJson(response));
 	}
 

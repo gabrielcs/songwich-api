@@ -132,6 +132,15 @@ public class ScrobblesDTO_V0_4 extends DataTransferObject {
 		this.chosenByUser = chosenByUser;
 	}
 
+	@Override
+	public String toString() {
+		return "ScrobblesDTO_V0_4 [scrobbleId=" + scrobbleId + ", userId="
+				+ userId + ", trackTitle=" + trackTitle + ", artistsNames="
+				+ artistsNames + ", albumTitle=" + albumTitle
+				+ ", chosenByUser=" + chosenByUser + ", player=" + player
+				+ ", timestamp=" + timestamp + "]";
+	}
+
 	public class ScrobblesDTOValidator extends DTOValidator {
 		@Override
 		public void addValidation() {

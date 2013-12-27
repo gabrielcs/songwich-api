@@ -10,7 +10,7 @@ import controllers.api.auth.AppDeveloperAuthController;
 import controllers.api.auth.CorsController;
 
 @With({CorsController.class, AppDeveloperAuthController.class})
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AppDeveloperAuthenticated {
 	boolean value() default true;

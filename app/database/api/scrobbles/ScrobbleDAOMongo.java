@@ -1,6 +1,7 @@
 package database.api.scrobbles;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return ds.find(Scrobble.class).filter("id", id).get();
 	}
 
-	// pagination
+	// paging
 
 	@Override
 	public List<Scrobble> findLatestScrobblesByUserId(ObjectId userId,
@@ -46,7 +47,13 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		Query<Scrobble> query = queryByUserId(userId);
 		filterTimestampSince(query, since);
 		filterChosenByUserOnly(query, chosenByUserOnly);
-		return order(query).limit(results).asList();
+		// gets the oldest scrobbles from the selected bunch and limit results
+		query = orderReverse(query).limit(results);
+		
+		// order by newest scrobbles
+		List<Scrobble> result = query.asList();
+		Collections.reverse(result);
+		return result;
 	}
 
 	@Override
@@ -58,7 +65,7 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).limit(results).asList();
 	}
 
-	// no pagination
+	// no paging
 
 	@Override
 	public List<Scrobble> findAllByUserId(ObjectId userId,
@@ -156,6 +163,13 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 	 */
 	private Query<Scrobble> order(Query<Scrobble> query) {
 		return query.order("-timestamp");
+	}
+	
+	/*
+	 * Order from the oldest to the newest.
+	 */
+	private Query<Scrobble> orderReverse(Query<Scrobble> query) {
+		return query.order("timestamp");
 	}
 
 	private Query<Scrobble> filterDaysOffset(Query<Scrobble> query,

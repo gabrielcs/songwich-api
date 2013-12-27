@@ -10,7 +10,7 @@ public interface ScrobbleDAO<I> extends SongwichDAO<Scrobble, I> {
 
 	public Scrobble findById(I id);
 
-	// pagination
+	// paging
 
 	public List<Scrobble> findLatestScrobblesByUserId(I userId, int results,
 			boolean chosenByUserOnly);
@@ -21,7 +21,7 @@ public interface ScrobbleDAO<I> extends SongwichDAO<Scrobble, I> {
 	public List<Scrobble> findScrobblesByUserIdUntil(I userId, long until,
 			int results, boolean chosenByUserOnly);
 
-	// no pagination
+	// no paging
 
 	public List<Scrobble> findAllByUserId(I userId, boolean chosenByUserOnly);
 

@@ -9,7 +9,7 @@ import play.mvc.With;
 import controllers.api.auth.UserAuthController;
 
 @With(UserAuthController.class)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserAuthenticated {
 	boolean value() default true;
