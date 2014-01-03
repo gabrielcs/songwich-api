@@ -1,6 +1,6 @@
 package views.api;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class PagingDTO {
 

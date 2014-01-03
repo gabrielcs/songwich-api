@@ -6,10 +6,11 @@ import models.api.scrobbles.AuthToken;
 
 import org.bson.types.ObjectId;
 
+import play.mvc.SimpleResult;
+import play.libs.F;
 import play.libs.Json;
 import play.mvc.Action;
 import play.mvc.Http;
-import play.mvc.Result;
 import play.mvc.Results;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
@@ -28,8 +29,8 @@ public class AppDeveloperAuthController extends Action<AppDeveloperAuthenticated
 	public final static String APP = "app";
 
 	@Override
-	//public F.Promise<SimpleResult> call(Http.Context ctx) throws Throwable {
-	public Result call(Http.Context ctx) throws Throwable {
+	public F.Promise<SimpleResult> call(Http.Context ctx) throws Throwable {
+	//public Result call(Http.Context ctx) throws Throwable {
 		try {
 			authenticateAppDeveloper(ctx);
 		} catch (SongwichAPIException e) {
@@ -37,8 +38,8 @@ public class AppDeveloperAuthController extends Action<AppDeveloperAuthenticated
 					e.getStatus().toString(), e.getMessage(), ctx.request()));
 			APIResponse_V0_4 response = new APIResponse_V0_4(e.getStatus(),
 					e.getMessage());
-			//return F.Promise.<SimpleResult> pure(Results.unauthorized(Json.toJson(response)));
-			return Results.unauthorized(Json.toJson(response));
+			return F.Promise.<SimpleResult> pure(Results.unauthorized(Json.toJson(response)));
+			//return Results.unauthorized(Json.toJson(response));
 		}
 
 		// app developer successfully authenticated

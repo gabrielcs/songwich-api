@@ -3,18 +3,18 @@ package controllers.api.auth;
 import models.api.scrobbles.App;
 import models.api.scrobbles.AppDeveloper;
 import models.api.scrobbles.User;
+import play.mvc.SimpleResult;
+import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
-import play.mvc.Result;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import controllers.api.annotation.Logged;
 
 public class APILoggingController extends Action<Logged> {
 	@Override
-	// public F.Promise<SimpleResult> call(Http.Context context) throws
-	// Throwable {
-	public Result call(Http.Context context) throws Throwable {
+	public F.Promise<SimpleResult> call(Http.Context context) throws Throwable {
+		// public Result call(Http.Context context) throws Throwable {
 		logAPICall(context);
 		// process request
 		return delegate.call(context);

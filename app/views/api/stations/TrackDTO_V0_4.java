@@ -3,15 +3,16 @@ package views.api.stations;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
 import views.api.scrobbles.UserOutputDTO_V0_4;
 
-//@JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+//@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 @JsonTypeName("stationEntry")
 public class TrackDTO_V0_4 extends DataTransferObject {
 	// only for output

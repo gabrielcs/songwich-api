@@ -1,5 +1,7 @@
 package controllers.api.auth;
 
+import play.mvc.SimpleResult;
+import play.libs.F;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Http.Response;
@@ -9,9 +11,8 @@ import play.mvc.Results;
 // http://daniel.reuterwall.com/blog/2013/04/15/play-with-cors
 public class CorsController extends Action.Simple {
 	@Override
-	// public F.Promise<SimpleResult> call(Http.Context context) throws
-	// Throwable {
-	public Result call(Http.Context context) throws Throwable {
+	public F.Promise<SimpleResult> call(Http.Context context) throws Throwable {
+		// public Result call(Http.Context context) throws Throwable {
 		allowCustomHeaders();
 		return delegate.call(context);
 	}
@@ -31,7 +32,7 @@ public class CorsController extends Action.Simple {
 				"Access-Control-Allow-Headers",
 				"X-Songwich.devAuthToken, X-Songwich.userAuthToken, Content-Type, Origin, Accept");
 
-		//MyLogger.debug("CORS - custom headers allowed for request: "
-		//		+ Http.Context.current().request());
+		// MyLogger.debug("CORS - custom headers allowed for request: "
+		// + Http.Context.current().request());
 	}
 }

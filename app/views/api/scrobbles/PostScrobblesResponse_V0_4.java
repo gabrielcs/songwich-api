@@ -1,9 +1,9 @@
 package views.api.scrobbles;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PostScrobblesResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("scrobble")

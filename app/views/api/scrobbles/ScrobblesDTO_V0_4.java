@@ -3,15 +3,16 @@ package views.api.scrobbles;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import play.data.validation.ValidationError;
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
 
-//@JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+//@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 @JsonTypeName("scrobble")
 public class ScrobblesDTO_V0_4 extends DataTransferObject {
 	// used only for output

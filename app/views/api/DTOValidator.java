@@ -8,9 +8,10 @@ import java.util.Set;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.bson.types.ObjectId;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import play.data.validation.ValidationError;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class DTOValidator {
 	@JsonIgnore

@@ -3,10 +3,10 @@ package views.api.stations;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
-
 import views.api.DTOValidator;
 import views.api.DataTransferObject;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 // let starredSongs be serialized even if it's empty
 @JsonTypeName("starredSongs")

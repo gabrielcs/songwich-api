@@ -3,8 +3,8 @@ package views.api.stations;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 // there was a mysterious "radioStationDTO" property duplicating the output
 @JsonIgnoreProperties({"radioStationUpdateDTO"})

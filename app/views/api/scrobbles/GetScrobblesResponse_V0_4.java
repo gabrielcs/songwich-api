@@ -2,8 +2,7 @@ package views.api.scrobbles;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
 

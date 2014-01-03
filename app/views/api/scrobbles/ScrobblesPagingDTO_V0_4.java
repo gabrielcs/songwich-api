@@ -1,12 +1,13 @@
 package views.api.scrobbles;
 
-import org.codehaus.jackson.annotate.JsonTypeName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import views.api.PagingDTO;
 
-//@JsonInclude(Include.NON_EMPTY)
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+//@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 @JsonTypeName("paging")
 public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
 

@@ -2,10 +2,10 @@ package views.api.subscriptions;
 
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonProperty;
-
 import views.api.APIResponse_V0_4;
 import views.api.APIStatus;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GetSubscriptionsResponse_V0_4 extends APIResponse_V0_4 {
 
