@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 
+import play.api.Play;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
@@ -22,6 +23,9 @@ import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
 public class ScrobblesUseCases extends UseCase {
+
+	private static final int GET_SCROBBLES_MAX_RESULTS = (Integer) Play
+			.current().configuration().getInt("get.scrobbles.max").get();
 
 	public ScrobblesUseCases(RequestContext context) {
 		super(context);
@@ -204,9 +208,6 @@ public class ScrobblesUseCases extends UseCase {
 
 	private ObjectId authorizeUserGetScrobbles(Integer results, String userId)
 			throws SongwichAPIException {
-
-		// TODO: get this from a configuration file
-		final int GET_SCROBBLES_MAX_RESULTS = 100;
 
 		if (results != null
 				&& (results > GET_SCROBBLES_MAX_RESULTS || results < 1)) {

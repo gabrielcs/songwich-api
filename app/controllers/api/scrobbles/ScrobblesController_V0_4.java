@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import play.api.Play;
 import play.data.Form;
 import play.libs.F.Option;
 import play.libs.Json;
@@ -28,6 +29,9 @@ import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblesController_V0_4 extends APIController {
+
+	private static int GET_SCROBBLES_DEFAULT_RESULTS = (Integer) Play.current()
+			.configuration().getInt("get.scrobbles.default").get();
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
@@ -137,11 +141,6 @@ public class ScrobblesController_V0_4 extends APIController {
 			Option<String> until, Option<String> untilInclusive,
 			boolean chosenByUserOnly) {
 
-		MyLogger.debug("timestamp=" + getContext().getTimestamp());
-
-		// TODO: get this from a configuration file
-		final int DEFAULT_RESULTS = 30;
-
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> scrobblesRestultDTOPair;
@@ -151,27 +150,32 @@ public class ScrobblesController_V0_4 extends APIController {
 			if (since.isDefined()) {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
 						Http.Context.current().request().host(), userId,
-						since.get(), false, results.getOrElse(DEFAULT_RESULTS),
+						since.get(), false,
+						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
 						chosenByUserOnly);
 			} else if (until.isDefined()) {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
 						Http.Context.current().request().host(), userId,
-						until.get(), false, results.getOrElse(DEFAULT_RESULTS),
+						until.get(), false,
+						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
 						chosenByUserOnly);
 			} else if (sinceInclusive.isDefined()) {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
 						Http.Context.current().request().host(), userId,
 						sinceInclusive.get(), true,
-						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly);
+						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
+						chosenByUserOnly);
 			} else if (until.isDefined()) {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
 						Http.Context.current().request().host(), userId,
 						untilInclusive.get(), true,
-						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly);
+						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
+						chosenByUserOnly);
 			} else {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobbles(
 						Http.Context.current().request().host(), userId,
-						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly);
+						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
+						chosenByUserOnly);
 			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user
