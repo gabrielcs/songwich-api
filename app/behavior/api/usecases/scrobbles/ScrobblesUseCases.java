@@ -11,8 +11,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
+import views.api.PagingNotAvailableException;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
 import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
@@ -49,49 +51,53 @@ public class ScrobblesUseCases extends UseCase {
 	}
 
 	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobbles(
-			String hostUrl, String userId, Integer results,
-			Boolean chosenByUserOnly, Long requestTimestamp)
-			throws SongwichAPIException {
+			String hostUrl, String userId, int maxResults,
+			boolean chosenByUserOnly) throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(results, userId);
+		ObjectId userIdObject = authorizeUserGetScrobbles(maxResults, userId);
 		List<Scrobble> scrobbles = getScrobbleDAO()
-				.findLatestScrobblesByUserId(userIdObject, results,
+				.findLatestScrobblesByUserId(userIdObject, maxResults,
 						chosenByUserOnly);
-		Long since, until;
-		if (scrobbles != null && !scrobbles.isEmpty()) {
-			since = scrobbles.get(scrobbles.size() - 1).getTimestamp();
-			until = scrobbles.get(0).getTimestamp();
-		} else {
-			since = until = requestTimestamp;
+
+		// try to set paging
+		ScrobblesPagingDTO_V0_4 paginationDTO = null;
+		try {
+			paginationDTO = new ScrobblesPagingDTO_V0_4(hostUrl, userId, null,
+					scrobbles, maxResults, ScrobblesPagingDTO_V0_4.MODE.OPEN,
+					chosenByUserOnly);
+		} catch (PagingNotAvailableException exception) {
+			// normal behavior in case there were no results
 		}
 
-		ScrobblesPagingDTO_V0_4 paginationDTO = new ScrobblesPagingDTO_V0_4(
-				hostUrl, userId, since, until, results, chosenByUserOnly);
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
 				createGetScrobblesResponse(scrobbles), paginationDTO);
 		return resultPair;
 	}
 
 	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobblesSince(
-			String hostUrl, String userId, Long since, Integer results,
-			boolean chosenByUserOnly) throws SongwichAPIException {
+			String hostUrl, String userId, String sinceObjectIdString,
+			boolean inclusive, int maxResults, boolean chosenByUserOnly)
+			throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(results, userId);
+		ObjectId userIdObject = authorizeUserGetScrobbles(maxResults, userId,
+				sinceObjectIdString);
+		Scrobble sinceScrobble = getScrobbleDAO().findById(
+				new ObjectId(sinceObjectIdString));
 		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdSince(
-				userIdObject, since, results, chosenByUserOnly);
+				userIdObject, sinceScrobble.getTimestamp(),
+				sinceScrobble.getId(), inclusive, maxResults, chosenByUserOnly);
 
-		Long until;
-		if (scrobbles != null && !scrobbles.isEmpty()) {
-			since = scrobbles.get(scrobbles.size() - 1).getTimestamp();
-			until = scrobbles.get(0).getTimestamp();
-		} else {
-			until = since;
-			// make sure we include the last scrobble in an older scrobbles page
-			since++;
+		// try to set paging
+		ScrobblesPagingDTO_V0_4 paginationDTO = null;
+		try {
+			paginationDTO = new ScrobblesPagingDTO_V0_4(hostUrl, userId,
+					sinceObjectIdString, scrobbles, maxResults,
+					ScrobblesPagingDTO_V0_4.MODE.SINCE, chosenByUserOnly);
+		} catch (PagingNotAvailableException exception) {
+			// shouldn't reach here
+			MyLogger.warn(exception.toString());
 		}
 
-		ScrobblesPagingDTO_V0_4 paginationDTO = new ScrobblesPagingDTO_V0_4(
-				hostUrl, userId, since, until, results, chosenByUserOnly);
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
 				createGetScrobblesResponse(scrobbles), paginationDTO);
 
@@ -99,25 +105,29 @@ public class ScrobblesUseCases extends UseCase {
 	}
 
 	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobblesUntil(
-			String hostUrl, String userId, Long until, Integer results,
-			boolean chosenByUserOnly) throws SongwichAPIException {
+			String hostUrl, String userId, String untilObjectIdString,
+			boolean inclusive, int maxResults, boolean chosenByUserOnly)
+			throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(results, userId);
+		ObjectId userIdObject = authorizeUserGetScrobbles(maxResults, userId,
+				untilObjectIdString);
+		Scrobble untilScrobble = getScrobbleDAO().findById(
+				new ObjectId(untilObjectIdString));
 		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdUntil(
-				userIdObject, until, results, chosenByUserOnly);
+				userIdObject, untilScrobble.getTimestamp(),
+				untilScrobble.getId(), inclusive, maxResults, chosenByUserOnly);
 
-		Long since;
-		if (scrobbles != null && !scrobbles.isEmpty()) {
-			since = scrobbles.get(scrobbles.size() - 1).getTimestamp();
-			until = scrobbles.get(0).getTimestamp();
-		} else {
-			since = until;
-			// make sure we include the last scrobble in a newer scrobbles page
-			until--;
+		// try to set paging
+		ScrobblesPagingDTO_V0_4 paginationDTO = null;
+		try {
+			paginationDTO = new ScrobblesPagingDTO_V0_4(hostUrl, userId,
+					untilObjectIdString, scrobbles, maxResults,
+					ScrobblesPagingDTO_V0_4.MODE.UNTIL, chosenByUserOnly);
+		} catch (PagingNotAvailableException exception) {
+			// shouldn't reach here
+			MyLogger.warn(exception.toString());
 		}
 
-		ScrobblesPagingDTO_V0_4 paginationDTO = new ScrobblesPagingDTO_V0_4(
-				hostUrl, userId, since, until, results, chosenByUserOnly);
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
 				createGetScrobblesResponse(scrobbles), paginationDTO);
 
@@ -235,6 +245,17 @@ public class ScrobblesUseCases extends UseCase {
 
 		// authorized
 		return userIdObject;
+	}
+
+	private ObjectId authorizeUserGetScrobbles(Integer results, String userId,
+			String sinceObjectId) throws SongwichAPIException {
+
+		if (!ObjectId.isValid(sinceObjectId)) {
+			throw new SongwichAPIException("Invalid since",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		return authorizeUserGetScrobbles(results, userId);
 	}
 
 	private ObjectId authorizeDeleteScrobbles(String scrobbleId)

@@ -1,7 +1,10 @@
 package views.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@JsonInclude(Include.NON_EMPTY)
 public abstract class PagingDTO {
 
 	@JsonIgnore
@@ -62,13 +65,29 @@ public abstract class PagingDTO {
 	// nextPageUrl is never null
 	@JsonIgnore
 	protected String getNextPageUrl() {
-		return nextPageUrl.toString();
+		return nextPageUrl.length() == 0 ? null : nextPageUrl.toString();
 	}
 
-	// previousPageUrl is never null
+	protected void setNextPageUrl(String nextPageUrl) {
+		if (nextPageUrl == null) {
+			this.nextPageUrl = new StringBuilder();
+		} else {
+			this.nextPageUrl = new StringBuilder(nextPageUrl);
+		}
+	}
+
 	@JsonIgnore
 	protected String getPreviousPageUrl() {
-		return previousPageUrl.toString();
+		return previousPageUrl.length() == 0 ? null : previousPageUrl
+				.toString();
+	}
+
+	protected void setPreviousPageUrl(String previousPageUrl) {
+		if (previousPageUrl == null) {
+			this.previousPageUrl = new StringBuilder();
+		} else {
+			this.previousPageUrl = new StringBuilder(previousPageUrl);
+		}
 	}
 
 }

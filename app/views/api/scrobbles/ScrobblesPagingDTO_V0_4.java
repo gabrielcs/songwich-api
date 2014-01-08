@@ -1,7 +1,12 @@
 package views.api.scrobbles;
 
-import views.api.PagingDTO;
+import java.util.List;
 
+import models.api.scrobbles.Scrobble;
+import views.api.PagingDTO;
+import views.api.PagingNotAvailableException;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -11,23 +16,62 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("paging")
 public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
 
-	public ScrobblesPagingDTO_V0_4(String hostUrl, String userId, Long currentPageSince,
-			Long currentPageUntil, Integer results, Boolean chosenByUserOnly) {
-		
+	@JsonIgnoreType
+	public enum MODE {
+		SINCE, UNTIL, OPEN
+	}
+
+	public ScrobblesPagingDTO_V0_4(String hostUrl, String userId,
+			String requestObjectId, List<Scrobble> scrobbles, int maxResults,
+			MODE mode, boolean chosenByUserOnly)
+			throws PagingNotAvailableException {
+
 		super(String.format("http://%s/v0.4/scrobbles/%s", hostUrl, userId));
+		addUrlParamToBothPages("chosenByUserOnly",
+				Boolean.toString(chosenByUserOnly));
+		addUrlParamToBothPages("results", Integer.toString(maxResults));
 
-		// currentPageSince and currentPageUntil are never null
-		// older scrobbles
-		addNextPageUrlParam("until", currentPageSince.toString()); 
-		// newer scrobbles
-		addPreviousPageUrlParam("since", currentPageUntil.toString());  
-
-		if (results != null) {
-			addUrlParamToBothPages("results", results.toString());
+		String oldest = null;
+		String newest = null;
+		int actualResults = 0;
+		if (scrobbles != null && !scrobbles.isEmpty()) {
+			oldest = scrobbles.get(scrobbles.size() - 1).getId().toString();
+			newest = scrobbles.get(0).getId().toString();
+			actualResults = scrobbles.size();
 		}
-		
-		if (chosenByUserOnly != null) {
-			addUrlParamToBothPages("chosenByUserOnly", chosenByUserOnly.toString());
+
+		if (scrobbles.size() == maxResults) {
+			addNextPageUrlParam("until", oldest);
+			addPreviousPageUrlParam("since", newest);
+		} else if (actualResults > 0) {
+			switch (mode) {
+			case SINCE:
+				addNextPageUrlParam("until", oldest);
+				addPreviousPageUrlParam("since", newest);
+				break;
+			case UNTIL:
+				setNextPageUrl(null);
+				addPreviousPageUrlParam("since", newest);
+				break;
+			case OPEN:
+				setNextPageUrl(null);
+				addPreviousPageUrlParam("since", newest);
+				break;
+			}
+		} else {
+			// actualResults == 0
+			switch (mode) {
+			case SINCE:
+				addNextPageUrlParam("untilInclusive", requestObjectId);
+				addPreviousPageUrlParam("since", requestObjectId);
+				break;
+			case UNTIL:
+				setNextPageUrl(null);
+				addPreviousPageUrlParam("sinceInclusive", requestObjectId);
+				break;
+			case OPEN:
+				throw new PagingNotAvailableException();
+			}
 		}
 	}
 
@@ -38,7 +82,7 @@ public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
 	public String getNewerScrobbles() {
 		return getPreviousPageUrl();
 	}
-	
+
 	@Override
 	public String toString() {
 		return "ScrobblesPagingDTO_V0_4 [getOlderScrobblesPage()="

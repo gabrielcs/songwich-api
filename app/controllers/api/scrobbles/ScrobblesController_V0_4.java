@@ -25,7 +25,6 @@ import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
-import controllers.api.annotation.Timestamped;
 import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblesController_V0_4 extends APIController {
@@ -130,13 +129,14 @@ public class ScrobblesController_V0_4 extends APIController {
 		return ok(Json.toJson(response));
 	}
 
-	@Timestamped
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
 	@Logged
 	public static Result getScrobbles(String userId, Option<Integer> results,
-			Option<Long> since, Option<Long> until, boolean chosenByUserOnly) {
-		
+			Option<String> since, Option<String> sinceInclusive,
+			Option<String> until, Option<String> untilInclusive,
+			boolean chosenByUserOnly) {
+
 		MyLogger.debug("timestamp=" + getContext().getTimestamp());
 
 		// TODO: get this from a configuration file
@@ -146,27 +146,32 @@ public class ScrobblesController_V0_4 extends APIController {
 				getContext());
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> scrobblesRestultDTOPair;
 		try {
-			if (since.isDefined() && until.isDefined()) {
-				throw new SongwichAPIException(
-						"Cannot define both 'since' and 'until'",
-						APIStatus_V0_4.INVALID_PARAMETER);
-			}
+			checkUrlParams(since, sinceInclusive, until, untilInclusive);
 
 			if (since.isDefined()) {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
 						Http.Context.current().request().host(), userId,
-						since.get(), results.getOrElse(DEFAULT_RESULTS),
+						since.get(), false, results.getOrElse(DEFAULT_RESULTS),
 						chosenByUserOnly);
 			} else if (until.isDefined()) {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
 						Http.Context.current().request().host(), userId,
-						until.get(), results.getOrElse(DEFAULT_RESULTS),
+						until.get(), false, results.getOrElse(DEFAULT_RESULTS),
 						chosenByUserOnly);
+			} else if (sinceInclusive.isDefined()) {
+				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
+						Http.Context.current().request().host(), userId,
+						sinceInclusive.get(), true,
+						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly);
+			} else if (until.isDefined()) {
+				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
+						Http.Context.current().request().host(), userId,
+						untilInclusive.get(), true,
+						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly);
 			} else {
 				scrobblesRestultDTOPair = scrobblesUseCases.getScrobbles(
 						Http.Context.current().request().host(), userId,
-						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly,
-						getContext().getTimestamp());
+						results.getOrElse(DEFAULT_RESULTS), chosenByUserOnly);
 			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user
@@ -184,6 +189,32 @@ public class ScrobblesController_V0_4 extends APIController {
 				scrobblesRestultDTOPair.getLeft(),
 				scrobblesRestultDTOPair.getRight());
 		return ok(Json.toJson(response));
+	}
+
+	private static void checkUrlParams(Option<String> since,
+			Option<String> sinceInclusive, Option<String> until,
+			Option<String> untilInclusive) throws SongwichAPIException {
+
+		int definedParams = 0;
+
+		if (since.isDefined()) {
+			definedParams++;
+		}
+		if (sinceInclusive.isDefined()) {
+			definedParams++;
+		}
+		if (until.isDefined()) {
+			definedParams++;
+		}
+		if (untilInclusive.isDefined()) {
+			definedParams++;
+		}
+
+		if (definedParams > 1) {
+			throw new SongwichAPIException(
+					"Cannot define more than 1 of 'since', 'until', 'sinceInclusive' and 'untilInclusive'",
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
 	}
 
 	/*

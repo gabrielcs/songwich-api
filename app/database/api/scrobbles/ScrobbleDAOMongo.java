@@ -40,16 +40,18 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return order(query).limit(results).asList();
 	}
 
+	// not including 'since'
 	@Override
 	public List<Scrobble> findScrobblesByUserIdSince(ObjectId userId,
-			long since, int results, boolean chosenByUserOnly) {
+			long sinceTimestamp, ObjectId sinceObjectId, boolean inclusive,
+			int results, boolean chosenByUserOnly) {
 
 		Query<Scrobble> query = queryByUserId(userId);
-		filterTimestampSince(query, since);
+		filterSince(query, sinceTimestamp, sinceObjectId, inclusive);
 		filterChosenByUserOnly(query, chosenByUserOnly);
 		// gets the oldest scrobbles from the selected bunch and limit results
 		query = orderReverse(query).limit(results);
-		
+
 		// order by newest scrobbles
 		List<Scrobble> result = query.asList();
 		Collections.reverse(result);
@@ -58,9 +60,10 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 
 	@Override
 	public List<Scrobble> findScrobblesByUserIdUntil(ObjectId userId,
-			long until, int results, boolean chosenByUserOnly) {
+			long untilTimestamp, ObjectId untilObjectId, boolean inclusive,
+			int results, boolean chosenByUserOnly) {
 		Query<Scrobble> query = queryByUserId(userId);
-		filterTimestampUntil(query, until);
+		filterUntil(query, untilTimestamp, untilObjectId, inclusive);
 		filterChosenByUserOnly(query, chosenByUserOnly);
 		return order(query).limit(results).asList();
 	}
@@ -150,26 +153,52 @@ public class ScrobbleDAOMongo extends BasicDAOMongo<Scrobble> implements
 		return query.filter("chosenByUser", true);
 	}
 
-	private Query<Scrobble> filterTimestampUntil(Query<Scrobble> query, long until) {
-		return query.field("timestamp").lessThan(until);
+	// if 'timestamp' is the same then it compares 'id'
+	private Query<Scrobble> filterUntil(Query<Scrobble> query, long until,
+			ObjectId untilObjectId, boolean inclusive) {
+
+		if (inclusive) {
+			query.or(query.criteria("timestamp").lessThan(until), query.and(
+					query.criteria("timestamp").equal(until), query.criteria("id")
+					.lessThanOrEq(untilObjectId)));
+		} else {
+			query.or(query.criteria("timestamp").lessThan(until), query.and(
+					query.criteria("timestamp").equal(until), query.criteria("id")
+					.lessThan(untilObjectId)));
+		}
+		return query;
 	}
 
-	private Query<Scrobble> filterTimestampSince(Query<Scrobble> query, long since) {
-		return query.field("timestamp").greaterThan(since);
+	// if 'timestamp' is the same then it compares 'id'
+	private Query<Scrobble> filterSince(Query<Scrobble> query, long since,
+			ObjectId sinceObjectId, boolean inclusive) {
+		
+		if (inclusive) {
+			query.or(query.criteria("timestamp").greaterThan(since), query.and(
+					query.criteria("timestamp").equal(since), query.criteria("id")
+					.greaterThanOrEq(sinceObjectId)));
+		} else {
+			query.or(query.criteria("timestamp").greaterThan(since), query.and(
+					query.criteria("timestamp").equal(since), query.criteria("id")
+					.greaterThan(sinceObjectId)));
+		}
+		return query;
 	}
 
 	/*
 	 * Order from the newest to the oldest.
 	 */
 	private Query<Scrobble> order(Query<Scrobble> query) {
-		return query.order("-timestamp");
+		// orders by id in case they have the same timestamp
+		return query.order("-timestamp, -id");
 	}
-	
+
 	/*
 	 * Order from the oldest to the newest.
 	 */
 	private Query<Scrobble> orderReverse(Query<Scrobble> query) {
-		return query.order("timestamp");
+		// orders by id in case they have the same timestamp
+		return query.order("timestamp, id");
 	}
 
 	private Query<Scrobble> filterDaysOffset(Query<Scrobble> query,

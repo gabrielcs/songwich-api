@@ -163,7 +163,8 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 	public void testFindNewerScrobblesByUserId() {
 		List<Scrobble> newerScrobblesUser1 = scrobbleDao
 				.findScrobblesByUserIdSince(user1.getId(),
-						scrobble1.getTimestamp(), 30, false);
+						scrobble1.getTimestamp(), scrobble1.getId(), false, 30,
+						false);
 
 		assertEquals(newerScrobblesUser1.size(), 2);
 		assertTrue(newerScrobblesUser1.iterator().next().equals(scrobble6));
@@ -174,7 +175,8 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 	public void testFindNewerScrobblesByUserIdChosenByUserOnly() {
 		List<Scrobble> newerScrobblesUser1 = scrobbleDao
 				.findScrobblesByUserIdSince(user1.getId(),
-						scrobble1.getTimestamp(), 30, true);
+						scrobble1.getTimestamp(), scrobble1.getId(), false, 30,
+						true);
 
 		assertEquals(newerScrobblesUser1.size(), 1);
 		assertTrue(newerScrobblesUser1.contains(scrobble3));
@@ -184,7 +186,8 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 	public void testFindOlderScrobblesByUserId() {
 		List<Scrobble> olderScrobblesUser1 = scrobbleDao
 				.findScrobblesByUserIdUntil(user1.getId(),
-						scrobble6.getTimestamp(), 30, false);
+						scrobble6.getTimestamp(), scrobble6.getId(), false, 30,
+						false);
 
 		assertEquals(olderScrobblesUser1.size(), 2);
 		assertTrue(olderScrobblesUser1.iterator().next().equals(scrobble3));
@@ -195,7 +198,8 @@ public class ScrobbleDAOMongoTest extends WithRequestContext {
 	public void testFindOlderScrobblesByUserIdChosenByUserOnly() {
 		List<Scrobble> olderScrobblesUser1 = scrobbleDao
 				.findScrobblesByUserIdUntil(user1.getId(),
-						scrobble6.getTimestamp(), 30, true);
+						scrobble6.getTimestamp(), scrobble6.getId(), false, 30,
+						true);
 
 		assertEquals(olderScrobblesUser1.size(), 1);
 		assertTrue(olderScrobblesUser1.contains(scrobble3));

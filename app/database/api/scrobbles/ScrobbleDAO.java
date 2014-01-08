@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Set;
 
 import models.api.scrobbles.Scrobble;
+
+import org.bson.types.ObjectId;
+
 import database.api.SongwichDAO;
 
 public interface ScrobbleDAO<I> extends SongwichDAO<Scrobble, I> {
@@ -15,10 +18,18 @@ public interface ScrobbleDAO<I> extends SongwichDAO<Scrobble, I> {
 	public List<Scrobble> findLatestScrobblesByUserId(I userId, int results,
 			boolean chosenByUserOnly);
 
-	public List<Scrobble> findScrobblesByUserIdSince(I userId, long since,
+	/*
+	 * If timestamps are the same then it compares by id.
+	 */
+	public List<Scrobble> findScrobblesByUserIdSince(I userId,
+			long sinceTimestamp, ObjectId sinceObjectId, boolean inclusive,
 			int results, boolean chosenByUserOnly);
 
-	public List<Scrobble> findScrobblesByUserIdUntil(I userId, long until,
+	/*
+	 * If timestamps are the same then it compares by id.
+	 */
+	public List<Scrobble> findScrobblesByUserIdUntil(I userId,
+			long untilTimestamp, ObjectId untilObjectId, boolean inclusive,
 			int results, boolean chosenByUserOnly);
 
 	// no paging

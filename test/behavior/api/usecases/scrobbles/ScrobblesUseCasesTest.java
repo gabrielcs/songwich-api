@@ -60,7 +60,9 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 		final int RESULTS = 30;
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> response = scrobblesUseCases
 				.getScrobbles(LOCALHOST, gabriel.getId().toString(), RESULTS,
-						false, System.currentTimeMillis());
+						false);
+
+		System.out.println(response);
 
 		assertEquals(RESULTS, response.getLeft().size());
 		assertEquals(scrobbles.get(scrobbles.size() - 1).getId().toString(),
@@ -75,15 +77,15 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 				.getNewerScrobbles()
 				.contains(
 						"since="
-								+ scrobbles.get(scrobbles.size() - 1)
-										.getTimestamp()));
+								+ scrobbles.get(scrobbles.size() - 1).getId()
+										.toString()));
 		assertTrue(response
 				.getRight()
 				.getOlderScrobbles()
 				.contains(
 						"until="
 								+ scrobbles.get(scrobbles.size() - RESULTS)
-										.getTimestamp()));
+										.getId().toString()));
 	}
 
 	@Test
@@ -94,11 +96,14 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 
 		final int RESULTS = 30;
 		final int UNTIL_INDEX = scrobbles.size() / 2;
-		final long UNTIL = scrobbles.get(UNTIL_INDEX).getTimestamp();
+		final String UNTIL = scrobbles.get(UNTIL_INDEX).getId().toString();
 
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> response = scrobblesUseCases
 				.getScrobblesUntil(LOCALHOST, gabriel.getId().toString(),
-						UNTIL, RESULTS, false);
+						UNTIL, false, RESULTS, false);
+		
+		System.out.println(UNTIL_INDEX);
+		System.out.println(response);
 
 		assertEquals(RESULTS, response.getLeft().size());
 		assertEquals(scrobbles.get(UNTIL_INDEX - 1).getId().toString(),
@@ -112,15 +117,16 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 				.getOlderScrobbles()
 				.contains(
 						"until="
-								+ scrobbles.get(UNTIL_INDEX - RESULTS)
-										.getTimestamp()));
+								+ scrobbles.get(UNTIL_INDEX - RESULTS).getId()
+										.toString()));
 
 		assertTrue(response
 				.getRight()
 				.getNewerScrobbles()
 				.contains(
 						"since="
-								+ scrobbles.get(UNTIL_INDEX - 1).getTimestamp()));
+								+ scrobbles.get(UNTIL_INDEX - 1).getId()
+										.toString()));
 	}
 
 	@Test
@@ -131,14 +137,13 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 
 		final int RESULTS = 30;
 		final int SINCE_INDEX = scrobbles.size() / 2;
-		final long SINCE = scrobbles.get(SINCE_INDEX).getTimestamp();
+		final String SINCE = scrobbles.get(SINCE_INDEX).getId().toString();
 
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> response = scrobblesUseCases
 				.getScrobblesSince(LOCALHOST, gabriel.getId().toString(),
-						SINCE, RESULTS, false);
+						SINCE, false, RESULTS, false);
 
 		System.out.println(SINCE_INDEX);
-		System.out.println(SINCE);
 		System.out.println(response);
 
 		assertEquals(RESULTS, response.getLeft().size());
@@ -153,14 +158,15 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 				.getNewerScrobbles()
 				.contains(
 						"since="
-								+ scrobbles.get(SINCE_INDEX + RESULTS)
-										.getTimestamp()));
+								+ scrobbles.get(SINCE_INDEX + RESULTS).getId()
+										.toString()));
 		assertTrue(response
 				.getRight()
 				.getOlderScrobbles()
 				.contains(
 						"until="
-								+ scrobbles.get(SINCE_INDEX + 1).getTimestamp()));
+								+ scrobbles.get(SINCE_INDEX + 1).getId()
+										.toString()));
 	}
 
 	private void generateScrobbles(

@@ -9,7 +9,7 @@ OPTIONS   /*path                                            controllers.api.auth
 
 # Scrobbles API
 POST      /v0.4/scrobbles                                   controllers.api.scrobbles.ScrobblesController_V0_4.postScrobbles()
-GET       /v0.4/scrobbles/:userId                           controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(userId, results: play.libs.F.Option[Integer], since: play.libs.F.Option[java.lang.Long], until: play.libs.F.Option[java.lang.Long], chosenByUserOnly: Boolean ?= false)
+GET       /v0.4/scrobbles/:userId                           controllers.api.scrobbles.ScrobblesController_V0_4.getScrobbles(userId, results: play.libs.F.Option[Integer], since: play.libs.F.Option[String], sinceInclusive: play.libs.F.Option[String], until: play.libs.F.Option[String], untilInclusive: play.libs.F.Option[String], chosenByUserOnly: Boolean ?= false)
 PUT       /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobbles.ScrobblesController_V0_4.putScrobbles(scrobbleId)
 DELETE    /v0.4/scrobbles/:scrobbleId                       controllers.api.scrobbles.ScrobblesController_V0_4.deleteScrobbles(scrobbleId)
 
