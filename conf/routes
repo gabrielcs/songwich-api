@@ -32,7 +32,7 @@ PUT       /v0.4/stations/:stationId/deactivate              @controllers.api.sta
 
 # Feedback API
 POST      /v0.4/songFeedback                                controllers.api.stations.SongFeedbackController_V0_4.postSongFeedback()
-GET       /v0.4/starredSongs/:userId                        controllers.api.stations.SongFeedbackController_V0_4.getStarredSongs(userId, results: play.libs.F.Option[Integer], since: play.libs.F.Option[String], sinceInclusive: play.libs.F.Option[String], until: play.libs.F.Option[String], untilInclusive: play.libs.F.Option[String])
+GET       /v0.4/starredSongs/:userId                        controllers.api.stations.SongFeedbackController_V0_4.getStarredSongs(userId)
 DELETE    /v0.4/songFeedback/:idForFeedback/:feedbackType   controllers.api.stations.SongFeedbackController_V0_4.deleteSongFeedback(idForFeedback, feedbackType)
 GET       /v0.4/isSongStarred/:userId                       controllers.api.stations.SongFeedbackController_V0_4.getIsSongStarred(userId, songTitle, artistsNames, albumTitle ?= null)
 

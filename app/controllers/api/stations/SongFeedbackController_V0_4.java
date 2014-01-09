@@ -67,10 +67,7 @@ public class SongFeedbackController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	// TODO: decide if it should also be @UserAuthenticated
 	@Logged
-	public static Result getStarredSongs(String userId,
-			Option<Integer> results, Option<String> since,
-			Option<String> sinceInclusive, Option<String> until,
-			Option<String> untilInclusive) {
+	public static Result getStarredSongs(String userId) {
 
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
 				getContext());
