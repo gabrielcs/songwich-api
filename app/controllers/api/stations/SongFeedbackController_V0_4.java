@@ -1,5 +1,7 @@
 package controllers.api.stations;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import play.data.Form;
 import play.libs.F.Option;
 import play.libs.Json;
@@ -17,8 +19,10 @@ import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.PostSongFeedback_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
+import views.api.stations.StarredSongsPagingDTO_V0_4;
 import behavior.api.usecases.stations.SongFeedbackUseCases;
 import controllers.api.APIController;
+import controllers.api.PagingController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
@@ -65,15 +69,59 @@ public class SongFeedbackController_V0_4 extends APIController {
 	}
 
 	@AppDeveloperAuthenticated
-	// TODO: decide if it should also be @UserAuthenticated
+	@UserAuthenticated
 	@Logged
-	public static Result getStarredSongs(String userId) {
+	public static Result getStarredSongs(String userId,
+			Option<Integer> results, Option<String> since,
+			Option<String> sinceInclusive, Option<String> until,
+			Option<String> untilInclusive) {
 
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
 				getContext());
-		StarredSongSetDTO_V0_4 starredSongSetDTO;
+		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> starredSongSetDTO;
 		try {
-			starredSongSetDTO = songFeedbackUseCases.getStarredSongs(userId);
+			PagingController.checkPagingParams(since, sinceInclusive, until,
+					untilInclusive);
+
+			if (since.isDefined()) {
+				starredSongSetDTO = songFeedbackUseCases
+						.getStarredSongsSince(
+								Http.Context.current().request().host(),
+								userId,
+								since.get(),
+								false,
+								results.getOrElse(PagingController.GET_STARRED_SONGS_DEFAULT_RESULTS));
+			} else if (until.isDefined()) {
+				starredSongSetDTO = songFeedbackUseCases
+						.getStarredSongsUntil(
+								Http.Context.current().request().host(),
+								userId,
+								until.get(),
+								false,
+								results.getOrElse(PagingController.GET_STARRED_SONGS_DEFAULT_RESULTS));
+			} else if (sinceInclusive.isDefined()) {
+				starredSongSetDTO = songFeedbackUseCases
+						.getStarredSongsSince(
+								Http.Context.current().request().host(),
+								userId,
+								sinceInclusive.get(),
+								true,
+								results.getOrElse(PagingController.GET_STARRED_SONGS_DEFAULT_RESULTS));
+			} else if (until.isDefined()) {
+				starredSongSetDTO = songFeedbackUseCases
+						.getStarredSongsUntil(
+								Http.Context.current().request().host(),
+								userId,
+								untilInclusive.get(),
+								true,
+								results.getOrElse(PagingController.GET_STARRED_SONGS_DEFAULT_RESULTS));
+			} else {
+				starredSongSetDTO = songFeedbackUseCases
+						.getStarredSongs(
+								Http.Context.current().request().host(),
+								userId,
+								results.getOrElse(PagingController.GET_STARRED_SONGS_DEFAULT_RESULTS));
+			}
 		} catch (SongwichAPIException exception) {
 			MyLogger.warn(String.format("%s [%s]: %s", exception.getStatus()
 					.toString(), exception.getMessage(), Http.Context.current()
@@ -85,12 +133,13 @@ public class SongFeedbackController_V0_4 extends APIController {
 
 		// return the response
 		GetStarredSongsResponse_V0_4 response = new GetStarredSongsResponse_V0_4(
-				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO);
+				APIStatus_V0_4.SUCCESS, "Success", starredSongSetDTO.getLeft(),
+				starredSongSetDTO.getRight());
 		return ok(Json.toJson(response));
 	}
 
 	@AppDeveloperAuthenticated
-	// TODO: decide if it should also be @UserAuthenticated
+	@UserAuthenticated
 	@Logged
 	public static Result getIsSongStarred(String userId, String songTitle,
 			String artistsNames, String albumTitle) {

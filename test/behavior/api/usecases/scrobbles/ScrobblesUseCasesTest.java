@@ -74,14 +74,14 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 
 		assertTrue(response
 				.getRight()
-				.getNewerScrobbles()
+				.getNewer()
 				.contains(
 						"since="
 								+ scrobbles.get(scrobbles.size() - 1).getId()
 										.toString()));
 		assertTrue(response
 				.getRight()
-				.getOlderScrobbles()
+				.getOlder()
 				.contains(
 						"until="
 								+ scrobbles.get(scrobbles.size() - RESULTS)
@@ -114,7 +114,7 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 
 		assertTrue(response
 				.getRight()
-				.getOlderScrobbles()
+				.getOlder()
 				.contains(
 						"until="
 								+ scrobbles.get(UNTIL_INDEX - RESULTS).getId()
@@ -122,7 +122,7 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 
 		assertTrue(response
 				.getRight()
-				.getNewerScrobbles()
+				.getNewer()
 				.contains(
 						"since="
 								+ scrobbles.get(UNTIL_INDEX - 1).getId()
@@ -155,14 +155,14 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 
 		assertTrue(response
 				.getRight()
-				.getNewerScrobbles()
+				.getNewer()
 				.contains(
 						"since="
 								+ scrobbles.get(SINCE_INDEX + RESULTS).getId()
 										.toString()));
 		assertTrue(response
 				.getRight()
-				.getOlderScrobbles()
+				.getOlder()
 				.contains(
 						"until="
 								+ scrobbles.get(SINCE_INDEX + 1).getId()

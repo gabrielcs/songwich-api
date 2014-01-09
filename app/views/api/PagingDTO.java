@@ -1,11 +1,17 @@
 package views.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
 public abstract class PagingDTO {
+	
+	@JsonIgnoreType
+	public static enum MODE {
+		SINCE, UNTIL, OPEN
+	}
 
 	@JsonIgnore
 	private StringBuilder previousPageUrl;

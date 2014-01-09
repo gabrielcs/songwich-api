@@ -1,6 +1,7 @@
 package database.api.stations;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -90,7 +91,8 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 
 	// http://stackoverflow.com/questions/19596949/how-to-build-a-morphia-query-on-a-subset-of-the-properties-of-a-java-collection
 	@Override
-	public List<StationHistoryEntry> findStarredByUserId(ObjectId userId) {
+	public List<StationHistoryEntry> findStarredByUserId(ObjectId userId,
+			int results) {
 		/*
 		 * Query<StationHistoryEntry> query = ds
 		 * .createQuery(StationHistoryEntry.class); query.and(
@@ -103,7 +105,39 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		Query<StationHistoryEntry> query = ds.find(StationHistoryEntry.class)
 		// .filter("songFeedback elem", songFeedback);
 				.field("songFeedback").hasThisElement(songFeedback);
-		return order(query).asList();
+		return order(query).limit(results).asList();
+	}
+
+	@Override
+	public List<StationHistoryEntry> findStarredByUserIdSince(ObjectId userId,
+			ObjectId sinceObjectId, boolean inclusive, int results) {
+
+		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
+		Query<StationHistoryEntry> query = ds.find(StationHistoryEntry.class)
+		// .filter("songFeedback elem", songFeedback);
+				.field("songFeedback").hasThisElement(songFeedback);
+
+		filterSince(query, sinceObjectId, inclusive);
+		// gets the oldest from the selected bunch and limit results
+		query = orderReverse(query).limit(results);
+
+		// order by newest
+		List<StationHistoryEntry> result = query.asList();
+		Collections.reverse(result);
+		return result;
+	}
+	
+	@Override
+	public List<StationHistoryEntry> findStarredByUserIdUntil(ObjectId userId,
+			ObjectId untilObjectId, boolean inclusive, int results) {
+
+		SongFeedback songFeedback = new SongFeedback(FeedbackType.STAR, userId);
+		Query<StationHistoryEntry> query = ds.find(StationHistoryEntry.class)
+		// .filter("songFeedback elem", songFeedback);
+				.field("songFeedback").hasThisElement(songFeedback);
+
+		filterUntil(query, untilObjectId, inclusive);
+		return order(query).limit(results).asList();
 	}
 
 	// TODO: test
@@ -117,7 +151,12 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 	}
 
 	private Query<StationHistoryEntry> order(Query<StationHistoryEntry> query) {
-		return query.order("-timestamp");
+		return query.order("-id");
+	}
+
+	private Query<StationHistoryEntry> orderReverse(
+			Query<StationHistoryEntry> query) {
+		return query.order("id");
 	}
 
 	private Query<StationHistoryEntry> queryByStationId(ObjectId stationId) {
@@ -143,12 +182,36 @@ public class StationHistoryDAOMongo extends BasicDAOMongo<StationHistoryEntry>
 		return filterHourOffset(query, hourOffset);
 	}
 
-	private <T> Query<T> filterHourOffset(Query<T> query, int hourOffset) {
+	private Query<StationHistoryEntry> filterHourOffset(
+			Query<StationHistoryEntry> query, int hourOffset) {
+
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.HOUR, -hourOffset);
 		long hourOffsetMillis = calendar.getTimeInMillis();
 
-		//return query.filter("timestamp >", hourOffsetMillis);
+		// return query.filter("timestamp >", hourOffsetMillis);
 		return query.field("timestamp").greaterThan(hourOffsetMillis);
+	}
+
+	private Query<StationHistoryEntry> filterSince(
+			Query<StationHistoryEntry> query, ObjectId sinceObjectId,
+			boolean inclusive) {
+
+		if (inclusive) {
+			return query.field("id").greaterThanOrEq(sinceObjectId);
+		} else {
+			return query.field("id").greaterThan(sinceObjectId);
+		}
+	}
+
+	private Query<StationHistoryEntry> filterUntil(
+			Query<StationHistoryEntry> query, ObjectId untilObjectId,
+			boolean inclusive) {
+
+		if (inclusive) {
+			return query.field("id").lessThanOrEq(untilObjectId);
+		} else {
+			return query.field("id").lessThan(untilObjectId);
+		}
 	}
 }

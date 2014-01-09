@@ -24,6 +24,7 @@ import behavior.api.usecases.UseCase;
 
 public class ScrobblesUseCases extends UseCase {
 
+	// TODO: move this somewhere else?
 	private static final int GET_SCROBBLES_MAX_RESULTS = (Integer) Play
 			.current().configuration().getInt("get.scrobbles.max").get();
 
@@ -58,9 +59,9 @@ public class ScrobblesUseCases extends UseCase {
 			String hostUrl, String userId, int maxResults,
 			boolean chosenByUserOnly) throws SongwichAPIException {
 
-		ObjectId userIdObject = authorizeUserGetScrobbles(maxResults, userId);
+		User user = authorizeUserGetScrobbles(maxResults, userId);
 		List<Scrobble> scrobbles = getScrobbleDAO()
-				.findLatestScrobblesByUserId(userIdObject, maxResults,
+				.findLatestScrobblesByUserId(user.getId(), maxResults,
 						chosenByUserOnly);
 
 		// try to set paging
@@ -83,11 +84,11 @@ public class ScrobblesUseCases extends UseCase {
 			boolean inclusive, int maxResults, boolean chosenByUserOnly)
 			throws SongwichAPIException {
 
-		Pair<ObjectId, Scrobble> userIdScrobblePair = authorizeUserGetScrobbles(
+		Pair<User, Scrobble> userIdScrobblePair = authorizeUserGetScrobbles(
 				maxResults, userId, sinceObjectIdString);
 		Scrobble scrobble = userIdScrobblePair.getRight();
 		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdSince(
-				userIdScrobblePair.getLeft(), scrobble.getTimestamp(),
+				userIdScrobblePair.getLeft().getId(), scrobble.getTimestamp(),
 				scrobble.getId(), inclusive, maxResults, chosenByUserOnly);
 
 		// try to set paging
@@ -112,11 +113,11 @@ public class ScrobblesUseCases extends UseCase {
 			boolean inclusive, int maxResults, boolean chosenByUserOnly)
 			throws SongwichAPIException {
 
-		Pair<ObjectId, Scrobble> userIdScrobblePair = authorizeUserGetScrobbles(
+		Pair<User, Scrobble> userIdScrobblePair = authorizeUserGetScrobbles(
 				maxResults, userId, untilObjectIdString);
 		Scrobble scrobble = userIdScrobblePair.getRight();
 		List<Scrobble> scrobbles = getScrobbleDAO().findScrobblesByUserIdUntil(
-				userIdScrobblePair.getLeft(), scrobble.getTimestamp(),
+				userIdScrobblePair.getLeft().getId(), scrobble.getTimestamp(),
 				scrobble.getId(), inclusive, maxResults, chosenByUserOnly);
 
 		// try to set paging
@@ -204,11 +205,10 @@ public class ScrobblesUseCases extends UseCase {
 		}
 	}
 
-	private ObjectId authorizeUserGetScrobbles(Integer results, String userId)
+	private User authorizeUserGetScrobbles(int results, String userId)
 			throws SongwichAPIException {
 
-		if (results != null
-				&& (results > GET_SCROBBLES_MAX_RESULTS || results < 1)) {
+		if (results > GET_SCROBBLES_MAX_RESULTS || results < 1) {
 			throw new SongwichAPIException(String.format(
 					"results should be between %d and %d", 1,
 					GET_SCROBBLES_MAX_RESULTS),
@@ -225,11 +225,10 @@ public class ScrobblesUseCases extends UseCase {
 			throw new SongwichAPIException("Invalid userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
-		ObjectId userIdObject = new ObjectId(userId);
 
 		// check if the User the scrobbles were asked for is the same as the
 		// authenticated one
-		User databaseUser = getUserDAO().findById(userIdObject);
+		User databaseUser = getUserDAO().findById(new ObjectId(userId));
 
 		if (databaseUser == null) {
 			throw new SongwichAPIException("Invalid userId: "
@@ -243,10 +242,10 @@ public class ScrobblesUseCases extends UseCase {
 		}
 
 		// authorized
-		return userIdObject;
+		return databaseUser;
 	}
 
-	private Pair<ObjectId, Scrobble> authorizeUserGetScrobbles(Integer results,
+	private Pair<User, Scrobble> authorizeUserGetScrobbles(Integer results,
 			String userId, String sinceUntilObjectId)
 			throws SongwichAPIException {
 
@@ -265,7 +264,7 @@ public class ScrobblesUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		Pair<ObjectId, Scrobble> userIdScrobblePair = new ImmutablePair<ObjectId, Scrobble>(
+		Pair<User, Scrobble> userIdScrobblePair = new ImmutablePair<User, Scrobble>(
 				authorizeUserGetScrobbles(results, userId), scrobble);
 
 		return userIdScrobblePair;

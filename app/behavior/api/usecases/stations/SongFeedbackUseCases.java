@@ -4,23 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.api.scrobbles.Song;
+import models.api.scrobbles.User;
 import models.api.stations.SongFeedback;
 import models.api.stations.SongFeedback.FeedbackType;
 import models.api.stations.StationHistoryEntry;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
 
+import play.api.Play;
+import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
+import views.api.PagingDTO;
+import views.api.PagingNotAvailableException;
 import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
+import views.api.stations.StarredSongsPagingDTO_V0_4;
 import views.api.stations.TrackDTO_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
 public class SongFeedbackUseCases extends UseCase {
+
+	// TODO: move this somewhere else?
+	private static final int GET_STARRED_SONGS_MAX_RESULTS = (Integer) Play
+			.current().configuration().getInt("get.starred.songs.max").get();
 
 	public SongFeedbackUseCases(RequestContext context) {
 		super(context);
@@ -62,30 +74,110 @@ public class SongFeedbackUseCases extends UseCase {
 				getContext().getUser().getId().toString());
 	}
 
-	public StarredSongSetDTO_V0_4 getStarredSongs(String userId)
+	public Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> getStarredSongs(
+			String hostUrl, String userIdString, Integer maxResults)
 			throws SongwichAPIException {
 
-		authorizeGetStarredSongs(userId);
+		User user = authorizeGetStarredSongs(userIdString, maxResults);
 
 		List<StationHistoryEntry> stationHistoryEntries = getStationHistoryDAO()
-				.findStarredByUserId(new ObjectId(userId));
+				.findStarredByUserId(user.getId(), maxResults);
 
-		return createDTOForGetStarredSongs(stationHistoryEntries, userId);
+		// try to set paging
+		StarredSongsPagingDTO_V0_4 paginationDTO = null;
+		try {
+			paginationDTO = new StarredSongsPagingDTO_V0_4(hostUrl,
+					userIdString, null, stationHistoryEntries, maxResults,
+					PagingDTO.MODE.OPEN);
+		} catch (PagingNotAvailableException exception) {
+			// normal behavior in case there were no results
+		}
+
+		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> resultPair = new ImmutablePair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4>(
+				createDTOForGetStarredSongs(stationHistoryEntries, userIdString),
+				paginationDTO);
+
+		return resultPair;
+	}
+
+	public Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> getStarredSongsSince(
+			String hostUrl, String userIdString, String sinceObjectIdString,
+			boolean inclusive, int maxResults) throws SongwichAPIException {
+
+		Pair<User, StationHistoryEntry> userIdHistoryEntryPair = authorizeGetStarredSongs(
+				userIdString, maxResults, sinceObjectIdString);
+		User user = userIdHistoryEntryPair.getLeft();
+		StationHistoryEntry sinceHistoryEntry = userIdHistoryEntryPair
+				.getRight();
+
+		List<StationHistoryEntry> stationHistoryEntries = getStationHistoryDAO()
+				.findStarredByUserIdSince(user.getId(),
+						sinceHistoryEntry.getId(), inclusive, maxResults);
+
+		// try to set paging
+		StarredSongsPagingDTO_V0_4 paginationDTO = null;
+		try {
+			paginationDTO = new StarredSongsPagingDTO_V0_4(hostUrl,
+					userIdString, sinceHistoryEntry.getId().toString(),
+					stationHistoryEntries, maxResults, PagingDTO.MODE.SINCE);
+		} catch (PagingNotAvailableException exception) {
+			// shouldn't reach here
+			MyLogger.warn(exception.toString());
+		}
+
+		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> resultPair = new ImmutablePair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4>(
+				createDTOForGetStarredSongs(stationHistoryEntries, userIdString),
+				paginationDTO);
+
+		return resultPair;
+	}
+
+	public Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> getStarredSongsUntil(
+			String hostUrl, String userIdString, String untilObjectIdString,
+			boolean inclusive, int maxResults) throws SongwichAPIException {
+
+		Pair<User, StationHistoryEntry> userIdHistoryEntryPair = authorizeGetStarredSongs(
+				userIdString, maxResults, untilObjectIdString);
+		User user = userIdHistoryEntryPair.getLeft();
+		StationHistoryEntry untilHistoryEntry = userIdHistoryEntryPair
+				.getRight();
+
+		List<StationHistoryEntry> stationHistoryEntries = getStationHistoryDAO()
+				.findStarredByUserIdUntil(user.getId(),
+						untilHistoryEntry.getId(), inclusive, maxResults);
+
+		// try to set paging
+		StarredSongsPagingDTO_V0_4 paginationDTO = null;
+		try {
+			paginationDTO = new StarredSongsPagingDTO_V0_4(hostUrl,
+					userIdString, untilHistoryEntry.getId().toString(),
+					stationHistoryEntries, maxResults, PagingDTO.MODE.UNTIL);
+		} catch (PagingNotAvailableException exception) {
+			// shouldn't reach here
+			MyLogger.warn(exception.toString());
+		}
+
+		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> resultPair = new ImmutablePair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4>(
+				createDTOForGetStarredSongs(stationHistoryEntries, userIdString),
+				paginationDTO);
+
+		return resultPair;
 	}
 
 	public IsSongStarredDTO_V0_4 getIsSongStarred(String userId,
 			String songTitle, String artistsNames, String albumTitle)
 			throws SongwichAPIException {
 
-		authorizeIsSongStarred(userId, songTitle, artistsNames);
+		User user = authorizeIsSongStarred(userId, songTitle, artistsNames);
 
-		Song song = new Song(songTitle, albumTitle, splitArtistsNames(artistsNames));
+		Song song = new Song(songTitle, albumTitle,
+				splitArtistsNames(artistsNames));
 		StationHistoryEntry stationHistoryEntry = getStationHistoryDAO()
-				.isSongStarredByUser(new ObjectId(userId), song);
+				.isSongStarredByUser(user.getId(), song);
 
 		return createDTOForIsSongStarred(stationHistoryEntry, userId, song);
 	}
-	
+
 	private List<String> splitArtistsNames(String artistsNames) {
 		String[] artistsNamesArray = artistsNames.split(",");
 		List<String> result = new ArrayList<String>(artistsNamesArray.length);
@@ -157,20 +249,97 @@ public class SongFeedbackUseCases extends UseCase {
 		return stationHistoryEntry;
 	}
 
-	private void authorizeGetStarredSongs(String userId)
+	private User authorizeGetStarredSongs(String userId, int results)
 			throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
 		if (!ObjectId.isValid(userId)) {
 			throw new SongwichAPIException("Invalid userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
+
+		// check if the User the scrobbles were asked for is the same as the
+		// authenticated one
+		User databaseUser = getUserDAO().findById(new ObjectId(userId));
+
+		if (databaseUser == null) {
+			throw new SongwichAPIException("Invalid userId: "
+					+ userId.toString(), APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		if (!databaseUser.equals(getContext().getUser())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
+
+		if (results > GET_STARRED_SONGS_MAX_RESULTS || results < 1) {
+			throw new SongwichAPIException(String.format(
+					"results should be between %d and %d", 1,
+					GET_STARRED_SONGS_MAX_RESULTS),
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		return databaseUser;
 	}
 
-	private void authorizeIsSongStarred(String userId, String songTitle,
+	private Pair<User, StationHistoryEntry> authorizeGetStarredSongs(
+			String userId, int results, String sinceUntilObjectId)
+			throws SongwichAPIException {
+
+		if (!ObjectId.isValid(sinceUntilObjectId)) {
+			throw new SongwichAPIException(String.format(
+					"Invalid scrobble id [%s]", sinceUntilObjectId),
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		StationHistoryEntry historyEntry = getStationHistoryDAO().findById(
+				new ObjectId(sinceUntilObjectId));
+
+		if (historyEntry == null) {
+			throw new SongwichAPIException(String.format(
+					"Non-existent feedbackId [%s]", sinceUntilObjectId),
+					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		Pair<User, StationHistoryEntry> userIdHistoryEntryPair = new ImmutablePair<User, StationHistoryEntry>(
+				authorizeGetStarredSongs(userId, results), historyEntry);
+
+		return userIdHistoryEntryPair;
+	}
+
+	private User authorizeIsSongStarred(String userId, String songTitle,
 			String artistsNames) throws SongwichAPIException {
+
+		if (getContext().getUser() == null) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
+		}
 
 		if (!ObjectId.isValid(userId)) {
 			throw new SongwichAPIException("Invalid userId",
 					APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		// check if the User the scrobbles were asked for is the same as the
+		// authenticated one
+		User databaseUser = getUserDAO().findById(new ObjectId(userId));
+
+		if (databaseUser == null) {
+			throw new SongwichAPIException("Invalid userId: "
+					+ userId.toString(), APIStatus_V0_4.INVALID_PARAMETER);
+		}
+
+		if (!databaseUser.equals(getContext().getUser())) {
+			throw new SongwichAPIException(
+					APIStatus_V0_4.UNAUTHORIZED.toString(),
+					APIStatus_V0_4.UNAUTHORIZED);
 		}
 
 		if (songTitle.isEmpty()) {
@@ -180,6 +349,8 @@ public class SongFeedbackUseCases extends UseCase {
 			throw new SongwichAPIException("Empty artistsNames",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
+
+		return databaseUser;
 	}
 
 	private static void updateDTOForPostSongFeedback(
@@ -213,9 +384,8 @@ public class SongFeedbackUseCases extends UseCase {
 	}
 
 	private static IsSongStarredDTO_V0_4 createDTOForIsSongStarred(
-			StationHistoryEntry stationHistoryEntry, String userId,
-			Song song) {
-		
+			StationHistoryEntry stationHistoryEntry, String userId, Song song) {
+
 		SongDTO_V0_4 songDTO = new SongDTO_V0_4();
 		songDTO.setTrackTitle(song.getSongTitle());
 		songDTO.setArtistsNames(song.getArtistsNames());
@@ -226,11 +396,12 @@ public class SongFeedbackUseCases extends UseCase {
 		isSongStarredDTO.setSong(songDTO);
 		if (stationHistoryEntry != null) {
 			isSongStarredDTO.setIsStarred(String.valueOf(true));
-			isSongStarredDTO.setIdForFeedback(stationHistoryEntry.getId().toString());
+			isSongStarredDTO.setIdForFeedback(stationHistoryEntry.getId()
+					.toString());
 		} else {
 			isSongStarredDTO.setIsStarred(String.valueOf(false));
 		}
-		
+
 		return isSongStarredDTO;
 	}
 }

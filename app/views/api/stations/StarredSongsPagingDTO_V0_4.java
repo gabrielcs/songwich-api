@@ -1,8 +1,11 @@
-package views.api.scrobbles;
+package views.api.stations;
 
 import java.util.List;
 
-import models.api.scrobbles.Scrobble;
+import models.api.Entity;
+
+import org.bson.types.ObjectId;
+
 import views.api.PagingDTO;
 import views.api.PagingNotAvailableException;
 
@@ -13,28 +16,25 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 //@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonInclude(Include.NON_EMPTY)
 @JsonTypeName("paging")
-public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
+public class StarredSongsPagingDTO_V0_4 extends PagingDTO {
 
-	public ScrobblesPagingDTO_V0_4(String hostUrl, String userId,
-			String requestObjectId, List<Scrobble> scrobbles, int maxResults,
-			MODE mode, boolean chosenByUserOnly)
-			throws PagingNotAvailableException {
+	public StarredSongsPagingDTO_V0_4(String hostUrl, String userId,
+			String requestObjectId, List<? extends Entity<ObjectId>> entities,
+			int maxResults, MODE mode) throws PagingNotAvailableException {
 
-		super(String.format("http://%s/v0.4/scrobbles/%s", hostUrl, userId));
-		addUrlParamToBothPages("chosenByUserOnly",
-				Boolean.toString(chosenByUserOnly));
+		super(String.format("http://%s/v0.4/starredSongs/%s", hostUrl, userId));
 		addUrlParamToBothPages("results", Integer.toString(maxResults));
 
 		String oldest = null;
 		String newest = null;
 		int actualResults = 0;
-		if (scrobbles != null && !scrobbles.isEmpty()) {
-			oldest = scrobbles.get(scrobbles.size() - 1).getId().toString();
-			newest = scrobbles.get(0).getId().toString();
-			actualResults = scrobbles.size();
+		if (entities != null && !entities.isEmpty()) {
+			oldest = entities.get(entities.size() - 1).getId().toString();
+			newest = entities.get(0).getId().toString();
+			actualResults = entities.size();
 		}
 
-		if (scrobbles.size() == maxResults) {
+		if (entities.size() == maxResults) {
 			addNextPageUrlParam("until", oldest);
 			addPreviousPageUrlParam("since", newest);
 		} else if (actualResults > 0) {
@@ -79,7 +79,7 @@ public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
 
 	@Override
 	public String toString() {
-		return "ScrobblesPagingDTO_V0_4 [getOlder()=" + getOlder()
-				+ ", getNewer()=" + getNewer() + "]";
+		return "StarredSongsPagingDTO_V0_4 [getNewer()=" + getNewer()
+				+ ", getOlder()=" + getOlder() + "]";
 	}
 }
