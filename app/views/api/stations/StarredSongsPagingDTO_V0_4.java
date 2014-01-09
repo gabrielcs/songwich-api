@@ -20,7 +20,7 @@ public class StarredSongsPagingDTO_V0_4 extends PagingDTO {
 
 	public StarredSongsPagingDTO_V0_4(String hostUrl, String userId,
 			String requestObjectId, List<? extends Entity<ObjectId>> entities,
-			int maxResults, MODE mode) throws PagingNotAvailableException {
+			int maxResults, PagingDTO.MODE mode) throws PagingNotAvailableException {
 
 		super(String.format("http://%s/v0.4/starredSongs/%s", hostUrl, userId));
 		addUrlParamToBothPages("results", Integer.toString(maxResults));

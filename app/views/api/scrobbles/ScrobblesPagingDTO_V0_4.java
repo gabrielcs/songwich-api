@@ -17,7 +17,7 @@ public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
 
 	public ScrobblesPagingDTO_V0_4(String hostUrl, String userId,
 			String requestObjectId, List<Scrobble> scrobbles, int maxResults,
-			MODE mode, boolean chosenByUserOnly)
+			PagingDTO.MODE mode, boolean chosenByUserOnly)
 			throws PagingNotAvailableException {
 
 		super(String.format("http://%s/v0.4/scrobbles/%s", hostUrl, userId));

@@ -282,12 +282,12 @@ public class StationHistoryEntryDAOMongoTest extends WithRequestContext {
 	@Test
 	public void testFindStarredByUserId() {
 		List<StationHistoryEntry> entriesGabriel = stationHistoryDao
-				.findStarredByUserId(gabriel.getId());
+				.findStarredByUserId(gabriel.getId(), 30);
 		assertEquals(1, entriesGabriel.size());
 		assertTrue(entriesGabriel.contains(linoleumEntry));
 
 		List<StationHistoryEntry> entriesDaniel = stationHistoryDao
-				.findStarredByUserId(daniel.getId());
+				.findStarredByUserId(daniel.getId(), 30);
 		assertEquals(1, entriesDaniel.size());
 		assertTrue(entriesDaniel.contains(dontCallMeWhiteNofx4HoursOldEntry));
 	}
