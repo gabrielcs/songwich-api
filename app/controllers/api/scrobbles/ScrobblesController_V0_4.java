@@ -19,7 +19,7 @@ import views.api.scrobbles.GetScrobblesResponse_V0_4;
 import views.api.scrobbles.PostScrobblesResponse_V0_4;
 import views.api.scrobbles.PutScrobblesResponse_V0_4;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
-import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
+import views.api.scrobbles.ScrobblesPagingDTO;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
@@ -140,7 +140,7 @@ public class ScrobblesController_V0_4 extends APIController {
 
 		ScrobblesUseCases scrobblesUseCases = new ScrobblesUseCases(
 				getContext());
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> scrobblesRestultDTOPair;
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> scrobblesRestultDTOPair;
 		try {
 			PagingController.checkPagingParams(since, sinceInclusive, until,
 					untilInclusive);

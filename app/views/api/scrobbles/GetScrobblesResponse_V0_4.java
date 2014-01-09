@@ -15,7 +15,7 @@ public class GetScrobblesResponse_V0_4 extends APIResponse_V0_4 {
 	@JsonProperty("scrobbles")
 	private List<ScrobblesDTO_V0_4> scrobblesDTO;
 	@JsonProperty("paging")
-	private ScrobblesPagingDTO_V0_4 pagingDTO;
+	private ScrobblesPagingDTO pagingDTO;
 	
 	/*
 	public GetScrobblesResponse_V0_4(APIStatus status, String message) {
@@ -25,7 +25,7 @@ public class GetScrobblesResponse_V0_4 extends APIResponse_V0_4 {
 	*/
 
 	public GetScrobblesResponse_V0_4(APIStatus status, String message,
-			List<ScrobblesDTO_V0_4> scrobblesDTO, ScrobblesPagingDTO_V0_4 paginationDTO) {
+			List<ScrobblesDTO_V0_4> scrobblesDTO, ScrobblesPagingDTO paginationDTO) {
 		super(status, message);
 		setScrobblesDTO(scrobblesDTO);
 		setPagingDTO(paginationDTO);
@@ -50,11 +50,11 @@ public class GetScrobblesResponse_V0_4 extends APIResponse_V0_4 {
 		scrobblesDTO.add(scrobbleDTO);
 	}
 	
-	public ScrobblesPagingDTO_V0_4 getPagingDTO() {
+	public ScrobblesPagingDTO getPagingDTO() {
 		return pagingDTO;
 	}
 
-	public void setPagingDTO(ScrobblesPagingDTO_V0_4 pagingDTO) {
+	public void setPagingDTO(ScrobblesPagingDTO pagingDTO) {
 		this.pagingDTO = pagingDTO;
 	}
 }

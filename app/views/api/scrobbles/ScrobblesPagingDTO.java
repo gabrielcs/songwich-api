@@ -1,4 +1,4 @@
-package views.api.stations;
+package views.api.scrobbles;
 
 import views.api.PagingDTO;
 import views.api.PagingUrlManager;
@@ -10,10 +10,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 //@JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
 @JsonInclude(Include.NON_EMPTY)
 @JsonTypeName("paging")
-public class StarredSongsPagingDTO_V0_4 extends PagingDTO {
+public class ScrobblesPagingDTO extends PagingDTO {
 
-	public StarredSongsPagingDTO_V0_4(PagingUrlManager pagingUrls) {
+	public ScrobblesPagingDTO(PagingUrlManager pagingUrls, boolean chosenByUserOnly) {
 		super(pagingUrls);
+		getPagingUrlManager().addUrlParamToBothPages("chosenByUserOnly",
+				Boolean.toString(chosenByUserOnly));
 	}
 
 	public String getOlder() {
@@ -26,7 +28,7 @@ public class StarredSongsPagingDTO_V0_4 extends PagingDTO {
 
 	@Override
 	public String toString() {
-		return "StarredSongsPagingDTO_V0_4 [getOlder()=" + getOlder()
+		return "ScrobblesPagingDTO_V0_4 [getOlder()=" + getOlder()
 				+ ", getNewer()=" + getNewer() + "]";
 	}
 }

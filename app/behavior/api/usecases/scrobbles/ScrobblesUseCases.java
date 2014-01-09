@@ -17,8 +17,9 @@ import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
 import views.api.PagingNotAvailableException;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
-import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
+import views.api.scrobbles.ScrobblesPagingDTO;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
+import behavior.api.usecases.PagingHelper_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
@@ -55,7 +56,7 @@ public class ScrobblesUseCases extends UseCase {
 		scrobbleDTO.setScrobbleId(scrobble.getId().toString());
 	}
 
-	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobbles(
+	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> getScrobbles(
 			String hostUrl, String userId, int maxResults,
 			boolean chosenByUserOnly) throws SongwichAPIException {
 
@@ -65,21 +66,23 @@ public class ScrobblesUseCases extends UseCase {
 						chosenByUserOnly);
 
 		// try to set paging
-		ScrobblesPagingDTO_V0_4 paginationDTO = null;
+		ScrobblesPagingDTO pagingDTO = null;
 		try {
-			paginationDTO = new ScrobblesPagingDTO_V0_4(hostUrl, userId, null,
-					scrobbles, maxResults, ScrobblesPagingDTO_V0_4.MODE.OPEN,
-					chosenByUserOnly);
+			String apiMethodUrl = "scrobbles/" + userId;
+			pagingDTO = new ScrobblesPagingDTO(
+					PagingHelper_V0_4.getPagingUrlManager(hostUrl,
+							apiMethodUrl, null, scrobbles, maxResults,
+							PagingHelper_V0_4.Mode.OPEN), chosenByUserOnly);
 		} catch (PagingNotAvailableException exception) {
 			// normal behavior in case there were no results
 		}
 
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
-				createGetScrobblesResponse(scrobbles), paginationDTO);
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO>(
+				createGetScrobblesResponse(scrobbles), pagingDTO);
 		return resultPair;
 	}
 
-	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobblesSince(
+	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> getScrobblesSince(
 			String hostUrl, String userId, String sinceObjectIdString,
 			boolean inclusive, int maxResults, boolean chosenByUserOnly)
 			throws SongwichAPIException {
@@ -92,23 +95,25 @@ public class ScrobblesUseCases extends UseCase {
 				scrobble.getId(), inclusive, maxResults, chosenByUserOnly);
 
 		// try to set paging
-		ScrobblesPagingDTO_V0_4 paginationDTO = null;
+		ScrobblesPagingDTO pagingDTO = null;
 		try {
-			paginationDTO = new ScrobblesPagingDTO_V0_4(hostUrl, userId,
-					sinceObjectIdString, scrobbles, maxResults,
-					ScrobblesPagingDTO_V0_4.MODE.SINCE, chosenByUserOnly);
+			String apiMethodUrl = "scrobbles/" + userId;
+			pagingDTO = new ScrobblesPagingDTO(
+					PagingHelper_V0_4.getPagingUrlManager(hostUrl,
+							apiMethodUrl, sinceObjectIdString, scrobbles, maxResults,
+							PagingHelper_V0_4.Mode.SINCE), chosenByUserOnly);
 		} catch (PagingNotAvailableException exception) {
 			// shouldn't reach here
 			MyLogger.warn(exception.toString());
 		}
 
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
-				createGetScrobblesResponse(scrobbles), paginationDTO);
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO>(
+				createGetScrobblesResponse(scrobbles), pagingDTO);
 
 		return resultPair;
 	}
 
-	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> getScrobblesUntil(
+	public Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> getScrobblesUntil(
 			String hostUrl, String userId, String untilObjectIdString,
 			boolean inclusive, int maxResults, boolean chosenByUserOnly)
 			throws SongwichAPIException {
@@ -121,18 +126,20 @@ public class ScrobblesUseCases extends UseCase {
 				scrobble.getId(), inclusive, maxResults, chosenByUserOnly);
 
 		// try to set paging
-		ScrobblesPagingDTO_V0_4 paginationDTO = null;
+		ScrobblesPagingDTO pagingDTO = null;
 		try {
-			paginationDTO = new ScrobblesPagingDTO_V0_4(hostUrl, userId,
-					untilObjectIdString, scrobbles, maxResults,
-					ScrobblesPagingDTO_V0_4.MODE.UNTIL, chosenByUserOnly);
+			String apiMethodUrl = "scrobbles/" + userId;
+			pagingDTO = new ScrobblesPagingDTO(
+					PagingHelper_V0_4.getPagingUrlManager(hostUrl,
+							apiMethodUrl, untilObjectIdString, scrobbles, maxResults,
+							PagingHelper_V0_4.Mode.UNTIL), chosenByUserOnly);
 		} catch (PagingNotAvailableException exception) {
 			// shouldn't reach here
 			MyLogger.warn(exception.toString());
 		}
 
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4>(
-				createGetScrobblesResponse(scrobbles), paginationDTO);
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> resultPair = new ImmutablePair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO>(
+				createGetScrobblesResponse(scrobbles), pagingDTO);
 
 		return resultPair;
 	}

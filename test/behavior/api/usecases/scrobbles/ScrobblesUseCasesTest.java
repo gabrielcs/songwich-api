@@ -20,7 +20,7 @@ import org.junit.Test;
 import util.api.SongwichAPIException;
 import util.api.WithProductionDependencyInjection;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
-import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
+import views.api.scrobbles.ScrobblesPagingDTO;
 
 public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 	private User gabriel;
@@ -58,7 +58,7 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 				getContext());
 
 		final int RESULTS = 30;
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> response = scrobblesUseCases
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> response = scrobblesUseCases
 				.getScrobbles(LOCALHOST, gabriel.getId().toString(), RESULTS,
 						false);
 
@@ -98,7 +98,7 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 		final int UNTIL_INDEX = scrobbles.size() / 2;
 		final String UNTIL = scrobbles.get(UNTIL_INDEX).getId().toString();
 
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> response = scrobblesUseCases
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> response = scrobblesUseCases
 				.getScrobblesUntil(LOCALHOST, gabriel.getId().toString(),
 						UNTIL, false, RESULTS, false);
 		
@@ -139,7 +139,7 @@ public class ScrobblesUseCasesTest extends WithProductionDependencyInjection {
 		final int SINCE_INDEX = scrobbles.size() / 2;
 		final String SINCE = scrobbles.get(SINCE_INDEX).getId().toString();
 
-		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> response = scrobblesUseCases
+		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO> response = scrobblesUseCases
 				.getScrobblesSince(LOCALHOST, gabriel.getId().toString(),
 						SINCE, false, RESULTS, false);
 

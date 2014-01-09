@@ -17,7 +17,6 @@ import play.api.Play;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
-import views.api.PagingDTO;
 import views.api.PagingNotAvailableException;
 import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
@@ -25,6 +24,7 @@ import views.api.stations.SongFeedbackDTO_V0_4;
 import views.api.stations.StarredSongSetDTO_V0_4;
 import views.api.stations.StarredSongsPagingDTO_V0_4;
 import views.api.stations.TrackDTO_V0_4;
+import behavior.api.usecases.PagingHelper_V0_4;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
@@ -84,18 +84,20 @@ public class SongFeedbackUseCases extends UseCase {
 				.findStarredByUserId(user.getId(), maxResults);
 
 		// try to set paging
-		StarredSongsPagingDTO_V0_4 paginationDTO = null;
+		StarredSongsPagingDTO_V0_4 pagingDTO = null;
 		try {
-			paginationDTO = new StarredSongsPagingDTO_V0_4(hostUrl,
-					userIdString, null, stationHistoryEntries, maxResults,
-					PagingDTO.MODE.OPEN);
+			String apiMethodUrl = "starredSongs/" + userIdString;
+			pagingDTO = new StarredSongsPagingDTO_V0_4(
+					PagingHelper_V0_4.getPagingUrlManager(hostUrl,
+							apiMethodUrl, null, stationHistoryEntries,
+							maxResults, PagingHelper_V0_4.Mode.OPEN));
 		} catch (PagingNotAvailableException exception) {
 			// normal behavior in case there were no results
 		}
 
 		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> resultPair = new ImmutablePair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4>(
 				createDTOForGetStarredSongs(stationHistoryEntries, userIdString),
-				paginationDTO);
+				pagingDTO);
 
 		return resultPair;
 	}
@@ -115,11 +117,14 @@ public class SongFeedbackUseCases extends UseCase {
 						sinceHistoryEntry.getId(), inclusive, maxResults);
 
 		// try to set paging
-		StarredSongsPagingDTO_V0_4 paginationDTO = null;
+		StarredSongsPagingDTO_V0_4 pagingDTO = null;
 		try {
-			paginationDTO = new StarredSongsPagingDTO_V0_4(hostUrl,
-					userIdString, sinceHistoryEntry.getId().toString(),
-					stationHistoryEntries, maxResults, PagingDTO.MODE.SINCE);
+			String apiMethodUrl = "starredSongs/" + userIdString;
+			pagingDTO = new StarredSongsPagingDTO_V0_4(
+					PagingHelper_V0_4.getPagingUrlManager(hostUrl,
+							apiMethodUrl, sinceHistoryEntry.getId().toString(),
+							stationHistoryEntries, maxResults,
+							PagingHelper_V0_4.Mode.SINCE));
 		} catch (PagingNotAvailableException exception) {
 			// shouldn't reach here
 			MyLogger.warn(exception.toString());
@@ -127,7 +132,7 @@ public class SongFeedbackUseCases extends UseCase {
 
 		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> resultPair = new ImmutablePair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4>(
 				createDTOForGetStarredSongs(stationHistoryEntries, userIdString),
-				paginationDTO);
+				pagingDTO);
 
 		return resultPair;
 	}
@@ -147,11 +152,14 @@ public class SongFeedbackUseCases extends UseCase {
 						untilHistoryEntry.getId(), inclusive, maxResults);
 
 		// try to set paging
-		StarredSongsPagingDTO_V0_4 paginationDTO = null;
+		StarredSongsPagingDTO_V0_4 pagingDTO = null;
 		try {
-			paginationDTO = new StarredSongsPagingDTO_V0_4(hostUrl,
-					userIdString, untilHistoryEntry.getId().toString(),
-					stationHistoryEntries, maxResults, PagingDTO.MODE.UNTIL);
+			String apiMethodUrl = "starredSongs/" + userIdString;
+			pagingDTO = new StarredSongsPagingDTO_V0_4(
+					PagingHelper_V0_4.getPagingUrlManager(hostUrl,
+							apiMethodUrl, untilHistoryEntry.getId().toString(),
+							stationHistoryEntries, maxResults,
+							PagingHelper_V0_4.Mode.UNTIL));
 		} catch (PagingNotAvailableException exception) {
 			// shouldn't reach here
 			MyLogger.warn(exception.toString());
@@ -159,7 +167,7 @@ public class SongFeedbackUseCases extends UseCase {
 
 		Pair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4> resultPair = new ImmutablePair<StarredSongSetDTO_V0_4, StarredSongsPagingDTO_V0_4>(
 				createDTOForGetStarredSongs(stationHistoryEntries, userIdString),
-				paginationDTO);
+				pagingDTO);
 
 		return resultPair;
 	}
