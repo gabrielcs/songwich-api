@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import play.api.Play;
 import play.data.Form;
 import play.libs.F.Option;
 import play.libs.Json;
@@ -24,14 +23,12 @@ import views.api.scrobbles.ScrobblesPagingDTO_V0_4;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.scrobbles.ScrobblesUseCases;
 import controllers.api.APIController;
+import controllers.api.PagingController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 
 public class ScrobblesController_V0_4 extends APIController {
-
-	private static int GET_SCROBBLES_DEFAULT_RESULTS = (Integer) Play.current()
-			.configuration().getInt("get.scrobbles.default").get();
 
 	@AppDeveloperAuthenticated
 	@UserAuthenticated
@@ -145,37 +142,52 @@ public class ScrobblesController_V0_4 extends APIController {
 				getContext());
 		Pair<List<ScrobblesDTO_V0_4>, ScrobblesPagingDTO_V0_4> scrobblesRestultDTOPair;
 		try {
-			checkUrlParams(since, sinceInclusive, until, untilInclusive);
+			PagingController.checkPagingParams(since, sinceInclusive, until,
+					untilInclusive);
 
 			if (since.isDefined()) {
-				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
-						Http.Context.current().request().host(), userId,
-						since.get(), false,
-						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
-						chosenByUserOnly);
+				scrobblesRestultDTOPair = scrobblesUseCases
+						.getScrobblesSince(
+								Http.Context.current().request().host(),
+								userId,
+								since.get(),
+								false,
+								results.getOrElse(PagingController.GET_SCROBBLES_DEFAULT_RESULTS),
+								chosenByUserOnly);
 			} else if (until.isDefined()) {
-				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
-						Http.Context.current().request().host(), userId,
-						until.get(), false,
-						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
-						chosenByUserOnly);
+				scrobblesRestultDTOPair = scrobblesUseCases
+						.getScrobblesUntil(
+								Http.Context.current().request().host(),
+								userId,
+								until.get(),
+								false,
+								results.getOrElse(PagingController.GET_SCROBBLES_DEFAULT_RESULTS),
+								chosenByUserOnly);
 			} else if (sinceInclusive.isDefined()) {
-				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesSince(
-						Http.Context.current().request().host(), userId,
-						sinceInclusive.get(), true,
-						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
-						chosenByUserOnly);
+				scrobblesRestultDTOPair = scrobblesUseCases
+						.getScrobblesSince(
+								Http.Context.current().request().host(),
+								userId,
+								sinceInclusive.get(),
+								true,
+								results.getOrElse(PagingController.GET_SCROBBLES_DEFAULT_RESULTS),
+								chosenByUserOnly);
 			} else if (until.isDefined()) {
-				scrobblesRestultDTOPair = scrobblesUseCases.getScrobblesUntil(
-						Http.Context.current().request().host(), userId,
-						untilInclusive.get(), true,
-						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
-						chosenByUserOnly);
+				scrobblesRestultDTOPair = scrobblesUseCases
+						.getScrobblesUntil(
+								Http.Context.current().request().host(),
+								userId,
+								untilInclusive.get(),
+								true,
+								results.getOrElse(PagingController.GET_SCROBBLES_DEFAULT_RESULTS),
+								chosenByUserOnly);
 			} else {
-				scrobblesRestultDTOPair = scrobblesUseCases.getScrobbles(
-						Http.Context.current().request().host(), userId,
-						results.getOrElse(GET_SCROBBLES_DEFAULT_RESULTS),
-						chosenByUserOnly);
+				scrobblesRestultDTOPair = scrobblesUseCases
+						.getScrobbles(
+								Http.Context.current().request().host(),
+								userId,
+								results.getOrElse(PagingController.GET_SCROBBLES_DEFAULT_RESULTS),
+								chosenByUserOnly);
 			}
 		} catch (SongwichAPIException exception) {
 			// user unauthorized for getting scrobbles from another user
@@ -193,32 +205,6 @@ public class ScrobblesController_V0_4 extends APIController {
 				scrobblesRestultDTOPair.getLeft(),
 				scrobblesRestultDTOPair.getRight());
 		return ok(Json.toJson(response));
-	}
-
-	private static void checkUrlParams(Option<String> since,
-			Option<String> sinceInclusive, Option<String> until,
-			Option<String> untilInclusive) throws SongwichAPIException {
-
-		int definedParams = 0;
-
-		if (since.isDefined()) {
-			definedParams++;
-		}
-		if (sinceInclusive.isDefined()) {
-			definedParams++;
-		}
-		if (until.isDefined()) {
-			definedParams++;
-		}
-		if (untilInclusive.isDefined()) {
-			definedParams++;
-		}
-
-		if (definedParams > 1) {
-			throw new SongwichAPIException(
-					"Cannot define more than 1 of 'since', 'until', 'sinceInclusive' and 'untilInclusive'",
-					APIStatus_V0_4.INVALID_PARAMETER);
-		}
 	}
 
 	/*

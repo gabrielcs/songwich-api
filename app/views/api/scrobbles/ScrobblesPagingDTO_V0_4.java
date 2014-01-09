@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 public class ScrobblesPagingDTO_V0_4 extends PagingDTO {
 
 	@JsonIgnoreType
-	public enum MODE {
+	public static enum MODE {
 		SINCE, UNTIL, OPEN
 	}
 

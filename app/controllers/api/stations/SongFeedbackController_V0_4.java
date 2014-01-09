@@ -1,6 +1,7 @@
 package controllers.api.stations;
 
 import play.data.Form;
+import play.libs.F.Option;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -66,7 +67,11 @@ public class SongFeedbackController_V0_4 extends APIController {
 	@AppDeveloperAuthenticated
 	// TODO: decide if it should also be @UserAuthenticated
 	@Logged
-	public static Result getStarredSongs(String userId) {
+	public static Result getStarredSongs(String userId,
+			Option<Integer> results, Option<String> since,
+			Option<String> sinceInclusive, Option<String> until,
+			Option<String> untilInclusive) {
+
 		SongFeedbackUseCases songFeedbackUseCases = new SongFeedbackUseCases(
 				getContext());
 		StarredSongSetDTO_V0_4 starredSongSetDTO;
