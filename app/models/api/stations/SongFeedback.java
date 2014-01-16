@@ -15,7 +15,7 @@ public class SongFeedback extends MongoModelImpl implements MongoModel {
 	private ObjectId userId;
 
 	public enum FeedbackType {
-		THUMBS_UP, THUMBS_DOWN, STAR;
+		STAR, THUMBS_UP, THUMBS_DOWN, SKIP;
 	}
 
 	protected SongFeedback() {

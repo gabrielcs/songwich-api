@@ -15,11 +15,11 @@ import play.api.Play;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
-import views.api.PagingNotAvailableException;
 import views.api.scrobbles.ScrobblesDTO_V0_4;
 import views.api.scrobbles.ScrobblesPagingDTO;
 import views.api.scrobbles.ScrobblesUpdateDTO_V0_4;
 import behavior.api.usecases.PagingHelper_V0_4;
+import behavior.api.usecases.PagingNotAvailableException;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 

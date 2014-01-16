@@ -17,7 +17,6 @@ import play.api.Play;
 import util.api.MyLogger;
 import util.api.SongwichAPIException;
 import views.api.APIStatus_V0_4;
-import views.api.PagingNotAvailableException;
 import views.api.stations.IsSongStarredDTO_V0_4;
 import views.api.stations.SongDTO_V0_4;
 import views.api.stations.SongFeedbackDTO_V0_4;
@@ -25,6 +24,7 @@ import views.api.stations.StarredSongSetDTO_V0_4;
 import views.api.stations.StarredSongsPagingDTO_V0_4;
 import views.api.stations.TrackDTO_V0_4;
 import behavior.api.usecases.PagingHelper_V0_4;
+import behavior.api.usecases.PagingNotAvailableException;
 import behavior.api.usecases.RequestContext;
 import behavior.api.usecases.UseCase;
 
@@ -50,17 +50,8 @@ public class SongFeedbackUseCases extends UseCase {
 		}
 
 		// process request
-		FeedbackType feedbackType;
-		if (songFeedbackDTO.getFeedbackType().equals("thumbs-up")) {
-			feedbackType = FeedbackType.THUMBS_UP;
-		} else if (songFeedbackDTO.getFeedbackType().equals("thumbs-down")) {
-			feedbackType = FeedbackType.THUMBS_DOWN;
-		} else if (songFeedbackDTO.getFeedbackType().equals("star")) {
-			feedbackType = FeedbackType.STAR;
-		} else {
-			throw new SongwichAPIException("Invalid feedbackType",
-					APIStatus_V0_4.INVALID_PARAMETER);
-		}
+		FeedbackType feedbackType = getFeedbackFromString(songFeedbackDTO
+				.getFeedbackType());
 
 		// set it and save it
 		SongFeedback songFeedback = new SongFeedback(feedbackType, getContext()
@@ -212,25 +203,28 @@ public class SongFeedbackUseCases extends UseCase {
 
 	private SongFeedback buildSongFeedback(String feedbackType)
 			throws SongwichAPIException {
-		FeedbackType feedbackTypeEnum;
+		FeedbackType feedbackTypeEnum = getFeedbackFromString(feedbackType);
 
-		switch (feedbackType) {
+		return new SongFeedback(feedbackTypeEnum, getContext().getUser()
+				.getId());
+	}
+
+	private FeedbackType getFeedbackFromString(String feedbackTypeString)
+			throws SongwichAPIException {
+
+		switch (feedbackTypeString) {
+		case "skip":
+			return FeedbackType.SKIP;
 		case "thumbs-up":
-			feedbackTypeEnum = FeedbackType.THUMBS_UP;
-			break;
+			return FeedbackType.THUMBS_UP;
 		case "thumbs-down":
-			feedbackTypeEnum = FeedbackType.THUMBS_DOWN;
-			break;
+			return FeedbackType.THUMBS_DOWN;
 		case "star":
-			feedbackTypeEnum = FeedbackType.STAR;
-			break;
+			return FeedbackType.STAR;
 		default:
 			throw new SongwichAPIException("Invalid feedbackType",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
-
-		return new SongFeedback(feedbackTypeEnum, getContext().getUser()
-				.getId());
 	}
 
 	private StationHistoryEntry authorizeForDeleteSongFeedback(

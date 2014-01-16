@@ -6,7 +6,6 @@ import models.api.Entity;
 
 import org.bson.types.ObjectId;
 
-import views.api.PagingNotAvailableException;
 import views.api.PagingUrlManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
