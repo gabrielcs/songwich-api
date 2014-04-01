@@ -25,6 +25,8 @@ public class PingerJob {
 
 	private static final int TIMEOUT = 25000; // 25 seconds
 
+	// based on
+	// http://stackoverflow.com/questions/3584210/preferred-java-way-to-ping-a-http-url-for-availability
 	public static void ping() {
 		url = url.replaceFirst("https", "http"); // Otherwise an exception may
 													// be thrown on invalid SSL
@@ -39,6 +41,9 @@ public class PingerJob {
 			int responseCode = connection.getResponseCode();
 			if (!(200 <= responseCode && responseCode <= 399)) {
 				MyLogger.warn(String.format("Ping response: [%d] %s",
+						responseCode, connection.getResponseMessage()));
+			} else {
+				MyLogger.debug(String.format("Ping response: [%d] %s",
 						responseCode, connection.getResponseMessage()));
 			}
 		} catch (IOException exception) {
