@@ -20,8 +20,8 @@ public class PingerJob {
 
 	// more info on Heroku config vars at
 	// https://devcenter.heroku.com/articles/config-vars
-	private static String url = "http://" + System.getenv("HEROKU_APP_NAME")
-			+ ".herokuapp.com";
+	private static String url = String.format("http://%s.herokuapp.com/ping",
+			System.getenv("HEROKU_APP_NAME"));
 
 	private static final int TIMEOUT = 25000; // 25 seconds
 
@@ -39,13 +39,8 @@ public class PingerJob {
 			connection.setReadTimeout(TIMEOUT);
 			connection.setRequestMethod("HEAD");
 			int responseCode = connection.getResponseCode();
-			if (!(200 <= responseCode && responseCode <= 399)) {
-				MyLogger.warn(String.format("Ping response: [%d] %s",
-						responseCode, connection.getResponseMessage()));
-			} else {
-				MyLogger.debug(String.format("Ping response: [%d] %s",
-						responseCode, connection.getResponseMessage()));
-			}
+			MyLogger.debug(String.format("Ping response for %s: [%d] %s", url,
+					responseCode, connection.getResponseMessage()));
 		} catch (IOException exception) {
 			MyLogger.warn(String.format("PingerJob [%s]: %s", exception
 					.getClass().getSimpleName(), exception.getMessage()));
