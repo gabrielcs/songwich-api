@@ -9,7 +9,6 @@ import play.api.Application;
 import play.api.DefaultApplication;
 import play.api.Mode;
 import play.api.Play;
-import util.api.MyLogger;
 
 /*
  * Pinger to be set on a Heroku Scheduler so that the Heroku dyno doesn't sleep.
@@ -44,8 +43,8 @@ public class PingerJob {
 			// MyLogger.debug(String.format("Ping response for %s: [%d] %s",
 			// url, responseCode, connection.getResponseMessage()));
 		} catch (IOException exception) {
-			MyLogger.warn(String.format("PingerJob [%s]: %s", exception
-					.getClass().getSimpleName(), exception.getMessage()));
+			// MyLogger.warn(String.format("PingerJob [%s]: %s", exception
+			// .getClass().getSimpleName(), exception.getMessage()));
 		}
 	}
 
