@@ -1,10 +1,9 @@
-import jobs.PingerJob;
 import play.GlobalSettings;
-import play.mvc.SimpleResult;
 import play.libs.F.Promise;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Results;
+import play.mvc.SimpleResult;
 import util.api.DAOProvider;
 import util.api.DatabaseContext;
 import util.api.DevelopmentDependencyInjectionModule;
@@ -24,41 +23,51 @@ public class Global extends GlobalSettings {
 	// for dependency injection
 	private static Injector INJECTOR;
 
+	/*
+	 * Checks whether it is the Web Application and not a scheduled job.
+	 */
+	private boolean isWebApplication(play.Application app) {
+		return app.configuration().getBoolean("application.web");
+	}
+
 	@Override
 	public void onStart(play.Application app) {
+		if (isWebApplication(app)) {
 
-		if (app.isProd()) {
-			// connects to a MongodDB-as-a-Service database
-			// it may be a production or a staging database according to the
-			// environment variable
-			String dbName = System.getenv("MONGOHQ_DBNAME");
-			String uri = System.getenv("MONGOHQ_URL");
-			DatabaseContext.createDatastore(uri, dbName);
+			if (app.isProd()) {
+				// connects to a MongodDB-as-a-Service database
+				// it may be a production or a staging database according to the
+				// environment variable
+				String dbName = System.getenv("MONGOHQ_DBNAME");
+				String uri = System.getenv("MONGOHQ_URL");
+				DatabaseContext.createDatastore(uri, dbName);
 
-			// dependency injection
-			INJECTOR = Guice.createInjector(
-					new ProductionDependencyInjectionModule(),
-					new MongoDependencyInjectionModule());
+				// dependency injection
+				INJECTOR = Guice.createInjector(
+						new ProductionDependencyInjectionModule(),
+						new MongoDependencyInjectionModule());
 
-			DAOProvider.setInjector(INJECTOR);
-		}
+				DAOProvider.setInjector(INJECTOR);
+			}
 
-		if (app.isDev()) {
-			// starts with a clean local database if in development mode
-			String dbName = app.configuration().getString("mongo.local.dbname");
-			DatabaseContext.createDatastore(dbName);
-			DatabaseContext.dropDatabase();
+			if (app.isDev()) {
+				// starts with a clean local database if in development mode
+				String dbName = app.configuration().getString(
+						"mongo.local.dbname");
+				DatabaseContext.createDatastore(dbName);
+				DatabaseContext.dropDatabase();
 
-			// and creates a test developer
-			AppDeveloperAuthController.createTestAppWithDeveloper(app
-					.configuration().getString("dev.auth.token"));
+				// and creates a test developer
+				AppDeveloperAuthController.createTestAppWithDeveloper(app
+						.configuration().getString("dev.auth.token"));
 
-			// dependency injection
-			INJECTOR = Guice.createInjector(
-					new DevelopmentDependencyInjectionModule(),
-					new MongoDependencyInjectionModule());
+				// dependency injection
+				INJECTOR = Guice.createInjector(
+						new DevelopmentDependencyInjectionModule(),
+						new MongoDependencyInjectionModule());
 
-			DAOProvider.setInjector(INJECTOR);
+				DAOProvider.setInjector(INJECTOR);
+			}
 		}
 	}
 
