@@ -1,4 +1,3 @@
-import jobs.PingerJob;
 import play.GlobalSettings;
 import play.libs.Json;
 import play.mvc.Http.RequestHeader;
@@ -25,11 +24,6 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStart(play.Application app) {
-		if (app.classloader().equals(PingerJob.class.getClassLoader())) {
-			// this is a scheduled job and not the main application
-			return;
-		}
-
 		if (app.isProd()) {
 			// connects to a MongodDB-as-a-Service database
 			// it may be a production or a staging database according to the
