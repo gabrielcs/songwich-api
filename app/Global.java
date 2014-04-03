@@ -26,10 +26,6 @@ public class Global extends GlobalSettings {
 
 	@Override
 	public void onStart(play.Application app) {
-		if (app.classloader().equals(PingerJob.class.getClassLoader())) {
-			// this is a scheduled job and not the main application
-			return;
-		}
 
 		if (app.isProd()) {
 			// connects to a MongodDB-as-a-Service database
