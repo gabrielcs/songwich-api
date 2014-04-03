@@ -1,2 +1,2 @@
-web: target/universal/stage/bin/songwich-api -Dhttp.port=$PORT
-scheduledping: java -Dconfig.file=conf/application-scheduledping.conf -cp "target/universal/stage/lib/*" jobs.PingerJob .
+web: target/universal/stage/bin/songwich-api -Dhttp.port=$PORT -Dprocess.type=web
+scheduledping: java -Dconfig.file=conf/application.conf -Dprocess.type=scheduledping -cp "target/universal/stage/lib/*" jobs.PingerJob .

@@ -26,8 +26,13 @@ public class Global extends GlobalSettings {
 	private static final String WEB_PROCESS_TYPE = "web";
 
 	private boolean isWebApplication(play.Application app) {
-		return app.configuration().getString("process.type")
-				.equals(WEB_PROCESS_TYPE);
+		String processType = app.configuration().getString("process.type");
+		if (processType != null) {
+			return processType.equals(WEB_PROCESS_TYPE);
+		} else {
+			// we're probably running in 'localhost'
+			return true;
+		}
 	}
 
 	@Override
