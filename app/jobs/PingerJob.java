@@ -38,9 +38,11 @@ public class PingerJob {
 			connection.setConnectTimeout(TIMEOUT);
 			connection.setReadTimeout(TIMEOUT);
 			connection.setRequestMethod("HEAD");
-			int responseCode = connection.getResponseCode();
-			MyLogger.debug(String.format("Ping response for %s: [%d] %s", url,
-					responseCode, connection.getResponseMessage()));
+
+			// TODO: fix logback on the 'scheduledping' process type
+			// int responseCode = connection.getResponseCode();
+			// MyLogger.debug(String.format("Ping response for %s: [%d] %s",
+			// url, responseCode, connection.getResponseMessage()));
 		} catch (IOException exception) {
 			MyLogger.warn(String.format("PingerJob [%s]: %s", exception
 					.getClass().getSimpleName(), exception.getMessage()));
