@@ -23,11 +23,11 @@ public class Global extends GlobalSettings {
 	// for dependency injection
 	private static Injector INJECTOR;
 
-	/*
-	 * Checks whether it is the Web Application and not a scheduled job.
-	 */
+	private static final String WEB_PROCESS_TYPE = "web";
+
 	private boolean isWebApplication(play.Application app) {
-		return app.configuration().getBoolean("application.web");
+		return app.configuration().getString("process.type")
+				.equals(WEB_PROCESS_TYPE);
 	}
 
 	@Override
