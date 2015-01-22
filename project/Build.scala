@@ -11,10 +11,11 @@ object ApplicationBuild extends Build {
     javaCore,
 
     // Add your project dependencies here,
-    "org.mongodb" % "mongo-java-driver" % "2.11.2",
-    //"org.mongodb" % "mongo-java-driver" % "2.10.0",
-    "com.google.code.morphia" % "morphia" % "0.101.0",
-    "com.google.code.morphia" % "morphia-logging-slf4j" % "0.101.0",
+    "org.mongodb" % "mongo-java-driver" % "2.11.4",
+    //"org.mongodb" % "mongo-java-driver" % "2.11.2",
+    "com.google.code.morphia" % "morphia" % "0.104",
+    //"com.google.code.morphia" % "morphia" % "0.101.0",
+    "com.google.code.morphia" % "morphia-logging-slf4j" % "0.104",
     //"com.google.code.morphia" % "morphia-validation" % "0.101.0"
     "org.slf4j" % "slf4j-api" % "1.7.2", // versioning for Play 2.1.3
     "commons-validator" % "commons-validator" % "1.4.0",
