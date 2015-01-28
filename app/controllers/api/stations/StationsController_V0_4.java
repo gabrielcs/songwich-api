@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import models.api.stations.RadioStation;
+
+import org.bson.types.ObjectId;
+
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Http;
@@ -28,6 +32,8 @@ import controllers.api.APIController;
 import controllers.api.annotation.AppDeveloperAuthenticated;
 import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
+import database.api.stations.RadioStationDAO;
+import database.api.stations.RadioStationDAOMongo;
 
 public class StationsController_V0_4 extends APIController {
 
@@ -61,7 +67,8 @@ public class StationsController_V0_4 extends APIController {
 			RadioStationOutputDTO_V0_4 radioStationOutputDTO;
 			try {
 				radioStationOutputDTO = stationsUseCases.postStations(
-						radioStationInputDTO, stationStrategy, subscribeScrobblers);
+						radioStationInputDTO, stationStrategy,
+						subscribeScrobblers);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -177,7 +184,7 @@ public class StationsController_V0_4 extends APIController {
 	@Logged
 	public Result putStationsAddScrobblers(String stationId,
 			boolean subscribeScrobblers) {
-		
+
 		Form<RadioStationUpdateInputDTO_V0_4> radioStationUpdateForm = Form
 				.form(RadioStationUpdateInputDTO_V0_4.class).bindFromRequest();
 		if (radioStationUpdateForm.hasErrors()) {
@@ -196,7 +203,8 @@ public class StationsController_V0_4 extends APIController {
 			try {
 				radioStationOutputDTO = stationsUseCases
 						.putStationsAddScrobblers(stationId,
-								radioStationUpdateDTO, stationStrategy, subscribeScrobblers);
+								radioStationUpdateDTO, stationStrategy,
+								subscribeScrobblers);
 			} catch (SongwichAPIException exception) {
 				MyLogger.warn(String.format("%s [%s]: %s", exception
 						.getStatus().toString(), exception.getMessage(),
@@ -361,6 +369,25 @@ public class StationsController_V0_4 extends APIController {
 		PutStationsResponse_V0_4 response = new PutStationsResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success", radioStationUpdateDTO);
 		return ok(Json.toJson(response));
+	}
+
+	public Result postFixRemoveFaultyStationsStaging() {
+		ObjectId danielCaonFM = new ObjectId("526ee129e4b03f1a33f3dd42");
+		ObjectId gabrielFM = new ObjectId("526ee177e4b03f1a33f3dd45");
+		
+		removeStation(danielCaonFM);
+		removeStation(gabrielFM);
+		
+		// return the response
+		APIResponse_V0_4 response = new APIResponse_V0_4(
+				APIStatus_V0_4.SUCCESS, "Success");
+		return ok(Json.toJson(response));
+	}
+
+	private void removeStation(ObjectId stationId) {
+		RadioStationDAO<ObjectId> stationDAO = new RadioStationDAOMongo();
+		RadioStation station = stationDAO.findById(stationId);
+		stationDAO.delete(station);
 	}
 
 	/*

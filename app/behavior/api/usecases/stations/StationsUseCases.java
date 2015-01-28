@@ -523,16 +523,11 @@ public class StationsUseCases extends UseCase {
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
 
-		/*
-		 * We're allowing this to happen in case we'd like to inactivate an 
-		 * individual station.
-		 * 
 		if (station.getScrobbler().isIndividualStation()) {
 			throw new SongwichAPIException(
 					"Not allowed to change scrobblers on an individual station",
 					APIStatus_V0_4.INVALID_PARAMETER);
 		}
-		*/
 
 		return station;
 	}
