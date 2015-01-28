@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import models.api.stations.RadioStation;
+import models.api.subscriptions.Subscription;
 
 import org.bson.types.ObjectId;
 
@@ -34,6 +35,8 @@ import controllers.api.annotation.Logged;
 import controllers.api.annotation.UserAuthenticated;
 import database.api.stations.RadioStationDAO;
 import database.api.stations.RadioStationDAOMongo;
+import database.api.subscriptions.SubscriptionDAO;
+import database.api.subscriptions.SubscriptionDAOMongo;
 
 public class StationsController_V0_4 extends APIController {
 
@@ -372,16 +375,33 @@ public class StationsController_V0_4 extends APIController {
 	}
 
 	public Result postFixRemoveFaultyStationsStaging() {
-		ObjectId danielCaonFM = new ObjectId("526ee129e4b03f1a33f3dd42");
-		ObjectId gabrielFM = new ObjectId("526ee177e4b03f1a33f3dd45");
+		ObjectId oldDanielCaonFM = new ObjectId("526ee129e4b03f1a33f3dd42");
+		ObjectId newDanielCaonFM = new ObjectId("54c9254de4b0d151e8ed5cb5");
 		
-		removeStation(danielCaonFM);
-		removeStation(gabrielFM);
+		ObjectId oldGabrielCyprianoFM = new ObjectId("526ee177e4b03f1a33f3dd45");
+		ObjectId newGabrielCyprianoFM = new ObjectId("54c91992e4b0b332d4ea9030");
+		
+		fixSubscriptions(oldDanielCaonFM, newDanielCaonFM);
+		fixSubscriptions(oldGabrielCyprianoFM, newGabrielCyprianoFM);
+		
+		removeStation(oldDanielCaonFM);
+		removeStation(newGabrielCyprianoFM);
 		
 		// return the response
 		APIResponse_V0_4 response = new APIResponse_V0_4(
 				APIStatus_V0_4.SUCCESS, "Success");
 		return ok(Json.toJson(response));
+	}
+	
+	private void fixSubscriptions(ObjectId oldStationId, ObjectId newStationId) {
+		String devEmail = "gabrielcs@gmail.com";
+		
+		SubscriptionDAO<ObjectId> subscriptionDAO = new SubscriptionDAOMongo();
+		List<Subscription> subscriptions = subscriptionDAO.findByStationId(oldStationId);
+		for (Subscription subscription : subscriptions) {
+			subscription.setStation(newStationId);
+			subscriptionDAO.save(subscription, devEmail);
+		}
 	}
 
 	private void removeStation(ObjectId stationId) {
