@@ -5,6 +5,8 @@ This is Songwich's REST back-end. It is written in Play Framework with Java and 
 
 The app is currently hosted on Heroku and dinamically detects whether it's being run on development, staging or production mode. It then connects to a database accordingly.
 
+Please find the API documentation at ‘api-doc.pdf’.
+
 
 License
 ========================================
