@@ -1,14 +1,13 @@
-Radio-Engine
+Songwich API
 ========================================
 
-A radio player that uses:
-- The Echo Nest to generate a dynamic seed-song catalog playlist that is DMCA-compliant and has adventurouness = 0;
-- Rdio and Deezer to stream the songs;
-- A few ready-made playlists to simulate the (situational) Taste Profile of 2 different artists consisting of a solo artist and a 3-member band.
+This is Songwich's REST back-end. It is written in Play Framework with Java and MongoDB.
 
-The user should be able to:
-- Switch between Rdio and Deezer for the source for their music;
-- Equalize the Taste Profiles using an integer from 0 to 5 (1 is the default and 0 means it doesn't take it into account to generate the playlist);
-- Choose a situation;
-- Allow for studio and/or live songs;
-- Skip songs, favorite artists and songs, ban artists and songs, and rate songs from 0 to 10.
+The app is currently hosted on Heroku and dinamically detects whether it's being run on development, staging or production mode. It then connects to a database accordingly.
+
+
+License
+========================================
+
+All information in this code repository is and remains property of Songwich LTDA. The intellectual and technical concepts contained herein are proprietary to Songwich LTDA and may be covered by Brazilian and Foreign Patents,
+patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Songwich LTDA.
